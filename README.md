@@ -1,20 +1,26 @@
-# Next.js Chakra Full Stack Starter Project
+# CoredIn
 
 ## Getting Started
 
-First, install dependencies
+First, install the project dependencies.
 
 ```bash
 yarn install
 ```
 
-Then, run dev server
+Then, **only for the first time**, install the Husky pre-commit hook.
+
+```bash
+yarn prepare
+```
+
+Then, run the development server to start local development.
 
 ```bash
 yarn dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) with your browser to test the application locally.
 
 ## Tech Stack
 
@@ -23,7 +29,6 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 - Chakra UI - CSS Framework
 - React Icons - Icons
 - Zod - Validations
-- Mongoose - MongoDB ODM
 - Next API Routes - Backend API
 - Prettier - Formatting
 - Usehooks-ts - React Hooks
