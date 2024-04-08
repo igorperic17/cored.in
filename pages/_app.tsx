@@ -5,14 +5,17 @@ import { ChakraProvider } from "@chakra-ui/react";
 import theme from "@/theme";
 
 import Layout from "@/layout";
+import { FlagProvider } from "@unleash/nextjs";
 
 const App = ({ Component, pageProps }: AppProps) => {
   return (
-    <ChakraProvider theme={theme}>
-      <Layout>
-        <Component {...pageProps} />
-      </Layout>
-    </ChakraProvider>
+    <FlagProvider>
+      <ChakraProvider theme={theme}>
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
+      </ChakraProvider>
+    </FlagProvider>
   );
 };
 
