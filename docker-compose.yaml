@@ -1,0 +1,56 @@
+services:
+  unleash-proxy: 
+    image: unleashorg/unleash-proxy
+    ports:
+      - '3001:3000'
+    environment:
+      UNLEASH_PROXY_SECRETS: coredin
+      UNLEASH_URL: https://gitlab.com/api/v4/feature_flags/unleash/56592491/
+      UNLEASH_INSTANCE_ID: glffct-zx8L6J9qMf_6vtsziR4y
+      UNLEASH_APP_NAME: development
+      UNLEASH_API_TOKEN: tokenNotUsedButRequired
+  postgres:
+    image: postgres:16
+    container_name: coredin_db
+    ports:
+      - '5432:5432'
+    environment:
+      POSTGRES_DB: cryptonize_dev_db
+      POSTGRES_USER: dev_user
+      POSTGRES_HOST_AUTH_METHOD: trust
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  waltid-db:
+    image: postgres:16
+    container_name: coredin_waltid_db
+    # ports:
+    #   - '5433:5432'
+    environment:
+      POSTGRES_DB: coredin_dev_ssi_db
+      POSTGRES_USER: waltid_user
+      POSTGRES_PASSWORD: waltid_pass
+    volumes:
+      - postgres_ssi_data:/var/lib/postgresql/data
+    networks:
+      main:
+        aliases:
+          - db
+  wallet-api:
+    image: waltid/wallet-api:latest
+    ports:
+      - 7001:7001
+    volumes:
+      - ./wallet-api/config:/waltid-wallet-api/config
+      - ./wallet-api/walt.yaml:/waltid-wallet-api/walt.yaml
+      - ./wallet-api/data:/waltid-wallet-api/data
+    networks:
+      - main
+    depends_on:
+      - waltid-db
+
+volumes:
+  postgres_data:
+  postgres_ssi_data:
+
+networks:
+  main:
