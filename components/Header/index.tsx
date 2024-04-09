@@ -1,9 +1,9 @@
-import { FEATURE_FLAG } from "@/constants/feature_flags";
+import { FeatureFlag } from "@/constants/featureFlag";
 import { Box } from "@chakra-ui/react";
 import { useFlag } from "@unleash/nextjs";
 
 const Header = () => {
-  const isEnabled = useFlag(FEATURE_FLAG.TEST_FEATURE);
+  const isEnabled = useFlag(FeatureFlag.TEST_FEATURE);
 
   return (
     <Box p={4}>

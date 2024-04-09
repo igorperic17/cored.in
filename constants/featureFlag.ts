@@ -1,3 +1,3 @@
-export enum FEATURE_FLAG {
+export enum FeatureFlag {
   TEST_FEATURE = "test_feature",
 }
