@@ -26,9 +26,11 @@ const styles = {
 const colors = {
   colors: {
     brand: {
-      600: ""
+      600: "#26D695"
     },
-    text: {},
+    text: {
+      white: "#FFFFFF"
+    },
     background: {}
   }
 };

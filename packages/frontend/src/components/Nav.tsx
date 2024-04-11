@@ -2,7 +2,6 @@ import { FC, useState } from "react";
 import {
   Text,
   Flex,
-  Spacer,
   IconButton,
   useColorMode,
   useColorModeValue,
@@ -10,14 +9,13 @@ import {
   Img,
   HStack,
   Link,
-  Tooltip,
-  Container
+  Box,
+  Button,
+  Heading,
+  Circle
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { FaAlignJustify } from "react-icons/fa";
-import { Icon } from "@chakra-ui/react";
-import Logo from "@/assets/Logo.png";
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
+import { Login } from "./Login";
 
 export interface NavProps {
   onOpen: () => void;
@@ -54,76 +52,44 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
   window.addEventListener("scroll", changeScroll);
 
   return (
-    <Container
-      centerContent
-      position="sticky"
-      top="0"
-      zIndex="sticky"
-      // boxShadow={scroll ? "base" : "none"}
-      // opacity="95%"
-      bg="linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%)"
-      maxW="100vw"
-      id="nav"
+    <Box
+      as="header"
+      // border="1px solid red"
+      w="100vw"
+      maxW="1680px"
+      h="20%"
     >
       <Flex
-        alignItems="center"
-        p={isLargerThanLG ? "2em" : "1em"}
-        w="full"
-        // bg={navBg}
-        maxW="1200px"
-        bg="linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(255,255,255,1) 60%, rgba(255,255,255,0) 100%)"
+        p="1em 2em"
+        direction="row"
+        justify="space-between"
+        align="center"
+
+        // position="sticky"
+        // zIndex="sticky"
       >
-        <Link
-          as={ReactRouterLink}
-          to="/"
-          _hover={{
-            textDecoration: "none"
-          }}
+        <Heading as="h1" fontSize="2rem">
+          Cored
+          <Text display="inline" color="colors.brand.600">
+            In
+          </Text>
+        </Heading>
+        <Flex
+          direction="row"
+          justify="space-between"
+          align="center"
+          w="20%"
+          fontSize="1rem"
+          textTransform="uppercase"
+          // border="1px solid red"
         >
-          <HStack>
-            <Img src={Logo} h="48px" alt="Coredin.world" />
-            {/* <Text
-              fontSize="xl"
-              fontWeight="bold"
-              color="headingBlack"
-              translate="no"
-            >
-              Coredin.world
-            </Text> */}
-          </HStack>
-        </Link>
-
-        <Spacer />
-
-        {isLargerThanLG && (
-          <>
-            <HStack gap="24px">
-              <Link
-                textDecoration={location.pathname === "/" ? "underline" : ""} // currentSection === "home" ? "underline" : ""
-                as={ReactRouterLink}
-                to="/"
-                textColor="headingBlack"
-                fontWeight="600"
-                textUnderlineOffset="0.5em"
-              >
-                Home
-              </Link>
-            </HStack>
-            <Spacer />
-            <Flex alignItems="center"></Flex>
-          </>
-        )}
-
-        {!isLargerThanLG && (
-          <IconButton
-            aria-label="Toggle Menu"
-            onClick={onOpen}
-            backgroundColor="bglight"
-          >
-            <Icon as={FaAlignJustify} />
-          </IconButton>
-        )}
+          <Link>Home</Link>
+          <Link>Link1</Link>
+          <Link>Link2</Link>
+          <Link>Link3</Link>
+        </Flex>
+        <Login />
       </Flex>
-    </Container>
+    </Box>
   );
 };
