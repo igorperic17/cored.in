@@ -54,24 +54,23 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
   return (
     <Box
       as="header"
-      // border="1px solid red"
-      w="100vw"
+      border="1px solid lightgrey"
+      w="100%"
       maxW="1680px"
-      h="20%"
+      margin="0 auto"
+      p="1em 2em"
     >
       <Flex
-        p="1em 2em"
         direction="row"
         justify="space-between"
         align="center"
-
         // position="sticky"
         // zIndex="sticky"
       >
         <Heading as="h1" fontSize="2rem">
-          Cored
+          Cored.
           <Text display="inline" color="colors.brand.600">
-            In
+            in
           </Text>
         </Heading>
         <Flex
