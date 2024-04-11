@@ -9,7 +9,7 @@ const fonts = {
 const styles = {
   global: {
     "html, body": {
-      // color: "gray.600",
+      color: "colors.text.900",
       // lineHeight: "tall"
       boxSizing: "border-box"
     },
@@ -29,10 +29,11 @@ const colors = {
       600: "#26D695"
     },
     text: {
-      100: "#FFFFFF"
+      100: "#FFFFFF",
+      900: "#242424"
     },
     background: {
-      900: "#000000"
+      900: "#242424"
     }
   }
 };
@@ -45,6 +46,11 @@ const components = {
     // },
     // 2. We can add a new button size or extend existing
     sizes: {
+      xs: {
+        fontSize: "0.825rem",
+        px: "1.5em",
+        py: "0.5em"
+      },
       md: {
         fontSize: "1.125rem",
         px: "1.5em",
