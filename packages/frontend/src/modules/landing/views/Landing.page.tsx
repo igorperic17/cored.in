@@ -1,5 +1,5 @@
 import { Box, VStack } from "@chakra-ui/react";
-import { Hero } from "../components";
+import { Benefits, Hero } from "../components";
 
 const LandingPage = () => {
   return (
@@ -7,6 +7,7 @@ const LandingPage = () => {
       {/* <VStack gap="11em" mb="16" px="2em"> */}
       <VStack px="2em">
         <Hero />
+        <Benefits />
       </VStack>
     </Box>
   );
