@@ -27,6 +27,9 @@ export default defineConfig(({ command, mode }) => {
     build: {
       commonjsOptions: {
         include: [/shared/, /node_modules/]
+      },
+      rollupOptions: {
+        external: ["@fontsource/space-grotesk"]
       }
     },
     server: {
