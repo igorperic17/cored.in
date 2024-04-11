@@ -1,9 +1,9 @@
-import { background, extendTheme, textDecoration } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 
 const fonts = {
-  heading: `'Space Grotesk', sans-serif`
-  // body: "cursive"
+  heading: `'Space Grotesk', sans-serif`,
+  body: `"Noto Sans", sans-serif`
 };
 
 const styles = {
@@ -44,7 +44,6 @@ const components = {
     // baseStyle: {
     //   fontWeight: 'bold', // Normally, it is "semibold"
     // },
-    // 2. We can add a new button size or extend existing
     sizes: {
       xs: {
         fontSize: "0.825rem",
