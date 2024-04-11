@@ -54,7 +54,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
   return (
     <Box
       as="header"
-      border="1px solid lightgrey"
+      // border="1px solid lightgrey"
       w="100%"
       maxW="1680px"
       margin="0 auto"
@@ -73,7 +73,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
             in
           </Text>
         </Heading>
-        <Flex
+        {/* <Flex
           direction="row"
           justify="space-between"
           align="center"
@@ -86,7 +86,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
           <Link>Link1</Link>
           <Link>Link2</Link>
           <Link>Link3</Link>
-        </Flex>
+        </Flex> */}
         <Login />
       </Flex>
     </Box>
