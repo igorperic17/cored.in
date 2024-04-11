@@ -14,7 +14,7 @@ export const Root = () => {
       </Box>
       <CookiesBar />
       <BurguerMenu isOpen={isOpen} onClose={onClose} />
-      <Footer />
+      {/* <Footer /> */}
     </Flex>
   );
 };
