@@ -24,7 +24,8 @@ This project is built with the following open source libraries, frameworks and l
 | [Vite JS](https://vitejs.dev/) | Next Generation Frontend Tooling |
 | ------ | ------ Backend Framework ------ |
 | [Nest JS](https://nestjs.com/) | A progressive Node.js framework for building efficient, reliable and scalable server-side applications |
-| [Nestia](https://github.com/samchon/nestia) | Using Nestia for simple and efficient data typing and input validation |
+| [TypeORM](https://typeorm.io/) | Typescript-first Object Relational Mapper (ORM) module for NestJS to easily work with PostgreSQL |
+| [Nestia](https://github.com/samchon/nestia) | Simple and efficient data typing and input validation library |
 | ------ | ------ CSS Framework ------ |
 | [Chakra](https://chakra-ui.com/) | A simple, modular and accessible component library that gives you the building blocks you need to build your React applications |
 | ------ | ------ CosmWASM Development Environment ------ |
@@ -45,5 +46,5 @@ yarn docker
 ```
 
 TODO:
-- feature flags
-- integrate contract from hackathon
+- feature flags (by user!)
+- integrate onchain logic (use hackathon code as reference)
