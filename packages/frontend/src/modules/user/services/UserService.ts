@@ -1,4 +1,4 @@
-import { HttpService } from "@/modules/shared/services";
+import { HttpService } from "@/services";
 import { UserProfile } from "@coredin/shared";
 
 export class UserService {

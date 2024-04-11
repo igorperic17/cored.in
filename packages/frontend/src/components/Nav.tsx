@@ -16,7 +16,6 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { FaAlignJustify } from "react-icons/fa";
 import { Icon } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
 import Logo from "@/assets/Logo.png";
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
 
@@ -35,7 +34,6 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
   const navBg = useColorModeValue("white", "coredin.700");
   // const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
   const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
-  const { t } = useTranslation();
   const changeScroll = () => {
     document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
       ? setScroll(true)
@@ -108,7 +106,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
                 fontWeight="600"
                 textUnderlineOffset="0.5em"
               >
-                {t("home")}
+                Home
               </Link>
             </HStack>
             <Spacer />

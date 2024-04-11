@@ -8,13 +8,11 @@ import {
   HStack,
   useMediaQuery
 } from "@chakra-ui/react";
-import { useTranslation } from "react-i18next";
-import { FaEnvelope, FaHeart, FaLinkedin } from "react-icons/fa6";
+import { FaEnvelope, FaHeart } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 export const Footer = () => {
   const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
-  const { t } = useTranslation();
 
   return (
     <Container
@@ -91,13 +89,6 @@ export const Footer = () => {
             >
               <FaEnvelope size="26px" color="headingBlack" />
             </Link>
-            <Link
-              as={ReactRouterLink}
-              to="https://www.linkedin.com/in/yourcompany/"
-              isExternal
-            >
-              <FaLinkedin size="26px" color="headingBlack" />
-            </Link>
           </HStack>
           <Text color="headingGrey" translate="no">
             info@yourcompany.world
@@ -108,7 +99,7 @@ export const Footer = () => {
             color="headingGrey"
             isExternal
           >
-            {t("privacyPolicy")}
+            Privacy Policy
           </Link>
         </VStack>
       </Flex>

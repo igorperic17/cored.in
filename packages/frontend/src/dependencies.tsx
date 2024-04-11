@@ -1,8 +1,4 @@
-import {
-  AuthService,
-  HttpService,
-  StorageService
-} from "./modules/shared/services";
+import { AuthService, HttpService, StorageService } from "@/services";
 import { UserService } from "./modules/user/services";
 
 export const persistentStorageService = new StorageService();

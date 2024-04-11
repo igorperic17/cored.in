@@ -8,7 +8,6 @@ import {
 } from "@chakra-ui/react";
 import { useState } from "react";
 import { useCookies } from "react-cookie";
-import { useTranslation } from "react-i18next";
 
 export const COOKIES_ACCEPTANCE_COOKIE_NAME = "CookiesConsent";
 
@@ -18,7 +17,6 @@ export const CookiesBar = () => {
   ]);
   const [rejected, setRejected] = useState(false);
   const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
-  const { t } = useTranslation();
 
   return (
     <>
@@ -56,13 +54,13 @@ export const CookiesBar = () => {
                   setRejected(true);
                 }}
               >
-                {t("reject")}
+                Reject
               </Button>
               <Button
                 variant="rounded"
                 onClick={() => setCookie(COOKIES_ACCEPTANCE_COOKIE_NAME, true)}
               >
-                {t("accept")}
+                Accept
               </Button>
             </HStack>
           </Flex>

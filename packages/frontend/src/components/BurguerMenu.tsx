@@ -19,7 +19,6 @@ import {
   Img
 } from "@chakra-ui/react";
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
-import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink } from "react-router-dom";
 import Logo from "@/assets/Logo.png";
 
@@ -30,7 +29,6 @@ export interface BurguerMenuProps {
 
 export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
   const { colorMode, toggleColorMode } = useColorMode();
-  const { t } = useTranslation();
   const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
 
   const ComingSoonBadge = (
@@ -42,7 +40,7 @@ export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
       px={2}
       borderRadius="md"
     >
-      {t("comingSoon")}
+      Coming Soon
     </Text>
   );
 
@@ -71,7 +69,7 @@ export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
                     onClick={onClose}
                     fontWeight="600"
                   >
-                    {t("home")}
+                    Home
                   </Link>
                 </Flex>
               </DrawerBody>

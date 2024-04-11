@@ -40,3 +40,9 @@ yarn workspace @coredin/frontend add (package-name)
 ```
 yarn docker
 ```
+
+TODO:
+- auth with signing message
+- make docker compose run
+- feature flags
+- integrate contract from hackathon
