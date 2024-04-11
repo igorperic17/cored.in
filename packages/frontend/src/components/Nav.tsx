@@ -2,17 +2,11 @@ import { FC, useState } from "react";
 import {
   Text,
   Flex,
-  IconButton,
   useColorMode,
   useColorModeValue,
   useMediaQuery,
-  Img,
-  HStack,
-  Link,
   Box,
-  Button,
-  Heading,
-  Circle
+  Heading
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
 import { Login } from "./Login";
@@ -67,26 +61,12 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
         // position="sticky"
         // zIndex="sticky"
       >
-        <Heading as="h1" fontSize="2rem">
+        <Heading as="h1" fontSize="2rem" color="colors.text.100">
           Cored.
           <Text display="inline" color="colors.brand.600">
             in
           </Text>
         </Heading>
-        {/* <Flex
-          direction="row"
-          justify="space-between"
-          align="center"
-          w="20%"
-          fontSize="1rem"
-          textTransform="uppercase"
-          // border="1px solid red"
-        >
-          <Link>Home</Link>
-          <Link>Link1</Link>
-          <Link>Link2</Link>
-          <Link>Link3</Link>
-        </Flex> */}
         <Login />
       </Flex>
     </Box>
