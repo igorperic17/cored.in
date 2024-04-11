@@ -1,0 +1,11 @@
+secrets:
+  file_path: secrets-backend-local.json
+  json_env_var: "SECRETS"
+
+db:
+  host: 'localhost'
+  port: 5432
+  user: 'dev_user'
+  database: 'coredin_starter_db'
+  synchronize: true
+  debug: true

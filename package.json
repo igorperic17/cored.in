@@ -1,39 +1,26 @@
 {
-  "name": "nextjs-chakra-fullstack-starter-project",
-  "version": "1.0.0",
+  "name": "coredin",
+  "version": "0.0.1",
+  "description": "coredin test from create-web3 monorepo quickstart with vite and hardhat",
+  "main": "index.js",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "prepare": "husky install"
+    "front-dev": "yarn workspace @coredin/frontend dev",
+    "back-dev": "yarn workspace @coredin/backend start:debug",
+    "dev": "yarn workspaces foreach -A -p -i run dev",
+    "build": "yarn workspace @coredin/shared build && yarn workspaces foreach -A -p -i --exclude @coredin/shared run build",
+    "serve": "yarn workspace @coredin/frontend serve",
+    "chain": "yarn workspace @coredin/onchain chain",
+    "compile": "yarn workspace @coredin/onchain compile",
+    "test": "yarn workspace @coredin/onchain test",
+    "clean": "yarn workspace @coredin/onchain clean",
+    "deploy": "yarn workspace @coredin/onchain deploy",
+    "docker": "docker build . -f base.Dockerfile -t coredin/base && docker build . -f front.Dockerfile -t coredin/front && docker build . -f back.Dockerfile -t coredin/back"
   },
-  "dependencies": {
-    "@chakra-ui/react": "^2.8.2",
-    "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.5",
-    "@types/node": "^20.12.5",
-    "@types/react": "^18.2.74",
-    "@types/react-dom": "^18.2.24",
-    "@unleash/nextjs": "^1.4.2",
-    "eslint": "^8.0.0",
-    "eslint-config-next": "^14.1.4",
-    "framer-motion": "^11.0.25",
-    "next": "^14.1.4",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-icons": "^5.0.1",
-    "typescript": "^5.4.4",
-    "usehooks-ts": "^3.1.0",
-    "zod": "^3.22.4"
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
   },
-  "devDependencies": {
-    "husky": "^9.0.11",
-    "lint-staged": "^15.2.2",
-    "prettier": "^3.2.5"
-  },
-  "lint-staged": {
-    "*.{ts,tsx,js,css,md}": "prettier --write"
-  }
+  "packageManager": "yarn@4.1.1"
 }
