@@ -21,7 +21,6 @@ import {
 import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { useTranslation } from "react-i18next";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { SelectLang } from "./SelectLang";
 import Logo from "@/assets/Logo.png";
 
 export interface BurguerMenuProps {
@@ -74,51 +73,9 @@ export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
                   >
                     {t("home")}
                   </Link>
-
-                  <Link
-                    as={ReactRouterLink}
-                    to="/"
-                    onClick={onClose}
-                    fontWeight="600"
-                  >
-                    {t("insure")}
-                  </Link>
-
-                  <HStack alignItems="baseline" cursor="default">
-                    {ComingSoonBadge}
-                    <Text color="textExtraLight">{t("exchange")}</Text>
-                  </HStack>
-
-                  <HStack alignItems="baseline" cursor="default">
-                    {ComingSoonBadge}
-                    <Text color="textExtraLight">{t("rent")}</Text>
-                  </HStack>
-
-                  <HStack alignItems="baseline" cursor="default">
-                    {ComingSoonBadge}
-                    <Text color="textExtraLight">{t("fractionalize")}</Text>
-                  </HStack>
-
-                  {/* <IconButton
-                    aria-label="Toggle Theme"
-                    mr="10"
-                    w={6}
-                    h={6}
-                    p={5}
-                    onClick={toggleColorMode}
-                    backgroundColor="bglight"
-                    >
-                    {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-                  </IconButton> */}
-
-                  {/* <HStack> */}
-                  {/* <Spacer /> */}
-                  {/* </HStack> */}
                 </Flex>
               </DrawerBody>
-              <DrawerFooter>
-                <SelectLang />
-              </DrawerFooter>
+              <DrawerFooter></DrawerFooter>
             </Flex>
           </DrawerContent>
         </Drawer>

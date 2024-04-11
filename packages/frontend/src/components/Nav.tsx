@@ -18,7 +18,6 @@ import { FaAlignJustify } from "react-icons/fa";
 import { Icon } from "@chakra-ui/react";
 import { useTranslation } from "react-i18next";
 import Logo from "@/assets/Logo.png";
-import { SelectLang } from "./SelectLang";
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
 
 export interface NavProps {
@@ -111,89 +110,9 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
               >
                 {t("home")}
               </Link>
-
-              <Link
-                textDecoration={
-                  location.pathname === "/insure" ? "underline" : ""
-                } // currentSection === "insure" ? "underline" : ""
-                as={ReactRouterLink}
-                textColor="headingBlack"
-                to="/"
-                fontWeight="600"
-                textUnderlineOffset="0.5em"
-              >
-                {t("insure")}
-              </Link>
-
-              <Tooltip
-                label={t("comingSoon")}
-                aria-label="Coming soon"
-                placement="bottom"
-                hasArrow
-                arrowSize={15}
-                backgroundColor="bglight"
-                color="textLight"
-                boxShadow="none"
-                py={1}
-                px={2}
-                mt={2}
-                borderRadius="md"
-              >
-                <Text color="textExtraLight" cursor="default">
-                  {t("exchange")}
-                </Text>
-              </Tooltip>
-
-              <Tooltip
-                label={t("comingSoon")}
-                aria-label="Coming soon"
-                placement="bottom"
-                hasArrow
-                arrowSize={15}
-                backgroundColor="bglight"
-                color="headingGrey"
-                boxShadow="none"
-                py={1}
-                px={2}
-                mt={2}
-                borderRadius="md"
-              >
-                <Text color="textExtraLight" cursor="default">
-                  {t("rent")}
-                </Text>
-              </Tooltip>
-
-              <Tooltip
-                label={t("comingSoon")}
-                aria-label="Coming soon"
-                placement="bottom"
-                hasArrow
-                arrowSize={15}
-                backgroundColor="bglight"
-                color="headingGrey"
-                boxShadow="none"
-                py={1}
-                px={2}
-                mt={2}
-                borderRadius="md"
-              >
-                <Text color="textExtraLight" cursor="default">
-                  {t("fractionalize")}
-                </Text>
-              </Tooltip>
             </HStack>
             <Spacer />
-            <Flex alignItems="center">
-              <SelectLang />
-              {/* <IconButton
-                aria-label="Toggle Theme"
-                size="sm"
-                onClick={toggleColorMode}
-                backgroundColor="bglight"
-              >
-                {colorMode === "light" ? <MoonIcon /> : <SunIcon />}
-              </IconButton> */}
-            </Flex>
+            <Flex alignItems="center"></Flex>
           </>
         )}
 
