@@ -2,20 +2,26 @@ import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 
 export const Hero = () => {
   return (
-    <Box w="100%" h="100vh">
+    <Box w="100%" mt="6vh" h="min-content">
       <Flex
         w="100%"
-        h="100%"
         direction="column"
         align="start"
         justify="center"
         gap="3em"
       >
-        <Heading as="h2" fontSize="5rem" textAlign="left" maxW="750px">
+        <Heading
+          as="h2"
+          color="colors.text.100"
+          fontSize="5rem"
+          textAlign="left"
+          maxW="750px"
+        >
           This is a big heading in Hero section about the project
         </Heading>
         <Text
           textAlign="right"
+          color="colors.text.100"
           maxW="400px"
           //   border="1px solid red"
           alignSelf="end"
