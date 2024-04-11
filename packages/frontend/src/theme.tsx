@@ -1,4 +1,4 @@
-import { background, extendTheme } from "@chakra-ui/react";
+import { background, extendTheme, textDecoration } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 
 const fonts = {
@@ -18,7 +18,7 @@ const styles = {
       scrollBehavior: "smooth"
     },
     a: {
-      color: "teal.500"
+      textUnderlineOffset: "0.5em"
     }
   }
 };
@@ -29,10 +29,84 @@ const colors = {
       600: "#26D695"
     },
     text: {
-      white: "#FFFFFF"
+      100: "#FFFFFF"
     },
-    background: {}
+    background: {
+      900: "#000000"
+    }
   }
 };
 
-export const theme = extendTheme({ fonts, styles, colors });
+const components = {
+  Button: {
+    // 1. We can update the base styles
+    // baseStyle: {
+    //   fontWeight: 'bold', // Normally, it is "semibold"
+    // },
+    // 2. We can add a new button size or extend existing
+    sizes: {
+      md: {
+        fontSize: "1.125rem",
+        px: "1.5em",
+        py: "0.5em"
+      }
+    },
+    // 3. We can add a new visual variant
+    variants: {
+      primary: () => ({
+        bg: "colors.brand.600",
+        color: "colors.text.100",
+        borderRadius: "3xl",
+        fontWeight: 600,
+        _loading: {
+          _hover: {
+            // grey?
+            bg: "grey"
+          }
+        },
+        _hover: {
+          bg: "colors.background.900",
+          color: "colors.text.100",
+          _disabled: {
+            // grey??
+            bg: "grey"
+          }
+        }
+      })
+      // secondary: () => ({
+      //   border: "2px solid",
+      //   borderColor:
+      //     props.colorMode === "dark" ? "headingGrey" : "headingBlack",
+      //   color: props.colorMode === "dark" ? "white" : "headingBlack",
+      //   borderRadius: "3xl",
+      //   fontWeight: 600,
+      //   _hover: {
+      //     bg: "headingBlack",
+      //     color: "white"
+      //   }
+      // }
+      // })
+      // 'with-shadow': {
+      //   bg: 'teal.400',
+      //   boxShadow: '0 0 2px 2px #efdfde',
+      // },
+      // 4. We can override existing variants
+      // solid: (props: StyleFunctionProps) => ({
+      //   bg: props.colorMode === 'dark' ? 'blue.300' : 'teal.500',
+      // }),
+      // 5. We can add responsive variants
+      // sm: {
+      //   bg: 'teal.500',
+      //   fontSize: 'md',
+      // },
+    }
+    // 6. We can overwrite defaultProps
+    // defaultProps: {
+    //   size: 'lg', // default is md
+    //   variant: 'sm', // default is solid
+    //   colorScheme: 'blue', // default is gray
+    // },
+  }
+};
+
+export const theme = extendTheme({ fonts, styles, colors, components });
