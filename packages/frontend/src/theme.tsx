@@ -1,4 +1,4 @@
-import { extendTheme } from "@chakra-ui/react";
+import { background, extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 
 const fonts = {
@@ -10,10 +10,11 @@ const styles = {
   global: {
     "html, body": {
       color: "colors.text.900",
-      // lineHeight: "tall"
       boxSizing: "border-box"
     },
-    body: {},
+    body: {
+      background: "colors.background.900"
+    },
     html: {
       scrollBehavior: "smooth"
     },
@@ -29,11 +30,15 @@ const colors = {
       600: "#26D695"
     },
     text: {
-      100: "#FFFFFF",
-      900: "#242424"
+      100: "#ebebeb",
+      300: "#b0b0b0",
+      600: "#737373",
+      800: "#242424", // not in use
+      900: "#121111"
     },
     background: {
-      900: "#242424"
+      100: "#ebebeb",
+      900: "#121111"
     }
   }
 };
@@ -60,21 +65,19 @@ const components = {
     variants: {
       primary: () => ({
         bg: "colors.brand.600",
-        color: "colors.text.100",
+        color: "colors.text.900",
         borderRadius: "3xl",
         fontWeight: 600,
         _loading: {
           _hover: {
-            // grey?
-            bg: "grey"
+            bg: "colors.background.100"
           }
         },
         _hover: {
-          bg: "colors.background.900",
-          color: "colors.text.100",
+          bg: "colors.background.100",
+          color: "colors.text.900",
           _disabled: {
-            // grey??
-            bg: "grey"
+            bg: "colors.background.100"
           }
         }
       })
