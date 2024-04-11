@@ -45,7 +45,7 @@ export const CookiesBar = () => {
             px="6"
             py="4"
           >
-            <Text>{t("cookiesMsg")}</Text>
+            <Text>Some cookies message...</Text>
             <HStack>
               <Button
                 variant="secondary"
