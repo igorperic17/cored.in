@@ -2,6 +2,8 @@ import { Injectable, NestMiddleware } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { Request, Response, NextFunction } from "express";
 import { WALLET_HEADER, MaxLoginDurationMs, LoginMessage } from "../constants";
+import * as Cosmos from "@keplr-wallet/cosmos";
+import { TESTNET_CHAIN_BECH32_PREFIX } from "@coredin/shared";
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
@@ -45,23 +47,22 @@ export class AuthenticationMiddleware implements NestMiddleware {
     }
 
     const message = LoginMessage + decodedJwt.expiration;
-    const signature = decodedJwt.signature;
+    const { signature, pubKey, walletAddress } = decodedJwt;
 
-    return;
-
-    // TODO - handle signature verification from Coreum wallet!
-
-    /*
-    COSMOS generic logic from https://www.reddit.com/r/cosmosnetwork/comments/10enacr/verifying_signed_message_in_backend_nodejs/
-    const {Buffer} = require('buffer');
-    const Cosmos = require('@keplr-wallet/cosmos');
-    const msg = Buffer.from("my message", 'hex').toString();
-    const prefix = "cosmos"; // change prefix for other chains...
-    const signatureBuffer = Buffer.from(signature, 'base64');
+    const signatureBuffer = Buffer.from(signature, "base64");
     const uint8Signature = new Uint8Array(signatureBuffer); // Convert the buffer to an Uint8Array
-    const pubKeyValueBuffer = Buffer.from(key.value, 'base64'); // Decode the base64 encoded value
+    const pubKeyValueBuffer = Buffer.from(pubKey, "base64"); // Decode the base64 encoded value
     const pubKeyUint8Array = new Uint8Array(pubKeyValueBuffer); // Convert the buffer to an Uint8Array
-    const isRecovered = Cosmos.verifyADR36Amino(prefix, address, msg, pubKeyUint8Array, uint8Signature);
-    */
+    const isRecovered = Cosmos.verifyADR36Amino(
+      TESTNET_CHAIN_BECH32_PREFIX,
+      walletAddress,
+      message,
+      pubKeyUint8Array,
+      uint8Signature
+    );
+
+    if (isRecovered) {
+      req.headers[WALLET_HEADER] = walletAddress;
+    }
   }
 }

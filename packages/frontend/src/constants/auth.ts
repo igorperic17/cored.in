@@ -1,3 +1,4 @@
+export const ConnectedWalletKey = "connectedWallet";
 export const LoginMessage = "Welcome to Coredin! Login expiration:"; // TODO - move to shared package between back / front
 export const MaxLoginDurationMs = 60 * 60 * 1000; // 1h // TODO - move to shared package between back / front
 

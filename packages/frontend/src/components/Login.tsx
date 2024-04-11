@@ -1,8 +1,9 @@
-import { useClientContext } from "@/hooks/useClientContext";
+import { useWrappedClientContext } from "@/contexts/client";
 import { Box, Button, HStack, Text } from "@chakra-ui/react";
 
 export const Login = () => {
-  const { connectWallet, disconnect, walletAddress } = useClientContext();
+  const { connectWallet, disconnect, walletAddress } =
+    useWrappedClientContext();
   const isConnected = walletAddress.length;
 
   const shortWalletAddress =

@@ -1,3 +1,4 @@
+name: coredin
 services:
   unleash-proxy: 
     image: unleashorg/unleash-proxy
@@ -15,7 +16,7 @@ services:
     ports:
       - '5432:5432'
     environment:
-      POSTGRES_DB: cryptonize_dev_db
+      POSTGRES_DB: coredin_dev_db
       POSTGRES_USER: dev_user
       POSTGRES_HOST_AUTH_METHOD: trust
     volumes:

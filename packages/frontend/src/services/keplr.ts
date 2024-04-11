@@ -1,14 +1,14 @@
+import { convertFromMicroDenom } from "@/utils/conversion";
 import {
-  TESTNET_CHAIN_BECH32_PREFIX,
-  TESTNET_CHAIN_COIN_TYPE,
+  TESTNET_STAKING_DENOM,
+  TESTNET_GAS_PRICE,
   TESTNET_CHAIN_ID,
   TESTNET_CHAIN_NAME,
-  TESTNET_CHAIN_REST_ENDPOINT,
   TESTNET_CHAIN_RPC_ENDPOINT,
-  TESTNET_GAS_PRICE,
-  TESTNET_STAKING_DENOM
-} from "@/constants";
-import { convertFromMicroDenom } from "@/utils/conversion";
+  TESTNET_CHAIN_REST_ENDPOINT,
+  TESTNET_CHAIN_COIN_TYPE,
+  TESTNET_CHAIN_BECH32_PREFIX
+} from "@coredin/shared";
 
 // extend window with CosmJS and Keplr properties
 interface CosmosKeplrWindow extends Window {

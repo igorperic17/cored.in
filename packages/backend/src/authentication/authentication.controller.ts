@@ -1,14 +1,11 @@
-import {
-  Controller,
-  Body,
-  Post,
-  HttpException,
-  HttpStatus
-} from "@nestjs/common";
+import { Controller, Post, HttpException, HttpStatus } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { MaxLoginDurationMs } from "./constants";
+import { TypedBody } from "@nestia/core";
 
 type LoginRequest = {
+  walletAddress: string;
+  pubKey: string;
   signature: string;
   expiration: number;
 };
@@ -18,7 +15,7 @@ export class AuthenticationController {
   constructor(private readonly jwtService: JwtService) {}
 
   @Post("/login")
-  async login(@Body() loginRequest: LoginRequest): Promise<string> {
+  async login(@TypedBody() loginRequest: LoginRequest): Promise<string> {
     console.log("Login requested", loginRequest);
     if (!loginRequest.signature || loginRequest.signature.length < 10) {
       throw new HttpException("Wrong signature length", HttpStatus.FORBIDDEN);
@@ -30,8 +27,7 @@ export class AuthenticationController {
       throw new HttpException("Invalid Expiration", HttpStatus.FORBIDDEN);
     }
     const jwt = this.jwtService.sign({
-      signature: loginRequest.signature,
-      expiration: loginRequest.expiration
+      ...loginRequest
     });
 
     return Promise.resolve(jwt);

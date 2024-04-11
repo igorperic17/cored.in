@@ -13,12 +13,13 @@ import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { QueryClient as CoreumQueryClient } from "../coreum/query";
 // import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 // import { coreumRegistryTypes } from "../coreum/tx";
+import { persistentStorageService } from "@/dependencies";
+import { ConnectedWalletKey } from "@/constants";
 import {
-  TESTNET_CONTRACT_ADDRESS,
-  TESTNET_CHAIN_ID,
   TESTNET_CHAIN_RPC_ENDPOINT,
+  TESTNET_CHAIN_ID,
   TESTNET_GAS_PRICE
-} from "@/constants/coreum";
+} from "@coredin/shared";
 // import { MyProjectClient } from "contracts/MyProject.client";
 // import { BackendService } from "services/backendService";
 
@@ -76,6 +77,7 @@ export const useClientContext = (): IClientContext => {
   //     }
   //   }, [auth, walletAddress]);
 
+  // TODO - handle test and main networks
   const connectWallet = async () => {
     setLoading(true);
 
@@ -129,6 +131,7 @@ export const useClientContext = (): IClientContext => {
       //     new MyProjectClient(client, address, TESTNET_CONTRACT_ADDRESS)
       //   ); // TODO store address somewhere else
       setWalletAddress(address);
+      persistentStorageService.save(ConnectedWalletKey, address);
       setRequestedProfileWalletAddress(address);
       setLoading(false);
     } catch (error: any) {
@@ -145,6 +148,7 @@ export const useClientContext = (): IClientContext => {
       tmClient.disconnect();
     }
     setWalletAddress("");
+    persistentStorageService.remove(ConnectedWalletKey);
     setSigningClient(null);
     setLoading(false);
   };
@@ -154,7 +158,7 @@ export const useClientContext = (): IClientContext => {
     auth,
     signingClient,
     // contractClient,
-    coreumQueryClient: coreumQueryClient,
+    coreumQueryClient,
     loading,
     error,
     connectWallet,

@@ -3,9 +3,16 @@ import axios from "axios";
 export class AuthService {
   constructor(private readonly baseApiUrl: string) {}
 
-  async authenticate(signature: string, expiration: number): Promise<string> {
+  async authenticate(
+    walletAddress: string,
+    pubKey: string,
+    signature: string,
+    expiration: number
+  ): Promise<string> {
     return axios
       .post(this.baseApiUrl + "authentication/login/", {
+        walletAddress,
+        pubKey,
         signature,
         expiration
       })

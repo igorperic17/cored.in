@@ -15,6 +15,7 @@
     "test": "yarn workspace @coredin/onchain test",
     "clean": "yarn workspace @coredin/onchain clean",
     "deploy": "yarn workspace @coredin/onchain deploy",
+    "prepare": "yarn workspace @coredin/backend prepare",
     "docker": "docker build . -f base.Dockerfile -t coredin/base && docker build . -f front.Dockerfile -t coredin/front && docker build . -f back.Dockerfile -t coredin/back"
   },
   "workspaces": {

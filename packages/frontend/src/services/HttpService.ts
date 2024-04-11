@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { persistentStorageService } from "@/dependencies";
-import { getAuthKey, makeUnauthorizedAPIRequestEvent } from "@/constants";
+import {
+  ConnectedWalletKey,
+  getAuthKey,
+  makeUnauthorizedAPIRequestEvent
+} from "@/constants";
 import axios, { AxiosRequestConfig } from "axios";
-
-type WagmiStore = { state?: { data?: { account?: string } } };
 
 export class HttpService {
   constructor(private readonly baseApiUrl: string) {}
@@ -77,9 +79,7 @@ export class HttpService {
   }
 
   private getBearerToken() {
-    const wagmiStore =
-      persistentStorageService.getObject<WagmiStore>("wagmi.store");
-    const wallet = wagmiStore?.state?.data?.account;
+    const wallet = persistentStorageService.getString(ConnectedWalletKey);
 
     return wallet && persistentStorageService.getString(getAuthKey(wallet));
   }

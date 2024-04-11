@@ -6,6 +6,6 @@ db:
   host: 'localhost'
   port: 5432
   user: 'dev_user'
-  database: 'coredin_starter_db'
+  database: 'coredin_dev_db'
   synchronize: true
   debug: true

@@ -1,4 +1,5 @@
 import { Login } from "@/components";
+import { AuthTest } from "../components";
 
 const TestAppPage = () => {
   return (
@@ -13,6 +14,7 @@ const TestAppPage = () => {
       }}
     >
       <Login />
+      <AuthTest />
     </main>
   );
 };

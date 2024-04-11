@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { useCallback, useEffect, useState } from "react";
 import { authService, persistentStorageService } from "@/dependencies";
 import {
@@ -6,55 +7,72 @@ import {
   getAuthKey,
   EventTypes
 } from "../constants";
+import { useWrappedClientContext } from "@/contexts/client";
+import { TESTNET_CHAIN_ID } from "@coredin/shared";
+
+// extend window with CosmJS and Keplr properties
+interface CosmosKeplrWindow extends Window {
+  keplr: any;
+}
+
+declare let window: CosmosKeplrWindow;
 
 export const useAuth = () => {
+  const { walletAddress } = useWrappedClientContext();
   const [needsAuth, setNeedsAuth] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
-  // TODO - adapt to cosmos wallet!
+  const authenticate = useCallback(async () => {
+    if (isAuthenticating) {
+      return;
+    }
 
-  // const authenticate = useCallback(async () => {
-  //   if (isAuthenticating) {
-  //     return;
-  //   }
+    if (walletAddress.length && window.keplr) {
+      setIsAuthenticating(true);
 
-  //   if (isConnected && address) {
-  //     setIsAuthenticating(true);
+      try {
+        const expiration = Date.now() + MaxLoginDurationMs;
+        const message = LoginMessage + expiration;
+        const signedMessage = await window.keplr.signArbitrary(
+          TESTNET_CHAIN_ID,
+          walletAddress,
+          message
+        );
+        const token = await authService.authenticate(
+          walletAddress,
+          signedMessage.pub_key.value,
+          signedMessage.signature,
+          expiration
+        );
+        const authKey = getAuthKey(walletAddress);
+        persistentStorageService.save(authKey, token);
 
-  //     try {
-  //       const expiration = Date.now() + MaxLoginDurationMs;
-  //       const message = LoginMessage + expiration;
-  //       const signedMessage = await signMessageAsync({ message });
-  //       const token = await authService.authenticate(signedMessage, expiration);
-  //       const authKey = getAuthKey(address);
-  //       persistentStorageService.save(authKey, token);
+        setNeedsAuth(false);
+      } catch (e) {
+        console.error(e);
+      }
+    }
 
-  //       setNeedsAuth(false);
-  //     } catch (e) {
-  //       console.error(e);
-  //     }
-  //   }
+    setIsAuthenticating(false);
+  }, [walletAddress, isAuthenticating]);
 
-  //   setIsAuthenticating(false);
-  // }, [address, isAuthenticating, signMessageAsync]);
+  useEffect(() => {
+    const handleUnauthorizedRequest = () => {
+      setNeedsAuth(true);
+      authenticate();
+    };
+    document.addEventListener(
+      EventTypes.UNAUTHORIZED_API_REQUEST,
+      handleUnauthorizedRequest
+    );
 
-  // useEffect(() => {
-  //   const handleUnauthorizedRequest = (e: Event) => {
-  //     setNeedsAuth(true);
-  //     // authenticate();
-  //   };
-  //   document.addEventListener(
-  //     EventTypes.UNAUTHORIZED_API_REQUEST,
-  //     handleUnauthorizedRequest
-  //   );
-
-  //   return () => {
-  //     document.removeEventListener(
-  //       EventTypes.UNAUTHORIZED_API_REQUEST,
-  //       handleUnauthorizedRequest
-  //     );
-  //   };
-  // }, [authenticate]);
+    return () => {
+      document.removeEventListener(
+        EventTypes.UNAUTHORIZED_API_REQUEST,
+        handleUnauthorizedRequest
+      );
+    };
+  }, [authenticate]);
 
   return { needsAuth, isAuthenticating, authenticate: () => {} };
 };
