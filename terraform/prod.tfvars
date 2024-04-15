@@ -1,0 +1,10 @@
+app_name            = "coredin"
+is_app_https        = true
+db_name             = "coredinprod"
+db_user             = "coredin_aurora_admin"
+db_engine_version   = "16.1"
+api_domain_name     = "coredin.rubentewierik.dev"
+api_certificate_arn = "arn:aws:acm:us-east-1:138945776678:certificate/ceaf71ea-bb8b-4668-a067-4e048aa4e211"
+wallet_api_image    = "waltid/wallet-api:1.0.2404100818-SNAPSHOT"
+wallet_api_cpu      = 256
+wallet_api_memory   = 512
