@@ -4,9 +4,9 @@ CoredIn is a professional SocialFi app empowered with self-sovereign identity.
 
 ## Quick Start Notes
 
-1.  Run `yarn` to install all the dependencies and `yarn prepare` to setup Typia validation library (only first time)
+1.  Run `yarn && yarn build` to install all the dependencies and `yarn prepare` to setup Typia validation library (only first time)
 2.  Run `yarn back-dev` to start your BackEnd dev environment (make sure to copy packages/backend/secrets-backend-local.json.example as secrets-backend-local.json)
-3.  Run `yarn front-dev` to start your FrontEnd dev environment
+3.  Run `yarn front-dev` to start your FrontEnd dev environment (make sure to copy packages/frontend/.env.example as .env.json)
 OR
 2. Run `yarn dev` to start both back and front dev environments
 
