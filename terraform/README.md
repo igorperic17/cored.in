@@ -21,5 +21,5 @@ terraform destroy -var-file=prod.tfvars
 ### Destroying remaining AWS Secrets Manager secret when cleaning up all infrastructure including secrets required for RDS backup restore
 
 ```
-aws secretsmanager delete-secret --secret-id {APP_NAME}-rds-aurora-cluster-password --force-delete-without-recovery
+aws secretsmanager delete-secret --secret-id {APP_NAME}-rds-password --force-delete-without-recovery
 ```

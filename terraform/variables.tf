@@ -28,6 +28,10 @@ variable "db_user" {
   type = string
 }
 
+variable "wallet_api_db_name" {
+  type = string
+}
+
 variable "db_engine_version" {
   type = string
 }

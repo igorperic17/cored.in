@@ -4,7 +4,7 @@ resource "aws_vpc" "default" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "CoredIn_VPC"
+    Name = "coredin-vpc"
   }
 }
 
@@ -16,6 +16,20 @@ resource "aws_subnet" "public" {
   map_public_ip_on_launch = true
 }
 
+resource "aws_internet_gateway" "gw" {
+  vpc_id = aws_vpc.default.id
+
+  tags = {
+    Name = "${var.app_name}-igw"
+  }
+}
+
+resource "aws_route" "internet_access" {
+  route_table_id         = aws_vpc.default.main_route_table_id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id             = aws_internet_gateway.gw.id
+}
+
 resource "aws_subnet" "private" {
   count             = length(var.db_availability_zones)
   vpc_id            = aws_vpc.default.id
@@ -23,12 +37,32 @@ resource "aws_subnet" "private" {
   availability_zone = var.db_availability_zones[count.index]
 }
 
-resource "aws_db_subnet_group" "aurora_subnet_group" {
-  name       = "${var.app_name}-rds-arurora-cluster-subnet-group"
-  subnet_ids = aws_subnet.private[*].id
+resource "aws_security_group" "wallet_api_data_efs_mount_target_sg" {
+  name        = "wallet-api-data-efs-mount-target-sg"
+  description = "Security group for EFS mount target for Wallet API data"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    from_port   = 2049
+    to_port     = 2049
+    protocol    = "tcp"
+    cidr_blocks = aws_subnet.private.*.cidr_block
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
-resource "aws_security_group" "default" {
+resource "aws_db_subnet_group" "aurora_subnet_group" {
+  name       = "${var.app_name}-rds-aurora-cluster-subnet-group"
+  subnet_ids = aws_subnet.public[*].id
+}
+
+resource "aws_security_group" "aurora_cluster" {
   name        = "${var.app_name}-rds-aurora-cluster-sg"
   description = "Allow inbound traffic to Aurora Cluster"
   vpc_id      = aws_vpc.default.id
@@ -38,6 +72,6 @@ resource "aws_security_group" "default" {
     from_port   = 0
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["10.0.0.0/16"]
+    cidr_blocks = ["0.0.0.0/0"] // TODO: 10.0.0.0/16 and IP address range of CI/CD
   }
 }
