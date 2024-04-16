@@ -60,8 +60,8 @@ export const Footer = () => {
 
         {/* <Text mb="3">
           Provided by{" "}
-          <Link href="https://coredin.world" isExternal color="blue.500">
-            Coredin.world
+          <Link href="https://cryptonize.world" isExternal color="blue.500">
+            Cryptonize.world
           </Link>
         </Text> */}
         <Text

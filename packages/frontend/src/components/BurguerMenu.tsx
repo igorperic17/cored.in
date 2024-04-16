@@ -54,7 +54,7 @@ export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
             <Flex justify="space-between" align="center" my="2em" mx="1em">
               {/* There is a problem in positioning the X button on the left */}
               <DrawerCloseButton position="relative" mt="-6em" />
-              <Img src={Logo} h="36px" alt="Coredin.world" />
+              <Img src={Logo} h="36px" alt="Cored.in" />
             </Flex>
             <Flex direction="column" gap="3em">
               <DrawerBody>
