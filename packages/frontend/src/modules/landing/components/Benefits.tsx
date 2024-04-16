@@ -51,9 +51,11 @@ export const Benefits = () => {
 
   return (
     <Box w="100%" minH="100vh">
+      {/* <VisuallyHidden> */}
       <Heading as="h2" fontSize="4rem" color="brand.600" mb="1em">
-        Individual Benefits
+        Benefits
       </Heading>
+      {/* </VisuallyHidden> */}
       <List spacing="3em" mb="8em">
         {benefitEls}
       </List>
