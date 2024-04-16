@@ -61,9 +61,9 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
         // position="sticky"
         // zIndex="sticky"
       >
-        <Heading as="h1" fontSize="2rem" color="colors.text.100">
+        <Heading as="h1" fontSize="2rem">
           Cored.
-          <Text display="inline" color="colors.brand.600">
+          <Text display="inline" color="brand.600">
             in
           </Text>
         </Heading>

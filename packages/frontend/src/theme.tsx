@@ -1,4 +1,4 @@
-import { background, extendTheme } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 
 const fonts = {
@@ -9,11 +9,11 @@ const fonts = {
 const styles = {
   global: {
     "html, body": {
-      color: "colors.text.900",
+      color: "text.100",
       boxSizing: "border-box"
     },
     body: {
-      background: "colors.background.900"
+      background: "background.900"
     },
     html: {
       scrollBehavior: "smooth"
@@ -25,22 +25,19 @@ const styles = {
 };
 
 const colors = {
-  colors: {
-    // this should be removed to avoid having to prefix colors with colors.
-    brand: {
-      600: "#26D695"
-    },
-    text: {
-      100: "#ebebeb",
-      300: "#b0b0b0",
-      600: "#737373",
-      800: "#242424", // not in use
-      900: "#121111"
-    },
-    background: {
-      100: "#ebebeb",
-      900: "#121111"
-    }
+  brand: {
+    600: "#26D695"
+  },
+  text: {
+    100: "#ebebeb",
+    300: "#b0b0b0",
+    600: "#737373",
+    800: "#242424", // not in use
+    900: "#121111"
+  },
+  background: {
+    100: "#ebebeb",
+    900: "#121111"
   }
 };
 
@@ -65,20 +62,20 @@ const components = {
     // 3. We can add a new visual variant
     variants: {
       primary: () => ({
-        bg: "colors.brand.600",
-        color: "colors.text.900",
+        bg: "brand.600",
+        color: "text.900",
         borderRadius: "3xl",
         fontWeight: 600,
         _loading: {
           _hover: {
-            bg: "colors.background.100"
+            bg: "background.100"
           }
         },
         _hover: {
-          bg: "colors.background.100",
-          color: "colors.text.900",
+          bg: "background.100",
+          color: "text.900",
           _disabled: {
-            bg: "colors.background.100"
+            bg: "background.100"
           }
         }
       })

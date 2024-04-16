@@ -19,9 +19,9 @@ export const BenefitItem: FC<BenefitItemProps> = ({
       <Heading
         as="h3"
         fontSize="3rem"
-        color={isVisible ? "colors.text.100" : "colors.text.600"}
+        color={isVisible ? "text.100" : "text.600"}
         _hover={{
-          color: "colors.text.100"
+          color: "text.100"
         }}
         onClick={onClick}
         cursor="pointer"
@@ -31,9 +31,9 @@ export const BenefitItem: FC<BenefitItemProps> = ({
       <Collapse in={isVisible} animateOpacity>
         <Box
           p="40px"
-          color="colors.text.800"
+          color="text.800"
           mt="4"
-          bg="colors.brand.600"
+          bg="brand.600"
           rounded="md"
           shadow="md"
         >

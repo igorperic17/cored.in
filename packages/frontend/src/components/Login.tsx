@@ -12,16 +12,16 @@ export const Login = () => {
   if (isConnected) {
     return (
       <HStack
-        // bg="colors.background.100"
+        // bg="background.100"
         borderWidth="1px"
         borderStyle="solid"
-        borderColor="color.background.100"
+        borderColor="background.100"
         borderRadius="3xl"
         px="0.25em"
         py="0.25em"
         pl="1em"
       >
-        <Text color="colors.brand.600" textTransform="uppercase">
+        <Text color="brand.600" textTransform="uppercase">
           {shortWalletAddress}
         </Text>
         <Button
@@ -30,15 +30,15 @@ export const Login = () => {
           borderStartEndRadius="xl"
           borderEndEndRadius="xl"
           bg="none"
-          color="colors.text.100"
+          color="text.300"
           size="xs"
           _hover={{
             bg: "none",
-            color: "colors.text.300"
+            color: "text.100"
           }}
           onClick={() => disconnect()}
         >
-          Disconnect
+          SIGN OUT
         </Button>
       </HStack>
     );
@@ -46,7 +46,7 @@ export const Login = () => {
     return (
       <>
         <Button variant="primary" size="md" onClick={connectWallet}>
-          Connect Wallet
+          SIGN IN
         </Button>
       </>
     );
