@@ -6,17 +6,25 @@ const benefitsData = [
   {
     title: "Create trustable profile",
     description:
-      "Gain credibility through verification of your diplomas and work experience by professional institutions, past, and present employers. Our platform ensures all user information is backed by verifiable credentials, following the latest standards on Self-Sovereign identity. We leverage a custom WebAssembly (WASM) contract to establish an on-chain Decentralized Identifier (DID) registry, enabling users to control data sharing securely."
+      "Gain credibility through verification of your diplomas and work experience by professional institutions, past, and present employers."
   },
   {
     title: "Protect your data",
-    description:
-      "Manage who has permission to view your complete profile. Users can subscribe to each other's profiles using a soul-bound smart NFT, which is minted by paying a small fee to the profile owner. Only generic and anonymous data are stored on-chain."
+    description: "Manage who has permission to view your complete profile."
   },
   {
-    title: "Network securely",
+    title: "Chat securely",
+    description: "Securely message other users with encrypted messages."
+  },
+  {
+    title: "Get paid",
     description:
-      "Securely message the profile owner directly within CoredIn with encrypted on-chain messages."
+      "Get paid for sharing the information in your profile with other users and receiving messages."
+  },
+  {
+    title: "No spam",
+    description:
+      "Since sending messages incurs a cost, it is less attractive for spammers. If you ever receive messages from them, you will be paid for it."
   }
 ] as const;
 
