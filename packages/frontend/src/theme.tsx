@@ -26,6 +26,7 @@ const styles = {
 
 const colors = {
   colors: {
+    // this should be removed to avoid having to prefix colors with colors.
     brand: {
       600: "#26D695"
     },

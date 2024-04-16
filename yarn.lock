@@ -1740,6 +1740,7 @@ __metadata:
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
     axios: "npm:^1.6.7"
+    effect: "npm:^2.4.18"
     eslint: "npm:^8.56.0"
     eslint-config-prettier: "npm:^9.1.0"
     eslint-plugin-prettier: "npm:^5.1.2"
@@ -1754,7 +1755,7 @@ __metadata:
     ts-patch: "npm:^3.1.2"
     tsconfig-paths: "npm:^4.2.0"
     typeorm: "npm:^0.3.20"
-    typescript: "npm:^5.3.3"
+    typescript: "npm:^5.4.5"
     webpack: "npm:^5.89.0"
   peerDependencies:
     axios: ^0.27.2
@@ -1801,7 +1802,7 @@ __metadata:
     react-dom: "npm:^18.2.0"
     react-icons: "npm:^4.12.0"
     react-router-dom: "npm:^6.21.1"
-    typescript: "npm:^5.3.3"
+    typescript: "npm:^5.4.5"
     util: "npm:^0.12.5"
     vite: "npm:^5.2.8"
   languageName: unknown
@@ -1811,7 +1812,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@coredin/shared@workspace:packages/shared"
   dependencies:
-    typescript: "npm:^5.3.3"
+    typescript: "npm:^5.4.5"
     typia: "npm:^5.4.10"
   languageName: unknown
   linkType: soft
@@ -5690,6 +5691,13 @@ __metadata:
   version: 1.1.1
   resolution: "ee-first@npm:1.1.1"
   checksum: 10/1b4cac778d64ce3b582a7e26b218afe07e207a0f9bfe13cc7395a6d307849cfe361e65033c3251e00c27dd060cab43014c2d6b2647676135e18b77d2d05b3f4f
+  languageName: node
+  linkType: hard
+
+"effect@npm:^2.4.18":
+  version: 2.4.18
+  resolution: "effect@npm:2.4.18"
+  checksum: 10/508192d58e6aa19c78929d379004e7f66c3e95e021e0cc5d5177c4dd693452b3c6459d89a1b1bd1abd3bb3fbe65ec8b96d66fa407f1aafb02edb456c86b2e93e
   languageName: node
   linkType: hard
 
@@ -10906,7 +10914,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@npm:^5.3.3":
+"typescript@npm:^5.4.5":
   version: 5.4.5
   resolution: "typescript@npm:5.4.5"
   bin:
@@ -10926,7 +10934,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"typescript@patch:typescript@npm%3A^5.3.3#optional!builtin<compat/typescript>":
+"typescript@patch:typescript@npm%3A^5.4.5#optional!builtin<compat/typescript>":
   version: 5.4.5
   resolution: "typescript@patch:typescript@npm%3A5.4.5#optional!builtin<compat/typescript>::version=5.4.5&hash=5adc0c"
   bin:

@@ -2,6 +2,7 @@ import { useAuth, useLoggedInServerState } from "@/hooks";
 import { useWrappedClientContext } from "@/contexts/client";
 import { USER_QUERIES } from "@/queries";
 import { useEffect } from "react";
+import { Text } from "@chakra-ui/layout";
 
 export const AuthTest = () => {
   const { walletAddress, loading } = useWrappedClientContext();
@@ -18,13 +19,18 @@ export const AuthTest = () => {
 
   return (
     <div style={{ margin: "20px" }}>
-      {data && <h3>Got data!!</h3>}
+      {data && (
+        <>
+          <Text color="colors.brand.600">Got data!!</Text>
+          <Text color="colors.brand.600">{JSON.stringify(data)}</Text>
+        </>
+      )}
       {isLoading && <h3>Loading...</h3>}
       {isError && (
-        <h3>
+        <Text color="colors.brand.600">
           Found error..
           {`${error}`}
-        </h3>
+        </Text>
       )}
     </div>
   );

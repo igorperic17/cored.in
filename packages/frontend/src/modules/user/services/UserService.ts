@@ -4,7 +4,7 @@ import { UserProfile } from "@coredin/shared";
 export class UserService {
   constructor(private readonly http: HttpService) {}
 
-  async getUser(): Promise<{ profile: UserProfile }> {
+  async getUser(): Promise<UserProfile> {
     return this.http.get("user");
   }
 

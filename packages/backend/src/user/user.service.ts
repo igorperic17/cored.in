@@ -2,7 +2,8 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
-import { UserProfile } from "@coredin/shared";
+import { NotFoundError, UserProfile } from "@coredin/shared";
+import { Effect } from "effect";
 
 const NULL_USER_PROFILE: UserProfile = {
   firstName: null,
@@ -22,17 +23,17 @@ export class UserService {
     private readonly userRepository: Repository<User>
   ) {}
 
-  async get(wallet: string) {
+  async get(
+    wallet: string
+  ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
     const user = await this.userRepository.findOne({ where: { wallet } });
     if (user) {
       console.log("user from db ", user);
       // Init null profile
-      user.profile = { ...NULL_USER_PROFILE, ...(user.profile || {}) };
-
-      return user;
+      return Effect.succeed({ ...NULL_USER_PROFILE, ...(user.profile || {}) });
     }
 
-    return null;
+    return Effect.fail(new NotFoundError());
   }
 
   async updateLastSeen(wallet: string) {

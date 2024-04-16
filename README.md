@@ -47,4 +47,5 @@ yarn docker
 
 TODO:
 - feature flags (by user!)
+- integrate Effect library for error handlign
 - integrate onchain logic (use hackathon code as reference)
