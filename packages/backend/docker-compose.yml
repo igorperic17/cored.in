@@ -38,6 +38,7 @@ services:
           - db
   wallet-api:
     image: waltid/wallet-api:latest
+    platform: linux/amd64
     ports:
       - 7001:7001
     volumes:
