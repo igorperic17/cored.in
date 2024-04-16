@@ -3,6 +3,9 @@ export const ROUTES = {
     path: "/"
   },
   PRIVACY_POLICY: {
-    path: "/privacy-policy"
+    path: "privacy-policy"
+  },
+  APP: {
+    path: "app"
   }
 };
