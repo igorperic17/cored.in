@@ -30,8 +30,8 @@ const colors = {
   },
   text: {
     100: "#ebebeb",
-    300: "#b0b0b0",
-    600: "#737373",
+    300: "#b0b0b0", // hover
+    600: "#737373", // hover 2
     800: "#242424", // not in use
     900: "#121111"
   },
@@ -44,9 +44,10 @@ const colors = {
 const components = {
   Button: {
     // 1. We can update the base styles
-    // baseStyle: {
-    //   fontWeight: 'bold', // Normally, it is "semibold"
-    // },
+    baseStyle: {
+      //fontWeight: 'bold', // Normally, it is "semibold"
+      textTransform: "uppercase"
+    },
     sizes: {
       xs: {
         fontSize: "0.825rem",
@@ -56,7 +57,14 @@ const components = {
       md: {
         fontSize: "1.125rem",
         px: "1.5em",
-        py: "0.5em"
+        py: "0.5em",
+        borderRadius: "3xl"
+      },
+      xl: {
+        fontSize: "2rem",
+        px: "1.5em",
+        py: "0.5em",
+        borderRadius: "2em"
       }
     },
     // 3. We can add a new visual variant
@@ -64,7 +72,7 @@ const components = {
       primary: () => ({
         bg: "brand.600",
         color: "text.900",
-        borderRadius: "3xl",
+        // borderRadius: "3xl",
         fontWeight: 600,
         _loading: {
           _hover: {

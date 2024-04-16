@@ -38,17 +38,15 @@ export const Login = () => {
           }}
           onClick={() => disconnect()}
         >
-          SIGN OUT
+          Sign Out
         </Button>
       </HStack>
     );
   } else {
     return (
-      <>
-        <Button variant="primary" size="md" onClick={connectWallet}>
-          SIGN IN
-        </Button>
-      </>
+      <Button variant="primary" size="md" onClick={connectWallet}>
+        Sign In
+      </Button>
     );
   }
 };
