@@ -1,11 +1,14 @@
-import { Box, Heading } from "@chakra-ui/react";
+import { Box, Button, Heading, VStack } from "@chakra-ui/react";
 
 export const CallToAction = () => {
   return (
-    <Box>
-      <Heading as="h2" fontSize="4rem" color="brand.600" mb="1em">
-        Call to action
+    <VStack minH="50vh">
+      <Heading as="h2" fontSize="4rem" mb="1em" textAlign="center">
+        Elevate your career
       </Heading>
-    </Box>
+      <Button variant="primary" size="xl">
+        Sign In
+      </Button>
+    </VStack>
   );
 };
