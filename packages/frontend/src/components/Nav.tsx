@@ -6,10 +6,12 @@ import {
   useColorModeValue,
   useMediaQuery,
   Box,
-  Heading
+  Heading,
+  Button,
+  Link
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
-import { Login } from "./Login";
+import { ROUTES } from "@/router/routes";
 
 export interface NavProps {
   onOpen: () => void;
@@ -67,7 +69,11 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
             in
           </Text>
         </Heading>
-        <Login />
+        <Link as={ReactRouterLink} to={ROUTES.APP.path}>
+          <Button variant="primary" size="md">
+            Sign In
+          </Button>
+        </Link>
       </Flex>
     </Box>
   );
