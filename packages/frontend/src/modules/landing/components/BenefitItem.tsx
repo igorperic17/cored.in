@@ -1,4 +1,4 @@
-import { Box, Collapse, Heading, ListItem } from "@chakra-ui/react";
+import { Box, Collapse, Heading, ListItem, Text } from "@chakra-ui/react";
 import { FC } from "react";
 
 interface BenefitItemProps {
@@ -29,15 +29,10 @@ export const BenefitItem: FC<BenefitItemProps> = ({
         {title}
       </Heading>
       <Collapse in={isVisible} animateOpacity>
-        <Box
-          p="40px"
-          color="text.800"
-          mt="4"
-          bg="brand.600"
-          rounded="md"
-          shadow="md"
-        >
-          {description}
+        <Box p="40px" mt="4" bg="brand.600" rounded="md" shadow="md">
+          <Text color="text.900" maxW="700px">
+            {description}
+          </Text>
         </Box>
       </Collapse>
     </ListItem>

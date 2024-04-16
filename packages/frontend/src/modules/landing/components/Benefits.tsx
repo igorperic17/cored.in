@@ -4,28 +4,19 @@ import { useState } from "react";
 
 const benefitsData = [
   {
-    title: "Main benefit",
-    description: "This is why everyone chooses to use our platform"
+    title: "Create trustable profile",
+    description:
+      "Gain credibility through verification of your diplomas and work experience by professional institutions, past, and present employers. Our platform ensures all user information is backed by verifiable credentials, following the latest standards on Self-Sovereign identity. We leverage a custom WebAssembly (WASM) contract to establish an on-chain Decentralized Identifier (DID) registry, enabling users to control data sharing securely."
   },
   {
-    title: "Another benefit",
-    description: "This is also why you'll love us, more text here"
+    title: "Protect your data",
+    description:
+      "Manage who has permission to view your complete profile. Users can subscribe to each other's profiles using a soul-bound smart NFT, which is minted by paying a small fee to the profile owner. Only generic and anonymous data are stored on-chain."
   },
   {
-    title: "And one more benefit",
-    description: "Two is not enough, four might be too much"
-  },
-  {
-    title: "Main benefit 2",
-    description: "This is why everyone chooses to use our platform 2"
-  },
-  {
-    title: "Another benefit 2",
-    description: "This is also why you'll love us, more text here 2"
-  },
-  {
-    title: "And one more benefit 2",
-    description: "Two is not enough, four might be too much 2"
+    title: "Network securely",
+    description:
+      "Securely message the profile owner directly within CoredIn with encrypted on-chain messages."
   }
 ] as const;
 
@@ -41,17 +32,23 @@ export const Benefits = () => {
         title={benefit.title}
         description={benefit.description}
         isVisible={selectedBenefit === benefit.title}
-        onClick={() => setSelectedBenefit(benefit.title)}
+        onClick={() =>
+          setSelectedBenefit(
+            benefit.title === selectedBenefit ? undefined : benefit.title
+          )
+        }
       />
     );
   });
 
   return (
-    <Box w="100%">
-      <VisuallyHidden>
-        <Heading as="h2">Benefits</Heading>
-      </VisuallyHidden>
-      <List spacing="3em">{benefitEls}</List>
+    <Box w="100%" minH="100vh">
+      <Heading as="h2" fontSize="4rem" color="brand.600" mb="1em">
+        Individual Benefits
+      </Heading>
+      <List spacing="3em" mb="8em">
+        {benefitEls}
+      </List>
     </Box>
   );
 };
