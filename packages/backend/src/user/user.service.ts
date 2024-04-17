@@ -4,6 +4,7 @@ import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import { NotFoundError, UserProfile } from "@coredin/shared";
 import { Effect } from "effect";
+import { WaltIdWalletService } from "src/ssi/core/services";
 
 const NULL_USER_PROFILE: UserProfile = {
   firstName: null,
@@ -16,6 +17,11 @@ const NULL_USER_PROFILE: UserProfile = {
   phoneNumber: null
 };
 
+type UserWithDid = {
+  profile: UserProfile;
+  did: string;
+};
+
 @Injectable()
 export class UserService {
   constructor(
@@ -25,12 +31,18 @@ export class UserService {
 
   async get(
     wallet: string
-  ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
+  ): Promise<Effect.Effect<UserWithDid, NotFoundError>> {
     const user = await this.userRepository.findOne({ where: { wallet } });
     if (user) {
       console.log("user from db ", user);
+      // Get DID
+      // TODO - properly inject waltID wallet service!!! create provider etc..
+      const waltId = new WaltIdWalletService("http://localhost:7001");
+      const did = await waltId.getOrCreateDid(wallet);
+      console.log(did);
       // Init null profile
-      return Effect.succeed({ ...NULL_USER_PROFILE, ...(user.profile || {}) });
+      const profile = { ...NULL_USER_PROFILE, ...(user.profile || {}) };
+      return Effect.succeed({ profile, did: did.did });
     }
 
     return Effect.fail(new NotFoundError());
