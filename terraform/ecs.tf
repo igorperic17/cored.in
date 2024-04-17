@@ -15,16 +15,6 @@ resource "aws_ecs_task_definition" "wallet_api" {
     name = "tmp-volume"
   }
 
-  volume {
-    name = "data-efs-volume"
-
-    efs_volume_configuration {
-      file_system_id = aws_efs_file_system.wallet_api_data_efs.id
-      root_directory = "/"
-      transit_encryption = "ENABLED"
-    }
-  }
-
   container_definitions = jsonencode([
     {
       cpu                    = var.wallet_api_cpu
@@ -38,11 +28,6 @@ resource "aws_ecs_task_definition" "wallet_api" {
           readOnly      = false
           sourceVolume  = "tmp-volume"
           containerPath = "/tmp"
-        },
-        {
-          readOnly      = false
-          sourceVolume  = "data-efs-volume"
-          containerPath = "/waltid-wallet-api/data"
         }
       ]
       portMappings = [

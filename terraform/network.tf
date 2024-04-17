@@ -37,26 +37,6 @@ resource "aws_subnet" "private" {
   availability_zone = var.db_availability_zones[count.index]
 }
 
-resource "aws_security_group" "wallet_api_data_efs_mount_target_sg" {
-  name        = "wallet-api-data-efs-mount-target-sg"
-  description = "Security group for EFS mount target for Wallet API data"
-  vpc_id      = aws_vpc.default.id
-
-  ingress {
-    from_port   = 2049
-    to_port     = 2049
-    protocol    = "tcp"
-    cidr_blocks = aws_subnet.private.*.cidr_block
-  }
-
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
 resource "aws_db_subnet_group" "aurora_subnet_group" {
   name       = "${var.app_name}-rds-aurora-cluster-subnet-group"
   subnet_ids = aws_subnet.public[*].id
