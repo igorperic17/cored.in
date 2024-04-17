@@ -41,10 +41,15 @@ services:
     platform: linux/amd64
     ports:
       - 7001:7001
+    environment:
+      AUTH_ENCRYPTION_KEY: dncygwnvivxzlohc
+      AUTH_SIGN_KEY: jyjeylmidlylokzh
+      AUTH_TOKEN_KEY: hjklwcptiniwjkdwwkigreumcayoyiso
+      DB_URL: db:5432/coredin_dev_ssi_db
+      DB_USER: waltid_user
+      DB_PASS: waltid_pass
     volumes:
       - ./wallet-api/local/config:/waltid-wallet-api/config
-      - ./wallet-api/local/walt.yaml:/waltid-wallet-api/walt.yaml
-      - ./wallet-api/local/data:/waltid-wallet-api/data
     networks:
       - main
     depends_on:
