@@ -37,7 +37,7 @@ services:
         aliases:
           - db
   wallet-api:
-    image: waltid/wallet-api:latest
+    image: waltid/wallet-api:1.0.2404100818-SNAPSHOT
     platform: linux/amd64
     ports:
       - 7001:7001
