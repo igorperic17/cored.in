@@ -3,6 +3,17 @@ resource "random_password" "aurora_password" {
   special = false
 }
 
+resource "aws_rds_cluster_parameter_group" "aurora_cluster_parameter_group" {
+  name        = "${var.app_name}-rds-aurora-cluster-parameter-group"
+  family      = "aurora-postgresql16"
+  description = "Parameter group for Aurora RDS cluster"
+
+  parameter {
+    name  = "rds.force_ssl"
+    value = "0"
+  }
+}
+
 resource "aws_rds_cluster" "aurora_cluster" {
   cluster_identifier        = "${var.app_name}-rds-aurora-cluster"
   engine                    = "aurora-postgresql"
@@ -15,6 +26,7 @@ resource "aws_rds_cluster" "aurora_cluster" {
   skip_final_snapshot       = true
 
   db_subnet_group_name      = aws_db_subnet_group.aurora_subnet_group.name
+  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_parameter_group.name
 
   vpc_security_group_ids    = [aws_security_group.aurora_cluster.id]
 
@@ -30,7 +42,7 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   engine_version      = aws_rds_cluster.aurora_cluster.engine_version
   instance_class      = "db.t3.medium"
   apply_immediately   = true
-  publicly_accessible = true
+  publicly_accessible = var.use_private_subnets ? false : true
 
   tags = {
     Name   = "coredin-rds-aurora-instance"
