@@ -1,3 +1,48 @@
+resource "random_password" "encryption_key" {
+  length  = 16
+  special = false
+}
+
+resource "random_password" "sign_key" {
+  length  = 16
+  special = false
+}
+
+resource "random_password" "token_key" {
+  length  = 32
+  special = false
+}
+
+resource "aws_secretsmanager_secret" "encryption_key_asm_secret" {
+  name                    = "${var.app_name}-encryption-key"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret" "sign_key_asm_secret" {
+  name                    = "${var.app_name}-sign-key"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret" "token_key_asm_secret" {
+  name                    = "${var.app_name}-token-key"
+  recovery_window_in_days = 0
+}
+
+resource "aws_secretsmanager_secret_version" "encryption_key_asm_secret_version" {
+  secret_id     = aws_secretsmanager_secret.encryption_key_asm_secret.id
+  secret_string = random_password.encryption_key.result
+}
+
+resource "aws_secretsmanager_secret_version" "sign_key_asm_secret_version" {
+  secret_id     = aws_secretsmanager_secret.sign_key_asm_secret.id
+  secret_string = random_password.sign_key.result
+}
+
+resource "aws_secretsmanager_secret_version" "token_key_asm_secret_version" {
+  secret_id     = aws_secretsmanager_secret.token_key_asm_secret.id
+  secret_string = random_password.token_key.result
+}
+
 resource "aws_ecs_cluster" "wallet_api" {
   name = "${var.app_name}-wallet-api-cluster"
 }
@@ -22,7 +67,14 @@ resource "aws_ecs_task_definition" "wallet_api" {
       memory                 = var.wallet_api_memory
       name                   = "${var.app_name}-wallet-api-container"
       networkMode            = "awsvpc"
-      readonlyRootFilesystem = true
+      logConfiguration = var.use_private_subnets ? null : {
+        logDriver = "awslogs",
+        options = {
+          "awslogs-group": "${aws_cloudwatch_log_group.ecs_log_group.name}",
+          "awslogs-region": "${var.region}",
+          "awslogs-stream-prefix": "ecs-wallet-api"
+        }
+      }
       mountPoints = [
         {
           readOnly      = false
@@ -32,12 +84,45 @@ resource "aws_ecs_task_definition" "wallet_api" {
       ]
       portMappings = [
         {
-          containerPort = local.app_port
-          hostPort      = local.app_port
+          containerPort = var.wallet_api_port
+          hostPort      = var.wallet_api_port
         }
       ]
-      environment = []
-      secrets     = []
+      environment = [
+        {
+          name = "DB_URL",
+          value = "${aws_rds_cluster_instance.aurora_instance.endpoint}:${aws_rds_cluster_instance.aurora_instance.port}/${var.db_name}"
+        },
+        {
+          name = "DB_USER",
+          value = "${var.db_user}"
+        }
+      ]
+      secrets     = [
+        {
+          name = "AUTH_ENCRYPTION_KEY",
+          valueFrom = aws_secretsmanager_secret.encryption_key_asm_secret.arn
+        },
+        {
+          name = "AUTH_SIGN_KEY",
+          valueFrom = aws_secretsmanager_secret.sign_key_asm_secret.arn
+        },
+        {
+          name = "AUTH_TOKEN_KEY",
+          valueFrom = aws_secretsmanager_secret.token_key_asm_secret.arn
+        },
+        {
+          name = "DB_PASS",
+          valueFrom = aws_secretsmanager_secret.aurora_password_asm_secret.arn
+        }
+      ]
+      healthCheck = {
+        command     = ["CMD-SHELL", "curl -f http://localhost:${var.wallet_api_port}/wallet-api/healthz || exit 1"],
+        interval    = 30,
+        timeout     = 5,
+        retries     = 3,
+        startPeriod = 60,
+      }
     }
   ])
 }
@@ -53,56 +138,9 @@ resource "aws_ecs_service" "wallet_api" {
 
   network_configuration {
     security_groups  = [aws_security_group.wallet_api.id]
-    subnets          = aws_subnet.private.*.id
-    assign_public_ip = false
+    subnets          = var.use_private_subnets ? aws_subnet.private.*.id : aws_subnet.public.*.id
+    assign_public_ip = var.use_private_subnets ? false : true
   }
 
   depends_on = [aws_ecs_task_definition.wallet_api]
-}
-
-resource "aws_security_group" "wallet_api" {
-  name        = "${var.app_name}-wallet-api-sg-ecs"
-  description = "Allow inbound access for Wallet API"
-  vpc_id      = aws_vpc.default.id
-
-  ingress {
-    protocol    = "tcp"
-    from_port   = local.app_port
-    to_port     = local.app_port
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    protocol        = "tcp"
-    from_port       = local.app_port
-    to_port         = local.app_port
-    security_groups = [aws_security_group.api.id]
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
-resource "aws_security_group" "api" {
-  name        = "${var.app_name}-api-sg-ecs"
-  description = "Allow inbound access for API"
-  vpc_id      = aws_vpc.default.id
-
-  ingress {
-    protocol    = "tcp"
-    from_port   = "443"
-    to_port     = "443"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
 }

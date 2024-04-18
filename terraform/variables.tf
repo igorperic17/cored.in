@@ -11,6 +11,10 @@ variable "is_app_https" {
   type = bool
 }
 
+variable "use_private_subnets" {
+  type = bool
+}
+
 variable "db_availability_zones" {
   type = list(string)
   default = [
@@ -28,11 +32,15 @@ variable "db_user" {
   type = string
 }
 
-variable "wallet_api_db_name" {
+variable "db_engine_version" {
   type = string
 }
 
-variable "db_engine_version" {
+variable "db_retention_window_days" {
+  type = number
+}
+
+variable "wallet_api_db_name" {
   type = string
 }
 
@@ -56,4 +64,13 @@ variable "wallet_api_cpu" {
 variable "wallet_api_memory" {
   type        = number
   description = "Fargate instance memory to provision (in MiB) for Wallet API"
+}
+
+variable "wallet_api_port" {
+  type = number
+}
+
+variable "wallet_api_logs_retention" {
+  type    = number
+  default = 1
 }
