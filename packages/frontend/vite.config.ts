@@ -29,7 +29,7 @@ export default defineConfig(({ command, mode }) => {
         include: [/shared/, /node_modules/]
       },
       rollupOptions: {
-        external: ["@fontsource/space-grotesk"]
+        external: []
       }
     },
     server: {
