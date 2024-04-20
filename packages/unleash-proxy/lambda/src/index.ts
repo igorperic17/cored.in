@@ -46,7 +46,11 @@ const getFeature = (name: string) => unleash?.isEnabled(name)
 
 /* eslint-disable @typescript-eslint/naming-convention */
 const getFeatures = () => ({
-  test_feature: getFeature('test_feature')
+  app: getFeature('app'),
+  cookies: getFeature('cookies'),
+  privacy_policy: getFeature('privacy_policy'),
+  test_app: getFeature('test_app'),
+  test_feature: getFeature('test_feature'),
 })
 /* eslint-enable @typescript-eslint/naming-convention */
 

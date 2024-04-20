@@ -20,7 +20,7 @@ export const FeatureFlagContextProvider = ({ children }: PropsWithChildren<unkno
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get<Record<string, string>>('https://n54c0ld0t2.execute-api.eu-west-1.amazonaws.com/prod');
+        const response = await axios.get<Record<string, string>>('https://45hbvdult5.execute-api.eu-west-1.amazonaws.com/dev/features');
         setFeatures(response.data);
         setIsInitialised(true);
       } catch (error) {
