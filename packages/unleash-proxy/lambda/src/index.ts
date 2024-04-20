@@ -1,6 +1,11 @@
 import { startUnleash, InMemStorageProvider, destroyWithFlush, Unleash } from 'unleash-client'
 
 let unleash: Unleash | undefined
+const PUBLIC_CORS_OPTIONS = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': '*',
+  'Access-Control-Allow-Methods': '*',
+}
 
 async function init() {
   if (!unleash) {
@@ -53,6 +58,7 @@ export const handler = async () => {
       statusCode: 200,
       headers: {
         'Content-Type': 'application/json',
+        ...PUBLIC_CORS_OPTIONS,
       },
       body: JSON.stringify(getFeatures()),
     }
@@ -62,6 +68,7 @@ export const handler = async () => {
       statusCode: 500,
       headers: {
         'Content-Type': 'application/json',
+        ...PUBLIC_CORS_OPTIONS,
       },
       body: JSON.stringify({
         message: 'An error occurred!'

@@ -11,7 +11,12 @@ import {
   ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam'
 import { UnleashProxyStackProps } from './stack-configuration'
-import { LambdaRestApi } from 'aws-cdk-lib/aws-apigateway'
+import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway'
+
+const PUBLIC_CORS_OPTIONS = {
+  allowOrigins: Cors.ALL_ORIGINS,
+  allowMethods: Cors.ALL_METHODS
+}
 
 export class ServiceStack extends Stack {
   constructor(scope: App, id: string, props: UnleashProxyStackProps) {
@@ -61,7 +66,10 @@ export class ServiceStack extends Stack {
   }
 
   private createApiGateway(lambda: LambdaFunction) {
-    const api = new LambdaRestApi(this, 'UnleashProxyRestApi', { handler: lambda, proxy: false })
+    const api = new LambdaRestApi(this, 'UnleashProxyRestApi', {
+      handler: lambda,
+      proxy: false
+    })
     api.root.addMethod('GET')
   }
 }
