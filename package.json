@@ -17,11 +17,14 @@
     "deploy": "yarn workspace @coredin/onchain deploy",
     "deploy-frontend": "yarn workspace @coredin/frontend deploy",
     "prepare": "yarn workspace @coredin/backend prepare",
-    "docker": "docker build . -f base.Dockerfile -t coredin/base && docker build . -f front.Dockerfile -t coredin/front && docker build . -f back.Dockerfile -t coredin/back"
+    "docker": "docker build . -f base.Dockerfile -t coredin/base && docker build . -f front.Dockerfile -t coredin/front && docker build . -f back.Dockerfile -t coredin/back",
+    "lint": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint",
+    "lint:fix": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint:fix"
   },
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/*",
+      "packages/unleash-proxy/*"
     ]
   },
   "packageManager": "yarn@4.1.1"

@@ -62,10 +62,6 @@ export class ServiceStack extends Stack {
 
   private createApiGateway(lambda: LambdaFunction) {
     const api = new LambdaRestApi(this, 'UnleashProxyRestApi', { handler: lambda, proxy: false })
-    lambda.addPermission('UnleashProxyPermitRestApiInvocation', {
-      principal: new ServicePrincipal('apigateway.amazonaws.com'),
-      sourceArn: api.arnForExecuteApi('*')
-    })
     api.root.addMethod('GET')
   }
 }
