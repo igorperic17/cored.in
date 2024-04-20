@@ -1,18 +1,20 @@
 import { Root } from "@/components/Root";
 import { AppRoot } from "@/components/AppRoot";
-import ErrorPage from "@/modules/error/views/errorPage";
+import ResourceNotFoundPage from "@/modules/error/views/resourceNotFoundPage";
 import PrivacyPolicyPage from "@/modules/privacy-policy/views/PrivacyPolicyPage";
 import LandingPage from "@/modules/landing/views/Landing.page";
 import TestAppPage from "@/modules/test-app/views/TestApp.page";
 import { createBrowserRouter } from "react-router-dom";
 import { ROUTES } from "./routes";
 import AppPage from "@/modules/app/views/App.page";
+import { FEATURE_FLAG } from "@/constants/featureFlag";
+import FeatureFlagProtectedPage from "./featureFlagProtectedPage";
 
 export const router = createBrowserRouter([
   {
     path: ROUTES.ROOT.path,
     element: <Root />,
-    errorElement: <ErrorPage />,
+    errorElement: <ResourceNotFoundPage />,
     children: [
       {
         index: true,
@@ -20,18 +22,24 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.PRIVACY_POLICY.path,
-        element: <PrivacyPolicyPage />
+        element: <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.PRIVACY_POLICY}>
+          <PrivacyPolicyPage />
+        </FeatureFlagProtectedPage>
       },
       {
         path: "test",
-        element: <TestAppPage />
+        element: <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.TEST_APP}>
+          <TestAppPage />
+        </FeatureFlagProtectedPage>
       }
     ]
   },
   {
     path: ROUTES.APP.path,
-    element: <AppRoot />,
-    errorElement: <ErrorPage />,
+    element: <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.APP}>
+      <AppRoot />
+    </FeatureFlagProtectedPage>,
+    errorElement: <ResourceNotFoundPage />,
     children: [
       {
         index: true,

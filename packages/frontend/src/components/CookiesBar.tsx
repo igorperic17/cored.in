@@ -1,3 +1,5 @@
+import { FEATURE_FLAG } from "@/constants/featureFlag";
+import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import {
   Flex,
   Text,
@@ -6,17 +8,23 @@ import {
   useMediaQuery,
   Button
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 
 export const COOKIES_ACCEPTANCE_COOKIE_NAME = "CookiesConsent";
 
 export const CookiesBar = () => {
+  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext()
+  const isEnabled = useMemo(() => isInitialised && isFeatureEnabled(FEATURE_FLAG.COOKIES), [isInitialised, isFeatureEnabled])
   const [cookies, setCookie, removeCookie] = useCookies([
     COOKIES_ACCEPTANCE_COOKIE_NAME
   ]);
   const [rejected, setRejected] = useState(false);
   const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
+
+  if (!isEnabled) {
+    return false;
+  }
 
   return (
     <>

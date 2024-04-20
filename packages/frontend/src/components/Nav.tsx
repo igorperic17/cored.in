@@ -12,6 +12,8 @@ import {
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
+import { useFeatureFlagContext } from "@/contexts/featureFlag";
+import { FEATURE_FLAG } from "@/constants/featureFlag";
 
 export interface NavProps {
   onOpen: () => void;
@@ -19,6 +21,7 @@ export interface NavProps {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav: FC<NavProps> = ({ onOpen }) => {
+  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext()
   const location = useLocation();
   const [scroll, setScroll] = useState(false);
   const [currentSection, setCurrentSection] = useState<"home" | "insure">(
@@ -60,8 +63,8 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
         direction="row"
         justify="space-between"
         align="center"
-        // position="sticky"
-        // zIndex="sticky"
+      // position="sticky"
+      // zIndex="sticky"
       >
         <Heading as="h1" fontSize="2rem">
           Cored.
@@ -69,11 +72,13 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
             in
           </Text>
         </Heading>
-        <Link as={ReactRouterLink} to={ROUTES.APP.path}>
-          <Button variant="primary" size="md">
-            Sign In
-          </Button>
-        </Link>
+        {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
+          <Link as={ReactRouterLink} to={ROUTES.APP.path}>
+            <Button variant="primary" size="md">
+              Sign In
+            </Button>
+          </Link>
+        )}
       </Flex>
     </Box>
   );
