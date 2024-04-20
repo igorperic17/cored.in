@@ -11,8 +11,7 @@ const stackProps: UnleashProxyStackProps = {
     region: 'eu-west-1'
   },
   appName: 'unleash-proxy',
-  apiToken: 'tokenNotUsedButRequired',
-  apiStageName: 'prod'
+  apiToken: 'tokenNotUsedButRequired'
 }
 
 new ServiceStack(app, 'unleash-proxy', stackProps)

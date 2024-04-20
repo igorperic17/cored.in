@@ -11,30 +11,40 @@ import {
   ServicePrincipal,
 } from 'aws-cdk-lib/aws-iam'
 import { UnleashProxyStackProps } from './stack-configuration'
-import { Cors, LambdaRestApi } from 'aws-cdk-lib/aws-apigateway'
+import {  Deployment, LambdaIntegration, RestApi, Stage } from 'aws-cdk-lib/aws-apigateway'
 
-const PUBLIC_CORS_OPTIONS = {
-  allowOrigins: Cors.ALL_ORIGINS,
-  allowMethods: Cors.ALL_METHODS
-}
+const FEATURES_RESOURCE = 'features'
 
 export class ServiceStack extends Stack {
   constructor(scope: App, id: string, props: UnleashProxyStackProps) {
     super(scope, id, props)
 
-    const lambda = this.createUnleashProxyLambda(props)
-    this.createApiGateway(lambda)
+    this.createProxyForEnvironment(props, 'DEV')
+    this.createProxyForEnvironment(props, 'PROD')
   }
 
-  private createUnleashProxyLambda(props: UnleashProxyStackProps): LambdaFunction {
+  private createApi(lambda: LambdaFunction, environment: string) {
+    const api = new RestApi(this, `UnleashProxyRestApi${environment}`, { deploy: false })
+    const resource = api.root.addResource(FEATURES_RESOURCE)
+    resource.addMethod('GET', new LambdaIntegration(lambda))
+    const deployment = new Deployment(this, `UnleashProxyRestApiDeployment${environment}`, { api })
+    new Stage(this, `UnleashProxyRestApiStage${environment}`, { deployment, stageName: environment.toLowerCase() })
+  }
+
+  private createProxyForEnvironment(props: UnleashProxyStackProps, environment: string) {
+    const lambda = this.createUnleashProxyLambda(props, environment)
+    this.createApi(lambda, environment)
+  }
+
+  private createUnleashProxyLambda(props: UnleashProxyStackProps, environment: string): LambdaFunction {
     const iamRole = new Role(
       this,
-      'UnleashProxyLambdaIamRole',
+      `UnleashProxyLambdaIamRole$${environment}`,
       {
         assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-        roleName: `${props.appName}-lambda-role`,
+        roleName: `${props.appName}-${environment}-lambda-role`,
         description:
-          'IAM Role for Unleash proxy Lambda',
+          `IAM Role for Unleash proxy Lambda (${environment})`,
       }
     )
 
@@ -44,33 +54,26 @@ export class ServiceStack extends Stack {
 
     const lambda = new LambdaFunction(
       this,
-      'UnleashProxyLambda',
+      `UnleashProxyLambda${environment}`,
       {
-        description: 'This Lambda function returns feature flags from Unleash',
+        description: `This Lambda function returns feature flags from Unleash (${environment})`,
         runtime: Runtime.NODEJS_20_X,
         code: Code.fromAsset('../lambda/build'),
-        functionName: props.appName,
+        functionName: `${props.appName}-${environment}`,
         handler: 'index.handler',
         memorySize: 256,
         tracing: Tracing.ACTIVE,
         role: iamRole,
         environment: {
           REGION: this.region,
-          API_TOKEN: props.apiToken
+          API_TOKEN: props.apiToken,
+          APP_NAME: environment
         },
         retryAttempts: 2
       }
     )
 
     return lambda
-  }
-
-  private createApiGateway(lambda: LambdaFunction) {
-    const api = new LambdaRestApi(this, 'UnleashProxyRestApi', {
-      handler: lambda,
-      proxy: false
-    })
-    api.root.addMethod('GET')
   }
 }
 

@@ -12,7 +12,8 @@ async function init() {
     console.log('[runtime] Starting unleash')
     try {
       unleash = await startUnleash({
-        appName: 'development',
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        appName: process.env.APP_NAME!,
         instanceId: 'glffct-zx8L6J9qMf_6vtsziR4y',
         url: 'https://gitlab.com/api/v4/feature_flags/unleash/56592491/',
         refreshInterval: 5 * 1000,
