@@ -4,13 +4,15 @@ import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import { FEATURE_FLAG } from "@/constants/featureFlag";
 
 const LandingPage = () => {
-  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext()
+  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   return (
-    <Box mx="auto" maxW="1680px">
+    <Box mx="auto" maxW="1920px">
       <VStack px="2em" gap="11em" mb="16">
         <Hero />
         <Benefits />
-        {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && <CallToAction />}
+        {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
+          <CallToAction />
+        )}
       </VStack>
     </Box>
   );
