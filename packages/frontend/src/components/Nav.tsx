@@ -21,7 +21,7 @@ export interface NavProps {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav: FC<NavProps> = ({ onOpen }) => {
-  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext()
+  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   const location = useLocation();
   const [scroll, setScroll] = useState(false);
   const [currentSection, setCurrentSection] = useState<"home" | "insure">(
@@ -55,7 +55,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       as="header"
       // border="1px solid lightgrey"
       w="100%"
-      maxW="1680px"
+      maxW="1920px"
       margin="0 auto"
       p="1em 2em"
     >
@@ -63,10 +63,10 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
         direction="row"
         justify="space-between"
         align="center"
-      // position="sticky"
-      // zIndex="sticky"
+        // position="sticky"
+        // zIndex="sticky"
       >
-        <Heading as="h1" fontSize="2rem">
+        <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
           Cored.
           <Text display="inline" color="brand.600">
             in

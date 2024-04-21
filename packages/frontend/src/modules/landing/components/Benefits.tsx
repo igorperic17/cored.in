@@ -52,7 +52,12 @@ export const Benefits = () => {
   return (
     <Box w="100%" minH="100vh">
       {/* <VisuallyHidden> */}
-      <Heading as="h2" fontSize="4rem" color="brand.600" mb="1em">
+      <Heading
+        as="h2"
+        fontSize={{ base: "4rem", xl: "5rem" }}
+        color="brand.600"
+        mb="1em"
+      >
         Benefits
       </Heading>
       {/* </VisuallyHidden> */}
