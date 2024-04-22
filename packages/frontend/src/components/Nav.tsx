@@ -35,60 +35,46 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
     document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
       ? setScroll(true)
       : setScroll(false);
-
-    const element = document.querySelector(`#insure`);
-    if (element) {
-      const { top } = element.getBoundingClientRect();
-
-      if (currentSection === "home" && top <= 10) {
-        setCurrentSection("insure");
-      } else if (currentSection === "insure" && top > 10) {
-        setCurrentSection("home");
-      }
-    }
   };
 
   window.addEventListener("scroll", changeScroll);
 
-  const navActionHandler = () => document.getElementById('benefits')!.scrollIntoView({ behavior: 'smooth' })
+  const navActionHandler = () =>
+    document.getElementById("benefits")!.scrollIntoView({ behavior: "smooth" });
 
   return (
-    <Box
+    <Flex
       as="header"
-      h="15vh"
-      // border="1px solid lightgrey"
+      direction="row"
+      justify="space-between"
+      align="center"
+      position="sticky"
+      zIndex="sticky"
+      h="8vh"
       w="100%"
       maxW="1920px"
       margin="0 auto"
       px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }}
-      py="2em"
+      // border="1px solid red"
     >
-      <Flex
-        direction="row"
-        justify="space-between"
-        align="center"
-      // position="sticky"
-      // zIndex="sticky"
-      >
-        <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
-          Cored.
-          <Text display="inline" color="brand.600">
-            in
-          </Text>
-        </Heading>
-        {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
-          <Link as={ReactRouterLink} to={ROUTES.APP.path}>
-            <Button variant="primary" size="md">
-              Sign In
-            </Button>
-          </Link>
-        )}
-        {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
-          <Button variant="primary" size="md" onClick={navActionHandler}>
-            Learn more
+      <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
+        Cored.
+        <Text display="inline" color="brand.600">
+          in
+        </Text>
+      </Heading>
+      {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
+        <Link as={ReactRouterLink} to={ROUTES.APP.path}>
+          <Button variant="primary" size="md">
+            Sign In
           </Button>
-        )}
-      </Flex>
-    </Box>
+        </Link>
+      )}
+      {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
+        <Button variant="primary" size="md" onClick={navActionHandler}>
+          Learn more
+        </Button>
+      )}
+    </Flex>
   );
 };
