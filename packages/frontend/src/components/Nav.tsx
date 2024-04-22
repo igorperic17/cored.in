@@ -50,6 +50,8 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
 
   window.addEventListener("scroll", changeScroll);
 
+  const navActionHandler = () => document.getElementById('benefits')!.scrollIntoView({ behavior: 'smooth' })
+
   return (
     <Box
       as="header"
@@ -82,7 +84,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
           </Link>
         )}
         {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
-          <Button variant="primary" size="md">
+          <Button variant="primary" size="md" onClick={navActionHandler}>
             Learn more
           </Button>
         )}

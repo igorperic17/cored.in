@@ -3,6 +3,7 @@ import { Flex, Heading, Text } from "@chakra-ui/react";
 export const Hero = () => {
   return (
     <Flex
+      id="hero"
       w="100%"
       h="85vh"
       direction="column"

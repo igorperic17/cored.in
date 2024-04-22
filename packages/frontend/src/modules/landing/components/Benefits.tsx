@@ -50,18 +50,18 @@ export const Benefits = () => {
   });
 
   return (
-    <Box w="100%" pb="1em">
+    <Box w="100%" pb="1em" id="benefits">
       {/* <VisuallyHidden> */}
       <Heading
         as="h2"
         fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
         color="brand.600"
-        mb={{ base: "0.375em", md: "0.5em" }}
+        mb={{ base: "0.375em", md: "0.5em", xl: "0.375em" }}
       >
         Benefits
       </Heading>
       {/* </VisuallyHidden> */}
-      <List spacing={{ base: "1.5em", md: "2.5em", lg: "3em" }}>
+      <List spacing={{ base: "1.5em", md: "2.25em" }}>
         {benefitItems}
       </List>
     </Box>
