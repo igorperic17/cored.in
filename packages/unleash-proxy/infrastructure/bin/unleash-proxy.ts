@@ -7,7 +7,7 @@ const app = new App()
 const stackProps: UnleashProxyStackProps = {
   description: 'Unleash Proxy',
   env: {
-    account: '138945776678',
+    account: '992382799028',
     region: 'eu-west-1'
   },
   appName: 'unleash-proxy',

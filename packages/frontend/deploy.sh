@@ -2,8 +2,8 @@
 yarn build
 
 OUT_DIR=dist
-BUCKET=ebc9-frontend
-DISTRIBUTION_ID=ECKJZMB5XQ3I5
+BUCKET=coredin-frontend
+DISTRIBUTION_ID=EG97V09HP3548
 
 aws s3 sync $OUT_DIR s3://$BUCKET/ \
   --delete \
