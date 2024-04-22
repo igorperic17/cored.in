@@ -50,7 +50,7 @@ export const Benefits = () => {
   });
 
   return (
-    <Box w="100%" pb="1em" id="benefits">
+    <Box w="100%" pb="1em" id="benefits" h="90vh">
       {/* <VisuallyHidden> */}
       <Heading
         as="h2"
