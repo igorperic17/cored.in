@@ -1,5 +1,5 @@
 import { useWrappedClientContext } from "@/contexts/client";
-import { Box, Button, HStack, Text } from "@chakra-ui/react";
+import { Button, HStack, Text } from "@chakra-ui/react";
 
 export const Login = () => {
   const { connectWallet, disconnect, walletAddress } =
@@ -12,7 +12,6 @@ export const Login = () => {
   if (isConnected) {
     return (
       <HStack
-        // bg="background.100"
         borderWidth="1px"
         borderStyle="solid"
         borderColor="background.100"

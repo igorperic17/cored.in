@@ -1,8 +1,7 @@
-import React, { FC } from "react";
+import { FC } from "react";
 import {
   Drawer,
   DrawerBody,
-  DrawerHeader,
   DrawerOverlay,
   DrawerContent,
   DrawerFooter,
@@ -10,15 +9,10 @@ import {
   Link,
   Text,
   Flex,
-  Box,
-  IconButton,
   useColorMode,
   useMediaQuery,
-  HStack,
-  Spacer,
   Img
 } from "@chakra-ui/react";
-import { MoonIcon, SunIcon } from "@chakra-ui/icons";
 import { Link as ReactRouterLink } from "react-router-dom";
 import Logo from "@/assets/Logo.png";
 
@@ -59,10 +53,6 @@ export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
             <Flex direction="column" gap="3em">
               <DrawerBody>
                 <Flex flexDirection="column" gap={"1em"} alignItems="end">
-                  {/* <Link>
-                  <ConnectButton />
-                </Link> */}
-
                   <Link
                     as={ReactRouterLink}
                     to="/"
