@@ -49,13 +49,14 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       justify="space-between"
       align="center"
       position="sticky"
-      zIndex="sticky"
-      h="8vh"
+      top="0"
+      minH="8vh"
       w="100%"
       maxW="1920px"
       margin="0 auto"
       px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }}
-      // border="1px solid red"
+      background="background.900"
+      mb="2em"
     >
       <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
         Cored.
