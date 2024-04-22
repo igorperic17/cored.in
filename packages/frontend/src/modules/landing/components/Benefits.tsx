@@ -61,9 +61,7 @@ export const Benefits = () => {
         Benefits
       </Heading>
       {/* </VisuallyHidden> */}
-      <List spacing={{ base: "1.5em", md: "2.25em" }}>
-        {benefitItems}
-      </List>
+      <List spacing={{ base: "1.5em", md: "2.25em" }}>{benefitItems}</List>
     </Box>
   );
 };
