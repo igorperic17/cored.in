@@ -12,6 +12,9 @@
     "lint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
   },
+  "peerDependencies": {
+    "jest": "~29.7.0"
+  },
   "devDependencies": {
     "@aws-cdk/assert": "2.68.0",
     "@types/node": "20.8.10",
