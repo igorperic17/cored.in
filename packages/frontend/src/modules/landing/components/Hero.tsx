@@ -5,10 +5,11 @@ export const Hero = () => {
     <Flex
       id="hero"
       w="100%"
-      h="85vh"
+      h={{ base: "92vh", md: "90vh", xl: "89vh" }}
       direction="column"
       align="start"
       justify="space-between"
+      pt={{ base: "2em" }}
       pb={{ base: "1em", md: "2.5em" }}
     >
       <Heading

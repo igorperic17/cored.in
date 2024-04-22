@@ -8,7 +8,7 @@ const AppPage = () => {
         direction="column"
         justify="center"
         align="center"
-        h="85vh"
+        h={{ base: "92vh", xl: "88vh" }}
         px="2em"
         gap="5em"
         mb="16"

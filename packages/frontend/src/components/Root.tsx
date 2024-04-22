@@ -8,7 +8,7 @@ export const Root = () => {
   return (
     <Flex direction="column" justify="start" h="100vh">
       <Nav onOpen={onOpen} />
-      <Box>
+      <Box overflowX="hidden" flex="1">
         <Outlet />
         <ScrollRestoration />
       </Box>
