@@ -6,7 +6,7 @@ export const AppRoot = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Flex direction="column" justify="start" minH="100vh">
+    <Flex direction="column" justify="start">
       <Box id="detail" overflowX="hidden" flex="1">
         <Outlet />
         <ScrollRestoration />

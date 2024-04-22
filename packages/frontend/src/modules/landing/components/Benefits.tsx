@@ -1,4 +1,4 @@
-import { Box, Heading, List, VisuallyHidden } from "@chakra-ui/react";
+import { Box, Heading, List } from "@chakra-ui/react";
 import { BenefitItem } from "./BenefitItem";
 import { useState } from "react";
 
@@ -50,7 +50,7 @@ export const Benefits = () => {
   });
 
   return (
-    <Box w="100%" minH="100vh">
+    <Box w="100%" h="90vh">
       {/* <VisuallyHidden> */}
       <Heading
         as="h2"

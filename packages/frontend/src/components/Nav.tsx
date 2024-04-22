@@ -53,6 +53,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
   return (
     <Box
       as="header"
+      h="10vh"
       // border="1px solid lightgrey"
       w="100%"
       maxW="1920px"
