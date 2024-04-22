@@ -82,10 +82,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
           </Link>
         )}
         {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
-          <Button variant="primary" size="md" onClick={() => window.scrollTo({
-            top: window.innerHeight,
-            behavior: 'smooth'
-          })}>
+          <Button variant="primary" size="md">
             Learn more
           </Button>
         )}
