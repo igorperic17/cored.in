@@ -53,19 +53,20 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
   return (
     <Box
       as="header"
-      h="10vh"
+      h="15vh"
       // border="1px solid lightgrey"
       w="100%"
       maxW="1920px"
       margin="0 auto"
-      p="1em 2em"
+      px={{ base: "1.5em", md: "2em" }}
+      py="2em"
     >
       <Flex
         direction="row"
         justify="space-between"
         align="center"
-        // position="sticky"
-        // zIndex="sticky"
+      // position="sticky"
+      // zIndex="sticky"
       >
         <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
           Cored.
@@ -79,6 +80,14 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
               Sign In
             </Button>
           </Link>
+        )}
+        {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
+          <Button variant="primary" size="md" onClick={() => window.scrollTo({
+            top: window.innerHeight,
+            behavior: 'smooth'
+          })}>
+            Learn more
+          </Button>
         )}
       </Flex>
     </Box>

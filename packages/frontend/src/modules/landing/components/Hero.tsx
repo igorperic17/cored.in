@@ -4,12 +4,11 @@ export const Hero = () => {
   return (
     <Flex
       w="100%"
-      h="90vh"
-      pt="6vh"
-      pb="6vh"
+      h="85vh"
       direction="column"
       align="start"
       justify="space-between"
+      pb="1em"
     >
       <Heading
         as="h2"

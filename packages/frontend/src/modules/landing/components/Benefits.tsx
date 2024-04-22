@@ -50,18 +50,18 @@ export const Benefits = () => {
   });
 
   return (
-    <Box w="100%" mt="2em">
+    <Box w="100%" pb="1em">
       {/* <VisuallyHidden> */}
       <Heading
         as="h2"
-        fontSize={{ base: "4rem" }}
+        fontSize={{ base: "3rem", md: "4rem" }}
         color="brand.600"
         mb="1rem"
       >
         Benefits
       </Heading>
       {/* </VisuallyHidden> */}
-      <List spacing="1em">
+      <List spacing="1.5em">
         {benefitItems}
       </List>
     </Box>
