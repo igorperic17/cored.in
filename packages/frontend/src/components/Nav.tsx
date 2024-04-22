@@ -58,7 +58,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       w="100%"
       maxW="1920px"
       margin="0 auto"
-      px={{ base: "1.5em", md: "2em" }}
+      px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }}
       py="2em"
     >
       <Flex

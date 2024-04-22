@@ -6,7 +6,7 @@ import { FEATURE_FLAG } from "@/constants/featureFlag";
 const LandingPage = () => {
   const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   return (
-    <Flex flexDirection="column" mx="auto" maxW="1920px" px={{ base: "1.5em", md: "2em" }} pb="5em" gap="7em">
+    <Flex flexDirection="column" mx="auto" maxW="1920px" px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }} pb="5em" gap="7em">
       <Hero />
       <Benefits />
       {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (

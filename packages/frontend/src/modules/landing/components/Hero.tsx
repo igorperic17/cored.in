@@ -8,11 +8,11 @@ export const Hero = () => {
       direction="column"
       align="start"
       justify="space-between"
-      pb="1em"
+      pb={{ base: "1em", md: "2.5em" }}
     >
       <Heading
         as="h2"
-        fontSize={{ base: "3rem", md: "4rem", xl: "5rem" }}
+        fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
         textAlign="left"
         maxW={{ base: "750px", xl: "900px" }}
       >
@@ -20,9 +20,9 @@ export const Hero = () => {
       </Heading>
       <Text
         textAlign="right"
-        maxW={{ base: "300px", sm: "420px", xl: "650px" }}
+        maxW={{ base: "300px", sm: "600px", xl: "680px" }}
         alignSelf="end"
-        fontSize={{ base: "1rem", md: "1.5rem", xl: "2rem" }}
+        fontSize={{ base: "1rem", md: "1.5rem", xl: "1.75rem" }}
       >
         Empower your professional experience with CoredIn. Customize your
         profile visibility and choose who can reach out to you. It's time to
