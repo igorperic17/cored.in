@@ -33,7 +33,7 @@ type benefit = (typeof benefitsData)[number]["title"];
 export const Benefits = () => {
   const [selectedBenefit, setSelectedBenefit] = useState<benefit>();
 
-  const benefitEls = benefitsData.map((benefit, index) => {
+  const benefitItems = benefitsData.map((benefit, index) => {
     return (
       <BenefitItem
         key={`landing-benefit-${index}`}
@@ -50,19 +50,19 @@ export const Benefits = () => {
   });
 
   return (
-    <Box w="100%" h="90vh">
+    <Box w="100%" mt="2em">
       {/* <VisuallyHidden> */}
       <Heading
         as="h2"
-        fontSize={{ base: "4rem", xl: "5rem" }}
+        fontSize={{ base: "4rem" }}
         color="brand.600"
-        mb="1em"
+        mb="1rem"
       >
         Benefits
       </Heading>
       {/* </VisuallyHidden> */}
-      <List spacing="3em" mb="8em">
-        {benefitEls}
+      <List spacing="1em">
+        {benefitItems}
       </List>
     </Box>
   );
