@@ -13,7 +13,7 @@ import {
 import { Link as ReactRouterLink, useLocation } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { useFeatureFlagContext } from "@/contexts/featureFlag";
-import { FEATURE_FLAG } from "@/constants/featureFlag";
+import { FEATURE_FLAG } from "@coredin/shared";
 
 export interface NavProps {
   onOpen: () => void;
