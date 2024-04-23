@@ -1,4 +1,3 @@
-import { FEATURE_FLAG } from "@/constants/featureFlag";
 import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import {
   Flex,
@@ -10,12 +9,16 @@ import {
 } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
+import { FEATURE_FLAG } from "@coredin/shared";
 
 export const COOKIES_ACCEPTANCE_COOKIE_NAME = "CookiesConsent";
 
 export const CookiesBar = () => {
-  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext()
-  const isEnabled = useMemo(() => isInitialised && isFeatureEnabled(FEATURE_FLAG.COOKIES), [isInitialised, isFeatureEnabled])
+  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
+  const isEnabled = useMemo(
+    () => isInitialised && isFeatureEnabled(FEATURE_FLAG.COOKIES),
+    [isInitialised, isFeatureEnabled]
+  );
   const [cookies, setCookie, removeCookie] = useCookies([
     COOKIES_ACCEPTANCE_COOKIE_NAME
   ]);

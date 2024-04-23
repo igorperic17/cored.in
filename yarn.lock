@@ -3453,6 +3453,8 @@ __metadata:
     ts-node: "npm:^9.1.1"
     tslib: "npm:^2.3.1"
     typescript: "npm:~4.5.4"
+  peerDependencies:
+    jest: ~29.7.0
   bin:
     unleash-proxy: bin/unleash-proxy.js
   languageName: unknown

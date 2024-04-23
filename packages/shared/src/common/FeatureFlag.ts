@@ -3,5 +3,5 @@ export enum FEATURE_FLAG {
   PRIVACY_POLICY = "privacy_policy",
   TEST_APP = "test_app",
   APP = "app",
-  COOKIES = "cookies",
+  COOKIES = "cookies"
 }

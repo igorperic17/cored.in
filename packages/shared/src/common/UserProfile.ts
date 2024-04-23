@@ -1,4 +1,4 @@
-import { CountryCode, DateString, ShortString, SmallPositiveNumber } from ".";
+import { CountryCode, DateString, ShortString } from ".";
 
 export type UserProfile = {
   firstName: ShortString | null;
