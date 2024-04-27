@@ -4,7 +4,7 @@ import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import { NotFoundError, UserProfile } from "@coredin/shared";
 import { Effect } from "effect";
-import { WaltIdWalletService } from "src/ssi/core/services";
+import { WaltIdWalletService } from "../ssi/core/services";
 
 const NULL_USER_PROFILE: UserProfile = {
   firstName: null,

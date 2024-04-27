@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { AuthenticatedRequest } from "src/authentication";
-import { LoggedIn } from "src/authentication/guard";
+import { AuthenticatedRequest } from "../authentication";
+import { LoggedIn } from "../authentication/guard";
 import { UserProfile } from "@coredin/shared";
 import { TypedBody } from "@nestia/core";
 import { Effect } from "effect";
