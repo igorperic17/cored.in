@@ -86,8 +86,8 @@ export class SecretsService {
 		}
 		try {
 			const fileContents = fs.readFileSync(pathToJsonFile).toString();
-			const secrets = JSON.parse(fileContents);
-			return new SecretsService(secrets);
+			const jsonData = JSON.parse(fileContents);
+			return new SecretsService(SecretsService.fromJsonData(jsonData));
 		} catch (e) {
 			throw new FileReadError(pathToJsonFile);
 		}
