@@ -27,14 +27,38 @@ resource "aws_iam_role" "lambda_backend_execution_role" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_basic_execution_role" {
+resource "aws_iam_role_policy_attachment" "lambda_backend_basic_execution_role" {
   role       = aws_iam_role.lambda_backend_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
-resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
+resource "aws_iam_role_policy_attachment" "lambda_backend_vpc_access_execution_role" {
   role       = aws_iam_role.lambda_backend_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
+resource "aws_iam_policy" "lambda_backend_secrets_manager_read_policy" {
+  name        = "SecretAccessPolicy"
+  description = "IAM policy to allow access to a specific secret in Secrets Manager"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "secretsmanager:GetSecretValue",
+        Resource = [
+          aws_secretsmanager_secret.jwt_secret_asm_secret.arn,
+          aws_secretsmanager_secret.aurora_password_asm_secret.arn
+        ]
+      },
+    ],
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "secret_access_attachment" {
+  role       = aws_iam_role.lambda_backend_execution_role.name
+  policy_arn = aws_iam_policy.lambda_backend_secrets_manager_read_policy.arn
 }
 
 resource "aws_lambda_function" "lambda_backend" {
@@ -43,7 +67,7 @@ resource "aws_lambda_function" "lambda_backend" {
   runtime       = "nodejs20.x"
   handler       = "index.handler"
   role          = aws_iam_role.lambda_backend_execution_role.arn
-  timeout       = 15
+  timeout       = 60
   layers = [
     "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
   ]
