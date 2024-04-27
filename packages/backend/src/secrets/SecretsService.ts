@@ -42,16 +42,15 @@ export class SecretsService {
 	static async fromEnvVarJsonFile(envName: string, pathToJsonFile: string): Promise<SecretsService> {
 		const merged = [];
 
-		let ssFromEnv, ssFromFile: SecretsService;
 		try {
-			ssFromEnv = SecretsService.fromEnvVar(envName);
+			const ssFromEnv = SecretsService.fromEnvVar(envName);
 			merged.push(...ssFromEnv.getAll().entries());
 		} catch (e) {
 			console.log("SecretService.fromEnvVarJsonFile: Ignored EnvVar");
 		}
 
 		try {
-			ssFromFile = SecretsService.fromJsonFile(pathToJsonFile);
+			const ssFromFile = SecretsService.fromJsonFile(pathToJsonFile);
 			merged.push(...ssFromFile.getAll().entries());
 		} catch (e) {
 			console.log("SecretService.fromEnvVarJsonFile: Ignored file");
@@ -60,6 +59,7 @@ export class SecretsService {
 		if (merged.length === 0) {
 			throw new Error("No secret found");
 		}
+
 		for (const secret of merged) {
 			const [, value] = secret
 			if (value.startsWith(SECRETS_MANAGER_PREFIX)) {
@@ -68,6 +68,7 @@ export class SecretsService {
 				secret[1] = secretValue;
 			}
 		}
+		
 		return new SecretsService(new Map<string, string>(merged));
 	}
 

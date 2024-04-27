@@ -1,4 +1,17 @@
+resource "random_password" "jwt_secret" {
+  length  = 32
+  special = false
+}
 
+resource "aws_secretsmanager_secret" "jwt_secret_asm_secret" {
+  name                    = "${var.app_name}-jwt-secret"
+  recovery_window_in_days = 7
+}
+
+resource "aws_secretsmanager_secret_version" "jwt_secret_asm_secret_version" {
+  secret_id     = aws_secretsmanager_secret.jwt_secret_asm_secret.id
+  secret_string = random_password.jwt_secret.result
+}
 
 resource "aws_iam_role" "lambda_backend_execution_role" {
   name = "${var.app_name}-lambda-backend-execution-role"
@@ -28,6 +41,28 @@ resource "aws_lambda_function" "lambda_backend" {
   layers = [
     "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
   ]
+  environment {
+    variables = {
+      "CONFIGURATION_JSON" = jsonencode({
+        secrets = {
+          file_path   = "",
+          json_env_var = "SECRETS_JSON",
+        },
+        db = {
+          host         = aws_rds_cluster_instance.aurora_instance.endpoint,
+          port         = aws_rds_cluster_instance.aurora_instance.port,
+          user         = var.db_user,
+          database     = var.db_name,
+          synchronize  = true,
+          debug        = false,
+        },
+      }),
+      "SECRETS_JSON" = jsonencode({
+        jwt_secret  = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
+        db_password = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}"
+      })
+    }
+  }
 }
 
 resource "aws_apigatewayv2_api" "lambda_backend_api" {
