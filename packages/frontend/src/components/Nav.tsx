@@ -58,9 +58,9 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       background="background.900"
     >
       <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
-        Cored.
-        <Text display="inline" color="brand.600">
-          in
+        cored
+        <Text as="span" color="brand.600">
+          .in
         </Text>
       </Heading>
       {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
