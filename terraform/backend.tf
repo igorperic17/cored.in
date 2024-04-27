@@ -41,6 +41,10 @@ resource "aws_lambda_function" "lambda_backend" {
   layers = [
     "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
   ]
+  vpc_config {
+    subnet_ids         = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+    security_group_ids = [aws_vpc.default.default_security_group_id]
+  }
   environment {
     variables = {
       "CONFIGURATION_JSON" = jsonencode({
