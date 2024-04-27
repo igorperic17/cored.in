@@ -1,13 +1,17 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
-const webpack = require('webpack');
+const CopyWebpackPlugin = require("copy-webpack-plugin");
+const WriteFilePlugin = require("write-file-webpack-plugin");
+const { IgnorePlugin } = require("webpack");
 const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 require('source-map-support').install();
 const TerserPlugin = require('terser-webpack-plugin');
 
 // List of NestJS lazy imports
 const lazyImports = [
+  '@fastify/static',
+  '@fastify/view',
   '@nestjs/microservices',
   '@nestjs/microservices/microservices-module',
   '@nestjs/websockets/socket-module',
@@ -31,23 +35,24 @@ module.exports = module.exports = (options) => ({
   entry: {
     lambda: './src/lambda.ts',
   },
-  // mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
+  mode: "production",
   devtool: 'source-map',
-  // entry: slsw.lib.entries,
   target: 'node',
   resolve: {
     extensions: ['.cjs', '.mjs', '.js', '.ts'],
   },
   output: {
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, '.webpack'),
+    path: path.join(__dirname, "dist"),
     filename: '[name].js',
+    chunkFormat: false,
   },
   externals: [],
   module: {
     rules: [
       {
         test: /\.ts$/,
+        exclude: /node_modules/,
         loader: 'ts-loader',
         options: {
           configFile: 'tsconfig.webpack.json',
@@ -67,8 +72,17 @@ module.exports = module.exports = (options) => ({
     ],
   },
   plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        {
+          from: "package.json",
+          to: "[name][ext]",
+        },
+      ],
+    }),
     new ForkTSCheckerWebpackPlugin(),
-    new webpack.IgnorePlugin({
+    new WriteFilePlugin(),
+    new IgnorePlugin({
       checkResource(resource) {
         if (lazyImports.includes(resource)) {
           try {

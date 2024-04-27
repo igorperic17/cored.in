@@ -65,7 +65,7 @@ resource "aws_lambda_function" "lambda_backend" {
   filename      = "../packages/backend/lambda.zip"
   function_name = "${var.app_name}-lambda-backend"
   runtime       = "nodejs20.x"
-  handler       = "index.handler"
+  handler       = "lambda.handler"
   role          = aws_iam_role.lambda_backend_execution_role.arn
   timeout       = 60
   layers = [
