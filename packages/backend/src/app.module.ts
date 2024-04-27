@@ -27,6 +27,7 @@ import { SsiModule } from "./ssi/ssi.module";
         host: configService.get("db.host"),
         port: configService.get("db.port"),
         username: configService.get("db.user"),
+        password: secretsService.get("db_password"),
         database: configService.get("db.database"),
         synchronize: configService.get("db.synchronize"),
         logging: configService.get("db.debug"),
