@@ -1,4 +1,10 @@
 import * as fs from "fs";
+import axios from "axios";
+
+const SECRETS_MANAGER_PREFIX = "sm://";
+
+const AWS_SECRETS_EXTENTION_HTTP_PORT = 2773
+const AWS_SECRETS_EXTENTION_SERVER_ENDPOINT = `http://localhost:${AWS_SECRETS_EXTENTION_HTTP_PORT}/secretsmanager/get?secretId=`;
 
 export class FileReadError extends Error {
 	constructor(path: string) {
@@ -19,7 +25,21 @@ export class SecretsService {
 		this.secrets = secrets;
 	}
 
-	static fromEnvVarJsonFile(envName: string, pathToJsonFile: string): SecretsService {
+	static async fromSecretsManager(secretName: string): Promise<string> {
+		const url = `${AWS_SECRETS_EXTENTION_SERVER_ENDPOINT}${secretName}`
+    const response = await axios.get(url, {
+      headers: {
+				'X-Aws-Parameters-Secrets-Token': process.env.AWS_SESSION_TOKEN ?? ''
+			}
+    });
+		const secret = response.data?.SecretString;
+		if (!secret) {
+			throw new Error(`Secret value for ${secretName} not found!`)
+		}
+		return secret;
+	}
+
+	static async fromEnvVarJsonFile(envName: string, pathToJsonFile: string): Promise<SecretsService> {
 		const merged = [];
 
 		let ssFromEnv, ssFromFile: SecretsService;
@@ -40,6 +60,14 @@ export class SecretsService {
 		if (merged.length === 0) {
 			throw new Error("No secret found");
 		}
+		for (const secret of merged) {
+			const [, value] = secret
+			if (value.startsWith(SECRETS_MANAGER_PREFIX)) {
+				const secretName = value.replace(SECRETS_MANAGER_PREFIX, "");
+				const secretValue = await this.fromSecretsManager(secretName);
+				secret[1] = secretValue;
+			}
+		}
 		return new SecretsService(new Map<string, string>(merged));
 	}
 
@@ -57,7 +85,6 @@ export class SecretsService {
 	}
 
 	static fromEnvVar(envName: string): SecretsService {
-		const secrets = new Map<string, string>();
 		const envValue = process.env[envName];
 		if (typeof envValue !== "string") {
 			throw new Error(`Given env is not defined: ${envName}`);

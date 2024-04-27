@@ -3,8 +3,7 @@ import { SecretsService } from "./SecretsService";
 
 export const SecretsServiceFactory = {
   provide: "SecretsService",
-  useFactory: (config: ConfigService) => {
-    // const appName = config.get<string>("app_name");
+  useFactory: async (config: ConfigService) => {
     const secretsFilePath = config.get<string>(`secrets.file_path`);
     if (!secretsFilePath) {
       throw new Error(`Secrets file not set: ${secretsFilePath}`);
@@ -15,7 +14,7 @@ export const SecretsServiceFactory = {
       throw new Error(`Secrets env var name not set: ${secretsEnvPath}`);
     }
 
-    return SecretsService.fromEnvVarJsonFile(secretsEnvPath, secretsFilePath);
+    return await SecretsService.fromEnvVarJsonFile(secretsEnvPath, secretsFilePath);
   },
   inject: [ConfigService]
 };
