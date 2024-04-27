@@ -40,7 +40,7 @@ export class SecretsService {
 	}
 
 	static async fromEnvVarJsonFile(envName?: string, pathToJsonFile?: string): Promise<SecretsService> {
-		const merged = [];
+		const merged: [string, string][] = [];
 
 		if (!envName) {
       console.warn(`Secrets env var name not set: ${envName}`)

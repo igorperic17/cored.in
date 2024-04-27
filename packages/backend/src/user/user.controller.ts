@@ -1,9 +1,9 @@
-import { Controller, Get, Post, Req, UseGuards } from "@nestjs/common";
+import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
 import { UserProfile } from "@coredin/shared";
-import { TypedBody } from "@nestia/core";
+import { TypedBody, TypedRoute } from "@nestia/core";
 import { Effect } from "effect";
 
 @Controller("user")
@@ -18,7 +18,7 @@ export class UserController {
     return Effect.runPromise(await this.userService.get(req.wallet));
   }
 
-  @Post()
+  @TypedRoute.Post()
   @UseGuards(LoggedIn)
   async updateProfile(
     @Req() req: AuthenticatedRequest,
