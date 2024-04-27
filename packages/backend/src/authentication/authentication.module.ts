@@ -9,7 +9,7 @@ const jwtModule = JwtModule.registerAsync({
   useFactory: async (secrets: SecretsService) => ({
     secret: secrets.get("jwt_secret")
   }),
-  inject: ["SecretsService"]
+  inject: [SecretsService]
 });
 
 @Global()

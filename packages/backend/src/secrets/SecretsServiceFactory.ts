@@ -2,7 +2,7 @@ import { ConfigService } from "@nestjs/config";
 import { SecretsService } from "./SecretsService";
 
 export const SecretsServiceFactory = {
-  provide: "SecretsService",
+  provide: SecretsService,
   useFactory: async (config: ConfigService) => {
     const secretsFilePath = config.get<string>(`secrets.file_path`);
     if (!secretsFilePath) {

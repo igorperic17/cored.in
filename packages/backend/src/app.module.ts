@@ -8,6 +8,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserModule } from "./user/user.module";
 import configuration from "./config/configuration";
 import { SecretsModule } from "./secrets/secrets.module";
+import { SecretsService } from "./secrets/SecretsService";
+import { SsiModule } from "./ssi/ssi.module";
 
 @Module({
   imports: [
@@ -17,9 +19,10 @@ import { SecretsModule } from "./secrets/secrets.module";
       isGlobal: true
     }),
     SecretsModule,
+    SsiModule,
     TypeOrmModule.forRootAsync({
-      imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
+      imports: [ConfigModule, SecretsModule],
+      useFactory: (configService: ConfigService, secretsService: SecretsService) => ({
         type: "postgres",
         host: configService.get("db.host"),
         port: configService.get("db.port"),
@@ -29,7 +32,7 @@ import { SecretsModule } from "./secrets/secrets.module";
         logging: configService.get("db.debug"),
         autoLoadEntities: true
       }),
-      inject: [ConfigService]
+      inject: [ConfigService, SecretsService]
     }),
     UserModule
   ],

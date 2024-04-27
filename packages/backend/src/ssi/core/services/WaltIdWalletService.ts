@@ -1,3 +1,4 @@
+import { Injectable } from "@nestjs/common";
 import axios from "axios";
 
 type Wallet = {
@@ -23,6 +24,7 @@ type Did = {
   // createdOn: string
 };
 
+@Injectable()
 export class WaltIdWalletService {
   constructor(private readonly walletApiUrl: string) {}
 
