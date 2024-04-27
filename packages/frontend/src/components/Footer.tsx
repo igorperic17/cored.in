@@ -10,7 +10,7 @@ export const Footer = () => {
       justify="center"
       align="center"
       w="100%"
-      h={{ base: "92vh", md: "90vh", xl: "50vh" }}
+      h={{ base: "92vh", md: "90vh", xl: "89vh" }}
       mt={{ base: "0em", xl: "15em" }}
       gap="3em"
     >
