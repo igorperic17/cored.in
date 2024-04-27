@@ -8,8 +8,8 @@
     "moduleResolution": "node",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "module": "commonjs",
-    "target": "es2020",
+    "module": "ESNext",
+    "target": "ESNext",
     "outDir": "./dist",
     "strict": true,
     "esModuleInterop": true,
@@ -22,16 +22,21 @@
     "allowSyntheticDefaultImports": true,
     "strictNullChecks": true,
     "noImplicitAny": false,
-    "strictBindCallApply": false,
+    "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": false,
     "plugins": [
+      { 
+        "transform": "@nestia/core/lib/transform",
+        "validate": "validateEquals",
+        "stringify": "assert", 
+      },
       {
         "transform": "typia/lib/transform"
-      }
+      },
     ]
   },
   "include": [
-    "./**/*.ts"
+    "src/**/*.ts"
   ],
   "exclude": [
     "node_modules/**/*",

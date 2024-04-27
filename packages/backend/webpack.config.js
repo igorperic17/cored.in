@@ -1,11 +1,12 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const nodeExternals = require('webpack-node-externals');
-const CopyWebpackPlugin = require("copy-webpack-plugin");
+const { TsconfigPathsPlugin } = require('tsconfig-paths-webpack-plugin');
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const { IgnorePlugin } = require("webpack");
-const ForkTSCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
+const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 require('source-map-support').install();
 const TerserPlugin = require('terser-webpack-plugin');
 
@@ -17,22 +18,13 @@ const lazyImports = [
   '@nestjs/microservices/microservices-module',
   '@nestjs/websockets/socket-module',
   '@nestjs/platform-express',
-  '@grpc/grpc-js',
-  '@grpc/proto-loader',
-  'kafkajs',
-  'mqtt',
-  'nats',
-  'ioredis',
-  'amqplib',
-  'amqp-connection-manager',
   'pg-native',
   'cache-manager',
   'class-validator',
   'class-transformer',
 ];
 
-module.exports = module.exports = (options) => ({
-  ...options,
+module.exports = (options) => ({
   entry: {
     lambda: './src/lambda.ts',
   },
@@ -41,6 +33,11 @@ module.exports = module.exports = (options) => ({
   target: 'node',
   resolve: {
     extensions: ['.ts', '.js'],
+    plugins: [
+      new TsconfigPathsPlugin({
+        configFile: 'tsconfig.webpack.json',
+      }),
+    ],
   },
   output: {
     libraryTarget: 'commonjs2',
@@ -52,14 +49,20 @@ module.exports = module.exports = (options) => ({
   module: {
     rules: [
       {
-        test: /\.ts$/,
+        test: /.ts?$/,
+        include: [
+          path.resolve(__dirname, 'src'),
+        ],
+        use: [
+          {
+            loader: 'ts-loader',
+            options: {
+              transpileOnly: false,
+              configFile: 'tsconfig.webpack.json',
+            },
+          },
+        ],
         exclude: /node_modules/,
-        loader: 'ts-loader',
-        options: {
-          configFile: 'tsconfig.webpack.json',
-          transpileOnly: true,
-          experimentalFileCaching: true,
-        },
       },
     ],
   },
@@ -73,15 +76,8 @@ module.exports = module.exports = (options) => ({
     ],
   },
   plugins: [
-    new CopyWebpackPlugin({
-      patterns: [
-        {
-          from: "package.json",
-          to: "[name][ext]",
-        },
-      ],
-    }),
-    new ForkTSCheckerWebpackPlugin(),
+    new CleanWebpackPlugin(),
+    new ForkTsCheckerWebpackPlugin(),
     new WriteFilePlugin(),
     new IgnorePlugin({
       checkResource(resource) {

@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { configure } from '@codegenie/serverless-express';
+import serverlessExpress from '@codegenie/serverless-express';
 import { Callback, Context, Handler } from 'aws-lambda';
 import { AppModule } from './app.module';
 
@@ -10,7 +10,7 @@ async function bootstrap(): Promise<Handler> {
   await app.init();
 
   const expressApp = app.getHttpAdapter().getInstance();
-  return configure({ app: expressApp });
+  return serverlessExpress({ app: expressApp });
 }
 
 export const handler: Handler = async (
