@@ -33,8 +33,8 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution_role" {
 }
 
 resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
-    role       = aws_iam_role.lambda_backend_execution_role.name
-    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+  role       = aws_iam_role.lambda_backend_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
 }
 
 resource "aws_lambda_function" "lambda_backend" {
@@ -43,6 +43,7 @@ resource "aws_lambda_function" "lambda_backend" {
   runtime       = "nodejs20.x"
   handler       = "index.handler"
   role          = aws_iam_role.lambda_backend_execution_role.arn
+  timeout       = 15
   layers = [
     "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
   ]
@@ -57,12 +58,12 @@ resource "aws_lambda_function" "lambda_backend" {
           json_env_var = "SECRETS_JSON",
         },
         db = {
-          host         = aws_rds_cluster_instance.aurora_instance.endpoint,
-          port         = aws_rds_cluster_instance.aurora_instance.port,
-          user         = var.db_user,
-          database     = var.db_name,
-          synchronize  = true,
-          debug        = false,
+          host        = aws_rds_cluster_instance.aurora_instance.endpoint,
+          port        = aws_rds_cluster_instance.aurora_instance.port,
+          user        = var.db_user,
+          database    = var.db_name,
+          synchronize = true,
+          debug       = false,
         },
       }),
       "SECRETS_JSON" = jsonencode({

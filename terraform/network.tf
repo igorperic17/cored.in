@@ -37,6 +37,14 @@ resource "aws_subnet" "private" {
   availability_zone = var.db_availability_zones[count.index]
 }
 
+resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
+  vpc_id              = aws_vpc.default.id
+  subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name        = "com.amazonaws.eu-west-1.secretsmanager"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+}
+
 resource "aws_db_subnet_group" "aurora_subnet_group" {
   name       = "${var.app_name}-rds-aurora-cluster-subnet-group"
   subnet_ids = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
