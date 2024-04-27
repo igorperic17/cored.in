@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
+const nodeExternals = require('webpack-node-externals');
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const WriteFilePlugin = require("write-file-webpack-plugin");
 const { IgnorePlugin } = require("webpack");
@@ -39,7 +40,7 @@ module.exports = module.exports = (options) => ({
   devtool: 'source-map',
   target: 'node',
   resolve: {
-    extensions: ['.cjs', '.mjs', '.js', '.ts'],
+    extensions: ['.ts', '.js'],
   },
   output: {
     libraryTarget: 'commonjs2',
@@ -47,7 +48,7 @@ module.exports = module.exports = (options) => ({
     filename: '[name].js',
     chunkFormat: false,
   },
-  externals: [],
+  externals: [nodeExternals()],
   module: {
     rules: [
       {
