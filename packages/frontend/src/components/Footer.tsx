@@ -11,6 +11,7 @@ export const Footer = () => {
       align="center"
       w="100%"
       h="min-content"
+      minH="50vh"
       gap="3em"
       // border="1px solid red"
       pt="5em"
