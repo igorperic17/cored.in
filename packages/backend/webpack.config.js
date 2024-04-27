@@ -28,6 +28,9 @@ const lazyImports = [
 
 module.exports = module.exports = (options) => ({
   ...options,
+  entry: {
+    lambda: './src/lambda.ts',
+  },
   // mode: slsw.lib.webpack.isLocal ? 'development' : 'production',
   devtool: 'source-map',
   // entry: slsw.lib.entries,
