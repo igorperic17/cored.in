@@ -1,0 +1,11 @@
+secrets:
+  file_path: secrets-backend-local.json
+  json_env_var: "SECRETS"
+
+db:
+  host: '{SET_HOST_HERE}'
+  port: 5432
+  user: 'coredin_aurora_admin'
+  database: 'coredinprod'
+  synchronize: true
+  debug: true

@@ -62,17 +62,17 @@ resource "aws_ecs_task_definition" "wallet_api" {
 
   container_definitions = jsonencode([
     {
-      cpu                    = var.wallet_api_cpu
-      image                  = var.wallet_api_image
-      memory                 = var.wallet_api_memory
-      name                   = "${var.app_name}-wallet-api-container"
-      networkMode            = "awsvpc"
+      cpu         = var.wallet_api_cpu
+      image       = var.wallet_api_image
+      memory      = var.wallet_api_memory
+      name        = "${var.app_name}-wallet-api-container"
+      networkMode = "awsvpc"
       logConfiguration = var.use_private_subnets ? null : {
         logDriver = "awslogs",
         options = {
-          "awslogs-group": "${aws_cloudwatch_log_group.ecs_log_group.name}",
-          "awslogs-region": "${var.region}",
-          "awslogs-stream-prefix": "ecs-wallet-api"
+          "awslogs-group" : "${aws_cloudwatch_log_group.ecs_log_group.name}",
+          "awslogs-region" : "${var.region}",
+          "awslogs-stream-prefix" : "ecs-wallet-api"
         }
       }
       mountPoints = [
@@ -90,29 +90,29 @@ resource "aws_ecs_task_definition" "wallet_api" {
       ]
       environment = [
         {
-          name = "DB_URL",
+          name  = "DB_URL",
           value = "${aws_rds_cluster_instance.aurora_instance.endpoint}:${aws_rds_cluster_instance.aurora_instance.port}/${var.db_name}"
         },
         {
-          name = "DB_USER",
+          name  = "DB_USER",
           value = "${var.db_user}"
         }
       ]
-      secrets     = [
+      secrets = [
         {
-          name = "AUTH_ENCRYPTION_KEY",
+          name      = "AUTH_ENCRYPTION_KEY",
           valueFrom = aws_secretsmanager_secret.encryption_key_asm_secret.arn
         },
         {
-          name = "AUTH_SIGN_KEY",
+          name      = "AUTH_SIGN_KEY",
           valueFrom = aws_secretsmanager_secret.sign_key_asm_secret.arn
         },
         {
-          name = "AUTH_TOKEN_KEY",
+          name      = "AUTH_TOKEN_KEY",
           valueFrom = aws_secretsmanager_secret.token_key_asm_secret.arn
         },
         {
-          name = "DB_PASS",
+          name      = "DB_PASS",
           valueFrom = aws_secretsmanager_secret.aurora_password_asm_secret.arn
         }
       ]

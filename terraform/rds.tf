@@ -15,20 +15,20 @@ resource "aws_rds_cluster_parameter_group" "aurora_cluster_parameter_group" {
 }
 
 resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier        = "${var.app_name}-rds-aurora-cluster"
-  engine                    = "aurora-postgresql"
-  engine_version            = "16.1"
-  database_name             = var.db_name
-  master_username           = var.db_user
-  master_password           = random_password.aurora_password.result
-  backup_retention_period   = 7
-  preferred_backup_window   = "03:00-05:00"
-  skip_final_snapshot       = true
+  cluster_identifier      = "${var.app_name}-rds-aurora-cluster"
+  engine                  = "aurora-postgresql"
+  engine_version          = "16.1"
+  database_name           = var.db_name
+  master_username         = var.db_user
+  master_password         = random_password.aurora_password.result
+  backup_retention_period = 7
+  preferred_backup_window = "03:00-05:00"
+  skip_final_snapshot     = true
 
-  db_subnet_group_name      = aws_db_subnet_group.aurora_subnet_group.name
+  db_subnet_group_name            = aws_db_subnet_group.aurora_subnet_group.name
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_parameter_group.name
 
-  vpc_security_group_ids    = [aws_security_group.aurora_cluster.id]
+  vpc_security_group_ids = [aws_security_group.aurora_cluster.id]
 
   tags = {
     Name   = "coredin-rds-aurora-cluster"
@@ -51,10 +51,10 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
 }
 
 provider "postgresql" {
-  host      = aws_rds_cluster_instance.aurora_instance.endpoint
-  database  = aws_rds_cluster.aurora_cluster.database_name
-  username  = var.db_user
-  password  = random_password.aurora_password.result
+  host     = aws_rds_cluster_instance.aurora_instance.endpoint
+  database = aws_rds_cluster.aurora_cluster.database_name
+  username = var.db_user
+  password = random_password.aurora_password.result
 }
 
 resource "postgresql_database" "wallet_api_database" {
