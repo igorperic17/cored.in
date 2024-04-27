@@ -3531,7 +3531,7 @@ __metadata:
     "@nestjs/cli": "npm:^10.3.2"
     "@nestjs/common": "npm:^10.3.3"
     "@nestjs/config": "npm:^3.2.0"
-    "@nestjs/core": "npm:^10.3.3"
+    "@nestjs/core": "npm:^10.3.8"
     "@nestjs/jwt": "npm:^10.2.0"
     "@nestjs/platform-express": "npm:^10.3.3"
     "@nestjs/schematics": "npm:^10.1.1"
@@ -3545,6 +3545,7 @@ __metadata:
     "@types/supertest": "npm:^2.0.16"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
     "@typescript-eslint/parser": "npm:^6.21.0"
+    "@vercel/ncc": "npm:^0.38.1"
     aws-lambda: "npm:^1.0.7"
     axios: "npm:^1.6.7"
     effect: "npm:^2.4.18"
@@ -5205,7 +5206,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@nestjs/core@npm:>=7.0.1, @nestjs/core@npm:^10.3.3":
+"@nestjs/core@npm:>=7.0.1":
   version: 10.3.7
   resolution: "@nestjs/core@npm:10.3.7"
   dependencies:
@@ -5230,6 +5231,34 @@ __metadata:
     "@nestjs/websockets":
       optional: true
   checksum: 10/70ee28c7e7b07cf7fb3684dc8aace8b300072f55a5feec910e4f540dfd42776a70823eaf355a608c0693b9a911ae738d5ae48a159e8e718ecdc3f90b39f282e8
+  languageName: node
+  linkType: hard
+
+"@nestjs/core@npm:^10.3.8":
+  version: 10.3.8
+  resolution: "@nestjs/core@npm:10.3.8"
+  dependencies:
+    "@nuxtjs/opencollective": "npm:0.3.2"
+    fast-safe-stringify: "npm:2.1.1"
+    iterare: "npm:1.2.1"
+    path-to-regexp: "npm:3.2.0"
+    tslib: "npm:2.6.2"
+    uid: "npm:2.0.2"
+  peerDependencies:
+    "@nestjs/common": ^10.0.0
+    "@nestjs/microservices": ^10.0.0
+    "@nestjs/platform-express": ^10.0.0
+    "@nestjs/websockets": ^10.0.0
+    reflect-metadata: ^0.1.12 || ^0.2.0
+    rxjs: ^7.1.0
+  peerDependenciesMeta:
+    "@nestjs/microservices":
+      optional: true
+    "@nestjs/platform-express":
+      optional: true
+    "@nestjs/websockets":
+      optional: true
+  checksum: 10/62aebc3a5f48f79137a4dc5fcb0b72120c0ef9ac8ddf9a7c18164f7fe81b4374d47ff652ac876845f982d6126db555ca3c47ec89c772e65196e93e8c32c008f4
   languageName: node
   linkType: hard
 
@@ -7020,6 +7049,17 @@ __metadata:
   version: 1.2.0
   resolution: "@ungap/structured-clone@npm:1.2.0"
   checksum: 10/c6fe89a505e513a7592e1438280db1c075764793a2397877ff1351721fe8792a966a5359769e30242b3cd023f2efb9e63ca2ca88019d73b564488cc20e3eab12
+  languageName: node
+  linkType: hard
+
+"@vercel/ncc@npm:^0.38.1":
+  version: 0.38.1
+  resolution: "@vercel/ncc@npm:0.38.1"
+  dependencies:
+    node-gyp: "npm:latest"
+  bin:
+    ncc: dist/ncc/cli.js
+  checksum: 10/2ed9dff34ba2e7c2ba7113ed075effd023549d5041d355a367f5bf749b20916f68d2adad6737f7a2d03f0d92237f948ce8dfbc9429bdf3febc18d4fa5159d9b4
   languageName: node
   linkType: hard
 

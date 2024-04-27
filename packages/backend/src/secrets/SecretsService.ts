@@ -27,11 +27,11 @@ export class SecretsService {
 
 	static async fromSecretsManager(secretName: string): Promise<string> {
 		const url = `${AWS_SECRETS_EXTENTION_SERVER_ENDPOINT}${secretName}`
-    const response = await axios.get(url, {
-      headers: {
+		const response = await axios.get(url, {
+			headers: {
 				'X-Aws-Parameters-Secrets-Token': process.env.AWS_SESSION_TOKEN ?? ''
 			}
-    });
+		});
 		const secret = response.data?.SecretString;
 		if (!secret) {
 			throw new Error(`Secret value for ${secretName} not found!`)
@@ -39,25 +39,33 @@ export class SecretsService {
 		return secret;
 	}
 
-	static async fromEnvVarJsonFile(envName: string, pathToJsonFile: string): Promise<SecretsService> {
+	static async fromEnvVarJsonFile(envName?: string, pathToJsonFile?: string): Promise<SecretsService> {
 		const merged = [];
 
-		try {
-			const ssFromEnv = SecretsService.fromEnvVar(envName);
-			merged.push(...ssFromEnv.getAll().entries());
-		} catch (e) {
-			console.log("SecretService.fromEnvVarJsonFile: Ignored EnvVar");
+		if (!envName) {
+      console.warn(`Secrets env var name not set: ${envName}`)
+    } else {
+			try {
+				const ssFromEnv = SecretsService.fromEnvVar(envName);
+				merged.push(...ssFromEnv.getAll().entries());
+			} catch (e) {
+				console.warn("SecretService.fromEnvVarJsonFile: Ignored EnvVar");
+			}
 		}
 
-		try {
-			const ssFromFile = SecretsService.fromJsonFile(pathToJsonFile);
-			merged.push(...ssFromFile.getAll().entries());
-		} catch (e) {
-			console.log("SecretService.fromEnvVarJsonFile: Ignored file");
+    if (!pathToJsonFile) {
+      console.warn(`Secrets env var name not set: ${pathToJsonFile}`)
+    } else {
+			try {
+				const ssFromFile = SecretsService.fromJsonFile(pathToJsonFile);
+				merged.push(...ssFromFile.getAll().entries());
+			} catch (e) {
+				console.warn("SecretService.fromEnvVarJsonFile: Ignored file");
+			}
 		}
 
 		if (merged.length === 0) {
-			throw new Error("No secret found");
+			console.warn("No secrets found!");
 		}
 
 		for (const secret of merged) {
@@ -68,21 +76,21 @@ export class SecretsService {
 				secret[1] = secretValue;
 			}
 		}
-		
+
 		return new SecretsService(new Map<string, string>(merged));
 	}
 
 	static fromJsonFile(pathToJsonFile: string): SecretsService {
-		let fileContents;
+		if (!fs.existsSync(pathToJsonFile)) {
+			return new SecretsService(new Map<string, string>())
+		}
 		try {
-			fileContents = JSON.parse(fs.readFileSync(pathToJsonFile).toString());
+			const fileContents = fs.readFileSync(pathToJsonFile).toString();
+			const secrets = JSON.parse(fileContents);
+			return new SecretsService(secrets);
 		} catch (e) {
 			throw new FileReadError(pathToJsonFile);
 		}
-
-		const secrets = SecretsService.fromJsonData(fileContents);
-
-		return new SecretsService(secrets);
 	}
 
 	static fromEnvVar(envName: string): SecretsService {

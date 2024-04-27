@@ -38,10 +38,10 @@ resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
 }
 
 resource "aws_lambda_function" "lambda_backend" {
-  filename      = "../packages/backend/dist.zip"
+  filename      = "../packages/backend/lambda.zip"
   function_name = "${var.app_name}-lambda-backend"
   runtime       = "nodejs20.x"
-  handler       = "lambda.handler"
+  handler       = "index.handler"
   role          = aws_iam_role.lambda_backend_execution_role.arn
   layers = [
     "arn:aws:lambda:eu-west-1:015030872274:layer:AWS-Parameters-and-Secrets-Lambda-Extension:11",
@@ -54,7 +54,6 @@ resource "aws_lambda_function" "lambda_backend" {
     variables = {
       "CONFIGURATION_JSON" = jsonencode({
         secrets = {
-          file_path   = "",
           json_env_var = "SECRETS_JSON",
         },
         db = {
