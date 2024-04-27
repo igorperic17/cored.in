@@ -32,6 +32,11 @@ resource "aws_iam_role_policy_attachment" "lambda_basic_execution_role" {
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
+resource "aws_iam_role_policy_attachment" "AWSLambdaVPCAccessExecutionRole" {
+    role       = aws_iam_role.lambda_backend_execution_role.name
+    policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 resource "aws_lambda_function" "lambda_backend" {
   filename      = "../packages/backend/dist.zip"
   function_name = "${var.app_name}-lambda-backend"
