@@ -1,6 +1,5 @@
 # compiled output
 /dist
-/.webpack
 /lambda
 /node_modules
 
