@@ -1,10 +1,10 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
 import { NotFoundError, UserProfile } from "@coredin/shared";
 import { Effect } from "effect";
-import { WaltIdWalletService } from "src/ssi/core/services";
+import { WaltIdWalletService } from "../ssi/core/services";
 
 const NULL_USER_PROFILE: UserProfile = {
   firstName: null,
@@ -26,7 +26,9 @@ type UserWithDid = {
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>
+    private readonly userRepository: Repository<User>,
+    @Inject(WaltIdWalletService)
+    private readonly waltId: WaltIdWalletService
   ) {}
 
   async get(
@@ -37,8 +39,7 @@ export class UserService {
       console.log("user from db ", user);
       // Get DID
       // TODO - properly inject waltID wallet service!!! create provider etc..
-      const waltId = new WaltIdWalletService("http://localhost:7001");
-      const did = await waltId.getOrCreateDid(wallet);
+      const did = await this.waltId.getOrCreateDid(wallet);
       console.log(did);
       // Init null profile
       const profile = { ...NULL_USER_PROFILE, ...(user.profile || {}) };

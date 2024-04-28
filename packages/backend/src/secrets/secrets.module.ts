@@ -1,9 +1,10 @@
 import { Global, Module } from "@nestjs/common";
 import { SecretsServiceFactory } from "./SecretsServiceFactory";
+import { SecretsService } from "./SecretsService";
 
 @Global()
 @Module({
 	providers: [SecretsServiceFactory],
-	exports: ["SecretsService"]
+	exports: [SecretsService]
 })
 export class SecretsModule {}

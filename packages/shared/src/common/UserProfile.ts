@@ -1,6 +1,6 @@
 import { CountryCode, DateString, ShortString } from ".";
 
-export type UserProfile = {
+export interface UserProfile {
   firstName: ShortString | null;
   lastName: ShortString | null;
   secondLastName: ShortString | null;

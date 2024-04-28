@@ -9,3 +9,7 @@ db:
   database: 'coredin_dev_db'
   synchronize: true
   debug: true
+
+wallet:
+  api:
+    url: 'http://localhost:7001'

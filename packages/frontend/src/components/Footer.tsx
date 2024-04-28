@@ -10,9 +10,12 @@ export const Footer = () => {
       justify="center"
       align="center"
       w="100%"
-      h={{ base: "92vh", md: "90vh", xl: "89vh" }}
-      mt={{ base: "0em", xl: "15em" }}
+      h="min-content"
+      minH="50vh"
       gap="3em"
+      // border="1px solid red"
+      pt="5em"
+      pb="10em"
     >
       <Heading
         as="h2"
@@ -21,14 +24,13 @@ export const Footer = () => {
         textAlign="center"
         maxW="600px"
       >
-        Be the first to know when we finish building cored
+        Get notified when cored
         <Text as="span" color="brand.600">
           .in
         </Text>{" "}
-        for you
+        is ready
       </Heading>
       <SocialMedia />
-      <BackToTop />
     </Flex>
   );
 };

@@ -9,7 +9,7 @@ import { TESTNET_CHAIN_BECH32_PREFIX } from "@coredin/shared";
 export class AuthenticationMiddleware implements NestMiddleware {
   constructor(private readonly jwtService: JwtService) {}
 
-  use(req: Request, res: Response, next: NextFunction) {
+  use(req: Request, _: Response, next: NextFunction) {
     this.addJwtPropertiesToHeaders(req);
     next();
   }
