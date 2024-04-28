@@ -88,23 +88,15 @@ resource "aws_security_group" "wallet_api_elb" {
 }
 
 resource "aws_security_group" "wallet_api" {
-  name        = "${var.app_name}-wallet-api-sg-ecs"
+  name        = "${var.app_name}-wallet-api-ecs-sg"
   description = "Allow inbound access for Wallet API"
   vpc_id      = aws_vpc.default.id
 
-  # ingress {
-  #   protocol        = "tcp"
-  #   from_port       = 0
-  #   to_port         = var.wallet_api_port
-  #   security_groups = [aws_security_group.wallet_api_elb.id]
-  # }
-
-  # TODO: Remove later on.
   ingress {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.wallet_api_port
-    cidr_blocks     = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.wallet_api_elb.id]
   }
 
   egress {
@@ -135,13 +127,12 @@ resource "aws_security_group" "lambda_backend" {
   }
 }
 
-
-# resource "aws_security_group_rule" "public_wallet_api_security_group_rule" {
-#   security_group_id = aws_security_group.wallet_api.id
-#   type              = "ingress"
-#   protocol          = "tcp"
-#   from_port         = 0
-#   to_port           = var.wallet_api_port
-#   cidr_blocks       = var.use_private_subnets ? [] : ["0.0.0.0/0"]
-#   count             = var.use_private_subnets ? 0 : 1
-# }
+resource "aws_security_group_rule" "public_wallet_api_security_group_rule" {
+  security_group_id = aws_security_group.wallet_api.id
+  type              = "ingress"
+  protocol          = "tcp"
+  from_port         = 0
+  to_port           = var.wallet_api_port
+  cidr_blocks       = var.use_private_subnets ? [] : ["0.0.0.0/0"]
+  count             = var.use_private_subnets ? 0 : 1
+}
