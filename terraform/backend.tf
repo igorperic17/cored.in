@@ -45,8 +45,8 @@ resource "aws_iam_policy" "lambda_backend_secrets_manager_read_policy" {
     Version = "2012-10-17",
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = "secretsmanager:GetSecretValue",
+        Effect = "Allow",
+        Action = "secretsmanager:GetSecretValue",
         Resource = [
           aws_secretsmanager_secret.jwt_secret_asm_secret.arn,
           aws_secretsmanager_secret.aurora_password_asm_secret.arn
@@ -89,6 +89,11 @@ resource "aws_lambda_function" "lambda_backend" {
           synchronize = true,
           debug       = false,
         },
+        wallet = {
+          api = {
+            url = "${aws_alb.wallet_api.dns_name}:${var.wallet_api_port}"
+          }
+        }
       }),
       "SECRETS_JSON" = jsonencode({
         jwt_secret  = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",

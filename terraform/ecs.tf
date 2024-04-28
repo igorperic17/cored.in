@@ -142,5 +142,11 @@ resource "aws_ecs_service" "wallet_api" {
     assign_public_ip = var.use_private_subnets ? false : true
   }
 
+  load_balancer {
+    target_group_arn = aws_alb_target_group.wallet_api.arn
+    container_name   = "${var.app_name}-wallet-api-container"
+    container_port   = var.wallet_api_port
+  }
+
   depends_on = [aws_ecs_task_definition.wallet_api]
 }

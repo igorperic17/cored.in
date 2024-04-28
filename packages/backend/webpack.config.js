@@ -24,7 +24,7 @@ const lazyImports = [
   'class-transformer',
 ];
 
-module.exports = (options) => ({
+module.exports = () => ({
   entry: {
     lambda: './src/lambda.ts',
   },

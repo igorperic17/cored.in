@@ -63,6 +63,19 @@ resource "aws_security_group" "aurora_cluster" {
   }
 }
 
+resource "aws_security_group" "wallet_api_elb" {
+  name        = "${var.app_name}-wallet-api-elb-sg"
+  description = "Allow inbound traffic to Wallet API ELBr"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    from_port   = var.wallet_api_port
+    to_port     = var.wallet_api_port
+    protocol    = "tcp"
+    cidr_blocks = var.use_private_subnets ? ["10.0.0.0/16"] : ["0.0.0.0/0"]
+  }
+}
+
 resource "aws_security_group" "wallet_api" {
   name        = "${var.app_name}-wallet-api-sg-ecs"
   description = "Allow inbound access for Wallet API"
@@ -72,7 +85,7 @@ resource "aws_security_group" "wallet_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.wallet_api_port
-    security_groups = [aws_security_group.api.id]
+    security_groups = [aws_security_group.wallet_api_elb.id]
   }
 
   egress {
