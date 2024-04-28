@@ -1,6 +1,6 @@
 resource "aws_alb" "wallet_api" {
   name            = "${var.app_name}-wallet-api-elb"
-  internal        = var.use_private_subnets
+  internal        = true
   subnets         = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
   security_groups = [aws_security_group.wallet_api_elb.id]
 }

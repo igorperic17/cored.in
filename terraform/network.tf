@@ -76,7 +76,7 @@ resource "aws_security_group" "wallet_api_elb" {
     from_port   = var.wallet_api_port
     to_port     = var.wallet_api_port
     protocol    = "tcp"
-    cidr_blocks = var.use_private_subnets ? [aws_vpc.default.cidr_block] : ["0.0.0.0/0"]
+    cidr_blocks = [aws_vpc.default.cidr_block]
   }
 
   egress {
