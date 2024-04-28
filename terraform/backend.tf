@@ -73,7 +73,7 @@ resource "aws_lambda_function" "lambda_backend" {
   ]
   vpc_config {
     subnet_ids         = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
-    security_group_ids = [aws_vpc.default.default_security_group_id]
+    security_group_ids = [aws_security_group.lambda_backend.id]
   }
   environment {
     variables = {
@@ -91,7 +91,7 @@ resource "aws_lambda_function" "lambda_backend" {
         },
         wallet = {
           api = {
-            url = "${aws_alb.wallet_api.dns_name}:${var.wallet_api_port}"
+            url = "http://${aws_alb.wallet_api.dns_name}:${var.wallet_api_port}"
           }
         }
       }),

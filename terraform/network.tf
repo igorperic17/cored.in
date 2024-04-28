@@ -45,7 +45,7 @@ resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
   private_dns_enabled = true
   security_group_ids  = [
     aws_security_group.wallet_api.id,
-    aws_vpc.default.default_security_group_id
+    aws_security_group.lambda_backend.id,
   ]
 }
 
@@ -63,7 +63,7 @@ resource "aws_security_group" "aurora_cluster" {
     from_port   = 0
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = var.use_private_subnets ? ["10.0.0.0/16"] : ["0.0.0.0/0"]
+    cidr_blocks = var.use_private_subnets ? [aws_vpc.default.cidr_block] : ["0.0.0.0/0"]
   }
 }
 
@@ -76,7 +76,7 @@ resource "aws_security_group" "wallet_api_elb" {
     from_port   = var.wallet_api_port
     to_port     = var.wallet_api_port
     protocol    = "tcp"
-    cidr_blocks = var.use_private_subnets ? ["10.0.0.0/16"] : ["0.0.0.0/0"]
+    cidr_blocks = var.use_private_subnets ? [aws_vpc.default.cidr_block] : ["0.0.0.0/0"]
   }
 
   egress {
@@ -114,6 +114,27 @@ resource "aws_security_group" "wallet_api" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group" "lambda_backend" {
+  name        = "${var.app_name}-lambda-backend-sg"
+  description = "Allow outbound access for Lambda backend SG"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    protocol        = "-1"
+    from_port       = 0
+    to_port         = 0
+    cidr_blocks     = [aws_vpc.default.cidr_block]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+}
+
 
 # resource "aws_security_group_rule" "public_wallet_api_security_group_rule" {
 #   security_group_id = aws_security_group.wallet_api.id
