@@ -2,14 +2,14 @@ import { Global, Module } from "@nestjs/common";
 import { JwtModule } from "@nestjs/jwt";
 import { AuthenticationController } from "./authentication.controller";
 import { AuthenticatedWalletGetter } from "./service";
-import { SecretsService } from "src/secrets/SecretsService";
-import { SecretsModule } from "src/secrets/secrets.module";
+import { SecretsService } from "../secrets/SecretsService";
+import { SecretsModule } from "../secrets/secrets.module";
 
 const jwtModule = JwtModule.registerAsync({
   useFactory: async (secrets: SecretsService) => ({
     secret: secrets.get("jwt_secret")
   }),
-  inject: ["SecretsService"]
+  inject: [SecretsService]
 });
 
 @Global()

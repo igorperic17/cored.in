@@ -1,6 +1,5 @@
 # compiled output
 /dist
-/lambda
 /node_modules
 
 # Logs
@@ -34,5 +33,3 @@ lerna-debug.log*
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
-
-lambda.zip

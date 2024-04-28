@@ -1,9 +1,9 @@
-import { Controller, Post, HttpException, HttpStatus } from "@nestjs/common";
+import { Controller, HttpException, HttpStatus } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { MaxLoginDurationMs } from "./constants";
-import { TypedBody } from "@nestia/core";
+import { TypedBody, TypedRoute } from "@nestia/core";
 
-type LoginRequest = {
+interface LoginRequest {
   walletAddress: string;
   pubKey: string;
   signature: string;
@@ -14,7 +14,7 @@ type LoginRequest = {
 export class AuthenticationController {
   constructor(private readonly jwtService: JwtService) {}
 
-  @Post("/login")
+  @TypedRoute.Post("/login")
   async login(@TypedBody() loginRequest: LoginRequest): Promise<string> {
     console.log("Login requested", loginRequest);
     if (!loginRequest.signature || loginRequest.signature.length < 10) {
