@@ -43,6 +43,10 @@ resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
   service_name        = "com.amazonaws.eu-west-1.secretsmanager"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
+  security_group_ids  = [
+    aws_security_group.wallet_api.id,
+    aws_vpc.default.default_security_group_id
+  ]
 }
 
 resource "aws_db_subnet_group" "aurora_subnet_group" {
@@ -65,7 +69,7 @@ resource "aws_security_group" "aurora_cluster" {
 
 resource "aws_security_group" "wallet_api_elb" {
   name        = "${var.app_name}-wallet-api-elb-sg"
-  description = "Allow inbound traffic to Wallet API ELBr"
+  description = "Allow inbound traffic to Wallet API ELB"
   vpc_id      = aws_vpc.default.id
 
   ingress {
@@ -74,6 +78,13 @@ resource "aws_security_group" "wallet_api_elb" {
     protocol    = "tcp"
     cidr_blocks = var.use_private_subnets ? ["10.0.0.0/16"] : ["0.0.0.0/0"]
   }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
 }
 
 resource "aws_security_group" "wallet_api" {
@@ -81,11 +92,19 @@ resource "aws_security_group" "wallet_api" {
   description = "Allow inbound access for Wallet API"
   vpc_id      = aws_vpc.default.id
 
+  # ingress {
+  #   protocol        = "tcp"
+  #   from_port       = 0
+  #   to_port         = var.wallet_api_port
+  #   security_groups = [aws_security_group.wallet_api_elb.id]
+  # }
+
+  # TODO: Remove later on.
   ingress {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.wallet_api_port
-    security_groups = [aws_security_group.wallet_api_elb.id]
+    cidr_blocks     = ["0.0.0.0/0"]
   }
 
   egress {
@@ -96,32 +115,12 @@ resource "aws_security_group" "wallet_api" {
   }
 }
 
-resource "aws_security_group_rule" "public_wallet_api_security_group_rule" {
-  security_group_id = aws_security_group.wallet_api.id
-  type              = "ingress"
-  protocol          = "tcp"
-  from_port         = 0
-  to_port           = var.wallet_api_port
-  cidr_blocks       = var.use_private_subnets ? [] : ["0.0.0.0/0"]
-  count             = var.use_private_subnets ? 0 : 1
-}
-
-resource "aws_security_group" "api" {
-  name        = "${var.app_name}-api-sg-ecs"
-  description = "Allow inbound access for API"
-  vpc_id      = aws_vpc.default.id
-
-  ingress {
-    protocol    = "tcp"
-    from_port   = "443"
-    to_port     = "443"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  egress {
-    protocol    = "-1"
-    from_port   = 0
-    to_port     = 0
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
+# resource "aws_security_group_rule" "public_wallet_api_security_group_rule" {
+#   security_group_id = aws_security_group.wallet_api.id
+#   type              = "ingress"
+#   protocol          = "tcp"
+#   from_port         = 0
+#   to_port           = var.wallet_api_port
+#   cidr_blocks       = var.use_private_subnets ? [] : ["0.0.0.0/0"]
+#   count             = var.use_private_subnets ? 0 : 1
+# }

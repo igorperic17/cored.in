@@ -21,7 +21,7 @@ resource "aws_alb_target_group" "wallet_api" {
   health_check {
     interval            = 15
     timeout             = 10
-    path                = "/"
+    path                = "/wallet-api/healthz"
     healthy_threshold   = 5
     unhealthy_threshold = 5
     matcher             = "200"
