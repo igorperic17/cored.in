@@ -22,7 +22,7 @@ build-job:       # This job runs in the build stage, which runs first.
     - git commit -m "Auto-commit by GitLab CI"
     - git push origin HEAD:master  # Adjust the branch if necessary
   only:
-    - master  # Specifies that this job should only run on the master branch
+    - main  # Specifies that this job should only run on the master branch
 
 unit-test-job:   # This job runs in the test stage.
   stage: test    # It only starts when the job in the build stage completes successfully.
