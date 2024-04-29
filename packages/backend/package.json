@@ -25,7 +25,8 @@
   "peerDependencies": {
     "axios": "^0.27.2",
     "reflect-metadata": "^0.2.1",
-    "rxjs": "^7.8.1"
+    "rxjs": "^7.8.1",
+    "serverless": "^3.2.0"
   },
   "dependencies": {
     "@codegenie/serverless-express": "^4.14.0",
