@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "sh deploy.sh"
+    "deploy": "sh deploy.sh",
+    "type-gen": "yarn run cosmwasm-ts-codegen --cmd=generate --schema=../contract --out=src/coreum/contract-ts --name=coredin --plugin=client"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
@@ -22,6 +23,7 @@
     "@chakra-ui/system": "^2.6.2",
     "@coredin/shared": "workspace:^",
     "@cosmjs/cosmwasm-stargate": "^0.28.4",
+    "@cosmwasm/ts-codegen": "^1.9.0",
     "@emotion/react": "^11.11.3",
     "@emotion/styled": "^11.11.0",
     "@fontsource/noto-sans": "^5.0.21",
