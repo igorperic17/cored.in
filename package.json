@@ -19,7 +19,8 @@
     "prepare": "yarn workspace @coredin/backend prepare",
     "docker": "docker build . -f base.Dockerfile -t coredin/base && docker build . -f front.Dockerfile -t coredin/front && docker build . -f back.Dockerfile -t coredin/back",
     "lint": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint",
-    "lint:fix": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint:fix"
+    "lint:fix": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint:fix",
+    "build-contract": "cd packages/contract && cargo post build"
   },
   "workspaces": {
     "packages": [

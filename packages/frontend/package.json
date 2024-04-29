@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
-    "deploy": "sh deploy.sh",
-    "type-gen": "yarn run cosmwasm-ts-codegen --cmd=generate --schema=../contract --out=src/coreum/contract-ts --name=coredin --plugin=client"
+    "deploy": "sh deploy.sh"
   },
   "dependencies": {
     "@babel/runtime": "^7.23.9",
