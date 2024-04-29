@@ -38,7 +38,6 @@ export class UserService {
     if (user) {
       console.log("user from db ", user);
       // Get DID
-      // TODO - properly inject waltID wallet service!!! create provider etc..
       const did = await this.waltId.getOrCreateDid(wallet);
       console.log(did);
       // Init null profile

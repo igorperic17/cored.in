@@ -4,7 +4,7 @@ import { Module } from "@nestjs/common";
 import { User } from "./user.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserService } from "./user.service";
-import { SsiModule } from "../ssi/ssi.module";
+import { SsiModule } from "../ssi/app/ssi.module";
 
 @Module({
   imports: [AuthenticationModule, SsiModule, TypeOrmModule.forFeature([User])],

@@ -1,30 +1,6 @@
-import { Injectable } from "@nestjs/common";
+import { Did, Wallet } from "../data-classes";
 import axios from "axios";
 
-type Wallet = {
-  id: string;
-  name: string;
-  permission: string;
-  // These are actually timestamps but not required for the moment
-  // addedOn: string;
-  // createdOn: string;
-};
-
-type WalletsResponse = {
-  wallets: Wallet[];
-};
-
-type Did = {
-  did: string;
-  alias: string;
-  document: string;
-  keyId: string;
-  default: boolean;
-  // This are actually timestamps but not required for the moment
-  // createdOn: string
-};
-
-@Injectable()
 export class WaltIdWalletService {
   constructor(private readonly walletApiUrl: string) {}
 
@@ -67,7 +43,10 @@ export class WaltIdWalletService {
     return createResponse.data;
   }
 
-  async getWallets(wallet: string, token?: string): Promise<WalletsResponse> {
+  async getWallets(
+    wallet: string,
+    token?: string
+  ): Promise<{ wallets: Wallet[] }> {
     if (!token) {
       token = await this.getAuthToken(wallet, wallet);
     }

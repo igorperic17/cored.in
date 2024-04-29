@@ -9,7 +9,7 @@ import { UserModule } from "./user/user.module";
 import configuration from "./config/configuration";
 import { SecretsModule } from "./secrets/secrets.module";
 import { SecretsService } from "./secrets/SecretsService";
-import { SsiModule } from "./ssi/ssi.module";
+import { SsiModule } from "./ssi/app/ssi.module";
 
 @Module({
   imports: [
@@ -22,7 +22,10 @@ import { SsiModule } from "./ssi/ssi.module";
     SsiModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, SecretsModule],
-      useFactory: (configService: ConfigService, secretsService: SecretsService) => ({
+      useFactory: (
+        configService: ConfigService,
+        secretsService: SecretsService
+      ) => ({
         type: "postgres",
         host: configService.get("db.host"),
         port: configService.get("db.port"),
