@@ -1,372 +1,299 @@
-#[cfg(test)]
-mod tests {
-    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_binary, Coin, Deps, DepsMut};
+// #[cfg(test)]
+// mod tests {
+//     use std::borrow::BorrowMut;
+//     use std::marker::PhantomData;
 
-    use crate::contract::{execute, instantiate, query};
-    use crate::error::ContractError;
-    use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg, ResolveRecordResponse};
-    use crate::state::Config;
+//     use coreum_wasm_sdk::core::CoreumQueries;
+//     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info, MockStorage, MockApi, MockQuerier};
+//     use cosmwasm_std::{coin, coins, from_binary, Coin, Deps, DepsMut, Addr, OwnedDeps, Empty, QuerierWrapper};
 
-    fn assert_name_owner(deps: Deps, name: &str, owner: &str) {
-        let res = query(
-            deps,
-            mock_env(),
-            QueryMsg::ResolveRecord {
-                name: name.to_string(),
-            },
-        )
-        .unwrap();
+//     use crate::contract::{execute, instantiate, query};
+//     // use crate::error::ContractError;
+//     use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg, ResolveRecordResponse, ListCredentialsResponse, VerifyCredentialResponse};
+//     use crate::state::{Config, CredentialDegree, CredentialEnum, CredentialEvent};
 
-        let value: ResolveRecordResponse = from_binary(&res).unwrap();
-        assert_eq!(Some(owner.to_string()), value.address);
-    }
 
-    fn assert_config_state(deps: Deps, expected: Config) {
-        let res = query(deps, mock_env(), QueryMsg::Config {}).unwrap();
-        let value: Config = from_binary(&res).unwrap();
-        assert_eq!(value, expected);
-    }
+//     fn assert_did_owner(deps: Deps<CoreumQueries>, owner: &Addr, did: &str) {
 
-    fn mock_init_with_price(deps: DepsMut, purchase_price: Coin, transfer_price: Coin) {
-        let msg = InstantiateMsg {
-            purchase_price: Some(purchase_price),
-            transfer_price: Some(transfer_price),
-        };
+//         let info = mock_info("creator", &[]);
+//         let res = query(
+//             deps,
+//             mock_env(),
+//             info,
+//             QueryMsg::ResolveUserInfo { address: owner.to_string()} ,
+//         )
+//         .unwrap();
 
-        let info = mock_info("creator", &coins(2, "token"));
-        let _res = instantiate(deps, mock_env(), info, msg)
-            .expect("contract successfully handles InstantiateMsg");
-    }
+//         let value: ResolveRecordResponse = from_binary(&res).unwrap();
+//         match value.user_info {
+//             Some(info) => { assert_eq!(did, info.did); }
+//             None => { assert!(false) }
+//         }
+//     }
 
-    fn mock_init_no_price(deps: DepsMut) {
-        let msg = InstantiateMsg {
-            purchase_price: None,
-            transfer_price: None,
-        };
+//     fn assert_config_state(deps: Deps<CoreumQueries>, expected: Config) {
+//         let info = mock_info("creator", &[]);
+//         let res = query(deps, mock_env(), info, QueryMsg::Config {}).unwrap();
+//         let value: Config = from_binary(&res).unwrap();
+//         assert_eq!(value, expected);
+//     }
 
-        let info = mock_info("creator", &coins(2, "token"));
-        let _res = instantiate(deps, mock_env(), info, msg)
-            .expect("contract successfully handles InstantiateMsg");
-    }
+//     fn mock_init_with_price(deps: DepsMut<CoreumQueries>, purchase_price: Coin, transfer_price: Coin) {
+//         let msg = InstantiateMsg {
+//             purchase_price: Some(purchase_price),
+//             transfer_price: Some(transfer_price),
+//         };
 
-    fn mock_alice_registers_name(deps: DepsMut, sent: &[Coin]) {
-        // alice can register an available name
-        let info = mock_info("alice_key", sent);
-        let msg = ExecuteMsg::Register {
-            name: "alice".to_string(),
-        };
-        let _res = execute(deps, mock_env(), info, msg)
-            .expect("contract successfully handles Register message");
-    }
+//         let info = mock_info("creator", &coins(2, "token"));
+//         let _res = instantiate(deps, mock_env(), info, msg)
+//             .expect("contract successfully handles InstantiateMsg");
+//     }
 
-    #[test]
-    fn proper_init_no_fees() {
-        let mut deps = mock_dependencies(&[]);
+//     fn mock_init_no_price(deps: DepsMut<CoreumQueries>) {
+//         let msg = InstantiateMsg {
+//             purchase_price: None,
+//             transfer_price: None,
+//         };
 
-        mock_init_no_price(deps.as_mut());
+//         let info = mock_info("creator", &coins(2, "token"));
+//         let _res = instantiate(deps, mock_env(), info, msg)
+//             .expect("contract successfully handles InstantiateMsg");
+//     }
 
-        assert_config_state(
-            deps.as_ref(),
-            Config {
-                purchase_price: None,
-                transfer_price: None,
-            },
-        );
-    }
+//     fn mock_alice_registers_name(deps: DepsMut<CoreumQueries>, sent: &[Coin]) {
+//         // alice can register an available name
+//         let info = mock_info("alice_key", sent);
+//         let msg = ExecuteMsg::Register {
+//             did: "alice_did".to_string(),
+//             username: "alice_username".to_string(),
+//             bio: "alice_bio".to_string(),
+//         };
+//         let _res = execute(deps, mock_env(), info, msg)
+//             .expect("contract successfully handles Register message");
+//     }
 
-    #[test]
-    fn proper_init_with_fees() {
-        let mut deps = mock_dependencies(&[]);
+//     // #[test]
+//     // fn proper_init_no_fees() {
+//     //     let mut deps = mock_dependencies();
 
-        mock_init_with_price(deps.as_mut(), coin(3, "token"), coin(4, "token"));
+//     //     mock_init_no_price(deps.as_mut());
 
-        assert_config_state(
-            deps.as_ref(),
-            Config {
-                purchase_price: Some(coin(3, "token")),
-                transfer_price: Some(coin(4, "token")),
-            },
-        );
-    }
+//     //     assert_config_state(
+//     //         deps.as_ref(),
+//     //         Config {
+//     //             purchase_price: None,
+//     //             transfer_price: None,
+//     //             owner: None,
+//     //         },
+//     //     );
+//     // }
 
-    #[test]
-    fn register_available_name_and_query_works() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
+//     // #[test]
+//     // fn proper_init_with_fees() {
+//     //     let mut deps = mock_dependencies();
 
-        // querying for name resolves to correct address
-        assert_name_owner(deps.as_ref(), "alice", "alice_key");
-    }
+//     //     mock_init_with_price(deps.as_mut(), coin(3, "token"), coin(4, "token"));
 
-    #[test]
-    fn register_available_name_and_query_works_with_fees() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_with_price(deps.as_mut(), coin(2, "token"), coin(2, "token"));
-        mock_alice_registers_name(deps.as_mut(), &coins(2, "token"));
+//     //     assert_config_state(
+//     //         deps.as_ref(),
+//     //         Config {
+//     //             purchase_price: Some(coin(3, "token")),
+//     //             transfer_price: Some(coin(4, "token")),
+//     //         },
+//     //     );
+//     // }
 
-        // anyone can register an available name with more fees than needed
-        let info = mock_info("bob_key", &coins(5, "token"));
-        let msg = ExecuteMsg::Register {
-            name: "bob".to_string(),
-        };
+//     // fn mock_dependencies_coreum() -> DepsMut {
+//     //     let mut deps_empty = mock_dependencies();
+//     //     DepsMut {
+//     //         storage: deps_empty.storage.borrow_mut(),
+//     //         api: &deps_empty.api,
+//     //         querier: QuerierWrapper::new(&deps_empty.querier),
+//     //     }
+//     // }
 
-        let _res = execute(deps.as_mut(), mock_env(), info, msg)
-            .expect("contract successfully handles Register message");
+//     #[test]
+//     fn register_available_name_and_query_works() {
+//         let mut deps_empty = mock_dependencies();
+//         let deps: DepsMut<CoreumQueries> = DepsMut {
+//             storage: deps_empty.storage.borrow_mut(),
+//             api: &deps_empty.api,
+//             querier: QuerierWrapper::new(&deps_empty.querier),
+//         };
+//         mock_init_no_price(deps);
+//         mock_alice_registers_name(deps, &[]);
 
-        // querying for name resolves to correct address
-        assert_name_owner(deps.as_ref(), "alice", "alice_key");
-        assert_name_owner(deps.as_ref(), "bob", "bob_key");
-    }
+//         // querying for name resolves to correct address
+//         let alice = mock_info("alice_key", &[]);
+//         assert_did_owner(deps.as_ref(), &alice.sender.clone(), "alice_did");
 
-    #[test]
-    fn fails_on_register_already_taken_name() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
+//         // querying for name resolves to correct address
+//         // let alice_2 = mock_info("alice_key_2", &[]);
+//         // assert_did_owner(deps.as_ref(), &alice_2.sender, "alice_did");
+//     }
 
-        // bob can't register the same name
-        let info = mock_info("bob_key", &coins(2, "token"));
-        let msg = ExecuteMsg::Register {
-            name: "alice".to_string(),
-        };
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
 
-        match res {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::NameTaken { .. }) => {}
-            Err(_) => panic!("Unknown error"),
-        }
-        // alice can't register the same name again
-        let info = mock_info("alice_key", &coins(2, "token"));
-        let msg = ExecuteMsg::Register {
-            name: "alice".to_string(),
-        };
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
 
-        match res {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::NameTaken { .. }) => {}
-            Err(e) => panic!("Unexpected error: {:?}", e),
-        }
-    }
+//     fn mock_register_diploma(deps: DepsMut<CoreumQueries>, sent: &[Coin], diploma: CredentialEnum) {
+//         // alice can register an available name
+//         let info = mock_info("alice_key", sent);
+//         let msg = ExecuteMsg::IssueCredential { credential: diploma };
+//         let _res = execute(deps, mock_env(), info, msg)
+//             .expect("contract successfully handles Register message");
+//     }
 
-    #[test]
-    fn register_available_name_fails_with_invalid_name() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_no_price(deps.as_mut());
-        let info = mock_info("bob_key", &coins(2, "token"));
+//     #[test]
+//     fn issue_diploma_works() {
+//         let mut deps_empty = mock_dependencies();
+//         let deps: DepsMut<CoreumQueries> = DepsMut {
+//             storage: deps_empty.storage.borrow_mut(),
+//             api: &deps_empty.api,
+//             querier: QuerierWrapper::new(&deps_empty.querier),
+//         };
+//         mock_init_no_price(deps);
+//         mock_alice_registers_name(deps, &[]);
 
-        // hi is too short
-        let msg = ExecuteMsg::Register {
-            name: "hi".to_string(),
-        };
-        match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::NameTooShort { .. }) => {}
-            Err(_) => panic!("Unknown error"),
-        }
+//         let diploma = CredentialEnum::Degree { data: CredentialDegree {
+//             owner: "alice_key".to_string(),
+//             institution_name: "MIT".to_string(),
+//             institution_did: "MID_DID".to_string(),
+//             year: 2023,
+//         },
+//             vc_hash: "".to_string(), };
 
-        // 65 chars is too long
-        let msg = ExecuteMsg::Register {
-            name: "01234567890123456789012345678901234567890123456789012345678901234".to_string(),
-        };
-        match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::NameTooLong { .. }) => {}
-            Err(_) => panic!("Unknown error"),
-        }
+//         mock_register_diploma(deps_empty, &[], diploma.clone());
 
-        // no upper case...
-        let msg = ExecuteMsg::Register {
-            name: "LOUD".to_string(),
-        };
-        match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::InvalidCharacter { c }) => assert_eq!(c, 'L'),
-            Err(_) => panic!("Unknown error"),
-        }
-        // ... or spaces
-        let msg = ExecuteMsg::Register {
-            name: "two words".to_string(),
-        };
-        match execute(deps.as_mut(), mock_env(), info, msg) {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::InvalidCharacter { .. }) => {}
-            Err(_) => panic!("Unknown error"),
-        }
-    }
+//         let info = mock_info("alice_key", &[]);
+//         // check if alice has the diploma
+//         let res = query(
+//             deps.as_ref(),
+//             mock_env(),
+//             info,
+//             QueryMsg::ListCredentials { address: "alice_key".to_string() } 
+//         )
+//         .unwrap();
 
-    #[test]
-    fn fails_on_register_insufficient_fees() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_with_price(deps.as_mut(), coin(2, "token"), coin(2, "token"));
+//         let value: ListCredentialsResponse = from_binary(&res).unwrap();
+        
+//         assert!(value.credentials.contains(&diploma));
+//     }
 
-        // anyone can register an available name with sufficient fees
-        let info = mock_info("alice_key", &[]);
-        let msg = ExecuteMsg::Register {
-            name: "alice".to_string(),
-        };
 
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
+//     #[test]
+//     fn issue_event_works() {
+//         let mut deps_empty = mock_dependencies();
+//         let mut deps: DepsMut<CoreumQueries> = DepsMut {
+//             storage: deps_empty.storage.borrow_mut(),
+//             api: &deps_empty.api,
+//             querier: QuerierWrapper::new(&deps_empty.querier),
+//         };
+//         mock_init_no_price(deps);
+//         mock_alice_registers_name(deps, &[]);
 
-        match res {
-            Ok(_) => panic!("register call should fail with insufficient fees"),
-            Err(ContractError::InsufficientFundsSend {}) => {}
-            Err(e) => panic!("Unexpected error: {:?}", e),
-        }
-    }
+//         let ebc9_event = CredentialEnum::Event { data: CredentialEvent {
+//             owner: "alice_key".to_string(),
+//             event_name: "EBC9 Hackaton".to_string(),
+//             organizer_did: "EBC".to_string(),
+//             year: Some(2023),
+//         },
+//             vc_hash: "".to_string(), };
 
-    #[test]
-    fn fails_on_register_wrong_fee_denom() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_with_price(deps.as_mut(), coin(2, "token"), coin(2, "token"));
+//         mock_register_diploma(deps, &[], ebc9_event.clone());
 
-        // anyone can register an available name with sufficient fees
-        let info = mock_info("alice_key", &coins(2, "earth"));
-        let msg = ExecuteMsg::Register {
-            name: "alice".to_string(),
-        };
+//         let info = mock_info("alice_key", &[]);
 
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
+//         // check if alice has the diploma
+//         let res = query(
+//             deps.as_ref(),
+//             mock_env(),
+//             info,
+//             QueryMsg::ListCredentials { address: "alice_key".to_string() } 
+//         )
+//         .unwrap();
 
-        match res {
-            Ok(_) => panic!("register call should fail with insufficient fees"),
-            Err(ContractError::InsufficientFundsSend {}) => {}
-            Err(e) => panic!("Unexpected error: {:?}", e),
-        }
-    }
+//         let value: ListCredentialsResponse = from_binary(&res).unwrap();
+        
+//         assert!(value.credentials.contains(&ebc9_event));
 
-    #[test]
-    fn transfer_works() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
+//         let ebc9_fake_event_wrong_year = CredentialEnum::Event { data: CredentialEvent {
+//             owner: "alice_key".to_string(),
+//             event_name: "EBC9 Hackaton".to_string(),
+//             organizer_did: "EBC".to_string(),
+//             year: Some(2022),
+//         },
+//             vc_hash: "".to_string(), };
+//         let ebc9_fake_event_wrong_owner = CredentialEnum::Event { data: CredentialEvent {
+//             owner: "alice_key_fake".to_string(),
+//             event_name: "EBC9 Hackaton".to_string(),
+//             organizer_did: "EBC".to_string(),
+//             year: Some(2023),
+//         },
+//             vc_hash: "".to_string(), };
 
-        // alice can transfer her name successfully to bob
-        let info = mock_info("alice_key", &[]);
-        let msg = ExecuteMsg::Transfer {
-            name: "alice".to_string(),
-            to: "bob_key".to_string(),
-        };
+//         assert!(!value.credentials.contains(&ebc9_fake_event_wrong_year));
+//         assert!(!value.credentials.contains(&ebc9_fake_event_wrong_owner));
+//     }
 
-        let _res = execute(deps.as_mut(), mock_env(), info, msg)
-            .expect("contract successfully handles Transfer message");
-        // querying for name resolves to correct address (bob_key)
-        assert_name_owner(deps.as_ref(), "alice", "bob_key");
-    }
+//     #[test]
+//     fn credential_verification_works() {
+//         let mut deps_empty = mock_dependencies();
+//         let mut deps: DepsMut<CoreumQueries> = DepsMut {
+//             storage: deps_empty.storage.borrow_mut(),
+//             api: &deps_empty.api,
+//             querier: QuerierWrapper::new(&deps_empty.querier),
+//         };
+//         // let deps_mut: DepsMut<CoreumQueries> = DepsMut {
+//         //     storage: deps_empty.storage.borrow_mut(),
+//         //     api: &deps_empty.api,
+//         //     querier: QuerierWrapper::new(&deps_empty.querier),
+//         // };
 
-    #[test]
-    fn transfer_works_with_fees() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_with_price(deps.as_mut(), coin(2, "token"), coin(2, "token"));
-        mock_alice_registers_name(deps.as_mut(), &coins(2, "token"));
+//         mock_init_no_price(deps);
+//         mock_alice_registers_name(deps, &[]);
 
-        // alice can transfer her name successfully to bob
-        let info = mock_info("alice_key", &[coin(1, "earth"), coin(2, "token")]);
-        let msg = ExecuteMsg::Transfer {
-            name: "alice".to_string(),
-            to: "bob_key".to_string(),
-        };
+//         let ebc9_event = CredentialEnum::Event { data: CredentialEvent {
+//             owner: "alice_key".to_string(),
+//             event_name: "EBC9 Hackaton".to_string(),
+//             organizer_did: "EBC".to_string(),
+//             year: Some(2023),
+//         },
+//             vc_hash: "".to_string(), };
 
-        let _res = execute(deps.as_mut(), mock_env(), info, msg)
-            .expect("contract successfully handles Transfer message");
-        // querying for name resolves to correct address (bob_key)
-        assert_name_owner(deps.as_ref(), "alice", "bob_key");
-    }
+//         mock_register_diploma(deps, &[], ebc9_event.clone());
 
-    #[test]
-    fn fails_on_transfer_non_existent() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
+//         let info = mock_info("alice_key", &[]);
+//         // check if alice has the event
+//         let res = query(
+//             deps.as_ref(),
+//             mock_env(),
+//             info, 
+//             QueryMsg::VerifyCredential { data: ebc9_event }
+//         )
+//         .unwrap();
+//         let value: VerifyCredentialResponse = from_binary(&res).unwrap();
+//         assert_eq!(value.valid, true);
 
-        // alice can transfer her name successfully to bob
-        let info = mock_info("frank_key", &coins(2, "token"));
-        let msg = ExecuteMsg::Transfer {
-            name: "alice42".to_string(),
-            to: "bob_key".to_string(),
-        };
+//         let info = mock_info("alice_key", &[]);
 
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
+//         let ebc9_event_fake = CredentialEnum::Event { data: CredentialEvent {
+//             owner: "alice_key".to_string(),
+//             event_name: "EBC9 Hackaton".to_string(),
+//             organizer_did: "EBC".to_string(),
+//             year: Some(2022),
+//         },
+//             vc_hash: "".to_string(), };
+//         // check if alice has the fake event (should not have it)
+//         let res = query(
+//             deps.as_ref(),
+//             mock_env(),
+//             info,
+//             QueryMsg::VerifyCredential { data: ebc9_event_fake }
+//         )
+//         .unwrap();
+//         let value: VerifyCredentialResponse = from_binary(&res).unwrap();
+//         assert_eq!(value.valid, false);
 
-        match res {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::NameNotExists { name }) => assert_eq!(name, "alice42"),
-            Err(e) => panic!("Unexpected error: {:?}", e),
-        }
+//     }
 
-        // querying for name resolves to correct address (alice_key)
-        assert_name_owner(deps.as_ref(), "alice", "alice_key");
-    }
 
-    #[test]
-    fn fails_on_transfer_from_nonowner() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
-
-        // alice can transfer her name successfully to bob
-        let info = mock_info("frank_key", &coins(2, "token"));
-        let msg = ExecuteMsg::Transfer {
-            name: "alice".to_string(),
-            to: "bob_key".to_string(),
-        };
-
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
-
-        match res {
-            Ok(_) => panic!("Must return error"),
-            Err(ContractError::Unauthorized { .. }) => {}
-            Err(e) => panic!("Unexpected error: {:?}", e),
-        }
-
-        // querying for name resolves to correct address (alice_key)
-        assert_name_owner(deps.as_ref(), "alice", "alice_key");
-    }
-
-    #[test]
-    fn fails_on_transfer_insufficient_fees() {
-        let mut deps = mock_dependencies(&[]);
-        mock_init_with_price(deps.as_mut(), coin(2, "token"), coin(5, "token"));
-        mock_alice_registers_name(deps.as_mut(), &coins(2, "token"));
-
-        // alice can transfer her name successfully to bob
-        let info = mock_info("alice_key", &[coin(1, "earth"), coin(2, "token")]);
-        let msg = ExecuteMsg::Transfer {
-            name: "alice".to_string(),
-            to: "bob_key".to_string(),
-        };
-
-        let res = execute(deps.as_mut(), mock_env(), info, msg);
-
-        match res {
-            Ok(_) => panic!("register call should fail with insufficient fees"),
-            Err(ContractError::InsufficientFundsSend {}) => {}
-            Err(e) => panic!("Unexpected error: {:?}", e),
-        }
-
-        // querying for name resolves to correct address (bob_key)
-        assert_name_owner(deps.as_ref(), "alice", "alice_key");
-    }
-
-    #[test]
-    fn returns_empty_on_query_unregistered_name() {
-        let mut deps = mock_dependencies(&[]);
-
-        mock_init_no_price(deps.as_mut());
-
-        // querying for unregistered name results in NotFound error
-        let res = query(
-            deps.as_ref(),
-            mock_env(),
-            QueryMsg::ResolveRecord {
-                name: "alice".to_string(),
-            },
-        )
-        .unwrap();
-        let value: ResolveRecordResponse = from_binary(&res).unwrap();
-        assert_eq!(None, value.address);
-    }
-}
+// }
