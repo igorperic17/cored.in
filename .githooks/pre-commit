@@ -1,0 +1,10 @@
+#!/bin/sh
+echo "Looking for contract changes..."
+if git diff --cached --quiet -- "packages/contract/*.rs"; then
+    echo "No contract changes found"
+    exit 0
+else
+    echo "Contract changes found, exporting contract types..."
+    #TODO - do the magic and on succesfull export, add the new files to the commit and exit 0
+    exit 1
+fi
