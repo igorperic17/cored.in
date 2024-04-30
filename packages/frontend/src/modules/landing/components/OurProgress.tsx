@@ -16,30 +16,30 @@ import {
 
 const steps = [
   {
-    title: "First",
+    title: "Profile registration",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit pariatur itaque, alias asperiores aliquid nisi cupiditate laboriosam delectus earum! Architecto repellat odit soluta a nihil quidem rerum fuga laborum qui?"
+      "By connecting their Coreum wallet, users can create a cored.in profile, generate a DID and register it on-chain."
   },
   {
-    title: "Second",
+    title: "Subscription-based verifiable claims",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit pariatur itaque, alias asperiores aliquid nisi cupiditate laboriosam delectus earum! Architecto repellat odit soluta a nihil quidem rerum fuga laborum qui?"
+      "Profiles are enriched with verifiable credentials, whose content can have a public, anonymized or private visibility. Hidden information and claim verification will only be disclosed to profile subscribers (optionally paid)."
   },
   {
-    title: "Third",
+    title: "Incentivized messaging",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit pariatur itaque, alias asperiores aliquid nisi cupiditate laboriosam delectus earum! Architecto repellat odit soluta a nihil quidem rerum fuga laborum qui?"
+      "To avoid spam, cored.in users can require upfront payment in order to be contacted, thus ensuring the mutual interest of the conversation."
   },
   {
-    title: "Fourth",
+    title: "Talent hunting",
     description:
-      "Lorem ipsum dolor sit amet consectetur, adipisicing elit. Reprehenderit pariatur itaque, alias asperiores aliquid nisi cupiditate laboriosam delectus earum! Architecto repellat odit soluta a nihil quidem rerum fuga laborum qui?"
+      "Find your next dream job or the best team for your project. With cored.in, you can verify the cantidate and the employers background, ensuring a fully transparent and trustless recruitment processs"
   }
 ];
 
 export const OurProgress = () => {
   const { activeStep } = useSteps({
-    index: 2,
+    index: 1,
     count: steps.length
   });
 
