@@ -1,6 +1,21 @@
 import { Box, Flex, Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
 import { TechCard } from "./TechCard";
 
+const techData = [
+  {
+    heading: "Built on Coreum",
+    text: "Built on top of the Cosmos ecosystem, Coreum is a Smart-Contract proof-of-stake blockchain built as a core infrastructure for the future of decentralized applications and Defi.\n\nCoreum is actively supporting cored.in as part of the Wave 3 of their development grants."
+  },
+  {
+    heading: "Soulbound subscriptions",
+    text: "Profile subscriptions are represented by soulbound non-fungible tokens that are minted on demand.\n\nUsers can optionally set a price for their subscriptions that will be automatically paid by the subscriber upon minting."
+  },
+  {
+    heading: "Verifiable credentials",
+    text: "By leveraging the open-source SSI (Self-Sovereign Identity) technology from walt.id, each profile is backed by a DID (Decentralized Identifier).\n\nClaims are then based on verifiable credentials which include cryptographic proof of the information issuer to ensure their autenticity. They can be either issued directly within the platform or imported from existing SSI standards."
+  }
+];
+
 export const Tech = () => {
   return (
     <Box
@@ -26,34 +41,9 @@ export const Tech = () => {
         // border="1px solid blue"
         minChildWidth="350px"
       >
-        <TechCard
-          heading="1 Heading here"
-          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur,
-        nobis nisi delectus iure dicta, est quas maxime, cupiditate iusto unde
-        excepturi magni architecto asperiores corporis commodi numquam
-        blanditiis enim? Soluta."
-        />
-        <TechCard
-          heading="2 Heading here"
-          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur,
-        nobis nisi delectus iure dicta, est quas maxime, cupiditate iusto unde
-        excepturi magni architecto asperiores corporis commodi numquam
-        blanditiis enim? Soluta."
-        />
-        <TechCard
-          heading="3 Heading here"
-          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur,
-        nobis nisi delectus iure dicta, est quas maxime, cupiditate iusto unde
-        excepturi magni architecto asperiores corporis commodi numquam
-        blanditiis enim? Soluta."
-        />
-        <TechCard
-          heading="4 Heading here"
-          text="Lorem ipsum dolor sit amet consectetur adipisicing elit. Consequatur,
-        nobis nisi delectus iure dicta, est quas maxime, cupiditate iusto unde
-        excepturi magni architecto asperiores corporis commodi numquam
-        blanditiis enim? Soluta."
-        />
+        {techData.map((tech, index) => (
+          <TechCard key={index} heading={tech.heading} text={tech.text} />
+        ))}
       </SimpleGrid>
     </Box>
   );
