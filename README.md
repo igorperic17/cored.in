@@ -1,6 +1,6 @@
-# Coredin
+# cored.in
 
-CoredIn is a professional SocialFi app empowered with self-sovereign identity.
+cored.in is a professional SocialFi app empowered with self-sovereign identity.
 
 ## Quick Start Notes
 
@@ -44,8 +44,3 @@ yarn workspace @coredin/frontend add (package-name)
 ```
 yarn docker
 ```
-
-TODO:
-- feature flags (by user!)
-- integrate Effect library for error handlign
-- integrate onchain logic (use hackathon code as reference)
