@@ -21,13 +21,13 @@ export const AuthTest = () => {
     <div style={{ margin: "20px" }}>
       {data && (
         <>
-          <Text color="brand.600">Got data!!</Text>
-          <Text color="brand.600">{JSON.stringify(data)}</Text>
+          <Text color="brand.500">Got data!!</Text>
+          <Text color="brand.500">{JSON.stringify(data)}</Text>
         </>
       )}
       {isLoading && <h3>Loading...</h3>}
       {isError && (
-        <Text color="brand.600">
+        <Text color="brand.500">
           Found error..
           {`${error}`}
         </Text>

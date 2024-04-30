@@ -25,7 +25,7 @@ export const Footer = () => {
         maxW="600px"
       >
         Get notified when cored
-        <Text as="span" color="brand.600">
+        <Text as="span" color="brand.500">
           .in
         </Text>{" "}
         is ready

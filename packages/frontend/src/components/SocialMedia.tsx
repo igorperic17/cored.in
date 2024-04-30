@@ -7,7 +7,7 @@ export const SocialMedia = () => (
       <Icon
         as={FaXTwitter}
         _hover={{
-          color: "brand.600"
+          color: "brand.500"
         }}
       />
     </Link>
@@ -15,7 +15,7 @@ export const SocialMedia = () => (
       <Icon
         as={FaDiscord}
         _hover={{
-          color: "brand.600"
+          color: "brand.500"
         }}
       />
     </Link>

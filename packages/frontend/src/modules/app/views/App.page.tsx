@@ -15,7 +15,7 @@ const AppPage = () => {
       >
         <Heading as="h1" fontSize="4rem">
           Cored.
-          <Text display="inline" color="brand.600">
+          <Text display="inline" color="brand.500">
             in
           </Text>
         </Heading>

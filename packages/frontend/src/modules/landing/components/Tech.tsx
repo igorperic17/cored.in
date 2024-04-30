@@ -14,7 +14,7 @@ export const Tech = () => {
       <Heading
         as="h2"
         fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
-        color="brand.600"
+        color="brand.500"
         mb={{ base: "0.75em", md: "0.5em", xl: "0.375em" }}
       >
         Our Tech

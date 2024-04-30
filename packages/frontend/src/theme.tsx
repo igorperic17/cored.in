@@ -30,7 +30,7 @@ const styles = {
 
 const colors = {
   brand: {
-    600: "#26D695"
+    500: "#26D695"
   },
   text: {
     100: "#ebebeb",
@@ -74,7 +74,7 @@ const components = {
     // 3. We can add a new visual variant
     variants: {
       primary: () => ({
-        bg: "brand.600",
+        bg: "brand.500",
         color: "text.900",
         // borderRadius: "3xl",
         fontWeight: 600,

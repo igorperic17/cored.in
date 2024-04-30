@@ -59,7 +59,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
     >
       <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
         cored
-        <Text as="span" color="brand.600">
+        <Text as="span" color="brand.500">
           .in
         </Text>
       </Heading>

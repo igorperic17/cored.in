@@ -29,7 +29,7 @@ export const BenefitItem: FC<BenefitItemProps> = ({
         {title}
       </Heading>
       <Collapse in={isVisible} animateOpacity>
-        <Box p="40px" mt="4" bg="brand.600" rounded="md" shadow="md">
+        <Box p="40px" mt="4" bg="brand.500" rounded="md" shadow="md">
           <Text color="text.900" maxW="700px">
             {description}
           </Text>

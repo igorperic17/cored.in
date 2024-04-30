@@ -20,7 +20,7 @@ export const Login = () => {
         py="0.25em"
         pl="1em"
       >
-        <Text color="brand.600" textTransform="uppercase">
+        <Text color="brand.500" textTransform="uppercase">
           {shortWalletAddress}
         </Text>
         <Button
