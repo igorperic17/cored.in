@@ -6,7 +6,7 @@ export const Root = () => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
-    <Flex direction="column" justify="start" h="100vh">
+    <Flex direction="column" justify="start">
       <Nav onOpen={onOpen} />
       <Box overflowX="hidden" flex="1">
         <Outlet />
