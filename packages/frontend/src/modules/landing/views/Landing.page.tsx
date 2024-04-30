@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { Benefits, CallToAction, Hero } from "../components";
+import { Benefits, CallToAction, Hero, Tech } from "../components";
 import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import { FEATURE_FLAG } from "@coredin/shared";
 import { Footer } from "@/components";
@@ -16,6 +16,7 @@ const LandingPage = () => {
     >
       <Hero />
       <Benefits />
+      <Tech />
       {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && <CallToAction />}
       <Footer />
     </Flex>

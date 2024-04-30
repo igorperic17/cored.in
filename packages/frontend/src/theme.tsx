@@ -20,6 +20,10 @@ const styles = {
     },
     a: {
       textUnderlineOffset: "0.5em"
+    },
+    p: {
+      fontSize: { base: "1rem", sm: "1.25rem", lg: "1.5rem" },
+      lineHeight: "1.35"
     }
   }
 };
