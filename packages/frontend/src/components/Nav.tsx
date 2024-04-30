@@ -1,19 +1,11 @@
-import { FC, useState } from "react";
-import {
-  Text,
-  Flex,
-  useColorMode,
-  useColorModeValue,
-  useMediaQuery,
-  Box,
-  Heading,
-  Button,
-  Link
-} from "@chakra-ui/react";
-import { Link as ReactRouterLink, useLocation } from "react-router-dom";
+import { FC } from "react";
+import { Text, Flex, Heading, Button, Link, HStack } from "@chakra-ui/react";
+import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import { FEATURE_FLAG } from "@coredin/shared";
+import { navSections } from "@/constants";
+import { useSectionInView } from "@/hooks";
 
 export interface NavProps {
   onOpen: () => void;
@@ -22,25 +14,7 @@ export interface NavProps {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav: FC<NavProps> = ({ onOpen }) => {
   const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
-  const location = useLocation();
-  const [scroll, setScroll] = useState(false);
-  const [currentSection, setCurrentSection] = useState<"home" | "insure">(
-    "home"
-  );
-  const { colorMode, toggleColorMode } = useColorMode();
-  const navBg = useColorModeValue("white", "coredin.700");
-  // const [isLargerThanMD] = useMediaQuery("(min-width: 48em)");
-  const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
-  const changeScroll = () => {
-    document.body.scrollTop > 80 || document.documentElement.scrollTop > 80
-      ? setScroll(true)
-      : setScroll(false);
-  };
-
-  window.addEventListener("scroll", changeScroll);
-
-  const navActionHandler = () =>
-    document.getElementById("benefits")!.scrollIntoView({ behavior: "smooth" });
+  const currentSection = useSectionInView();
 
   return (
     <Flex
@@ -63,6 +37,27 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
           .in
         </Text>
       </Heading>
+      <HStack>
+        {navSections.map((item, index) => {
+          return (
+            <Link
+              key={`menu-section-item-${index}`}
+              as={ReactRouterLink}
+              to={item.link}
+              textDecoration="none"
+              textTransform="uppercase"
+              color={currentSection === item.title ? "brand.500" : ""}
+              fontSize="1.2em"
+              // fontFamily="heading"
+              _hover={{ color: "brand.500" }}
+              //_focus={{ color: "text.500" }}
+              _active={{ color: "" }}
+            >
+              {item.title}
+            </Link>
+          );
+        })}
+      </HStack>
       {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
         <Link as={ReactRouterLink} to={ROUTES.APP.path}>
           <Button variant="primary" size="md">
@@ -71,10 +66,14 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
         </Link>
       )}
       {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
-        <Button variant="primary" size="md" onClick={navActionHandler}>
-          Learn more
-        </Button>
+        <Link as={ReactRouterLink} to={"#benefits"}>
+          <Button variant="primary" size="md">
+            Learn more
+          </Button>
+        </Link>
       )}
+      {/* Placeholder while not initalized to avoid section links going to right */}
+      {!isInitialised && <Link as={ReactRouterLink} to={"#"}></Link>}
     </Flex>
   );
 };
