@@ -1,5 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
+import { stepperTheme } from "./themes/stepperTheme";
 
 const fonts = {
   heading: `'Space Grotesk', sans-serif`,
@@ -22,7 +23,7 @@ const styles = {
       textUnderlineOffset: "0.5em"
     },
     p: {
-      fontSize: { base: "1rem", sm: "1.25rem", lg: "1.5rem" },
+      fontSize: { base: "1rem", md: "1.25rem" },
       lineHeight: "1.35"
     }
   }
@@ -124,7 +125,8 @@ const components = {
     //   variant: 'sm', // default is solid
     //   colorScheme: 'blue', // default is gray
     // },
-  }
+  },
+  Stepper: stepperTheme
 };
 
 const breakpoints = {
