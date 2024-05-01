@@ -39,7 +39,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       align="center"
       position="sticky"
       top="0"
-      h={{ base: "8vh", md: "9vh" }}
+      h={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the page sections also rely on vh to ensure content does not overlap.
       w="100%"
       maxW="1920px"
       mx="auto"
