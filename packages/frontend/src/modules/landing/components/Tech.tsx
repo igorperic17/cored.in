@@ -34,13 +34,7 @@ export const Tech = () => {
       >
         Our Tech
       </Heading>
-      <SimpleGrid
-        h="100%"
-        spacing="2em"
-        columns={[1, null, null, 4]}
-        // border="1px solid blue"
-        minChildWidth="350px"
-      >
+      <SimpleGrid spacing="2em" minChildWidth="320px">
         {techData.map((tech, index) => (
           <TechCard key={index} heading={tech.heading} text={tech.text} />
         ))}
