@@ -49,10 +49,10 @@ export const OurProgress = () => {
       gap="5em"
       w="100%"
       id="progress"
-      minH="80vh"
       h="min-content"
       // border="1px solid blue"
       align="center"
+      minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       //
     >
