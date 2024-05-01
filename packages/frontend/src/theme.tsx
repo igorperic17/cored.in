@@ -1,6 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
-// import "@fontsource/noto-sans";
+import "@fontsource/noto-sans";
 import { stepperTheme } from "./themes/stepperTheme";
 
 const fonts = {
