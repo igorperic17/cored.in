@@ -1,5 +1,14 @@
 import { FC } from "react";
-import { Text, Flex, Heading, Button, Link, HStack } from "@chakra-ui/react";
+import {
+  Text,
+  Flex,
+  Heading,
+  Button,
+  Link,
+  HStack,
+  useMediaQuery,
+  useTheme
+} from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { useFeatureFlagContext } from "@/contexts/featureFlag";
@@ -15,6 +24,10 @@ export interface NavProps {
 export const Nav: FC<NavProps> = ({ onOpen }) => {
   const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   const currentSection = useSectionInView();
+  const theme = useTheme();
+  const [isLargerThanMd] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.md})`
+  );
 
   return (
     <Flex
@@ -33,31 +46,33 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
     >
       <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
         cored
-        <Text as="span" color="brand.500">
+        {/* <Text as="span" color="brand.500">
           .in
-        </Text>
+        </Text> */}
       </Heading>
-      <HStack>
-        {navSections.map((item, index) => {
-          return (
-            <Link
-              key={`menu-section-item-${index}`}
-              as={ReactRouterLink}
-              to={item.link}
-              textDecoration="none"
-              textTransform="uppercase"
-              color={currentSection === item.title ? "brand.500" : ""}
-              fontSize="1.2em"
-              // fontFamily="heading"
-              _hover={{ color: "brand.500" }}
-              //_focus={{ color: "text.500" }}
-              _active={{ color: "" }}
-            >
-              {item.title}
-            </Link>
-          );
-        })}
-      </HStack>
+      {isLargerThanMd && (
+        <HStack>
+          {navSections.map((item, index) => {
+            return (
+              <Link
+                key={`menu-section-item-${index}`}
+                as={ReactRouterLink}
+                to={item.link}
+                textDecoration="none"
+                textTransform="uppercase"
+                color={currentSection === item.title ? "brand.500" : ""}
+                fontSize="1.2em"
+                // fontFamily="heading"
+                _hover={{ color: "brand.500" }}
+                //_focus={{ color: "text.500" }}
+                _active={{ color: "" }}
+              >
+                {item.title}
+              </Link>
+            );
+          })}
+        </HStack>
+      )}
       {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
         <Link as={ReactRouterLink} to={ROUTES.APP.path}>
           <Button variant="primary" size="md">
