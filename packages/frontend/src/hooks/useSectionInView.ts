@@ -6,14 +6,11 @@ export const useSectionInView = () => {
 
   const checkInView = () => {
     for (const section of navSections) {
-      console.log(section.title);
-
       const element = document.querySelector(`#${section.title}`);
       if (element) {
         const rect = element.getBoundingClientRect();
         // console.log(section.title, "rect", rect);
         if (rect.bottom >= window.innerHeight / 2) {
-          console.log(section.title);
           setCurrentSection(section.title);
           break;
         }
