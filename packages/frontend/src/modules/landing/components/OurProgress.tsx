@@ -46,12 +46,12 @@ export const OurProgress = () => {
   return (
     <Flex
       direction="column"
-      gap="5em"
       w="100%"
       id="progress"
       h="min-content"
       // border="1px solid blue"
       align="center"
+      justifyContent="space-between"
       minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       //
