@@ -1,5 +1,6 @@
 import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
+// import "@fontsource/noto-sans";
 import { stepperTheme } from "./themes/stepperTheme";
 
 const fonts = {
@@ -31,18 +32,24 @@ const styles = {
 
 const colors = {
   brand: {
-    500: "#26D695"
+    500: "#7AF9B3" // green / main
+  },
+  complimentary: {
+    500: "#1F45F3" // blue but not readable // do not use yet
   },
   text: {
-    100: "#ebebeb",
-    300: "#b0b0b0", // hover
-    600: "#737373", // hover 2
-    800: "#242424", // not in use
-    900: "#121111"
+    100: "#F1F1F0", // light - white / main text
+    300: "#b0b0b0", // hover / text in the stepper
+    400: "#828178", // medium / text on card
+    600: "#737373", // - hover 2 / not in use yet
+    800: "#62625D", // - medium - dark / not in use yet
+    900: "#121111" // dark
   },
   background: {
-    100: "#ebebeb",
-    900: "#121111"
+    100: "#ebebeb", // - not in use yet
+    600: "#3E3D3A", // card bg
+    800: "#222320", // - very dark bg / not in use yet
+    900: "#1C1C1A" // body bg / black
   }
 };
 

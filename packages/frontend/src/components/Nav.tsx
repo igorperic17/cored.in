@@ -35,7 +35,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       direction="row"
       justify="space-between"
       align="center"
-      position="sticky"
+      position="fixed"
       top="0"
       h={{ base: "8vh", md: "10vh", xl: "11vh" }}
       w="100%"
@@ -43,6 +43,8 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       mx="auto"
       px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }}
       background="background.900"
+      // background="red"
+      zIndex="10"
     >
       <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
         cored

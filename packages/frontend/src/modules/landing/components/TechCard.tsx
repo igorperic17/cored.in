@@ -19,10 +19,10 @@ export const TechCard: FC<TechProps> = ({ heading, text, image }) => {
       h="100%"
       borderRadius="16px"
       //   border="1px solid white"
-      color="text.900"
-      background="background.100"
+      color="text.100"
+      background="background.600"
       _hover={{
-        boxShadow: "0 0 50px 0 #26D695"
+        boxShadow: "0 0 5px 0 #7AF9B3"
       }}
       px={{ base: "1em", md: "2em" }}
       py={{ base: "1.25em", md: "2.5em" }}
@@ -30,7 +30,7 @@ export const TechCard: FC<TechProps> = ({ heading, text, image }) => {
       <Heading as="h3" fontSize={{ base: "1.5rem", md: "2.5rem", xl: "3rem" }}>
         {heading}
       </Heading>
-      <Text>{text}</Text>
+      <Text whiteSpace="pre-line">{text}</Text>
     </VStack>
   );
 };

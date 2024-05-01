@@ -11,6 +11,7 @@ export const Hero = () => {
       justify="space-between"
       pt={{ base: "2em" }}
       pb={{ base: "1em", md: "2.5em" }}
+      color="text.100"
     >
       <Heading
         as="h2"

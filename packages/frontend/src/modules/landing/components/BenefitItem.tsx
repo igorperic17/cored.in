@@ -19,7 +19,7 @@ export const BenefitItem: FC<BenefitItemProps> = ({
       <Heading
         as="h3"
         fontSize={{ base: "1.75rem", md: "3.5rem", lg: "4rem" }}
-        color={isVisible ? "text.100" : "text.600"}
+        color={isVisible ? "text.100" : "text.400"}
         _hover={{
           color: "text.100"
         }}
