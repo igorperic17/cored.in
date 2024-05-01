@@ -24,6 +24,7 @@ export const Tech = () => {
       id="tech"
       minH="80vh"
       h="min-content"
+      pt={{ base: "8vh", md: "9vh" }}
       //
     >
       <Heading

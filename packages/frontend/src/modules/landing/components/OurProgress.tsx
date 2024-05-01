@@ -53,6 +53,7 @@ export const OurProgress = () => {
       h="min-content"
       // border="1px solid blue"
       align="center"
+      pt={{ base: "8vh", md: "9vh" }}
       //
     >
       <Heading
