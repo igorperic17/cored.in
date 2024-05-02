@@ -11,7 +11,7 @@ export const SocialMedia = () => (
         }}
       />
     </Link>
-    <Link href="https://discord.gg/wMc5uCkr" isExternal fontSize="3rem">
+    <Link href="https://discord.gg/teebA7Jb" isExternal fontSize="3rem">
       <Icon
         as={FaDiscord}
         _hover={{
