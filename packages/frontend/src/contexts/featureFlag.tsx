@@ -30,7 +30,7 @@ export const FeatureFlagContextProvider = ({
     const fetchData = async () => {
       try {
         const response = await axios.get<Record<string, string>>(
-          "https://o4xn2eu06i.execute-api.eu-west-1.amazonaws.com/prod/features"
+          "https://bse2cpgtw8.execute-api.eu-west-1.amazonaws.com/dev/features"
         );
         setFeatures(response.data);
         setIsInitialised(true);
