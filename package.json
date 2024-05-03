@@ -21,7 +21,8 @@
     "docker": "docker build . -f base.Dockerfile -t coredin/base && docker build . -f front.Dockerfile -t coredin/front && docker build . -f back.Dockerfile -t coredin/back",
     "lint": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint",
     "lint:fix": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint:fix",
-    "build-contract": "cd packages/contract && cargo install cargo-post && cargo post build"
+    "build-contract": "cd packages/contract && cargo install cargo-post && cargo post build",
+    "generate-contract-client": "yarn workspace @coredin/shared generate-contract-client"
   },
   "workspaces": {
     "packages": [
