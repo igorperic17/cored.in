@@ -169,28 +169,18 @@
         "owner"
       ],
       "properties": {
+        "did_register_price": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Coin"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "owner": {
           "$ref": "#/definitions/Addr"
-        },
-        "purchase_price": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Coin"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "transfer_price": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Coin"
-            },
-            {
-              "type": "null"
-            }
-          ]
         }
       },
       "definitions": {
