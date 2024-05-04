@@ -22,6 +22,7 @@ import {
   TESTNET_CHAIN_ID,
   TESTNET_GAS_PRICE
 } from "@coredin/shared";
+import { off } from "process";
 // import { MyProjectClient } from "contracts/MyProject.client";
 // import { BackendService } from "services/backendService";
 
@@ -58,7 +59,7 @@ export const useClientContext = (): IClientContext => {
   const [walletAddress, setWalletAddress] = useState("");
   const [signingClient, setSigningClient] =
     useState<CoredinClient | null>(null);
-  const [tmClient, setTmClient] = useState<Tendermint34Client | null>(null);
+  // const [tmClient, setTmClient] = useState<Tendermint34Client | null>(null);
   //   const [contractClient, setContractClient] = useState<MyProjectClient | null>(
   //     null
   //   );
@@ -109,16 +110,17 @@ export const useClientContext = (): IClientContext => {
           gasPrice: GasPrice.fromString(GAS_PRICE)
         }
       );
-      setSigningClient(new CoredinClient(client, offlineSigner, CONTRACT_ADDRESS));
+      const [{ address }] = await offlineSigner.getAccounts();
+      let coredInClient = new CoredinClient(client, address, CONTRACT_ADDRESS);
+      setSigningClient(coredInClient);
 
       // rpc client
       const cosmWasmClient = await CosmWasmClient.connect(PUBLIC_RPC_ENDPOINT);
-
       const queryClient = new CoredinQueryClient(cosmWasmClient, CONTRACT_ADDRESS)
       setCoreumQueryClient(queryClient);
 
       // get user address
-      const [{ address }] = await offlineSigner.getAccounts();
+      
       //   const senderClient = await SigningCosmWasmClient.connectWithSigner(
       //     PUBLIC_RPC_ENDPOINT,
       //     offlineSigner,
@@ -142,9 +144,6 @@ export const useClientContext = (): IClientContext => {
   const disconnect = () => {
     if (signingClient) {
       signingClient.client.disconnect();
-    }
-    if (tmClient) {
-      tmClient.disconnect();
     }
     setWalletAddress("");
     persistentStorageService.remove(ConnectedWalletKey);
