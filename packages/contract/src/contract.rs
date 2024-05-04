@@ -1,11 +1,12 @@
 use cosmwasm_std::{
-    entry_point, to_binary, Binary, Deps, DepsMut, Env, ListChannelsResponse, MessageInfo, Response, StdError, StdResult
+    entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage
 };
 
 use crate::coin_helpers::assert_sent_sufficient_coin;
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg, ResolveRecordResponse};
-use crate::state::{config, config_read, resolver, resolver_read, Config, UserInfo};
+use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
+use crate::state::{config_storage, config_storage_read, username_storage, username_storage_read, did_storage, did_storage_read, wallet_storage, wallet_storage_read, Config, DidInfo};
+use cosmwasm_storage::{ReadonlyBucket};
 
 const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
@@ -14,16 +15,16 @@ const MAX_NAME_LENGTH: u64 = 64;
 pub fn instantiate(
     deps: DepsMut,
     _env: Env,
-    _info: MessageInfo,
+    info: MessageInfo,
     msg: InstantiateMsg,
 ) -> Result<Response, StdError> {
     let config_state = Config {
-        owner: _info.sender,
+        owner: info.sender,
         purchase_price: msg.purchase_price,
         transfer_price: msg.transfer_price,
     };
 
-    config(deps.storage).save(&config_state)?;
+    config_storage(deps.storage).save(&config_state)?;
 
     Ok(Response::default())
 }
@@ -36,10 +37,7 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Subscirbe { target_profile } => { todo!() }
-        ExecuteMsg::IssueCredential { credential } => { todo!() }
-        ExecuteMsg::Register { did, username, bio } => execute_register(deps, env, info, username, did), // TODO: pass in DID and BIO
-        // ExecuteMsg::Transfer { name, to } => execute_transfer(deps, env, info, name, to),
+        ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did)
     }
 }
 
@@ -50,26 +48,30 @@ pub fn execute_register(
     username: String,
     did: String,
 ) -> Result<Response, ContractError> {
-    // we only need to check here - at point of registration
+    
     validate_name(&username)?;
-    let config_state = config(deps.storage).load()?;
+
+    // TODO: agree how much will new DID registration cost
+    let config_state = config_storage(deps.storage).load()?;
     assert_sent_sufficient_coin(&info.funds, config_state.purchase_price)?;
 
     let key = username.as_bytes();
-    // let record = NameRecord { owner: info.sender };
-    let record = UserInfo {
-        username: username.clone(),
-        did: did,
-        bio: "".to_string() // TODO: remove bio from DID register, should be separate
-    };
-
-    if (resolver(deps.storage).may_load(key)?).is_some() {
-        // name is already taken
+    if (username_storage_read(deps.storage).may_load(key)?).is_some() {
+        // username is already taken
         return Err(ContractError::NameTaken { name: username });
     }
 
     // name is available
-    resolver(deps.storage).save(key, &record)?;
+    let record = DidInfo {
+        wallet: info.sender,
+        username: username.clone(),
+        did: did
+    };
+
+    // store for querying in all three buckets
+    did_storage(deps.storage).save(record.did.as_bytes(), &record)?;
+    username_storage(deps.storage).save(record.username.as_bytes(), &record)?;
+    wallet_storage(deps.storage).save(record.wallet.as_bytes(), &record)?;
 
     Ok(Response::default())
 }
@@ -77,24 +79,29 @@ pub fn execute_register(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::ListCredentials { address } => todo!(),
-        QueryMsg::IsSubscribed { requester_address, target_address } => todo!(),
-        QueryMsg::VerifyCredential { data } => todo!(),
-        QueryMsg::ResolveUserInfo { address } => query_resolver(deps, env, address),
-        QueryMsg::Config {} => to_binary(&config_read(deps.storage).load()?),
+        QueryMsg::Config {} => to_binary(&config_storage_read(deps.storage).load()?),
+
+        QueryMsg::GetWalletDID { wallet } => query_resolver(deps, env, wallet, wallet_storage_read),
+        QueryMsg::GetUsernameDID { username } => query_resolver(deps, env, username, username_storage_read),
+        QueryMsg::GetDID { did } => query_resolver(deps, env, did, did_storage_read),
     }
 }
 
-fn query_resolver(deps: Deps, _env: Env, name: String) -> StdResult<Binary> {
-    let key = name.as_bytes();
+type ResolverFnPointer = fn(&dyn Storage) -> ReadonlyBucket<DidInfo>;
+fn query_resolver(deps: Deps, _env: Env, query_key: String, storage_resolver: ResolverFnPointer) -> StdResult<Binary> {
+    let key = query_key.as_bytes();
 
-    // read the DID based on the username
-    let user_info = match resolver_read(deps.storage).may_load(key) {
-        Ok(user_info) => ResolveRecordResponse { user_info: user_info },
-        Err(_) => ResolveRecordResponse { user_info: None }
+    // read the DID from an appropriate storage bucket
+    let did_info = match storage_resolver(deps.storage).may_load(key) {
+        Ok(info) => info,
+        Err(_) => None
     };
 
-    to_binary(&user_info)
+    let didResponse: GetDIDResponse = GetDIDResponse {
+        did_info: did_info
+    };
+
+    to_binary(&didResponse)
 }
 
 // let's not import a regexp library and just do these checks by hand
