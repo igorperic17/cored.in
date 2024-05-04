@@ -17,86 +17,28 @@ export interface Coin {
 }
 export type ExecuteMsg = {
   register: {
-    bio: string;
     did: string;
     username: string;
     [k: string]: unknown;
   };
-} | {
-  issue_credential: {
-    credential: CredentialEnum;
-    [k: string]: unknown;
-  };
-} | {
-  subscirbe: {
-    target_profile: string;
-    [k: string]: unknown;
-  };
 };
-export type CredentialEnum = {
-  Degree: {
-    data: CredentialDegree;
-    vc_hash: string;
-    [k: string]: unknown;
-  };
-} | {
-  Employment: {
-    data: CredentialEmployment;
-    vc_hash: string;
-    [k: string]: unknown;
-  };
-} | {
-  Event: {
-    data: CredentialEvent;
-    vc_hash: string;
-    [k: string]: unknown;
-  };
-};
-export interface CredentialDegree {
-  institution_did: string;
-  institution_name: string;
-  owner: string;
-  year: number;
-  [k: string]: unknown;
-}
-export interface CredentialEmployment {
-  end_year?: number | null;
-  institution_did: string;
-  institution_name: string;
-  owner: string;
-  start_year?: number | null;
-  [k: string]: unknown;
-}
-export interface CredentialEvent {
-  event_name: string;
-  organizer_did: string;
-  owner: string;
-  year?: number | null;
-  [k: string]: unknown;
-}
 export type QueryMsg = {
-  resolve_user_info: {
-    address: string;
-    [k: string]: unknown;
-  };
-} | {
   config: {
     [k: string]: unknown;
   };
 } | {
-  verify_credential: {
-    data: CredentialEnum;
+  get_wallet_d_i_d: {
+    wallet: string;
     [k: string]: unknown;
   };
 } | {
-  list_credentials: {
-    address: string;
+  get_username_d_i_d: {
+    username: string;
     [k: string]: unknown;
   };
 } | {
-  is_subscribed: {
-    requester_address: string;
-    target_address: string;
+  get_d_i_d: {
+    did: string;
     [k: string]: unknown;
   };
 };
@@ -107,25 +49,13 @@ export interface Config {
   transfer_price?: Coin | null;
   [k: string]: unknown;
 }
-export interface IsSubscribedlResponse {
-  subscribed: boolean;
+export interface GetDIDResponse {
+  did_info?: DidInfo | null;
   [k: string]: unknown;
 }
-export interface ListCredentialsResponse {
-  credentials: CredentialEnum[];
-  [k: string]: unknown;
-}
-export interface ResolveRecordResponse {
-  user_info?: UserInfo | null;
-  [k: string]: unknown;
-}
-export interface UserInfo {
-  bio: string;
+export interface DidInfo {
   did: string;
   username: string;
-  [k: string]: unknown;
-}
-export interface VerifyCredentialResponse {
-  valid: boolean;
+  wallet: Addr;
   [k: string]: unknown;
 }

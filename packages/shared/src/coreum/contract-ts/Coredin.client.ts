@@ -6,32 +6,25 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, InstantiateMsg, Coin, ExecuteMsg, CredentialEnum, CredentialDegree, CredentialEmployment, CredentialEvent, QueryMsg, Addr, Config, IsSubscribedlResponse, ListCredentialsResponse, ResolveRecordResponse, UserInfo, VerifyCredentialResponse } from "./Coredin.types";
+import { Uint128, InstantiateMsg, Coin, ExecuteMsg, QueryMsg, Addr, Config, GetDIDResponse, DidInfo } from "./Coredin.types";
 export interface CoredinReadOnlyInterface {
   contractAddress: string;
-  resolveUserInfo: ({
-    address
-  }: {
-    address: string;
-  }) => Promise<ResolveRecordResponse>;
   config: () => Promise<Config>;
-  verifyCredential: ({
-    data
+  getWalletDID: ({
+    wallet
   }: {
-    data: CredentialEnum;
-  }) => Promise<VerifyCredentialResponse>;
-  listCredentials: ({
-    address
+    wallet: string;
+  }) => Promise<GetDIDResponse>;
+  getUsernameDID: ({
+    username
   }: {
-    address: string;
-  }) => Promise<ListCredentialsResponse>;
-  isSubscribed: ({
-    requesterAddress,
-    targetAddress
+    username: string;
+  }) => Promise<GetDIDResponse>;
+  getDID: ({
+    did
   }: {
-    requesterAddress: string;
-    targetAddress: string;
-  }) => Promise<IsSubscribedlResponse>;
+    did: string;
+  }) => Promise<GetDIDResponse>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -39,61 +32,46 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
   constructor(client: CosmWasmClient, contractAddress: string) {
     this.client = client;
     this.contractAddress = contractAddress;
-    this.resolveUserInfo = this.resolveUserInfo.bind(this);
     this.config = this.config.bind(this);
-    this.verifyCredential = this.verifyCredential.bind(this);
-    this.listCredentials = this.listCredentials.bind(this);
-    this.isSubscribed = this.isSubscribed.bind(this);
+    this.getWalletDID = this.getWalletDID.bind(this);
+    this.getUsernameDID = this.getUsernameDID.bind(this);
+    this.getDID = this.getDID.bind(this);
   }
-  resolveUserInfo = async ({
-    address
-  }: {
-    address: string;
-  }): Promise<ResolveRecordResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      resolve_user_info: {
-        address
-      }
-    });
-  };
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
       config: {}
     });
   };
-  verifyCredential = async ({
-    data
+  getWalletDID = async ({
+    wallet
   }: {
-    data: CredentialEnum;
-  }): Promise<VerifyCredentialResponse> => {
+    wallet: string;
+  }): Promise<GetDIDResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      verify_credential: {
-        data
+      get_wallet_d_i_d: {
+        wallet
       }
     });
   };
-  listCredentials = async ({
-    address
+  getUsernameDID = async ({
+    username
   }: {
-    address: string;
-  }): Promise<ListCredentialsResponse> => {
+    username: string;
+  }): Promise<GetDIDResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      list_credentials: {
-        address
+      get_username_d_i_d: {
+        username
       }
     });
   };
-  isSubscribed = async ({
-    requesterAddress,
-    targetAddress
+  getDID = async ({
+    did
   }: {
-    requesterAddress: string;
-    targetAddress: string;
-  }): Promise<IsSubscribedlResponse> => {
+    did: string;
+  }): Promise<GetDIDResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
-      is_subscribed: {
-        requester_address: requesterAddress,
-        target_address: targetAddress
+      get_d_i_d: {
+        did
       }
     });
   };
@@ -102,23 +80,11 @@ export interface CoredinInterface extends CoredinReadOnlyInterface {
   contractAddress: string;
   sender: string;
   register: ({
-    bio,
     did,
     username
   }: {
-    bio: string;
     did: string;
     username: string;
-  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  issueCredential: ({
-    credential
-  }: {
-    credential: CredentialEnum;
-  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  subscirbe: ({
-    targetProfile
-  }: {
-    targetProfile: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class CoredinClient extends CoredinQueryClient implements CoredinInterface {
@@ -131,45 +97,18 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     this.sender = sender;
     this.contractAddress = contractAddress;
     this.register = this.register.bind(this);
-    this.issueCredential = this.issueCredential.bind(this);
-    this.subscirbe = this.subscirbe.bind(this);
   }
   register = async ({
-    bio,
     did,
     username
   }: {
-    bio: string;
     did: string;
     username: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       register: {
-        bio,
         did,
         username
-      }
-    }, fee, memo, _funds);
-  };
-  issueCredential = async ({
-    credential
-  }: {
-    credential: CredentialEnum;
-  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
-    return await this.client.execute(this.sender, this.contractAddress, {
-      issue_credential: {
-        credential
-      }
-    }, fee, memo, _funds);
-  };
-  subscirbe = async ({
-    targetProfile
-  }: {
-    targetProfile: string;
-  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
-    return await this.client.execute(this.sender, this.contractAddress, {
-      subscirbe: {
-        target_profile: targetProfile
       }
     }, fee, memo, _funds);
   };
