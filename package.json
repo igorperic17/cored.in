@@ -22,6 +22,7 @@
     "lint": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint",
     "lint:fix": "yarn workspace @coredin/unleash-proxy lint && yarn workspace @coredin/unleash-proxy-cdk lint:fix",
     "build-contract": "cd packages/contract && cargo install cargo-post && cargo post build",
+    "deploy-contract": "cd packages/contract && ./scripts/2_deploy.sh",
     "generate-contract-client": "yarn workspace @coredin/shared generate-contract-client"
   },
   "workspaces": {

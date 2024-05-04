@@ -9,8 +9,10 @@ import {
   QueryClient
 } from "@cosmjs/stargate";
 import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { QueryClient as CoreumQueryClient } from "../coreum/query";
+import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+// import { QueryClient as CoreumQueryClient } from "../coreum/query";
+import { CoredinClient, CoredinQueryClient } from "@coredin/shared/src/coreum/contract-ts";
+import { CONTRACT_ADDRESS } from "@coredin/shared/src/coreum/contract_address";
 // import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 // import { coreumRegistryTypes } from "../coreum/tx";
 import { persistentStorageService } from "@/dependencies";
@@ -20,6 +22,7 @@ import {
   TESTNET_CHAIN_ID,
   TESTNET_GAS_PRICE
 } from "@coredin/shared";
+import { off } from "process";
 // import { MyProjectClient } from "contracts/MyProject.client";
 // import { BackendService } from "services/backendService";
 
@@ -36,8 +39,8 @@ export interface Authentication {
 export interface IClientContext {
   walletAddress: string;
   auth: Authentication | null;
-  signingClient: SigningCosmWasmClient | null;
-  coreumQueryClient: CoreumQueryClient | null;
+  signingClient: CoredinClient | null;
+  coreumQueryClient: CoredinQueryClient | null;
   //   contractClient: MyProjectClient | null;
   loading: boolean;
   error: any;
@@ -55,13 +58,13 @@ const GAS_PRICE = TESTNET_GAS_PRICE || "";
 export const useClientContext = (): IClientContext => {
   const [walletAddress, setWalletAddress] = useState("");
   const [signingClient, setSigningClient] =
-    useState<SigningCosmWasmClient | null>(null);
-  const [tmClient, setTmClient] = useState<Tendermint34Client | null>(null);
+    useState<CoredinClient | null>(null);
+  // const [tmClient, setTmClient] = useState<Tendermint34Client | null>(null);
   //   const [contractClient, setContractClient] = useState<MyProjectClient | null>(
   //     null
   //   );
   const [coreumQueryClient, setCoreumQueryClient] =
-    useState<CoreumQueryClient | null>(null);
+    useState<CoredinQueryClient | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [requestedProfileWalletAddress, setRequestedProfileWalletAddress] =
@@ -107,19 +110,17 @@ export const useClientContext = (): IClientContext => {
           gasPrice: GasPrice.fromString(GAS_PRICE)
         }
       );
-      setSigningClient(client);
+      const [{ address }] = await offlineSigner.getAccounts();
+      let coredInClient = new CoredinClient(client, address, CONTRACT_ADDRESS);
+      setSigningClient(coredInClient);
 
       // rpc client
-      const tendermintClient =
-        await Tendermint34Client.connect(PUBLIC_RPC_ENDPOINT);
-
-      const queryClient = new QueryClient(tendermintClient);
-      setCoreumQueryClient(
-        new CoreumQueryClient(createProtobufRpcClient(queryClient))
-      );
+      const cosmWasmClient = await CosmWasmClient.connect(PUBLIC_RPC_ENDPOINT);
+      const queryClient = new CoredinQueryClient(cosmWasmClient, CONTRACT_ADDRESS)
+      setCoreumQueryClient(queryClient);
 
       // get user address
-      const [{ address }] = await offlineSigner.getAccounts();
+      
       //   const senderClient = await SigningCosmWasmClient.connectWithSigner(
       //     PUBLIC_RPC_ENDPOINT,
       //     offlineSigner,
@@ -142,10 +143,7 @@ export const useClientContext = (): IClientContext => {
 
   const disconnect = () => {
     if (signingClient) {
-      signingClient.disconnect();
-    }
-    if (tmClient) {
-      tmClient.disconnect();
+      signingClient.client.disconnect();
     }
     setWalletAddress("");
     persistentStorageService.remove(ConnectedWalletKey);

@@ -63,14 +63,10 @@
           "register": {
             "type": "object",
             "required": [
-              "bio",
               "did",
               "username"
             ],
             "properties": {
-              "bio": {
-                "type": "string"
-              },
               "did": {
                 "type": "string"
               },
@@ -81,238 +77,13 @@
           }
         },
         "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "issue_credential"
-        ],
-        "properties": {
-          "issue_credential": {
-            "type": "object",
-            "required": [
-              "credential"
-            ],
-            "properties": {
-              "credential": {
-                "$ref": "#/definitions/CredentialEnum"
-              }
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "subscirbe"
-        ],
-        "properties": {
-          "subscirbe": {
-            "type": "object",
-            "required": [
-              "target_profile"
-            ],
-            "properties": {
-              "target_profile": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "additionalProperties": false
       }
-    ],
-    "definitions": {
-      "CredentialDegree": {
-        "type": "object",
-        "required": [
-          "institution_did",
-          "institution_name",
-          "owner",
-          "year"
-        ],
-        "properties": {
-          "institution_did": {
-            "type": "string"
-          },
-          "institution_name": {
-            "type": "string"
-          },
-          "owner": {
-            "type": "string"
-          },
-          "year": {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      },
-      "CredentialEmployment": {
-        "type": "object",
-        "required": [
-          "institution_did",
-          "institution_name",
-          "owner"
-        ],
-        "properties": {
-          "end_year": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "institution_did": {
-            "type": "string"
-          },
-          "institution_name": {
-            "type": "string"
-          },
-          "owner": {
-            "type": "string"
-          },
-          "start_year": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      },
-      "CredentialEnum": {
-        "oneOf": [
-          {
-            "type": "object",
-            "required": [
-              "Degree"
-            ],
-            "properties": {
-              "Degree": {
-                "type": "object",
-                "required": [
-                  "data",
-                  "vc_hash"
-                ],
-                "properties": {
-                  "data": {
-                    "$ref": "#/definitions/CredentialDegree"
-                  },
-                  "vc_hash": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false
-          },
-          {
-            "type": "object",
-            "required": [
-              "Employment"
-            ],
-            "properties": {
-              "Employment": {
-                "type": "object",
-                "required": [
-                  "data",
-                  "vc_hash"
-                ],
-                "properties": {
-                  "data": {
-                    "$ref": "#/definitions/CredentialEmployment"
-                  },
-                  "vc_hash": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false
-          },
-          {
-            "type": "object",
-            "required": [
-              "Event"
-            ],
-            "properties": {
-              "Event": {
-                "type": "object",
-                "required": [
-                  "data",
-                  "vc_hash"
-                ],
-                "properties": {
-                  "data": {
-                    "$ref": "#/definitions/CredentialEvent"
-                  },
-                  "vc_hash": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false
-          }
-        ]
-      },
-      "CredentialEvent": {
-        "type": "object",
-        "required": [
-          "event_name",
-          "organizer_did",
-          "owner"
-        ],
-        "properties": {
-          "event_name": {
-            "type": "string"
-          },
-          "organizer_did": {
-            "type": "string"
-          },
-          "owner": {
-            "type": "string"
-          },
-          "year": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      }
-    }
+    ]
   },
   "query": {
     "$schema": "http://json-schema.org/draft-07/schema#",
     "title": "QueryMsg",
     "oneOf": [
-      {
-        "type": "object",
-        "required": [
-          "resolve_user_info"
-        ],
-        "properties": {
-          "resolve_user_info": {
-            "type": "object",
-            "required": [
-              "address"
-            ],
-            "properties": {
-              "address": {
-                "type": "string"
-              }
-            }
-          }
-        },
-        "additionalProperties": false
-      },
       {
         "type": "object",
         "required": [
@@ -328,36 +99,16 @@
       {
         "type": "object",
         "required": [
-          "verify_credential"
+          "get_wallet_d_i_d"
         ],
         "properties": {
-          "verify_credential": {
+          "get_wallet_d_i_d": {
             "type": "object",
             "required": [
-              "data"
+              "wallet"
             ],
             "properties": {
-              "data": {
-                "$ref": "#/definitions/CredentialEnum"
-              }
-            }
-          }
-        },
-        "additionalProperties": false
-      },
-      {
-        "type": "object",
-        "required": [
-          "list_credentials"
-        ],
-        "properties": {
-          "list_credentials": {
-            "type": "object",
-            "required": [
-              "address"
-            ],
-            "properties": {
-              "address": {
+              "wallet": {
                 "type": "string"
               }
             }
@@ -368,20 +119,36 @@
       {
         "type": "object",
         "required": [
-          "is_subscribed"
+          "get_username_d_i_d"
         ],
         "properties": {
-          "is_subscribed": {
+          "get_username_d_i_d": {
             "type": "object",
             "required": [
-              "requester_address",
-              "target_address"
+              "username"
             ],
             "properties": {
-              "requester_address": {
+              "username": {
                 "type": "string"
-              },
-              "target_address": {
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "get_d_i_d"
+        ],
+        "properties": {
+          "get_d_i_d": {
+            "type": "object",
+            "required": [
+              "did"
+            ],
+            "properties": {
+              "did": {
                 "type": "string"
               }
             }
@@ -389,172 +156,7 @@
         },
         "additionalProperties": false
       }
-    ],
-    "definitions": {
-      "CredentialDegree": {
-        "type": "object",
-        "required": [
-          "institution_did",
-          "institution_name",
-          "owner",
-          "year"
-        ],
-        "properties": {
-          "institution_did": {
-            "type": "string"
-          },
-          "institution_name": {
-            "type": "string"
-          },
-          "owner": {
-            "type": "string"
-          },
-          "year": {
-            "type": "integer",
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      },
-      "CredentialEmployment": {
-        "type": "object",
-        "required": [
-          "institution_did",
-          "institution_name",
-          "owner"
-        ],
-        "properties": {
-          "end_year": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          },
-          "institution_did": {
-            "type": "string"
-          },
-          "institution_name": {
-            "type": "string"
-          },
-          "owner": {
-            "type": "string"
-          },
-          "start_year": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      },
-      "CredentialEnum": {
-        "oneOf": [
-          {
-            "type": "object",
-            "required": [
-              "Degree"
-            ],
-            "properties": {
-              "Degree": {
-                "type": "object",
-                "required": [
-                  "data",
-                  "vc_hash"
-                ],
-                "properties": {
-                  "data": {
-                    "$ref": "#/definitions/CredentialDegree"
-                  },
-                  "vc_hash": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false
-          },
-          {
-            "type": "object",
-            "required": [
-              "Employment"
-            ],
-            "properties": {
-              "Employment": {
-                "type": "object",
-                "required": [
-                  "data",
-                  "vc_hash"
-                ],
-                "properties": {
-                  "data": {
-                    "$ref": "#/definitions/CredentialEmployment"
-                  },
-                  "vc_hash": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false
-          },
-          {
-            "type": "object",
-            "required": [
-              "Event"
-            ],
-            "properties": {
-              "Event": {
-                "type": "object",
-                "required": [
-                  "data",
-                  "vc_hash"
-                ],
-                "properties": {
-                  "data": {
-                    "$ref": "#/definitions/CredentialEvent"
-                  },
-                  "vc_hash": {
-                    "type": "string"
-                  }
-                }
-              }
-            },
-            "additionalProperties": false
-          }
-        ]
-      },
-      "CredentialEvent": {
-        "type": "object",
-        "required": [
-          "event_name",
-          "organizer_did",
-          "owner"
-        ],
-        "properties": {
-          "event_name": {
-            "type": "string"
-          },
-          "organizer_did": {
-            "type": "string"
-          },
-          "owner": {
-            "type": "string"
-          },
-          "year": {
-            "type": [
-              "integer",
-              "null"
-            ],
-            "format": "uint64",
-            "minimum": 0.0
-          }
-        }
-      }
-    }
+    ]
   },
   "migrate": null,
   "sudo": null,
@@ -567,28 +169,18 @@
         "owner"
       ],
       "properties": {
+        "did_register_price": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/Coin"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
         "owner": {
           "$ref": "#/definitions/Addr"
-        },
-        "purchase_price": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Coin"
-            },
-            {
-              "type": "null"
-            }
-          ]
-        },
-        "transfer_price": {
-          "anyOf": [
-            {
-              "$ref": "#/definitions/Coin"
-            },
-            {
-              "type": "null"
-            }
-          ]
         }
       },
       "definitions": {
@@ -617,209 +209,15 @@
         }
       }
     },
-    "is_subscribed": {
+    "get_d_i_d": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "IsSubscribedlResponse",
-      "type": "object",
-      "required": [
-        "subscribed"
-      ],
-      "properties": {
-        "subscribed": {
-          "type": "boolean"
-        }
-      }
-    },
-    "list_credentials": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ListCredentialsResponse",
-      "type": "object",
-      "required": [
-        "credentials"
-      ],
-      "properties": {
-        "credentials": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/CredentialEnum"
-          }
-        }
-      },
-      "definitions": {
-        "CredentialDegree": {
-          "type": "object",
-          "required": [
-            "institution_did",
-            "institution_name",
-            "owner",
-            "year"
-          ],
-          "properties": {
-            "institution_did": {
-              "type": "string"
-            },
-            "institution_name": {
-              "type": "string"
-            },
-            "owner": {
-              "type": "string"
-            },
-            "year": {
-              "type": "integer",
-              "format": "uint64",
-              "minimum": 0.0
-            }
-          }
-        },
-        "CredentialEmployment": {
-          "type": "object",
-          "required": [
-            "institution_did",
-            "institution_name",
-            "owner"
-          ],
-          "properties": {
-            "end_year": {
-              "type": [
-                "integer",
-                "null"
-              ],
-              "format": "uint64",
-              "minimum": 0.0
-            },
-            "institution_did": {
-              "type": "string"
-            },
-            "institution_name": {
-              "type": "string"
-            },
-            "owner": {
-              "type": "string"
-            },
-            "start_year": {
-              "type": [
-                "integer",
-                "null"
-              ],
-              "format": "uint64",
-              "minimum": 0.0
-            }
-          }
-        },
-        "CredentialEnum": {
-          "oneOf": [
-            {
-              "type": "object",
-              "required": [
-                "Degree"
-              ],
-              "properties": {
-                "Degree": {
-                  "type": "object",
-                  "required": [
-                    "data",
-                    "vc_hash"
-                  ],
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/CredentialDegree"
-                    },
-                    "vc_hash": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "additionalProperties": false
-            },
-            {
-              "type": "object",
-              "required": [
-                "Employment"
-              ],
-              "properties": {
-                "Employment": {
-                  "type": "object",
-                  "required": [
-                    "data",
-                    "vc_hash"
-                  ],
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/CredentialEmployment"
-                    },
-                    "vc_hash": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "additionalProperties": false
-            },
-            {
-              "type": "object",
-              "required": [
-                "Event"
-              ],
-              "properties": {
-                "Event": {
-                  "type": "object",
-                  "required": [
-                    "data",
-                    "vc_hash"
-                  ],
-                  "properties": {
-                    "data": {
-                      "$ref": "#/definitions/CredentialEvent"
-                    },
-                    "vc_hash": {
-                      "type": "string"
-                    }
-                  }
-                }
-              },
-              "additionalProperties": false
-            }
-          ]
-        },
-        "CredentialEvent": {
-          "type": "object",
-          "required": [
-            "event_name",
-            "organizer_did",
-            "owner"
-          ],
-          "properties": {
-            "event_name": {
-              "type": "string"
-            },
-            "organizer_did": {
-              "type": "string"
-            },
-            "owner": {
-              "type": "string"
-            },
-            "year": {
-              "type": [
-                "integer",
-                "null"
-              ],
-              "format": "uint64",
-              "minimum": 0.0
-            }
-          }
-        }
-      }
-    },
-    "resolve_user_info": {
-      "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "ResolveRecordResponse",
+      "title": "GetDIDResponse",
       "type": "object",
       "properties": {
-        "user_info": {
+        "did_info": {
           "anyOf": [
             {
-              "$ref": "#/definitions/UserInfo"
+              "$ref": "#/definitions/DidInfo"
             },
             {
               "type": "null"
@@ -828,37 +226,112 @@
         }
       },
       "definitions": {
-        "UserInfo": {
+        "Addr": {
+          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+          "type": "string"
+        },
+        "DidInfo": {
           "type": "object",
           "required": [
-            "bio",
             "did",
-            "username"
+            "username",
+            "wallet"
           ],
           "properties": {
-            "bio": {
-              "type": "string"
-            },
             "did": {
               "type": "string"
             },
             "username": {
               "type": "string"
+            },
+            "wallet": {
+              "$ref": "#/definitions/Addr"
             }
           }
         }
       }
     },
-    "verify_credential": {
+    "get_username_d_i_d": {
       "$schema": "http://json-schema.org/draft-07/schema#",
-      "title": "VerifyCredentialResponse",
+      "title": "GetDIDResponse",
       "type": "object",
-      "required": [
-        "valid"
-      ],
       "properties": {
-        "valid": {
-          "type": "boolean"
+        "did_info": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DidInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "definitions": {
+        "Addr": {
+          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+          "type": "string"
+        },
+        "DidInfo": {
+          "type": "object",
+          "required": [
+            "did",
+            "username",
+            "wallet"
+          ],
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "wallet": {
+              "$ref": "#/definitions/Addr"
+            }
+          }
+        }
+      }
+    },
+    "get_wallet_d_i_d": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "GetDIDResponse",
+      "type": "object",
+      "properties": {
+        "did_info": {
+          "anyOf": [
+            {
+              "$ref": "#/definitions/DidInfo"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        }
+      },
+      "definitions": {
+        "Addr": {
+          "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+          "type": "string"
+        },
+        "DidInfo": {
+          "type": "object",
+          "required": [
+            "did",
+            "username",
+            "wallet"
+          ],
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "username": {
+              "type": "string"
+            },
+            "wallet": {
+              "$ref": "#/definitions/Addr"
+            }
+          }
         }
       }
     }

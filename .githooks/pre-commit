@@ -10,5 +10,6 @@ else
     yarn generate-contract-client
     echo "Export succesfull, adding new files..."
     git add packages/shared/src/coreum/contract-ts
+    git add packages/contract/schema
     exit 0
 fi
