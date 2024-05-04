@@ -20,8 +20,7 @@ pub fn instantiate(
 ) -> Result<Response, StdError> {
     let config_state = Config {
         owner: info.sender,
-        purchase_price: msg.purchase_price,
-        transfer_price: msg.transfer_price,
+        did_register_price: msg.purchase_price,
     };
 
     config_storage(deps.storage).save(&config_state)?;
@@ -53,7 +52,7 @@ pub fn execute_register(
 
     // TODO: agree how much will new DID registration cost
     let config_state = config_storage(deps.storage).load()?;
-    assert_sent_sufficient_coin(&info.funds, config_state.purchase_price)?;
+    assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
 
     let key = username.as_bytes();
     if (username_storage_read(deps.storage).may_load(key)?).is_some() {

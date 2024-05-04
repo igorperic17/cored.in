@@ -15,8 +15,7 @@ pub static WALLET_RESOLVER_KEY: &[u8] = b"walletlresolver";
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
-    pub purchase_price: Option<Coin>,
-    pub transfer_price: Option<Coin>,
+    pub did_register_price: Option<Coin>,
     pub owner: Addr
 }
 

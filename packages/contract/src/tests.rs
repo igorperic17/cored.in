@@ -74,8 +74,7 @@ mod tests {
             deps.as_ref(),
             Config {
                 owner: Addr::unchecked("creator"),
-                purchase_price: None,
-                transfer_price: None,
+                did_register_price: None
             },
         );
     }
@@ -90,8 +89,7 @@ mod tests {
             deps.as_ref(),
             Config {
                 owner: Addr::unchecked("creator"),
-                purchase_price: Some(coin(3, "token")),
-                transfer_price: Some(coin(4, "token")),
+                did_register_price: Some(coin(3, "token")),
             },
         );
     }

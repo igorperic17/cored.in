@@ -44,9 +44,8 @@ export type QueryMsg = {
 };
 export type Addr = string;
 export interface Config {
+  did_register_price?: Coin | null;
   owner: Addr;
-  purchase_price?: Coin | null;
-  transfer_price?: Coin | null;
   [k: string]: unknown;
 }
 export interface GetDIDResponse {
