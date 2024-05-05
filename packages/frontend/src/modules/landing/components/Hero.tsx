@@ -27,7 +27,7 @@ export const Hero = () => {
         alignSelf="end"
         fontSize={{ base: "1rem", md: "1.5rem", xl: "1.75rem" }}
       >
-        Empower your professional experience with CoredIn. Customize your
+        Empower your professional experience with cored.in. Customize your
         profile visibility and choose who can reach out to you. It's time to
         connect with confidence and unlock new opportunities.
       </Text>
