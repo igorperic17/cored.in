@@ -18,14 +18,14 @@ export class UserController {
     return Effect.runPromise(await this.userService.get(req.wallet));
   }
 
-  @TypedRoute.Post()
-  @UseGuards(LoggedIn)
-  async updateProfile(
-    @Req() req: AuthenticatedRequest,
-    @TypedBody() profile: UserProfile
-  ) {
-    const res = await this.userService.updateProfile(req.wallet, profile);
+  // @TypedRoute.Post()
+  // @UseGuards(LoggedIn)
+  // async updateProfile(
+  //   @Req() req: AuthenticatedRequest,
+  //   @TypedBody() profile: UserProfile
+  // ) {
+  //   const res = await this.userService.updateProfile(req.wallet, profile);
 
-    return res.affected === 1;
-  }
+  //   return res.affected === 1;
+  // }
 }

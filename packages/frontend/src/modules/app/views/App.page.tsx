@@ -1,5 +1,6 @@
 import { Login } from "@/components";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Profile } from "./components";
 
 const AppPage = () => {
   return (
@@ -13,13 +14,14 @@ const AppPage = () => {
         gap="5em"
         mb="16"
       >
-        <Heading as="h1" fontSize="4rem">
-          Cored.
-          <Text display="inline" color="brand.500">
-            in
+        <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
+          cored
+          <Text as="span" color="brand.500">
+            .in
           </Text>
         </Heading>
         <Login />
+        <Profile />
       </Flex>
     </Box>
   );
