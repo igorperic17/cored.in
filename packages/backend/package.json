@@ -23,7 +23,6 @@
     "prepare": "ts-patch install && typia patch"
   },
   "peerDependencies": {
-    "axios": "^0.27.2",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",
     "serverless": "^3.2.0"
