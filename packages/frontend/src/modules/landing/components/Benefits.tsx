@@ -45,6 +45,7 @@ export const Benefits = () => {
             benefit.title === selectedBenefit ? undefined : benefit.title
           )
         }
+        index={index}
       />
     );
   });
@@ -57,7 +58,6 @@ export const Benefits = () => {
       minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
     >
-      {/* <VisuallyHidden> */}
       <Heading
         as="h2"
         fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
@@ -66,7 +66,6 @@ export const Benefits = () => {
       >
         Benefits
       </Heading>
-      {/* </VisuallyHidden> */}
       <List spacing={{ base: "1.5em", md: "2.25em" }}>{benefitItems}</List>
     </Box>
   );

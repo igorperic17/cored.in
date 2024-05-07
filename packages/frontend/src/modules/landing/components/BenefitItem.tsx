@@ -1,4 +1,6 @@
+import { appearFromRightAnimation } from "@/components/constants/animations";
 import { Box, Collapse, Heading, ListItem, Text } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 import { FC } from "react";
 
 interface BenefitItemProps {
@@ -6,16 +8,25 @@ interface BenefitItemProps {
   description: string;
   isVisible: boolean;
   onClick: () => void;
+  index: number;
 }
 
 export const BenefitItem: FC<BenefitItemProps> = ({
   title,
   description,
   isVisible,
-  onClick
+  onClick,
+  index
 }) => {
   return (
-    <ListItem>
+    <ListItem
+      as={motion.li}
+      variants={appearFromRightAnimation}
+      initial="initial"
+      whileInView="animate"
+      viewport={{ once: true, amount: 0.2 }}
+      custom={index}
+    >
       <Heading
         as="h3"
         fontSize={{ base: "1.75rem", md: "3.5rem", lg: "4rem" }}

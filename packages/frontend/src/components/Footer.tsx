@@ -2,17 +2,7 @@
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import { SocialMedia } from "./SocialMedia";
 import { motion } from "framer-motion";
-import { useRef } from "react";
-
-const footerVariants = {
-  hidden: {
-    opacity: 0
-  },
-  visible: {
-    opacity: 1,
-    transition: { duration: 2 }
-  }
-};
+import { fadeInAnimation } from "./constants/animations";
 
 export const Footer = () => {
   return (
@@ -29,9 +19,9 @@ export const Footer = () => {
       pt="5em"
       pb="10em"
       mt="7em"
-      initial="hidden"
-      whileInView="visible"
-      variants={footerVariants}
+      initial="initial"
+      whileInView="animate"
+      variants={fadeInAnimation}
       viewport={{ once: true, amount: 0.5 }}
     >
       <Heading
