@@ -133,7 +133,7 @@ resource "aws_ecs_service" "wallet_api" {
   task_definition  = aws_ecs_task_definition.wallet_api.arn
   desired_count    = 1
   launch_type      = "FARGATE"
-  platform_version = "1.4.0"
+  platform_version = "1.3.0"
   propagate_tags   = "SERVICE"
 
   network_configuration {
