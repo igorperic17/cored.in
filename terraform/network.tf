@@ -63,13 +63,13 @@ resource "aws_security_group" "aurora_cluster" {
     from_port   = 0
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"] // TODO: Rollback after adding VPN (var.use_private_subnets ? [] : ["0.0.0.0/0"])
   }
 }
 
 resource "aws_security_group" "wallet_api_elb" {
   name        = "${var.app_name}-wallet-api-elb-sg"
-  description = "Allow inbound traffic to Wallet API ELB" // Is this service only accessible fros our backend?
+  description = "Allow inbound traffic to Wallet API ELB"
   vpc_id      = aws_vpc.default.id
 
   ingress {
