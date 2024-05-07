@@ -1,5 +1,5 @@
-import { Root } from "@/components/Root";
-import { AppRoot } from "@/components/AppRoot";
+import { Root } from "@/modules/landing/views/Root";
+import { AppRoot } from "@/modules/app/views/AppRoot";
 import ResourceNotFoundPage from "@/modules/error/views/resourceNotFoundPage";
 import PrivacyPolicyPage from "@/modules/privacy-policy/views/PrivacyPolicyPage";
 import LandingPage from "@/modules/landing/views/Landing.page";

@@ -1,5 +1,5 @@
 import { Box, Flex, useDisclosure } from "@chakra-ui/react";
-import { BurguerMenu, CookiesBar, Nav } from ".";
+import { BurguerMenu, CookiesBar, Footer, Nav } from "@/components";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 export const Root = () => {
@@ -8,13 +8,13 @@ export const Root = () => {
   return (
     <Flex direction="column" justify="start">
       <Nav onOpen={onOpen} />
-      <Box overflowX="hidden" flex="1">
+      <Box as="main" overflowX="hidden" flex="1">
         <Outlet />
         <ScrollRestoration />
       </Box>
       <CookiesBar />
       <BurguerMenu isOpen={isOpen} onClose={onClose} />
-      {/* <Footer /> */}
+      <Footer />
     </Flex>
   );
 };
