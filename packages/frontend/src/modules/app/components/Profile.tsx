@@ -4,8 +4,11 @@ import { USER_QUERIES } from "@/queries";
 import { Box } from "@chakra-ui/layout";
 import { DidInfo, GetDIDResponse } from "@coredin/shared";
 import { useEffect, useState } from "react";
-import { RegisteredProfile } from "./RegisteredProfile";
-import { NotRegisteredProfile } from "./NotRegisteredProfile";
+import {
+  NotRegisteredProfile,
+  RegisteredProfile,
+  RequireWalletConnection
+} from ".";
 
 export const Profile = () => {
   const { walletAddress, signingClient, coreumQueryClient }: IClientContext =
@@ -20,7 +23,7 @@ export const Profile = () => {
   const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
   const [usernameInput, setUsernameInput] = useState<string>("");
 
-  useEffect(() => {
+  const updateOnchainProfile = () => {
     if (walletAddress) {
       coreumQueryClient
         ?.getWalletDID({ wallet: walletAddress })
@@ -33,7 +36,9 @@ export const Profile = () => {
     } else {
       setOnchainProfile(null);
     }
-  }, [walletAddress]);
+  };
+
+  useEffect(updateOnchainProfile, [walletAddress]);
 
   const registerProfile = () => {
     if (onchainProfile === null && userProfile && usernameInput) {
@@ -45,9 +50,12 @@ export const Profile = () => {
         })
         .then((result) => {
           console.log(result);
+          updateOnchainProfile();
         })
         .catch((error) => {
+          console.log("error while registering");
           console.error(error);
+          updateOnchainProfile();
         });
     }
   };
@@ -62,6 +70,7 @@ export const Profile = () => {
 
   return (
     <Box>
+      {!walletAddress && <RequireWalletConnection />}
       {onchainProfile && (
         <RegisteredProfile
           did={onchainProfile.did}
