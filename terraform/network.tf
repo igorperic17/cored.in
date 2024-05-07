@@ -147,3 +147,46 @@ resource "aws_vpc_endpoint" "ecr-dkr-endpoint" {
     aws_security_group.wallet_api.id
   ]
 }
+
+resource "aws_vpc_endpoint" "ecr-api-endpoint" {
+  vpc_id              = aws_vpc.default.id
+  subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name        = "com.amazonaws.eu-west-1.ecr.api"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.wallet_api.id
+  ]
+}
+
+resource "aws_vpc_endpoint" "s3-endpoint" {
+  vpc_id            = aws_vpc.default.id
+  subnet_ids        = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name      = "com.amazonaws.eu-west-1.s3"
+  vpc_endpoint_type = "Interface"
+  security_group_ids = [
+    aws_security_group.wallet_api.id
+  ]
+}
+
+resource "aws_vpc_endpoint" "ecs-agent-endpoint" {
+  vpc_id              = aws_vpc.default.id
+  subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name        = "com.amazonaws.eu-west-1.ecs-agent"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.wallet_api.id
+  ]
+}
+
+resource "aws_vpc_endpoint" "ecs-telemetry-endpoint" {
+  vpc_id              = aws_vpc.default.id
+  subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name        = "com.amazonaws.eu-west-1.ecs-telemetry"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.wallet_api.id
+  ]
+}
