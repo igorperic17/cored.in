@@ -3,7 +3,6 @@ import { AppRoot } from "@/modules/app/views/AppRoot";
 import ResourceNotFoundPage from "@/modules/error/views/resourceNotFoundPage";
 import PrivacyPolicyPage from "@/modules/privacy-policy/views/PrivacyPolicyPage";
 import LandingPage from "@/modules/landing/views/Landing.page";
-import TestAppPage from "@/modules/test-app/views/TestApp.page";
 import { createBrowserRouter } from "react-router-dom";
 import { ROUTES } from "./routes";
 import AppPage from "@/modules/app/views/App.page";
@@ -25,14 +24,6 @@ export const router = createBrowserRouter([
         element: (
           <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.PRIVACY_POLICY}>
             <PrivacyPolicyPage />
-          </FeatureFlagProtectedPage>
-        )
-      },
-      {
-        path: "test",
-        element: (
-          <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.TEST_APP}>
-            <TestAppPage />
           </FeatureFlagProtectedPage>
         )
       }
