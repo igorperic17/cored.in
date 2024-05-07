@@ -20,7 +20,7 @@ export const RequireWalletConnection = () => {
       mx="auto"
       //   border="1px solid red"
     >
-      <Heading as="h1" fontSize={{ base: "3rem", md: "4rem" }} mt="auto">
+      <Heading as="h1" fontSize={{ base: "3rem", md: "4rem" }}>
         Connect your Keplr wallet to begin
       </Heading>
       <Login variant="primary" signInText="Connect wallet" />
@@ -43,15 +43,6 @@ export const RequireWalletConnection = () => {
         >
           Get one here
         </Link>
-      </Text>
-      <Text
-        color="text.400"
-        fontSize={{ base: "0.875rem", md: "1rem" }}
-        mt="auto"
-        // alignSelf="end"
-      >
-        All the information that you provide on cored.in can later be edited and
-        deleted by you.
       </Text>
     </VStack>
   );
