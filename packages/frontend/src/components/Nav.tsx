@@ -46,7 +46,13 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       // background="red"
       zIndex="10"
     >
-      <Logo fontSize={{ base: "2rem", md: "3rem" }} />
+      <Link
+        as={ReactRouterLink}
+        to={ROUTES.ROOT.path}
+        _hover={{ textDecoration: "none" }}
+      >
+        <Logo fontSize={{ base: "2rem", md: "3rem" }} />
+      </Link>
       {isLargerThanMd && (
         <HStack spacing="1.5em">
           {navSections.map((item, index) => {
