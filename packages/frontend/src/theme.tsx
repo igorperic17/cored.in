@@ -97,7 +97,11 @@ const components = {
             bg: "background.100"
           }
         }
-      })
+      }),
+      empty: {
+        border: "none",
+        color: "brand.500"
+      }
       // secondary: () => ({
       //   border: "2px solid",
       //   borderColor:
