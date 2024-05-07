@@ -1,7 +1,7 @@
 // import { BackToTop } from "@/modules/landing/components/BackToTop";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import { SocialMedia } from "./SocialMedia";
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef } from "react";
 
 const footerVariants = {
@@ -19,7 +19,6 @@ const footerVariants = {
 export const Footer = () => {
   const container = useRef(null);
   const ref = useRef(null);
-  const isInView = useInView({ root: container });
 
   return (
     <Flex
