@@ -172,7 +172,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
 resource "aws_vpc_endpoint" "logs_endpoint" {
   vpc_id            = aws_vpc.default.id
   subnet_ids        = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
-  service_name      = "com.amazonaws.region.logs"
+  service_name      = "com.amazonaws.eu-west-1.logs"
   vpc_endpoint_type = "Interface"
   security_group_ids = [
     aws_security_group.wallet_api.id
