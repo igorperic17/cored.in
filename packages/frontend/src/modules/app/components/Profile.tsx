@@ -1,10 +1,11 @@
 import { IClientContext, useAuth, useLoggedInServerState } from "@/hooks";
 import { useWrappedClientContext } from "@/contexts/client";
 import { USER_QUERIES } from "@/queries";
-import { Box, Text } from "@chakra-ui/layout";
+import { Box } from "@chakra-ui/layout";
 import { DidInfo, GetDIDResponse } from "@coredin/shared";
 import { useEffect, useState } from "react";
-import { Input, Button } from "@chakra-ui/react";
+import { RegisteredProfile } from "./RegisteredProfile";
+import { NotRegisteredProfile } from "./NotRegisteredProfile";
 
 export const Profile = () => {
   const { walletAddress, signingClient, coreumQueryClient }: IClientContext =
@@ -17,17 +18,21 @@ export const Profile = () => {
     }
   );
   const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
-  const [usernameInput, setUsernameInput] = useState<string>();
+  const [usernameInput, setUsernameInput] = useState<string>("");
 
   useEffect(() => {
-    coreumQueryClient
-      ?.getWalletDID({ wallet: walletAddress })
-      .then((registered_did: GetDIDResponse) => {
-        console.log(registered_did);
-        if (registered_did.did_info) {
-          setOnchainProfile(registered_did.did_info);
-        }
-      });
+    if (walletAddress) {
+      coreumQueryClient
+        ?.getWalletDID({ wallet: walletAddress })
+        .then((registered_did: GetDIDResponse) => {
+          console.log(registered_did);
+          if (registered_did.did_info) {
+            setOnchainProfile(registered_did.did_info);
+          }
+        });
+    } else {
+      setOnchainProfile(null);
+    }
   }, [walletAddress]);
 
   const registerProfile = () => {
@@ -57,34 +62,19 @@ export const Profile = () => {
 
   return (
     <Box>
-      {walletAddress && (
-        <Text color="brand.500">{`Welcome to cored.in, ${walletAddress}!`}</Text>
+      {onchainProfile && (
+        <RegisteredProfile
+          did={onchainProfile.did}
+          username={onchainProfile.username}
+        />
       )}
       {!onchainProfile && userProfile && (
-        <Box>
-          <Text
-            color="brand.500"
-            textOverflow="ellipsis"
-            whiteSpace="nowrap"
-            overflow="hidden"
-            maxW="500px"
-          >{`Here's your new DID: ${userProfile.did}`}</Text>
-          <Input
-            placeholder="Username"
-            onChange={handleChangeUserName}
-            value={usernameInput}
-          />
-          <Button onClick={registerProfile}>REGISTER</Button>
-        </Box>
-      )}
-      {onchainProfile && (
-        <Text
-          color="brand.500"
-          textOverflow="ellipsis"
-          whiteSpace="nowrap"
-          overflow="hidden"
-          maxW="500px"
-        >{`Thanks for registering ${onchainProfile.username}! DID: ${onchainProfile.did}`}</Text>
+        <NotRegisteredProfile
+          did={userProfile.did}
+          handleChangeUserName={handleChangeUserName}
+          usernameInput={usernameInput}
+          registerProfile={registerProfile}
+        />
       )}
     </Box>
   );
