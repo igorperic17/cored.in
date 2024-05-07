@@ -136,3 +136,14 @@ resource "aws_security_group_rule" "public_wallet_api_security_group_rule" {
   cidr_blocks       = var.use_private_subnets ? [] : ["0.0.0.0/0"]
   count             = var.use_private_subnets ? 0 : 1
 }
+
+resource "aws_vpc_endpoint" "ecr-dkr-endpoint" {
+  vpc_id              = aws_vpc.default.id
+  subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name        = "com.amazonaws.eu-west-1.ecr.dkr"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids = [
+    aws_security_group.wallet_api.id
+  ]
+}
