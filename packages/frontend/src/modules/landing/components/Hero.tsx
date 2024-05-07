@@ -14,7 +14,7 @@ export const Hero = () => {
       color="text.100"
     >
       <Heading
-        as="h2"
+        as="h1"
         fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
         textAlign="left"
         maxW={{ base: "750px", xl: "900px" }}
