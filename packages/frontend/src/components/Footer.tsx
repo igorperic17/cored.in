@@ -5,21 +5,16 @@ import { motion } from "framer-motion";
 import { useRef } from "react";
 
 const footerVariants = {
-  initial: {
+  hidden: {
     opacity: 0
   },
-  animate: {
+  visible: {
     opacity: 1,
-    transition: {
-      duration: 2
-    }
+    transition: { duration: 2 }
   }
 };
 
 export const Footer = () => {
-  const container = useRef(null);
-  const ref = useRef(null);
-
   return (
     <Flex
       as={motion.footer}
@@ -34,11 +29,10 @@ export const Footer = () => {
       pt="5em"
       pb="10em"
       mt="7em"
-      initial="initial"
-      whileInView="animate"
+      initial="hidden"
+      whileInView="visible"
       variants={footerVariants}
-      viewport={{ once: true }}
-      ref={container}
+      viewport={{ once: true, amount: 0.5 }}
     >
       <Heading
         as="h2"
@@ -46,7 +40,6 @@ export const Footer = () => {
         mb="2rem"
         textAlign="center"
         maxW="600px"
-        ref={ref}
       >
         Get notified when cored
         <Text as="span" color="brand.500">
