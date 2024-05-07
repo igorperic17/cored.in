@@ -41,7 +41,7 @@ module.exports = () => ({
   },
   output: {
     libraryTarget: 'commonjs2',
-    path: path.join(__dirname, "dist"),
+    path: path.join(__dirname, "dist-lambda"),
     filename: '[name].js',
     chunkFormat: false,
   },
