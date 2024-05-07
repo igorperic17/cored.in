@@ -24,6 +24,9 @@
     "noImplicitAny": false,
     "strictBindCallApply": true,
     "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@/*": ["./src/*"],
+    },
     "plugins": [
       { 
         "transform": "@nestia/core/lib/transform",
