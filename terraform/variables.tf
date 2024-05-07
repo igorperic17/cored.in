@@ -44,14 +44,6 @@ variable "wallet_api_db_name" {
   type = string
 }
 
-variable "api_domain_name" {
-  type = string
-}
-
-variable "api_certificate_arn" {
-  type = string
-}
-
 variable "wallet_api_image" {
   type = string
 }
