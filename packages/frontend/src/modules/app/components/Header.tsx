@@ -18,7 +18,7 @@ export const Header = () => {
       background="background.900"
     >
       <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
-      <Login />
+      <Login variant="empty" signInText="Connect wallet" />
     </Flex>
   );
 };

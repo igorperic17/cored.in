@@ -1,7 +1,13 @@
 import { useWrappedClientContext } from "@/contexts/client";
 import { Button, HStack, Text } from "@chakra-ui/react";
+import { FC } from "react";
 
-export const Login = () => {
+interface LoginProps {
+  variant: "primary" | "empty";
+  signInText: string;
+}
+
+export const Login: FC<LoginProps> = ({ variant, signInText }) => {
   const { connectWallet, disconnect, walletAddress } =
     useWrappedClientContext();
   const isConnected = walletAddress.length;
@@ -38,6 +44,7 @@ export const Login = () => {
           borderEndEndRadius="xl"
           bg="none"
           color="text.800"
+          variant={variant}
           size="xs"
           _hover={{
             bg: "none",
@@ -54,8 +61,8 @@ export const Login = () => {
     );
   } else {
     return (
-      <Button variant="primary" size="md" onClick={connectWallet}>
-        Sign In
+      <Button variant={variant} size="md" onClick={connectWallet}>
+        {signInText}
       </Button>
     );
   }

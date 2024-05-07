@@ -14,6 +14,7 @@ import { FEATURE_FLAG } from "@coredin/shared";
 import { navSections } from "@/constants";
 import { useSectionInView } from "@/hooks";
 import { Logo } from "./Logo";
+import { Login } from "./Login";
 
 export interface NavProps {
   onOpen: () => void;
@@ -76,13 +77,13 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
           })}
         </HStack>
       )}
-      {isInitialised && isFeatureEnabled(FEATURE_FLAG.APP) && (
-        <Link as={ReactRouterLink} to={ROUTES.APP.path}>
-          <Button variant="primary" size="md">
-            Sign In
-          </Button>
-        </Link>
-      )}
+      <Link
+        as={ReactRouterLink}
+        to={ROUTES.APP.path}
+        _hover={{ textDecoration: "none" }}
+      >
+        <Login variant="primary" signInText="Sign in" />
+      </Link>
       {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
         <Link as={ReactRouterLink} to={"#benefits"}>
           <Button variant="primary" size="md">
