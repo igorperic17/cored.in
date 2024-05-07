@@ -2,8 +2,8 @@ import { Controller, Get, Req, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
-import { UserProfile } from "@coredin/shared";
-import { TypedBody, TypedRoute } from "@nestia/core";
+// import { UserProfile } from "@coredin/shared";
+// import { TypedBody, TypedRoute } from "@nestia/core";
 import { Effect } from "effect";
 
 @Controller("user")
