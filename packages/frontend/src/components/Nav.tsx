@@ -1,14 +1,11 @@
 import { FC } from "react";
 import {
-  Text,
   Flex,
-  Heading,
   Button,
   Link,
   HStack,
   useMediaQuery,
-  useTheme,
-  Box
+  useTheme
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
@@ -16,6 +13,7 @@ import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import { FEATURE_FLAG } from "@coredin/shared";
 import { navSections } from "@/constants";
 import { useSectionInView } from "@/hooks";
+import { Logo } from "./Logo";
 
 export interface NavProps {
   onOpen: () => void;
@@ -48,12 +46,7 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       // background="red"
       zIndex="10"
     >
-      <Heading as="h1" fontSize={{ base: "2rem", md: "3rem" }}>
-        cored
-        <Text as="span" color="brand.500">
-          .in
-        </Text>
-      </Heading>
+      <Logo fontSize={{ base: "2rem", md: "3rem" }} />
       {isLargerThanMd && (
         <HStack spacing="1.5em">
           {navSections.map((item, index) => {
