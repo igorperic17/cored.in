@@ -66,7 +66,7 @@ const components = {
         fontSize: { base: "0.75em", md: "0.825rem" }
       },
       md: {
-        fontSize: "1.125rem",
+        fontSize: { base: "1rem", md: "1.125rem" },
         px: "1.5em",
         py: "0.5em",
         borderRadius: "3xl"
@@ -100,7 +100,8 @@ const components = {
       }),
       empty: {
         border: "none",
-        color: "brand.500"
+        color: "brand.500",
+        px: "0"
       }
       // secondary: () => ({
       //   border: "2px solid",

@@ -26,7 +26,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
         // border="1px solid red"
         pl="1em"
         pr="0.25em"
-        spacing="0.25em"
+        spacing="0.75em"
         align="end"
       >
         <Text
