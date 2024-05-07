@@ -42,7 +42,7 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   engine_version      = aws_rds_cluster.aurora_cluster.engine_version
   instance_class      = "db.t3.medium"
   apply_immediately   = true
-  publicly_accessible = var.use_private_subnets ? false : true
+  publicly_accessible = true
 
   tags = {
     Name   = "coredin-rds-aurora-instance"

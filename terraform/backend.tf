@@ -145,6 +145,8 @@ resource "aws_api_gateway_integration_response" "example_integration_response" {
   response_templates = {
     "application/json" = ""
   }
+
+  depends_on = [aws_api_gateway_method_response.lambda_backend_api_method_response]
 }
 
 resource "aws_api_gateway_deployment" "lambda_backend_api_deployment" {

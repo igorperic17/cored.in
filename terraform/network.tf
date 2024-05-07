@@ -43,7 +43,7 @@ resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
   service_name        = "com.amazonaws.eu-west-1.secretsmanager"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
-  security_group_ids  = [
+  security_group_ids = [
     aws_security_group.wallet_api.id,
     aws_security_group.lambda_backend.id,
   ]
@@ -63,13 +63,13 @@ resource "aws_security_group" "aurora_cluster" {
     from_port   = 0
     to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = var.use_private_subnets ? [aws_vpc.default.cidr_block] : ["0.0.0.0/0"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
 resource "aws_security_group" "wallet_api_elb" {
   name        = "${var.app_name}-wallet-api-elb-sg"
-  description = "Allow inbound traffic to Wallet API ELB"
+  description = "Allow inbound traffic to Wallet API ELB" // Is this service only accessible fros our backend?
   vpc_id      = aws_vpc.default.id
 
   ingress {
@@ -113,10 +113,10 @@ resource "aws_security_group" "lambda_backend" {
   vpc_id      = aws_vpc.default.id
 
   ingress {
-    protocol        = "-1"
-    from_port       = 0
-    to_port         = 0
-    cidr_blocks     = [aws_vpc.default.cidr_block]
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = [aws_vpc.default.cidr_block]
   }
 
   egress {
