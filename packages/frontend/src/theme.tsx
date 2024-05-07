@@ -1,7 +1,7 @@
 import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 import "@fontsource/noto-sans";
-import { stepperTheme } from "./themes/stepperTheme";
+import { inputTheme, stepperTheme } from "./themes";
 
 const fonts = {
   heading: `'Space Grotesk', sans-serif`,
@@ -42,13 +42,14 @@ const colors = {
     300: "#b0b0b0", // hover / text in the stepper
     400: "#828178", // medium / text on card
     600: "#737373", // - hover 2 / not in use yet
+    700: "#75746B", // heading in profile
     800: "#62625D", // - medium - dark / not in use yet
     900: "#121111" // dark
   },
   background: {
     100: "#ebebeb", // - not in use yet
     600: "#3E3D3A", // card bg
-    800: "#222320", // - very dark bg / not in use yet
+    800: "#222320", // very dark bg / profile bg
     900: "#1C1C1A" // body bg / black
   }
 };
@@ -62,9 +63,7 @@ const components = {
     },
     sizes: {
       xs: {
-        fontSize: "0.825rem",
-        px: "1.5em",
-        py: "0.5em"
+        fontSize: { base: "0.75em", md: "0.825rem" }
       },
       md: {
         fontSize: "1.125rem",
@@ -133,7 +132,8 @@ const components = {
     //   colorScheme: 'blue', // default is gray
     // },
   },
-  Stepper: stepperTheme
+  Stepper: stepperTheme,
+  Input: inputTheme
 };
 
 const breakpoints = {
