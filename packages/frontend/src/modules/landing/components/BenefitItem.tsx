@@ -24,7 +24,7 @@ export const BenefitItem: FC<BenefitItemProps> = ({
       variants={appearFromRightAnimation}
       initial="initial"
       whileInView="animate"
-      viewport={{ once: true, amount: 0.2 }}
+      viewport={{ once: true, amount: 0 }}
       custom={index}
     >
       <Heading
