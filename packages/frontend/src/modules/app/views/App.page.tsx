@@ -1,6 +1,6 @@
 import { Login } from "@/components";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
-import { Profile } from "./components";
+import { Profile } from "../components";
 
 const AppPage = () => {
   return (

@@ -47,6 +47,14 @@ export const Profile = () => {
     }
   };
 
+  const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    // Check if the input contains only letters (uppercase and lowercase)
+    if (/^[a-zA-Z]+$/.test(value) || value === "") {
+      setUsernameInput(value);
+    }
+  };
+
   return (
     <Box>
       {walletAddress && (
@@ -63,7 +71,7 @@ export const Profile = () => {
           >{`Here's your new DID: ${userProfile.did}`}</Text>
           <Input
             placeholder="Username"
-            onChange={(e) => setUsernameInput(e.target.value)}
+            onChange={handleChangeUserName}
             value={usernameInput}
           />
           <Button onClick={registerProfile}>REGISTER</Button>
