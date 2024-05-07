@@ -70,26 +70,9 @@ resource "aws_iam_policy" "allow_read_secret" {
   })
 }
 
-resource "aws_iam_policy" "allow_read_ecr" {
-  name        = "${var.app_name}-read-ecr-policy"
-  path        = "/"
-  description = "Policy to read images from AWS ECR."
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "ecr:GetAuthorizationToken",
-          "ecr:BatchCheckLayerAvailability",
-          "ecr:GetDownloadUrlForLayer",
-          "ecr:BatchGetImage",
-        ]
-        Resource = "*",
-      },
-    ],
-  })
+resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_allow_read_ecr" {
+  role       = aws_iam_role.ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_allow_logs" {
@@ -100,9 +83,4 @@ resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments
 resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_read_secret" {
   role       = aws_iam_role.ecs_execution_role.name
   policy_arn = aws_iam_policy.allow_read_secret.arn
-}
-
-resource "aws_iam_role_policy_attachment" "ecs_service_role_policy_attachments_read_ecr" {
-  role       = aws_iam_role.ecs_service_role.name
-  policy_arn = aws_iam_policy.allow_read_ecr.arn
 }

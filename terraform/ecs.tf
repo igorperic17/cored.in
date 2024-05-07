@@ -139,7 +139,7 @@ resource "aws_ecs_service" "wallet_api" {
   network_configuration {
     security_groups  = [aws_security_group.wallet_api.id]
     subnets          = var.use_private_subnets ? aws_subnet.private.*.id : aws_subnet.public.*.id
-    assign_public_ip = var.use_private_subnets ? false : true
+    assign_public_ip = true
   }
 
   load_balancer {
