@@ -22,7 +22,7 @@ export const Footer = () => {
       initial="initial"
       whileInView="animate"
       variants={fadeInAnimation}
-      viewport={{ once: true, amount: 0.5 }}
+      viewport={{ once: true, amount: 0.3 }}
     >
       <Heading
         as="h2"
