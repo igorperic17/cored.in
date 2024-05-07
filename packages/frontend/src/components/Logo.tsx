@@ -2,7 +2,7 @@ import { Box, Text } from "@chakra-ui/react";
 import { FC } from "react";
 
 interface LogoProps {
-  fontSize: { base?: string; md: string };
+  fontSize: { base?: string; md?: string };
 }
 
 export const Logo: FC<LogoProps> = ({ fontSize }) => {
