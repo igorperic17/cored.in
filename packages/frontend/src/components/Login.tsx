@@ -7,20 +7,28 @@ export const Login = () => {
   const isConnected = walletAddress.length;
 
   const shortWalletAddress =
-    walletAddress.slice(0, 3) + "..." + walletAddress.slice(-3);
+    walletAddress.slice(0, 4) + "..." + walletAddress.slice(-4);
 
   if (isConnected) {
     return (
       <HStack
-        borderWidth="1px"
-        borderStyle="solid"
-        borderColor="background.100"
-        borderRadius="3xl"
-        px="0.25em"
-        py="0.25em"
+        // borderWidth="1px"
+        // borderStyle="solid"
+        // borderColor="background.100"
+        // borderRadius="3xl"
+        // py="0.25em"
+        // border="1px solid red"
         pl="1em"
+        pr="0.25em"
+        spacing="0.25em"
+        align="end"
       >
-        <Text color="brand.500" textTransform="uppercase">
+        <Text
+          color="text.100"
+          textTransform="uppercase"
+          fontSize={{ base: "0.75em", md: "0.825rem" }}
+          mb="1px"
+        >
           {shortWalletAddress}
         </Text>
         <Button
@@ -29,15 +37,18 @@ export const Login = () => {
           borderStartEndRadius="xl"
           borderEndEndRadius="xl"
           bg="none"
-          color="text.300"
+          color="text.800"
           size="xs"
           _hover={{
             bg: "none",
             color: "text.100"
           }}
           onClick={() => disconnect()}
+          // border="1px solid green"
         >
-          Sign Out
+          <Text fontFamily="inherit" fontSize="inherit" mt="auto">
+            Sign Out
+          </Text>
         </Button>
       </HStack>
     );
