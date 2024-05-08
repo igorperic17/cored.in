@@ -71,7 +71,7 @@ export const Profile = () => {
 
   return (
     <Box>
-      {isLoading && (
+      {!onchainProfile && isLoading && (
         <Center mt="32px">
           <Spinner size="xl" color="brand.500" />
         </Center>

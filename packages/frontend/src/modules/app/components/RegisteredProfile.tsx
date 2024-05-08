@@ -39,7 +39,7 @@ export const RegisteredProfile: FC<Partial<DidInfo>> = ({ did, username }) => {
         fontSize={{ base: "1rem", md: "1.25rem" }}
         color="text.700"
       >
-        Your DID is:
+        Your DID registered onchain is:
         <Text
           as="span"
           display="block"
