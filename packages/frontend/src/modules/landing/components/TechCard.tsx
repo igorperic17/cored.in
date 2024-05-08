@@ -1,5 +1,5 @@
 import { fadeInOneByOne } from "@/components/constants/animations";
-import { Heading, VStack, Text, Img } from "@chakra-ui/react";
+import { Heading, VStack, Text, Link, Box, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
 
@@ -8,39 +8,69 @@ interface TechProps {
   text: string;
   index: number;
   image?: string;
+  link?: string;
 }
 
-export const TechCard: FC<TechProps> = ({ heading, text, index, image }) => {
+export const TechCard: FC<TechProps> = ({
+  heading,
+  text,
+  index,
+  image,
+  link
+}) => {
   return (
-    <VStack
+    <Box
       as={motion.div}
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount: 0.3 }}
       variants={fadeInOneByOne}
       custom={index}
-      spacing="2em"
-      align="start"
       borderRadius="16px"
-      //   border="1px solid white"
       color="text.100"
       background="background.600"
       px={{ base: "1em", md: "2em" }}
       pt={{ base: "1.25em", md: "2.5em" }}
-      pb={{ base: "2em", md: "4em" }}
+      pb={{ base: "2em", md: "3.5em" }}
     >
-      <Heading as="h3" fontSize={{ base: "1.5rem", md: "2.5rem", xl: "3rem" }}>
-        {heading}
-      </Heading>
-      <Text whiteSpace="pre-line">{text}</Text>
-      <Img
-        src={image}
-        aria-hidden="true"
-        border="1px solid red"
-        w="100%"
-        maxW="80%"
-        h="auto"
-      />
-    </VStack>
+      <VStack
+        spacing="2em"
+        align="start"
+        h="100%"
+        //   border="1px solid white"
+        filter="grayscale(100%)"
+        _hover={{
+          filter: "none !important"
+        }}
+      >
+        <Heading
+          as="h3"
+          fontSize={{ base: "1.5rem", md: "2.5rem", xl: "3rem" }}
+        >
+          {heading}
+        </Heading>
+        <Text whiteSpace="pre-line" mb="2em">
+          {text}
+        </Text>
+        <Link
+          href={link}
+          isExternal
+          alignSelf="center"
+          mt="auto"
+          onClick={() => console.log(link)}
+        >
+          <Image
+            src={image}
+            aria-hidden="true"
+            // border="1px solid red"
+            w="100%"
+            maxW="80%"
+            h="auto"
+            maxH="150px"
+            objectFit="contain"
+          />
+        </Link>
+      </VStack>
+    </Box>
   );
 };
