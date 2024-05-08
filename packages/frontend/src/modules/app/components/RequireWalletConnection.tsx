@@ -1,12 +1,5 @@
 import { Login } from "@/components";
-import {
-  VStack,
-  Text,
-  Heading,
-  Link,
-  Flex,
-  SimpleGrid
-} from "@chakra-ui/react";
+import { VStack, Text, Heading, Link } from "@chakra-ui/react";
 
 export const RequireWalletConnection = () => {
   return (
