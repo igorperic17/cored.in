@@ -11,7 +11,7 @@ import {
 export const RequireWalletConnection = () => {
   return (
     <VStack
-      h="85vh"
+      h="82vh"
       align="center"
       justify="center"
       spacing="15vh"
