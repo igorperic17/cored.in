@@ -12,9 +12,9 @@ export const Root = () => {
         <Outlet />
         <ScrollRestoration />
       </Box>
-      <CookiesBar />
       <BurguerMenu isOpen={isOpen} onClose={onClose} />
       <Footer />
+      <CookiesBar />
     </Flex>
   );
 };

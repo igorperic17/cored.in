@@ -1,12 +1,5 @@
 import { useFeatureFlagContext } from "@/contexts/featureFlag";
-import {
-  Flex,
-  Text,
-  Container,
-  HStack,
-  useMediaQuery,
-  Button
-} from "@chakra-ui/react";
+import { Flex, Text, Button, Box, ButtonGroup } from "@chakra-ui/react";
 import { useMemo, useState } from "react";
 import { useCookies } from "react-cookie";
 import { FEATURE_FLAG } from "@coredin/shared";
@@ -23,7 +16,6 @@ export const CookiesBar = () => {
     COOKIES_ACCEPTANCE_COOKIE_NAME
   ]);
   const [rejected, setRejected] = useState(false);
-  const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
 
   if (!isEnabled) {
     return false;
@@ -32,32 +24,34 @@ export const CookiesBar = () => {
   return (
     <>
       {!cookies.CookiesConsent && !rejected && (
-        <Container
+        <Box
+          bg="background.900"
+          opacity="0.95"
           maxW="100vw"
-          centerContent
-          bg="background.800"
-          borderTop="1px solid black"
-          color="headingBlack"
+          borderTopWidth="1px"
+          borderTopStyle="solid"
+          borderTopColor="brand.500"
           position="sticky"
           bottom="0"
           zIndex="sticky"
         >
           <Flex
-            direction={isLargerThanLG ? "row" : "column"}
-            gap={isLargerThanLG ? "1em" : "1.5em"}
+            direction={{ base: "column", md: "row" }}
+            gap="1em"
             justify="space-between"
-            // align={isLargerThanLG ? "center" : "center"}
             align="center"
-            textAlign="center"
-            maxW="1200px"
-            w="100%"
-            px="6"
-            py="4"
+            textAlign={{ base: "center", md: "left" }}
+            maxW="1400px"
+            mx="auto"
+            px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }}
+            py="0.5em"
           >
-            <Text>This website uses cookies to improve user experience.</Text>
-            <HStack>
+            <Text fontWeight="700">
+              This website uses cookies to improve the user experience.
+            </Text>
+            <ButtonGroup spacing="2em">
               <Button
-                variant="secondary"
+                variant="empty"
                 onClick={() => {
                   removeCookie(COOKIES_ACCEPTANCE_COOKIE_NAME);
                   setRejected(true);
@@ -66,14 +60,14 @@ export const CookiesBar = () => {
                 Reject
               </Button>
               <Button
-                variant="rounded"
+                variant="empty"
                 onClick={() => setCookie(COOKIES_ACCEPTANCE_COOKIE_NAME, true)}
               >
                 Accept
               </Button>
-            </HStack>
+            </ButtonGroup>
           </Flex>
-        </Container>
+        </Box>
       )}
     </>
   );
