@@ -38,6 +38,9 @@ export const Footer = () => {
         is ready
       </Heading>
       <SocialMedia />
+      <Text>
+        {`All rights reserved - cored.in - ${new Date().getFullYear()}`}
+      </Text>
     </Flex>
   );
 };
