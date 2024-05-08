@@ -35,14 +35,12 @@ export const CookiesBar = () => {
         <Container
           maxW="100vw"
           centerContent
-          // bg="blackAlpha.50"
+          bg="background.800"
           borderTop="1px solid black"
           color="headingBlack"
           position="sticky"
           bottom="0"
           zIndex="sticky"
-          bg="bglight"
-          w="100%"
         >
           <Flex
             direction={isLargerThanLG ? "row" : "column"}
@@ -56,7 +54,7 @@ export const CookiesBar = () => {
             px="6"
             py="4"
           >
-            <Text>Some cookies message...</Text>
+            <Text>This website uses cookies to improve user experience.</Text>
             <HStack>
               <Button
                 variant="secondary"
