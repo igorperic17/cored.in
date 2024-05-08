@@ -12,9 +12,10 @@ export const Disclaimer = () => {
       textAlign="center"
       maxW="1100px"
     >
-      Please note that cored.in is currently in development, so any information
-      provided by you will be immediately deleted and no registrations will be
-      made. Please come back when cored.in is ready and create a new profile.
+      Please note that cored.in is currently in active development and features
+      are available for testing purposes only. All data may be deleted at any
+      time without any prior notice. Please come back when cored.in is ready to
+      create a persistent profile.
     </Text>
   );
 };
