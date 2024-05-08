@@ -1,7 +1,7 @@
 import { IClientContext, useAuth, useLoggedInServerState } from "@/hooks";
 import { useWrappedClientContext } from "@/contexts/client";
 import { USER_QUERIES } from "@/queries";
-import { Box } from "@chakra-ui/layout";
+import { Box, Center } from "@chakra-ui/layout";
 import { DidInfo, GetDIDResponse } from "@coredin/shared";
 import { useEffect, useState } from "react";
 import {
@@ -9,12 +9,13 @@ import {
   RegisteredProfile,
   RequireWalletConnection
 } from ".";
+import { Spinner } from "@chakra-ui/spinner";
 
 export const Profile = () => {
   const { walletAddress, signingClient, coreumQueryClient }: IClientContext =
     useWrappedClientContext();
   const { needsAuth } = useAuth();
-  const { data: userProfile } = useLoggedInServerState(
+  const { data: userProfile, isLoading } = useLoggedInServerState(
     USER_QUERIES.getUser(walletAddress, needsAuth),
     {
       enabled: walletAddress.length > 0
@@ -70,6 +71,11 @@ export const Profile = () => {
 
   return (
     <Box>
+      {isLoading && (
+        <Center mt="32px">
+          <Spinner size="xl" color="brand.500" />
+        </Center>
+      )}
       {!walletAddress && <RequireWalletConnection />}
       {onchainProfile && (
         <RegisteredProfile
