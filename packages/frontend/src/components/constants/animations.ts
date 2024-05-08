@@ -1,24 +1,16 @@
-export const fadeInAnimation = {
-  initial: {
-    opacity: 0
-  },
-  animate: {
-    opacity: 1,
-    transition: { duration: 2 }
-  }
-};
-
+// hero subheading
 export const fadeInWithDelayAnimation = {
   initial: {
     opacity: 0
   },
   animate: {
     opacity: 1,
-    transition: { duration: 2, delay: 0.7 }
+    transition: { duration: 2, delay: 0.6 }
   }
 };
 
-export const appearFromRightAnimation = {
+// benefit item, progress text
+export const appearFromRightOneByOne = {
   initial: {
     opacity: 0,
     x: 300
@@ -31,4 +23,29 @@ export const appearFromRightAnimation = {
       delay: 0.2 * index
     }
   })
+};
+
+// tech card, progress lines
+export const fadeInOneByOne = {
+  initial: {
+    opacity: 0
+  },
+  animate: (index: number) => ({
+    opacity: 1,
+    transition: {
+      duration: 0.5,
+      delay: 0.3 * index
+    }
+  })
+};
+
+// footer
+export const fadeInAnimation = {
+  initial: {
+    opacity: 0
+  },
+  animate: {
+    opacity: 1,
+    transition: { duration: 2 }
+  }
 };

@@ -1,4 +1,4 @@
-import { Box, Flex, Heading, SimpleGrid, Text, VStack } from "@chakra-ui/react";
+import { Box, Heading, SimpleGrid } from "@chakra-ui/react";
 import { TechCard } from "./TechCard";
 
 const techData = [
@@ -37,7 +37,12 @@ export const Tech = () => {
       </Heading>
       <SimpleGrid spacing="2em" minChildWidth="320px">
         {techData.map((tech, index) => (
-          <TechCard key={index} heading={tech.heading} text={tech.text} />
+          <TechCard
+            key={index}
+            heading={tech.heading}
+            text={tech.text}
+            index={index}
+          />
         ))}
       </SimpleGrid>
     </Box>

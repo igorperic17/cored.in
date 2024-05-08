@@ -1,4 +1,8 @@
 import {
+  appearFromRightOneByOne,
+  fadeInOneByOne
+} from "@/components/constants/animations";
+import {
   Box,
   Flex,
   Heading,
@@ -13,6 +17,7 @@ import {
   Stepper,
   useSteps
 } from "@chakra-ui/react";
+import { motion } from "framer-motion";
 
 const steps = [
   {
@@ -83,12 +88,30 @@ export const OurProgress = () => {
               />
             </StepIndicator>
 
-            <Box flexShrink="0" w="600px" maxW="78vw" pl="1em">
+            <Box
+              flexShrink="0"
+              w="600px"
+              maxW="78vw"
+              pl="1em"
+              as={motion.div}
+              variants={appearFromRightOneByOne}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, amount: 0 }}
+              custom={index}
+            >
               <StepTitle>{step.title}</StepTitle>
               <StepDescription>{step.description}</StepDescription>
             </Box>
 
-            <StepSeparator />
+            <StepSeparator
+              as={motion.div}
+              variants={fadeInOneByOne}
+              initial="initial"
+              whileInView="animate"
+              viewport={{ once: true, amount: 0 }}
+              custom={index}
+            />
           </Step>
         ))}
       </Stepper>

@@ -1,4 +1,4 @@
-import { appearFromRightAnimation } from "@/components/constants/animations";
+import { appearFromRightOneByOne } from "@/components/constants/animations";
 import { Box, Collapse, Heading, ListItem, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
@@ -21,7 +21,7 @@ export const BenefitItem: FC<BenefitItemProps> = ({
   return (
     <ListItem
       as={motion.li}
-      variants={appearFromRightAnimation}
+      variants={appearFromRightOneByOne}
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount: 0 }}
