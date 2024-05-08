@@ -1,6 +1,8 @@
 import { Login } from "@/components";
 import { Logo } from "@/components/Logo";
-import { Flex } from "@chakra-ui/react";
+import { ROUTES } from "@/router/routes";
+import { Flex, Link } from "@chakra-ui/react";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 export const Header = () => {
   return (
@@ -17,7 +19,14 @@ export const Header = () => {
       py={{ base: "0.5em", md: "0.25em" }}
       background="background.900"
     >
-      <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
+      <Link
+        as={ReactRouterLink}
+        to={ROUTES.ROOT.path}
+        _hover={{ textDecoration: "none" }}
+      >
+        <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
+      </Link>
+
       <Login variant="empty" signInText="Connect wallet" />
     </Flex>
   );
