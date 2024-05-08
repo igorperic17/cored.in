@@ -1,5 +1,4 @@
 import { defineConfig, loadEnv } from "vite";
-// @ts-ignore
 import react from "@vitejs/plugin-react";
 import * as path from "path";
 
@@ -9,10 +8,12 @@ export default defineConfig(({ command, mode }) => {
   // Load env file based on `mode` in the current working directory.
   // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, process.cwd(), "VITE_");
-  // console.log(env);
 
   return {
     // base: env.VITE_APP_URL,
+    define: {
+      __API_URL__: mode === "development" ? "/api/" : env.VITE_API_URL
+    },
     resolve: {
       alias: {
         // process: "process/browser",
