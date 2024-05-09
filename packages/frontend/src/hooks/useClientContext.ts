@@ -1,17 +1,17 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { connectKeplr } from "@/services/keplr";
+import { GasPrice } from "@cosmjs/stargate";
 import {
-  createProtobufRpcClient,
-  defaultRegistryTypes,
-  GasPrice,
-  QueryClient
-} from "@cosmjs/stargate";
-import { Tendermint34Client } from "@cosmjs/tendermint-rpc";
-import { CosmWasmClient, SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
+  CosmWasmClient,
+  SigningCosmWasmClient
+} from "@cosmjs/cosmwasm-stargate";
 // import { QueryClient as CoreumQueryClient } from "../coreum/query";
-import { CoredinClient, CoredinQueryClient } from "@coredin/shared/src/coreum/contract-ts";
+import {
+  CoredinClient,
+  CoredinQueryClient
+} from "@coredin/shared/src/coreum/contract-ts";
 import { CONTRACT_ADDRESS } from "@coredin/shared/src/coreum/contract_address";
 // import { GeneratedType, Registry } from "@cosmjs/proto-signing";
 // import { coreumRegistryTypes } from "../coreum/tx";
@@ -22,7 +22,7 @@ import {
   TESTNET_CHAIN_ID,
   TESTNET_GAS_PRICE
 } from "@coredin/shared";
-import { off } from "process";
+import { connectLeap } from "@/services/leap";
 // import { MyProjectClient } from "contracts/MyProject.client";
 // import { BackendService } from "services/backendService";
 
@@ -44,7 +44,7 @@ export interface IClientContext {
   //   contractClient: MyProjectClient | null;
   loading: boolean;
   error: any;
-  connectWallet: any;
+  connectWallet: (wallet: "keplr" | "leap") => any;
   disconnect: Function;
   requestedProfile: RequestedProfile;
   // TODO - handle backend
@@ -57,8 +57,9 @@ const GAS_PRICE = TESTNET_GAS_PRICE || "";
 
 export const useClientContext = (): IClientContext => {
   const [walletAddress, setWalletAddress] = useState("");
-  const [signingClient, setSigningClient] =
-    useState<CoredinClient | null>(null);
+  const [signingClient, setSigningClient] = useState<CoredinClient | null>(
+    null
+  );
   // const [tmClient, setTmClient] = useState<Tendermint34Client | null>(null);
   //   const [contractClient, setContractClient] = useState<MyProjectClient | null>(
   //     null
@@ -70,7 +71,7 @@ export const useClientContext = (): IClientContext => {
   const [requestedProfileWalletAddress, setRequestedProfileWalletAddress] =
     useState<string | null>(null);
   //   const [backendService] = useState(new BackendService());
-  const [auth, setAuth] = useState<Authentication | null>(null);
+  const [auth] = useState<Authentication | null>(null);
 
   //   useEffect(() => {
   //     if (!auth && walletAddress) {
@@ -81,17 +82,22 @@ export const useClientContext = (): IClientContext => {
   //   }, [auth, walletAddress]);
 
   // TODO - handle test and main networks
-  const connectWallet = async () => {
+  const connectWallet = async (wallet: "keplr" | "leap") => {
     setLoading(true);
 
     try {
-      await connectKeplr();
-
-      // enable website to access keplr
-      await (window as any).keplr.enable(PUBLIC_CHAIN_ID);
+      if (wallet === "keplr") {
+        await connectKeplr();
+        // enable website to access keplr
+        await (window as any).keplr.enable(PUBLIC_CHAIN_ID);
+        (window as any).wallet = (window as any).keplr;
+      } else if (wallet === "leap") {
+        await connectLeap();
+        (window as any).wallet = (window as any).leap;
+      }
 
       // get offline signer for signing txs
-      const offlineSigner = await (window as any).getOfflineSigner(
+      const offlineSigner = await (window as any).wallet.getOfflineSigner(
         PUBLIC_CHAIN_ID
       );
 
@@ -111,16 +117,23 @@ export const useClientContext = (): IClientContext => {
         }
       );
       const [{ address }] = await offlineSigner.getAccounts();
-      let coredInClient = new CoredinClient(client, address, CONTRACT_ADDRESS);
+      const coredInClient = new CoredinClient(
+        client,
+        address,
+        CONTRACT_ADDRESS
+      );
       setSigningClient(coredInClient);
 
       // rpc client
       const cosmWasmClient = await CosmWasmClient.connect(PUBLIC_RPC_ENDPOINT);
-      const queryClient = new CoredinQueryClient(cosmWasmClient, CONTRACT_ADDRESS)
+      const queryClient = new CoredinQueryClient(
+        cosmWasmClient,
+        CONTRACT_ADDRESS
+      );
       setCoreumQueryClient(queryClient);
 
       // get user address
-      
+
       //   const senderClient = await SigningCosmWasmClient.connectWithSigner(
       //     PUBLIC_RPC_ENDPOINT,
       //     offlineSigner,
