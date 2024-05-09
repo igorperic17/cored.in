@@ -4,7 +4,7 @@ import { useState } from "react";
 
 const benefitsData = [
   {
-    title: "Create trustable profile",
+    title: "Create a verifiable profile",
     description:
       "Gain credibility through verification of your diplomas and work experience by professional institutions, past, and present employers."
   },

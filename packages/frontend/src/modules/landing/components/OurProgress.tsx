@@ -67,7 +67,7 @@ export const OurProgress = () => {
         color="brand.500"
         mb={{ base: "0.75em", md: "0.5em", xl: "0.375em" }}
       >
-        Follow our progress
+        Roadmap
       </Heading>
       <Stepper
         index={activeStep}
