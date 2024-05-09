@@ -79,7 +79,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
           {signInText}
         </Button>
 
-        <Modal isOpen={isOpen} onClose={onClose}>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay backdropFilter="blur(10px)" />
           <ModalContent background="background.600">
             <ModalHeader>Connect Wallet</ModalHeader>
@@ -99,6 +99,13 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
                   onClick={() => connectWallet("leap")}
                 >
                   Connect Leap
+                </Button>
+                <Button
+                  variant="empty"
+                  size="md"
+                  onClick={() => connectWallet("cosmostation")}
+                >
+                  Connect Cosmostation
                 </Button>
               </VStack>
             </ModalBody>

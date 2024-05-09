@@ -23,6 +23,7 @@ import {
   TESTNET_GAS_PRICE
 } from "@coredin/shared";
 import { connectLeap } from "@/services/leap";
+import { connectCosmostation } from "@/services/cosmostation";
 // import { MyProjectClient } from "contracts/MyProject.client";
 // import { BackendService } from "services/backendService";
 
@@ -44,7 +45,7 @@ export interface IClientContext {
   //   contractClient: MyProjectClient | null;
   loading: boolean;
   error: any;
-  connectWallet: (wallet: "keplr" | "leap") => any;
+  connectWallet: (wallet: "keplr" | "leap" | "cosmostation") => any;
   disconnect: Function;
   requestedProfile: RequestedProfile;
   // TODO - handle backend
@@ -82,19 +83,23 @@ export const useClientContext = (): IClientContext => {
   //   }, [auth, walletAddress]);
 
   // TODO - handle test and main networks
-  const connectWallet = async (wallet: "keplr" | "leap") => {
+  const connectWallet = async (wallet: "keplr" | "leap" | "cosmostation") => {
     setLoading(true);
 
     try {
       if (wallet === "keplr") {
         await connectKeplr();
-        // enable website to access keplr
-        await (window as any).keplr.enable(PUBLIC_CHAIN_ID);
         (window as any).wallet = (window as any).keplr;
       } else if (wallet === "leap") {
         await connectLeap();
         (window as any).wallet = (window as any).leap;
+      } else if (wallet === "cosmostation") {
+        await connectCosmostation();
+        (window as any).wallet = (window as any).cosmostation.providers.keplr;
       }
+
+      // enable website to access keplr
+      await (window as any).wallet.enable(PUBLIC_CHAIN_ID);
 
       // get offline signer for signing txs
       const offlineSigner = await (window as any).wallet.getOfflineSigner(
