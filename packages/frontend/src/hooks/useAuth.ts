@@ -12,7 +12,7 @@ import { TESTNET_CHAIN_ID } from "@coredin/shared";
 
 // extend window with CosmJS and Keplr properties
 interface CosmosKeplrWindow extends Window {
-  keplr: any;
+  wallet: any;
 }
 
 declare let window: CosmosKeplrWindow;
@@ -27,13 +27,13 @@ export const useAuth = () => {
       return;
     }
 
-    if (walletAddress.length && window.keplr) {
+    if (walletAddress.length && window.wallet) {
       setIsAuthenticating(true);
 
       try {
         const expiration = Date.now() + MaxLoginDurationMs;
         const message = LoginMessage + expiration;
-        const signedMessage = await window.keplr.signArbitrary(
+        const signedMessage = await window.wallet.signArbitrary(
           TESTNET_CHAIN_ID,
           walletAddress,
           message

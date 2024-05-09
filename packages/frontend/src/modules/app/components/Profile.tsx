@@ -42,7 +42,7 @@ export const Profile = () => {
   useEffect(updateOnchainProfile, [walletAddress]);
 
   const registerProfile = () => {
-    if (onchainProfile === null && userProfile && usernameInput) {
+    if (onchainProfile === null && userProfile && usernameInput.length > 2) {
       console.log("Registering profile onchain...", userProfile.did);
       signingClient
         ?.register({
@@ -64,7 +64,7 @@ export const Profile = () => {
   const handleChangeUserName = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value;
     // Check if the input contains only letters (uppercase and lowercase)
-    if (/^[a-zA-Z]+$/.test(value) || value === "") {
+    if ((/^[a-zA-Z0-9]+$/.test(value) || value === "") && value.length <= 64) {
       setUsernameInput(value);
     }
   };

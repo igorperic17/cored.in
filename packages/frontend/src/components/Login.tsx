@@ -1,5 +1,17 @@
 import { useWrappedClientContext } from "@/contexts/client";
-import { Button, HStack, Text } from "@chakra-ui/react";
+import {
+  Button,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
+  Text,
+  VStack,
+  useDisclosure
+} from "@chakra-ui/react";
 import { FC } from "react";
 
 interface LoginProps {
@@ -8,6 +20,7 @@ interface LoginProps {
 }
 
 export const Login: FC<LoginProps> = ({ variant, signInText }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { connectWallet, disconnect, walletAddress } =
     useWrappedClientContext();
   const isConnected = walletAddress.length;
@@ -61,9 +74,44 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
     );
   } else {
     return (
-      <Button variant={variant} size="md" onClick={connectWallet}>
-        {signInText}
-      </Button>
+      <>
+        <Button variant={variant} size="md" onClick={onOpen}>
+          {signInText}
+        </Button>
+
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay backdropFilter="blur(10px)" />
+          <ModalContent background="background.600">
+            <ModalHeader>Connect Wallet</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <VStack>
+                <Button
+                  variant="empty"
+                  size="md"
+                  onClick={() => connectWallet("keplr")}
+                >
+                  Connect Keplr
+                </Button>
+                <Button
+                  variant="empty"
+                  size="md"
+                  onClick={() => connectWallet("leap")}
+                >
+                  Connect Leap
+                </Button>
+                <Button
+                  variant="empty"
+                  size="md"
+                  onClick={() => connectWallet("cosmostation")}
+                >
+                  Connect Cosmostation
+                </Button>
+              </VStack>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
+      </>
     );
   }
 };
