@@ -53,22 +53,26 @@ export const connectCosmostation = async () => {
       (TESTNET_GAS_PRICE || "").replace(TESTNET_STAKING_DENOM || "", "")
     );
 
-    await window.cosmostation.cosmos.request({
-      method: "cos_addChain",
-      params: {
-        chainId: TESTNET_CHAIN_ID,
-        chainName: TESTNET_CHAIN_NAME,
-        addressPrefix: TESTNET_CHAIN_BECH32_PREFIX,
-        baseDenom: TESTNET_STAKING_DENOM,
-        displayDenom: stakingDenom,
-        restURL: TESTNET_CHAIN_REST_ENDPOINT,
-        decimals: 6, // optional
-        gasRate: {
-          tiny: gasPrice.toString(),
-          low: (gasPrice * 2).toString(),
-          average: (gasPrice * 5).toString()
+    try {
+      await window.cosmostation.cosmos.request({
+        method: "cos_addChain",
+        params: {
+          chainId: TESTNET_CHAIN_ID,
+          chainName: TESTNET_CHAIN_NAME,
+          addressPrefix: TESTNET_CHAIN_BECH32_PREFIX,
+          baseDenom: TESTNET_STAKING_DENOM,
+          displayDenom: stakingDenom,
+          restURL: TESTNET_CHAIN_REST_ENDPOINT,
+          decimals: 6, // optional
+          gasRate: {
+            tiny: gasPrice.toString(),
+            low: (gasPrice * 2).toString(),
+            average: (gasPrice * 5).toString()
+          }
         }
-      }
-    });
+      });
+    } catch (error) {
+      console.log("Chain already added");
+    }
   }
 };
