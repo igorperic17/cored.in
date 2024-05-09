@@ -1,11 +1,6 @@
-import { useWrappedClientContext } from "@/contexts/client";
-import { IClientContext, useLoggedInServerState } from "@/hooks";
-import { USER_QUERIES } from "@/queries";
 import {
-  Box,
   Button,
   FormControl,
-  FormErrorMessage,
   FormLabel,
   HStack,
   Heading,
@@ -14,13 +9,12 @@ import {
   VStack,
   VisuallyHidden
 } from "@chakra-ui/react";
-import { UserProfile } from "@coredin/shared";
 import { ChangeEvent, FC } from "react";
 
 interface ProfileRegistrationProps {
   did: string;
   handleChangeUserName: (e: ChangeEvent<HTMLInputElement>) => void;
-  usernameInput?: string;
+  usernameInput: string;
   registerProfile: () => void;
 }
 
@@ -65,18 +59,28 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
           <VisuallyHidden>
             <FormLabel as="label">Enter a username</FormLabel>
           </VisuallyHidden>
+
           <Input
             variant="flushed"
-            placeholder="Enter a username"
+            placeholder="Enter desired username"
             onChange={handleChangeUserName}
             value={usernameInput}
             focusBorderColor="brand.500"
-            mb="2em"
           />
-          <FormErrorMessage>
-            Please enter only lowercase or uppercase letters.
-          </FormErrorMessage>
-          <Button onClick={registerProfile} size="md" variant="primary">
+          <Text my="16px" color="text.300">
+            At least 3 characters required, only letters and numbers allowed.
+          </Text>
+          <Button
+            mt="2em"
+            isDisabled={usernameInput.length < 3}
+            onClick={registerProfile}
+            size="md"
+            variant="primary"
+            _disabled={{
+              cursor: "not-allowed",
+              backgroundColor: "background.600"
+            }}
+          >
             REGISTER
           </Button>
         </FormControl>
