@@ -21,6 +21,12 @@ export type ExecuteMsg = {
     username: string;
     [k: string]: unknown;
   };
+} | {
+  remove_d_i_d: {
+    did: string;
+    username: string;
+    [k: string]: unknown;
+  };
 };
 export type QueryMsg = {
   config: {

@@ -86,6 +86,13 @@ export interface CoredinInterface extends CoredinReadOnlyInterface {
     did: string;
     username: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  removeDID: ({
+    did,
+    username
+  }: {
+    did: string;
+    username: string;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class CoredinClient extends CoredinQueryClient implements CoredinInterface {
   client: SigningCosmWasmClient;
@@ -97,6 +104,7 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     this.sender = sender;
     this.contractAddress = contractAddress;
     this.register = this.register.bind(this);
+    this.removeDID = this.removeDID.bind(this);
   }
   register = async ({
     did,
@@ -107,6 +115,20 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
       register: {
+        did,
+        username
+      }
+    }, fee, memo, _funds);
+  };
+  removeDID = async ({
+    did,
+    username
+  }: {
+    did: string;
+    username: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      remove_d_i_d: {
         did,
         username
       }

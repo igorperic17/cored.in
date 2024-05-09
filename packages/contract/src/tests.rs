@@ -9,7 +9,7 @@ mod tests {
     use crate::contract::{execute, instantiate, query};
     use crate::error::ContractError;
     use crate::msg::{ExecuteMsg, GetDIDResponse, QueryMsg, InstantiateMsg};
-    use crate::state::Config;
+    use crate::state::{username_storage, Config, USERNAME_RESOLVER_KEY};
 
     fn assert_name_owner(deps: Deps, name: &str, owner: &Addr) {
         let res = query(
@@ -126,6 +126,37 @@ mod tests {
     }
 
     #[test]
+    fn register_and_remove_available_name() {
+        let mut deps = mock_dependencies();
+        mock_init_with_price(deps.as_mut(), coin(2, "token"), coin(2, "token"));
+        mock_alice_registers_name(deps.as_mut(), &coins(2, "token"));
+
+        // try removing Alice's DID
+        let msg = ExecuteMsg::RemoveDID {
+            username: "alice".to_string(),
+            did: "alice_did".to_string()
+        };
+
+        // Bob shouldn't be able to do it
+        let bob_info = mock_info("bob_key", &coins(5, "token"));
+        let res = execute(deps.as_mut(), mock_env(), bob_info, msg.clone())
+            .expect("error executing remove DID message").data;
+        assert!(res.is_none(), "contract did not prevent unauthorised DID removal");
+
+        // Alice should be able to remove her DID
+        let alice_info = mock_info("alice_key", &coins(5, "token"));
+        let _res = execute(deps.as_mut(), mock_env(), alice_info, msg)
+            .expect_err("error removing user's DID");
+
+        // confirming Alice's DID is gone
+        let read_msg = QueryMsg::GetUsernameDID { username: "alice".to_string() };
+        let read_res = query(deps.as_ref(), mock_env(), read_msg).ok().unwrap();
+        let value: GetDIDResponse = from_binary(&read_res).unwrap();
+
+        assert!(value.did_info.is_none(), "DID not removed from storage");
+    }
+
+    #[test]
     fn fails_on_register_already_taken_name() {
         let mut deps = mock_dependencies();
         mock_init_no_price(deps.as_mut());
@@ -187,14 +218,14 @@ mod tests {
             Err(_) => panic!("Unknown error"),
         }
 
-        // no upper case...
+        // no special characters
         let msg = ExecuteMsg::Register {
-            username: "ALICE".to_string(),
-            did: "LOUD_DID".to_string()
+            username: "ALI+CE".to_string(),
+            did: "LOUDDID".to_string()
         };
         match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
             Ok(_) => panic!("Must return error"),
-            Err(ContractError::InvalidCharacter { c }) => assert_eq!(c, 'A'),
+            Err(ContractError::InvalidCharacter { c }) => assert_eq!(c, '+'),
             Err(_) => panic!("Unknown error"),
         }
         // ... or spaces
@@ -217,8 +248,8 @@ mod tests {
         // anyone can register an available name with sufficient fees
         let info = mock_info("alice_key", &[]);
         let msg = ExecuteMsg::Register {
-            did: "broke_alice".to_string(),
-            username: "awesome_did".to_string()
+            did: "brokealice".to_string(),
+            username: "awesomedid".to_string()
         };
 
         let res = execute(deps.as_mut(), mock_env(), info, msg);
@@ -238,8 +269,8 @@ mod tests {
         // anyone can register an available name with sufficient fees
         let info = mock_info("alice_key", &coins(2, "earth"));
         let msg = ExecuteMsg::Register {
-            username: "wrong_alice".to_string(),
-            did: "awesome_did".to_string()
+            username: "wrongalice".to_string(),
+            did: "awesomedid".to_string()
         };
 
         let res = execute(deps.as_mut(), mock_env(), info, msg);

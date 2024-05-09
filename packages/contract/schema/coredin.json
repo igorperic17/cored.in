@@ -77,6 +77,30 @@
           }
         },
         "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "remove_d_i_d"
+        ],
+        "properties": {
+          "remove_d_i_d": {
+            "type": "object",
+            "required": [
+              "did",
+              "username"
+            ],
+            "properties": {
+              "did": {
+                "type": "string"
+              },
+              "username": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
       }
     ]
   },

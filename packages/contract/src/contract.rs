@@ -1,3 +1,4 @@
+use coreum_wasm_sdk::types::cosmos::group::v1::Exec;
 use cosmwasm_std::{
     entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage
 };
@@ -36,7 +37,8 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response, ContractError> {
     match msg {
-        ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did)
+        ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did),
+        ExecuteMsg::RemoveDID { did, username } => execute_remove(deps, env, info, username, did)
     }
 }
 
@@ -75,6 +77,40 @@ pub fn execute_register(
     Ok(Response::default())
 }
 
+
+pub fn execute_remove(
+    deps: DepsMut,
+    _env: Env,
+    info: MessageInfo,
+    username: String,
+    did: String,
+) -> Result<Response, ContractError> {
+
+    // TODO: agree how much will new DID registration cost
+    let config_state = config_storage(deps.storage).load()?;
+    assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
+
+    let key = username.as_bytes();
+    if (username_storage_read(deps.storage).may_load(key)?).is_none() {
+        // username is already taken
+        return Err(ContractError::NameNotExists { name: username });
+    }
+
+    // name is available
+    let record = DidInfo {
+        wallet: info.sender,
+        username: username.clone(),
+        did: did
+    };
+
+    // store for querying in all three buckets
+    did_storage(deps.storage).remove(record.did.as_bytes());
+    username_storage(deps.storage).remove(record.username.as_bytes());
+    wallet_storage(deps.storage).remove(record.wallet.as_bytes());
+
+    Ok(Response::default())
+}
+
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
@@ -96,17 +132,16 @@ fn query_resolver(deps: Deps, _env: Env, query_key: String, storage_resolver: Re
         Err(_) => None
     };
 
-    let didResponse: GetDIDResponse = GetDIDResponse {
+    let did_response: GetDIDResponse = GetDIDResponse {
         did_info: did_info
     };
 
-    to_binary(&didResponse)
+    to_binary(&did_response)
 }
 
 // let's not import a regexp library and just do these checks by hand
 fn invalid_char(c: char) -> bool {
-    let is_valid = c.is_digit(10) || c.is_ascii_lowercase() || (c == '.' || c == '-' || c == '_');
-    !is_valid
+    !c.is_alphanumeric()
 }
 
 /// validate_name returns an error if the name is invalid

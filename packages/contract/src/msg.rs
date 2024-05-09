@@ -18,6 +18,12 @@ pub enum ExecuteMsg {
     Register {
         did: String,
         username: String
+    },
+    // remove the registered DID/username from the signing wallet
+    // TODO: remove this before going public?
+    RemoveDID {
+        did: String,
+        username: String
     }
 }
 
