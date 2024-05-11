@@ -33,7 +33,7 @@ resource "aws_route" "internet_access" {
 resource "aws_subnet" "private" {
   count             = var.use_private_subnets ? length(var.db_availability_zones) : 0
   vpc_id            = aws_vpc.default.id
-  cidr_block        = cidrsubnet(aws_vpc.default.cidr_block, 8, 1 + length(var.db_availability_zones) + count.index)
+  cidr_block        = cidrsubnet(aws_vpc.default.cidr_block, 8, 1 + 3 + count.index)
   availability_zone = var.db_availability_zones[count.index]
 }
 

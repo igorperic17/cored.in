@@ -17,6 +17,7 @@ resource "aws_rds_cluster_parameter_group" "aurora_cluster_parameter_group" {
 resource "aws_rds_cluster" "aurora_cluster" {
   cluster_identifier      = "${var.app_name}-rds-aurora-cluster"
   engine                  = "aurora-postgresql"
+  engine_mode             = "provisioned"
   engine_version          = "16.1"
   database_name           = var.db_name
   master_username         = var.db_user
@@ -24,6 +25,11 @@ resource "aws_rds_cluster" "aurora_cluster" {
   backup_retention_period = 7
   preferred_backup_window = "03:00-05:00"
   skip_final_snapshot     = true
+
+  serverlessv2_scaling_configuration {
+    min_capacity = 0.5
+    max_capacity = 1.0
+  }
 
   db_subnet_group_name            = aws_db_subnet_group.aurora_subnet_group.name
   db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_parameter_group.name
@@ -40,7 +46,7 @@ resource "aws_rds_cluster_instance" "aurora_instance" {
   cluster_identifier  = aws_rds_cluster.aurora_cluster.id
   engine              = aws_rds_cluster.aurora_cluster.engine
   engine_version      = aws_rds_cluster.aurora_cluster.engine_version
-  instance_class      = "db.t3.medium"
+  instance_class      = var.db_instance_class
   apply_immediately   = true
   publicly_accessible = true // TODO: Rollback after adding VPN (var.use_private_subnets ? false : true)
 

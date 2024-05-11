@@ -15,6 +15,10 @@ variable "use_private_subnets" {
   type = bool
 }
 
+variable "db_instance_class" {
+  type = string
+}
+
 variable "db_availability_zones" {
   type = list(string)
   default = [
