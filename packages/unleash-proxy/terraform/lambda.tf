@@ -37,7 +37,7 @@ resource "aws_lambda_function" "unleash_proxy_lambda_prod" {
     variables = {
       REGION    = var.region
       API_TOKEN = var.api_token
-      APP_NAME  = "PROD"
+      APP_NAME  = "production"
     }
   }
 }

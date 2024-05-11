@@ -4,16 +4,15 @@ import * as path from "path";
 
 // https://vitejs.dev/config/
 /** @type {import('vite').UserConfig} */
-export default defineConfig(({ command, mode }) => {
+export default defineConfig(({ mode }) => {
   // Load env file based on `mode` in the current working directory.
   // Set the third parameter to '' to load all env regardless of the `VITE_` prefix.
   const env = loadEnv(mode, process.cwd(), "VITE_");
+  const __API_URL__ = mode === "development" ? "/api/" : env.VITE_API_URL
 
   return {
     // base: env.VITE_APP_URL,
-    define: {
-      __API_URL__: mode === "development" ? "/api/" : env.VITE_API_URL
-    },
+    define: { __API_URL__ },
     resolve: {
       alias: {
         // process: "process/browser",

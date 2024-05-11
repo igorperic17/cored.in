@@ -1,5 +1,5 @@
 import { Disclaimer, Header } from "@/modules/app/components";
-import { Box, Flex, Text } from "@chakra-ui/react";
+import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 export const AppRoot = () => {
