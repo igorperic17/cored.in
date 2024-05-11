@@ -47,6 +47,18 @@ resource "aws_ecs_cluster" "wallet_api" {
   name = "${var.app_name}-wallet-api-cluster"
 }
 
+resource "aws_ecs_cluster_capacity_providers" "example" {
+  cluster_name = aws_ecs_cluster.wallet_api.name
+
+  capacity_providers = ["FARGATE_SPOT"]
+
+  default_capacity_provider_strategy {
+    base              = 1
+    weight            = 100
+    capacity_provider = "FARGATE_SPOT"
+  }
+}
+
 resource "aws_ecs_task_definition" "wallet_api" {
   family                   = "${var.app_name}-wallet-api-task-definition"
   network_mode             = "awsvpc"
@@ -132,9 +144,13 @@ resource "aws_ecs_service" "wallet_api" {
   cluster          = aws_ecs_cluster.wallet_api.id
   task_definition  = aws_ecs_task_definition.wallet_api.arn
   desired_count    = 1
-  launch_type      = "FARGATE"
   platform_version = "1.3.0"
   propagate_tags   = "SERVICE"
+
+  capacity_provider_strategy {
+    capacity_provider = "FARGATE_SPOT"
+    weight            = 1
+  }
 
   network_configuration {
     security_groups  = [aws_security_group.wallet_api.id]
