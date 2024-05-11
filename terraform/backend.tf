@@ -161,3 +161,23 @@ resource "aws_lambda_permission" "api_gateway_lambda_backend_api_permission" {
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.lambda_backend_api.execution_arn}/*"
 }
+
+resource "aws_api_gateway_rest_api_policy" "invoke_api_gateway_policy" {
+  rest_api_id = aws_api_gateway_rest_api.lambda_backend_api.id
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect    = "Deny",
+        Principal = "*",
+        Action    = "execute-api:Invoke",
+        Resource  = "${aws_api_gateway_rest_api.lambda_backend_api.execution_arn}/*",
+        Condition = {
+          StringNotEquals = {
+            "aws:SourceArn" = "arn:aws:cloudfront::${data.aws_caller_identity.current.account_id}:distribution/${var.backend_cloudfront_distribution_id}"
+          }
+        }
+      }
+    ]
+  })
+}

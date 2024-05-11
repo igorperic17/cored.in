@@ -1,8 +1,9 @@
-app_name                 = "coredin"
-is_app_https             = true
-use_private_subnets      = false
-db_instance_class        = "db.serverless"
-db_availability_zones    = [
+app_name                           = "coredin"
+is_app_https                       = true
+use_private_subnets                = false
+backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
+db_instance_class                  = "db.serverless"
+db_availability_zones = [
   "eu-west-1a",
   "eu-west-1b"
 ]

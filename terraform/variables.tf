@@ -15,6 +15,10 @@ variable "use_private_subnets" {
   type = bool
 }
 
+variable "backend_cloudfront_distribution_id" {
+  type = string
+}
+
 variable "db_instance_class" {
   type = string
 }
