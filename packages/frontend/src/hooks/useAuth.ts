@@ -7,18 +7,13 @@ import {
   getAuthKey,
   EventTypes
 } from "../constants";
-import { useWrappedClientContext } from "@/contexts/client";
-import { TESTNET_CHAIN_ID } from "@coredin/shared";
-
-// extend window with CosmJS and Keplr properties
-interface CosmosKeplrWindow extends Window {
-  wallet: any;
-}
-
-declare let window: CosmosKeplrWindow;
+import { TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { useChain } from "@cosmos-kit/react";
 
 export const useAuth = () => {
-  const { walletAddress } = useWrappedClientContext();
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const walletAddress = chainContext.address ?? "";
+
   const [needsAuth, setNeedsAuth] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
 
@@ -27,14 +22,13 @@ export const useAuth = () => {
       return;
     }
 
-    if (walletAddress.length && window.wallet) {
+    if (chainContext.address) {
       setIsAuthenticating(true);
 
       try {
         const expiration = Date.now() + MaxLoginDurationMs;
         const message = LoginMessage + expiration;
-        const signedMessage = await window.wallet.signArbitrary(
-          TESTNET_CHAIN_ID,
+        const signedMessage = await chainContext.signArbitrary(
           walletAddress,
           message
         );

@@ -1,7 +1,7 @@
-import { useWrappedClientContext } from "@/contexts/client";
 import {
   Button,
   HStack,
+  Img,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -12,7 +12,16 @@ import {
   VStack,
   useDisclosure
 } from "@chakra-ui/react";
+import { wallets as keplrWallets } from "@cosmos-kit/keplr-extension";
+import { wallets as leapWallets } from "@cosmos-kit/leap";
+// import { wallets as frontier } from "@cosmos-kit/frontier";
+import { wallets as cosmostationWallets } from "@cosmos-kit/cosmostation";
+import { TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { useChain } from "@cosmos-kit/react";
+import React, { useEffect } from "react";
 import { FC } from "react";
+import { persistentStorageService } from "@/dependencies";
+import { ConnectedWalletKey } from "@/constants";
 
 interface LoginProps {
   variant: "primary" | "empty";
@@ -21,14 +30,31 @@ interface LoginProps {
 
 export const Login: FC<LoginProps> = ({ variant, signInText }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { connectWallet, disconnect, walletAddress } =
-    useWrappedClientContext();
-  const isConnected = walletAddress.length;
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
 
-  const shortWalletAddress =
-    walletAddress.slice(0, 4) + "..." + walletAddress.slice(-4);
+  useEffect(() => {
+    if (chainContext.address) {
+      persistentStorageService.save(ConnectedWalletKey, chainContext.address);
 
-  if (isConnected) {
+      return;
+    }
+
+    persistentStorageService.remove(ConnectedWalletKey);
+  }, [chainContext.address, chainContext.isWalletConnected]);
+
+  const handleDisconnectWallet = React.useCallback(() => {
+    if (chainContext.isWalletConnected) {
+      chainContext.disconnect();
+    }
+  }, [chainContext]);
+
+  const shortWalletAddress = chainContext.address
+    ? chainContext.address.slice(0, 4) + "..." + chainContext.address.slice(-4)
+    : "";
+
+  const wallets = [...keplrWallets, ...leapWallets, ...cosmostationWallets];
+
+  if (chainContext.isWalletConnected) {
     return (
       <HStack
         // borderWidth="1px"
@@ -63,7 +89,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
             bg: "none",
             color: "text.100"
           }}
-          onClick={() => disconnect()}
+          onClick={handleDisconnectWallet}
           // border="1px solid green"
         >
           <Text fontFamily="inherit" fontSize="inherit" mt="auto">
@@ -85,28 +111,30 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
             <ModalHeader>Connect Wallet</ModalHeader>
             <ModalCloseButton />
             <ModalBody>
-              <VStack>
-                <Button
-                  variant="empty"
-                  size="md"
-                  onClick={() => connectWallet("keplr")}
-                >
-                  Connect Keplr
-                </Button>
-                <Button
-                  variant="empty"
-                  size="md"
-                  onClick={() => connectWallet("leap")}
-                >
-                  Connect Leap
-                </Button>
-                <Button
-                  variant="empty"
-                  size="md"
-                  onClick={() => connectWallet("cosmostation")}
-                >
-                  Connect Cosmostation
-                </Button>
+              <VStack gap="16px">
+                {wallets.map((wallet) => {
+                  return (
+                    <Button
+                      variant="empty"
+                      size="md"
+                      onClick={() => wallet.connect(true)}
+                      key={wallet.walletName}
+                      rightIcon={
+                        <Img
+                          src={
+                            typeof wallet.walletInfo.logo === "string"
+                              ? wallet.walletInfo.logo
+                              : wallet.walletInfo.logo?.minor
+                          }
+                          maxW="32px"
+                          // maxH="32px"
+                        />
+                      }
+                    >
+                      {wallet.walletInfo.prettyName}
+                    </Button>
+                  );
+                })}
               </VStack>
             </ModalBody>
           </ModalContent>

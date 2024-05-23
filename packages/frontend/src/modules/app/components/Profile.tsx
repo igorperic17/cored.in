@@ -1,33 +1,35 @@
-import { IClientContext, useAuth, useLoggedInServerState } from "@/hooks";
-import { useWrappedClientContext } from "@/contexts/client";
+import { useAuth, useLoggedInServerState } from "@/hooks";
 import { USER_QUERIES } from "@/queries";
 import { Box, Center } from "@chakra-ui/layout";
-import { DidInfo, GetDIDResponse } from "@coredin/shared";
-import { useEffect, useState } from "react";
+import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { useContext, useEffect, useState } from "react";
 import {
   NotRegisteredProfile,
   RegisteredProfile,
   RequireWalletConnection
 } from ".";
 import { Spinner } from "@chakra-ui/spinner";
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { useChain } from "@cosmos-kit/react";
 
 export const Profile = () => {
-  const { walletAddress, signingClient, coreumQueryClient }: IClientContext =
-    useWrappedClientContext();
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const coredinClient = useContext(CoredinClientContext);
   const { needsAuth } = useAuth();
   const { data: userProfile, isLoading } = useLoggedInServerState(
-    USER_QUERIES.getUser(walletAddress, needsAuth),
+    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
     {
-      enabled: walletAddress.length > 0
+      enabled: !!chainContext.address
     }
   );
   const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
   const [usernameInput, setUsernameInput] = useState<string>("");
 
   const updateOnchainProfile = () => {
-    if (walletAddress) {
-      coreumQueryClient
-        ?.getWalletDID({ wallet: walletAddress })
+    if (chainContext.address) {
+      console.log("getting onchain profile");
+      coredinClient
+        ?.getWalletDID({ wallet: chainContext.address })
         .then((registered_did: GetDIDResponse) => {
           console.log(registered_did);
           if (registered_did.did_info) {
@@ -39,16 +41,32 @@ export const Profile = () => {
     }
   };
 
-  useEffect(updateOnchainProfile, [walletAddress]);
+  useEffect(updateOnchainProfile, [
+    chainContext.address,
+    chainContext.isWalletConnected,
+    coredinClient
+  ]);
 
   const registerProfile = () => {
     if (onchainProfile === null && userProfile && usernameInput.length > 2) {
       console.log("Registering profile onchain...", userProfile.did);
-      signingClient
-        ?.register({
-          did: userProfile.did,
-          username: usernameInput
-        })
+      coredinClient
+        ?.register(
+          {
+            did: userProfile.did,
+            username: usernameInput
+          }
+          // leap gas price seems to be overriding everything.. to be investigating further
+          // {
+          //   gas: "225222",
+          //   amount: [
+          //     {
+          //       amount: "14077",
+          //       denom: "utestcore"
+          //     }
+          //   ]
+          // }
+        )
         .then((result) => {
           console.log(result);
           updateOnchainProfile();
@@ -76,7 +94,7 @@ export const Profile = () => {
           <Spinner size="xl" color="brand.500" />
         </Center>
       )}
-      {!walletAddress && <RequireWalletConnection />}
+      {!chainContext.address && <RequireWalletConnection />}
       {onchainProfile && (
         <RegisteredProfile
           did={onchainProfile.did}
