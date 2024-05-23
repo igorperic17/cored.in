@@ -51,22 +51,10 @@ export const Profile = () => {
     if (onchainProfile === null && userProfile && usernameInput.length > 2) {
       console.log("Registering profile onchain...", userProfile.did);
       coredinClient
-        ?.register(
-          {
-            did: userProfile.did,
-            username: usernameInput
-          }
-          // leap gas price seems to be overriding everything.. to be investigating further
-          // {
-          //   gas: "225222",
-          //   amount: [
-          //     {
-          //       amount: "14077",
-          //       denom: "utestcore"
-          //     }
-          //   ]
-          // }
-        )
+        ?.register({
+          did: userProfile.did,
+          username: usernameInput
+        })
         .then((result) => {
           console.log(result);
           updateOnchainProfile();
