@@ -1,14 +1,11 @@
-// not used
-// leaving here for the reference
-
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_binary, Coin, Deps, DepsMut, Addr};
+    use cosmwasm_std::{coin, coins, from_binary, Addr, Coin, Deps, DepsMut};
 
     use crate::contract::{execute, instantiate, query};
     use crate::error::ContractError;
-    use crate::msg::{ExecuteMsg, GetDIDResponse, QueryMsg, InstantiateMsg};
+    use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
     use crate::state::{username_storage, Config, USERNAME_RESOLVER_KEY};
 
     fn assert_name_owner(deps: Deps, name: &str, owner: &Addr) {
@@ -22,7 +19,10 @@ mod tests {
         .unwrap();
 
         let value: GetDIDResponse = from_binary(&res).unwrap();
-        assert_eq!(Some(owner.to_string()), Some(value.did_info.unwrap().wallet.to_string()));
+        assert_eq!(
+            Some(owner.to_string()),
+            Some(value.did_info.unwrap().wallet.to_string())
+        );
     }
 
     fn assert_config_state(deps: Deps, expected: Config) {
@@ -74,7 +74,7 @@ mod tests {
             deps.as_ref(),
             Config {
                 owner: Addr::unchecked("creator"),
-                did_register_price: None
+                did_register_price: None,
             },
         );
     }
@@ -114,7 +114,7 @@ mod tests {
         let info = mock_info("bob_key", &coins(5, "token"));
         let msg = ExecuteMsg::Register {
             username: "bob".to_string(),
-            did: "awesome_did".to_string()
+            did: "awesome_did".to_string(),
         };
 
         let _res = execute(deps.as_mut(), mock_env(), info, msg)
@@ -134,14 +134,18 @@ mod tests {
         // try removing Alice's DID
         let msg = ExecuteMsg::RemoveDID {
             username: "alice".to_string(),
-            did: "alice_did".to_string()
+            did: "alice_did".to_string(),
         };
 
         // Bob shouldn't be able to do it
         let bob_info = mock_info("bob_key", &coins(5, "token"));
         let res = execute(deps.as_mut(), mock_env(), bob_info, msg.clone())
-            .expect("error executing remove DID message").data;
-        assert!(res.is_none(), "contract did not prevent unauthorised DID removal");
+            .expect("error executing remove DID message")
+            .data;
+        assert!(
+            res.is_none(),
+            "contract did not prevent unauthorised DID removal"
+        );
 
         // Alice should be able to remove her DID
         let alice_info = mock_info("alice_key", &coins(5, "token"));
@@ -149,7 +153,9 @@ mod tests {
             .expect_err("error removing user's DID");
 
         // confirming Alice's DID is gone
-        let read_msg = QueryMsg::GetUsernameDID { username: "alice".to_string() };
+        let read_msg = QueryMsg::GetUsernameDID {
+            username: "alice".to_string(),
+        };
         let read_res = query(deps.as_ref(), mock_env(), read_msg).ok().unwrap();
         let value: GetDIDResponse = from_binary(&read_res).unwrap();
 
@@ -166,7 +172,7 @@ mod tests {
         let info = mock_info("bob_key", &coins(2, "token"));
         let msg = ExecuteMsg::Register {
             username: "alice".to_string(),
-            did: "awesome_did".to_string()
+            did: "awesome_did".to_string(),
         };
         let res = execute(deps.as_mut(), mock_env(), info, msg);
 
@@ -179,7 +185,7 @@ mod tests {
         let info = mock_info("alice_key", &coins(2, "token"));
         let msg = ExecuteMsg::Register {
             username: "alice".to_string(),
-            did: "awesome_did".to_string()
+            did: "awesome_did".to_string(),
         };
         let res = execute(deps.as_mut(), mock_env(), info, msg);
 
@@ -199,7 +205,7 @@ mod tests {
         // hi is too short
         let msg = ExecuteMsg::Register {
             username: "hi".to_string(),
-            did: "short_did".to_string()
+            did: "short_did".to_string(),
         };
         match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
             Ok(_) => panic!("Must return error"),
@@ -209,8 +215,9 @@ mod tests {
 
         // 65 chars is too long
         let msg = ExecuteMsg::Register {
-            username: "01234567890123456789012345678901234567890123456789012345678901234".to_string(),
-            did: "long_did".to_string()
+            username: "01234567890123456789012345678901234567890123456789012345678901234"
+                .to_string(),
+            did: "long_did".to_string(),
         };
         match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
             Ok(_) => panic!("Must return error"),
@@ -221,7 +228,7 @@ mod tests {
         // no special characters
         let msg = ExecuteMsg::Register {
             username: "ALI+CE".to_string(),
-            did: "LOUDDID".to_string()
+            did: "LOUDDID".to_string(),
         };
         match execute(deps.as_mut(), mock_env(), info.clone(), msg) {
             Ok(_) => panic!("Must return error"),
@@ -231,7 +238,7 @@ mod tests {
         // ... or spaces
         let msg = ExecuteMsg::Register {
             username: "two words".to_string(),
-            did: "D   I    D".to_string()
+            did: "D   I    D".to_string(),
         };
         match execute(deps.as_mut(), mock_env(), info, msg) {
             Ok(_) => panic!("Must return error"),
@@ -249,7 +256,7 @@ mod tests {
         let info = mock_info("alice_key", &[]);
         let msg = ExecuteMsg::Register {
             did: "brokealice".to_string(),
-            username: "awesomedid".to_string()
+            username: "awesomedid".to_string(),
         };
 
         let res = execute(deps.as_mut(), mock_env(), info, msg);
@@ -270,7 +277,7 @@ mod tests {
         let info = mock_info("alice_key", &coins(2, "earth"));
         let msg = ExecuteMsg::Register {
             username: "wrongalice".to_string(),
-            did: "awesomedid".to_string()
+            did: "awesomedid".to_string(),
         };
 
         let res = execute(deps.as_mut(), mock_env(), info, msg);
