@@ -22,6 +22,7 @@ import React, { useEffect } from "react";
 import { FC } from "react";
 import { persistentStorageService } from "@/dependencies";
 import { ConnectedWalletKey } from "@/constants";
+import { chain } from "chain-registry/testnet/coreumtestnet";
 
 interface LoginProps {
   variant: "primary" | "empty";
@@ -31,6 +32,8 @@ interface LoginProps {
 export const Login: FC<LoginProps> = ({ variant, signInText }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+  console.log(chainContext.address);
+  console.log(chainContext.isWalletConnected);
 
   useEffect(() => {
     if (chainContext.address) {

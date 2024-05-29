@@ -9,6 +9,7 @@ import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useChain } from "@cosmos-kit/react";
 import { Navigate } from "react-router-dom";
 import { NotRegisteredProfile } from ".";
+import { ROUTES } from "@/router/routes";
 
 export const Profile = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -90,7 +91,9 @@ export const Profile = () => {
           registerProfile={registerProfile}
         />
       )}
-      {onchainProfile && <Navigate to={"/home"} />}
+      {onchainProfile && chainContext.isWalletConnected && (
+        <Navigate to={ROUTES.HOME.path} />
+      )}
     </Box>
   );
 };

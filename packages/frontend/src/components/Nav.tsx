@@ -77,7 +77,7 @@ export const Nav = () => {
       )}
       <Link
         as={ReactRouterLink}
-        to={ROUTES.HOME.path}
+        to={ROUTES.LOGIN.path}
         _hover={{ textDecoration: "none" }}
       >
         <Login variant="primary" signInText="Sign in" />

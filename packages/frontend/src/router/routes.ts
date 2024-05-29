@@ -3,12 +3,12 @@ export const ROUTES = {
     path: "/"
   },
   LOGIN: {
-    path: "login"
+    path: "/login"
   },
   HOME: {
-    path: "home"
+    path: "/home"
   },
   PRIVACY_POLICY: {
-    path: "privacy-policy"
+    path: "/privacy-policy"
   }
 };
