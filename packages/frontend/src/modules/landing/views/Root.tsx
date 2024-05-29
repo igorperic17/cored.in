@@ -1,18 +1,15 @@
-import { Box, Flex, useDisclosure } from "@chakra-ui/react";
-import { BurguerMenu, CookiesBar, Footer, Nav } from "@/components";
+import { Box, Flex } from "@chakra-ui/react";
+import { CookiesBar, Footer, Nav } from "@/components";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
 export const Root = () => {
-  const { isOpen, onOpen, onClose } = useDisclosure();
-
   return (
     <Flex direction="column" justify="start">
-      <Nav onOpen={onOpen} />
-      <Box as="main" overflowX="hidden" flex="1">
+      <Nav />
+      <Box as="main">
         <Outlet />
         <ScrollRestoration />
       </Box>
-      <BurguerMenu isOpen={isOpen} onClose={onClose} />
       <Footer />
       <CookiesBar />
     </Flex>

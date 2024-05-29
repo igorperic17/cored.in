@@ -1,7 +1,5 @@
-import { FC } from "react";
 import {
   Flex,
-  Button,
   Link,
   HStack,
   useMediaQuery,
@@ -17,12 +15,8 @@ import { useSectionInView } from "@/hooks";
 import { Logo } from "./Logo";
 import { Login } from "./Login";
 
-export interface NavProps {
-  onOpen: () => void;
-}
-
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const Nav: FC<NavProps> = ({ onOpen }) => {
+export const Nav = () => {
   const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   const currentSection = useSectionInView();
   const theme = useTheme();
@@ -89,13 +83,13 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       >
         <Login variant="primary" signInText="Sign in" />
       </Link>
-      {isInitialised && !isFeatureEnabled(FEATURE_FLAG.HOME) && (
+      {/* {isInitialised && !isFeatureEnabled(FEATURE_FLAG.HOME) && (
         <Link as={ReactRouterLink} to={"#benefits"}>
           <Button variant="primary" size="md">
             Learn more
           </Button>
         </Link>
-      )}
+      )} */}
       {/* Placeholder while not initalized to avoid section links going to right */}
       {!isInitialised && <Link as={ReactRouterLink} to={"#"}></Link>}
     </Flex>
