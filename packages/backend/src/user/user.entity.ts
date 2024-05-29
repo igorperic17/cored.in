@@ -1,5 +1,12 @@
+import { Post } from "@/posts/post.entity";
 import { UserProfile } from "@coredin/shared";
-import { Entity, Column, PrimaryGeneratedColumn, Index } from "typeorm";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Index,
+  OneToMany
+} from "typeorm";
 
 @Entity("users")
 export class User {
@@ -27,4 +34,16 @@ export class User {
 
   @Column("jsonb", { nullable: true })
   profile: UserProfile | null;
+
+  @Column("int", { array: true, default: {} })
+  likedTweets: number[];
+
+  @Column({
+    nullable: true,
+    default: "https://testcdn/somehting.jpg"
+  })
+  avatar: string;
+
+  @OneToMany(() => Post, (post: Post) => post.user)
+  posts: Post[];
 }

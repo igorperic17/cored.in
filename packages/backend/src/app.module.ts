@@ -10,6 +10,7 @@ import configuration from "./config/configuration";
 import { SecretsModule } from "./secrets/secrets.module";
 import { SecretsService } from "./secrets/SecretsService";
 import { SsiModule } from "./ssi/app/ssi.module";
+import { PostsModule } from "./posts/posts.module";
 
 @Module({
   imports: [
@@ -38,7 +39,8 @@ import { SsiModule } from "./ssi/app/ssi.module";
       }),
       inject: [ConfigService, SecretsService]
     }),
-    UserModule
+    UserModule,
+    PostsModule
   ],
   controllers: [AppController],
   providers: [AppService]
