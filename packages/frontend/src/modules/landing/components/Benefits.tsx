@@ -52,6 +52,7 @@ export const Benefits = () => {
 
   return (
     <Box
+      as="section"
       w="100%"
       id="benefits"
       h="min-content"

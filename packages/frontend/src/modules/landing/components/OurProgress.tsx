@@ -50,6 +50,7 @@ export const OurProgress = () => {
 
   return (
     <Flex
+      as="section"
       direction="column"
       w="100%"
       id="progress"

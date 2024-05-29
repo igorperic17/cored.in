@@ -6,6 +6,7 @@ export const SocialMedia = () => (
     <Link href="https://twitter.com/cored_in" isExternal fontSize="3rem">
       <Icon
         as={FaXTwitter}
+        aria-label="X."
         _hover={{
           color: "brand.500"
         }}
@@ -14,6 +15,7 @@ export const SocialMedia = () => (
     <Link href="https://discord.gg/fhsyaEJ5VZ" isExternal fontSize="3rem">
       <Icon
         as={FaDiscord}
+        aria-label="Discord."
         _hover={{
           color: "brand.500"
         }}

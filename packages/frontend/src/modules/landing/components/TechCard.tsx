@@ -8,6 +8,7 @@ interface TechProps {
   text: string;
   index: number;
   image?: string;
+  alt?: string;
   link?: string;
 }
 
@@ -16,6 +17,7 @@ export const TechCard: FC<TechProps> = ({
   text,
   index,
   image,
+  alt,
   link
 }) => {
   return (
@@ -52,16 +54,31 @@ export const TechCard: FC<TechProps> = ({
         <Text whiteSpace="pre-line" mb="2em">
           {text}
         </Text>
-        <Link
-          href={link}
-          isExternal
-          alignSelf="center"
-          mt="auto"
-          onClick={() => console.log(link)}
-        >
+        {link ? (
+          <Link
+            href={link}
+            isExternal
+            alignSelf="center"
+            mt="auto"
+            onClick={() => console.log(link)}
+            aria-label={`Link to ${alt} website.`}
+          >
+            <Image
+              src={image}
+              alt=""
+              // aria-hidden="true"
+              // border="1px solid red"
+              w="100%"
+              maxW="80%"
+              h="auto"
+              maxH="150px"
+              objectFit="contain"
+            />
+          </Link>
+        ) : (
           <Image
             src={image}
-            aria-hidden="true"
+            alt={alt}
             // border="1px solid red"
             w="100%"
             maxW="80%"
@@ -69,7 +86,7 @@ export const TechCard: FC<TechProps> = ({
             maxH="150px"
             objectFit="contain"
           />
-        </Link>
+        )}
       </VStack>
     </Box>
   );

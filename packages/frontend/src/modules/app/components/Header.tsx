@@ -23,6 +23,7 @@ export const Header = () => {
         as={ReactRouterLink}
         to={ROUTES.ROOT.path}
         _hover={{ textDecoration: "none" }}
+        aria-label="Main page."
       >
         <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
       </Link>

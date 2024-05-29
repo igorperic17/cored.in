@@ -33,7 +33,7 @@ export const CookiesBar = () => {
           borderTopColor="brand.500"
           position="sticky"
           bottom="0"
-          zIndex="sticky"
+          zIndex="10"
         >
           <Flex
             direction={{ base: "column", md: "row" }}

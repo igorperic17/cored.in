@@ -5,7 +5,8 @@ import {
   Link,
   HStack,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Box
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
@@ -55,27 +56,31 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
         <Logo fontSize={{ base: "2rem", md: "3rem" }} />
       </Link>
       {isLargerThanMd && (
-        <HStack spacing="1.5em">
-          {navSections.map((item, index) => {
-            return (
-              <Link
-                key={`menu-section-item-${index}`}
-                as={ReactRouterLink}
-                to={item.link}
-                textDecoration="none"
-                textTransform="uppercase"
-                color={currentSection === item.title ? "brand.500" : ""}
-                fontSize="1.2em"
-                // fontFamily="heading"
-                _hover={{ color: "brand.500" }}
-                //_focus={{ color: "text.500" }}
-                _active={{ color: "" }}
-              >
-                {item.title}
-              </Link>
-            );
-          })}
-        </HStack>
+        <Box as="nav">
+          <HStack as="ul" spacing="1.5em" listStyleType="none">
+            {navSections.map((item, index) => {
+              return (
+                <li>
+                  <Link
+                    key={`menu-section-item-${index}`}
+                    as={ReactRouterLink}
+                    to={item.link}
+                    textDecoration="none"
+                    textTransform="uppercase"
+                    color={currentSection === item.title ? "brand.500" : ""}
+                    fontSize="1.2em"
+                    // fontFamily="heading"
+                    _hover={{ color: "brand.500" }}
+                    //_focus={{ color: "text.500" }}
+                    _active={{ color: "" }}
+                  >
+                    {item.title}
+                  </Link>
+                </li>
+              );
+            })}
+          </HStack>
+        </Box>
       )}
       <Link
         as={ReactRouterLink}

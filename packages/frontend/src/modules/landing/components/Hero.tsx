@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 export const Hero = () => {
   return (
     <Flex
+      as="section"
       id="home"
       w="100%"
       h={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
