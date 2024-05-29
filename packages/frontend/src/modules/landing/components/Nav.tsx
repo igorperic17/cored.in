@@ -12,8 +12,7 @@ import { useFeatureFlagContext } from "@/contexts/featureFlag";
 import { FEATURE_FLAG } from "@coredin/shared";
 import { navSections } from "@/constants";
 import { useSectionInView } from "@/hooks";
-import { Logo } from "./Logo";
-import { Login } from "./Login";
+import { Login, Logo } from "@/components";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav = () => {

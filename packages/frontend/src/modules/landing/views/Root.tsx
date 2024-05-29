@@ -1,6 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
-import { CookiesBar, Footer, Nav } from "@/components";
+import { CookiesBar } from "@/components";
 import { Outlet, ScrollRestoration } from "react-router-dom";
+import { Footer, Nav } from "../components";
 
 export const Root = () => {
   return (

@@ -1,5 +1,4 @@
-import { Login } from "@/components";
-import { Logo } from "@/components/Logo";
+import { Login, Logo } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { Flex, Link } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
