@@ -54,6 +54,7 @@ export class PostsService {
     // Attention: using insert won't trigger cascades, relations, etc..
     return await this.postRepository.insert({
       user: { wallet },
+      createdAt: new Date(),
       ...data
     });
   }
