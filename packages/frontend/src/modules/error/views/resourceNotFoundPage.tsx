@@ -1,4 +1,4 @@
-import { Button, Container, Heading, Link, Text } from "@chakra-ui/react";
+import { Button, Heading, Link, Text, VStack } from "@chakra-ui/react";
 import { useRouteError } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 
@@ -7,12 +7,22 @@ export default function ResourceNotFoundPage() {
   console.error(error);
 
   return (
-    <Container id="error-page" centerContent p="32px" gap="32px" maxW="600px">
+    <VStack
+      id="error-page"
+      mx="auto"
+      p="1em"
+      gap="2em"
+      maxW="600px"
+      h="100dvh"
+      justify="center"
+    >
       <Heading>Oops!</Heading>
-      <Text textAlign="center">We could not find the requested resource.</Text>
+      <Text textAlign="center">We coudn't found the requested resource</Text>
       <Link as={ReactRouterLink} to="/">
-        <Button variant="secondary">Go back home</Button>
+        <Button variant="primary" size="sm">
+          Go back home
+        </Button>
       </Link>
-    </Container>
+    </VStack>
   );
 }
