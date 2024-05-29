@@ -1,9 +1,10 @@
 import { VStack } from "@chakra-ui/layout";
-import { Post } from "./Post";
+import { NewPost, Post } from ".";
 
 export const Feed = () => {
   return (
     <VStack spacing="1em">
+      <NewPost />
       <Post />
       <Post />
       <Post />
