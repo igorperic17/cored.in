@@ -54,9 +54,8 @@ export const Nav = () => {
           <HStack as="ul" spacing="1.5em" listStyleType="none">
             {navSections.map((item, index) => {
               return (
-                <li>
+                <li key={`menu-section-item-${index}`}>
                   <Link
-                    key={`menu-section-item-${index}`}
                     as={ReactRouterLink}
                     to={item.link}
                     textDecoration="none"
