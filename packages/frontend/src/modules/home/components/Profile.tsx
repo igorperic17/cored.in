@@ -14,6 +14,7 @@ import { useChain } from "@cosmos-kit/react";
 
 export const Profile = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+  // chainContext.isWalletConnected; // this shows if the user is connected
   const coredinClient = useContext(CoredinClientContext);
   const { needsAuth } = useAuth();
   const { data: userProfile, isLoading } = useLoggedInServerState(

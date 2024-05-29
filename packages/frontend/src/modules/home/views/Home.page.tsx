@@ -1,7 +1,7 @@
 import { Box } from "@chakra-ui/react";
 import { Profile } from "../components";
 
-const AppPage = () => {
+const HomePage = () => {
   return (
     <Box
       mx="auto"
@@ -14,4 +14,4 @@ const AppPage = () => {
   );
 };
 
-export default AppPage;
+export default HomePage;

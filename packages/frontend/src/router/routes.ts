@@ -5,7 +5,7 @@ export const ROUTES = {
   PRIVACY_POLICY: {
     path: "privacy-policy"
   },
-  APP: {
-    path: "app"
+  HOME: {
+    path: "home"
   }
 };

@@ -84,12 +84,12 @@ export const Nav: FC<NavProps> = ({ onOpen }) => {
       )}
       <Link
         as={ReactRouterLink}
-        to={ROUTES.APP.path}
+        to={ROUTES.HOME.path}
         _hover={{ textDecoration: "none" }}
       >
         <Login variant="primary" signInText="Sign in" />
       </Link>
-      {isInitialised && !isFeatureEnabled(FEATURE_FLAG.APP) && (
+      {isInitialised && !isFeatureEnabled(FEATURE_FLAG.HOME) && (
         <Link as={ReactRouterLink} to={"#benefits"}>
           <Button variant="primary" size="md">
             Learn more

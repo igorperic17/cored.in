@@ -1,8 +1,8 @@
-import { Disclaimer, Header } from "@/modules/app/components";
+import { Disclaimer, Header } from "@/modules/home/components";
 import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 
-export const AppRoot = () => {
+export const HomeRoot = () => {
   return (
     <Flex direction="column" justify="start" h="100vh">
       <Header />
