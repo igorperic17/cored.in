@@ -13,9 +13,15 @@ import {
   Text,
   VStack
 } from "@chakra-ui/react";
+import { PostDTO } from "@coredin/shared";
+import React from "react";
 import { FaComment, FaEllipsis, FaRegHeart, FaRetweet } from "react-icons/fa6";
 
-export const Post = () => {
+export type PostProps = {
+  post: PostDTO;
+};
+
+export const Post: React.FC<PostProps> = ({ post }) => {
   return (
     <VStack
       as="article"
@@ -53,8 +59,9 @@ export const Post = () => {
       </Flex>
       <Box>
         <Text>
-          This is the first post (ever!) created in cored.in. And it doesn't
-          matter that this is a test. Hi!
+          {post.text}
+          {/* This is the first post (ever!) created in cored.in. And it doesn't
+          matter that this is a test. Hi! */}
         </Text>
       </Box>
       <Flex w="100%" justify="space-around">
