@@ -2,10 +2,13 @@ export const ROUTES = {
   ROOT: {
     path: "/"
   },
-  PRIVACY_POLICY: {
-    path: "privacy-policy"
+  LOGIN: {
+    path: "login"
   },
   HOME: {
     path: "home"
+  },
+  PRIVACY_POLICY: {
+    path: "privacy-policy"
   }
 };

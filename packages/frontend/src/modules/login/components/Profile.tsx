@@ -3,14 +3,12 @@ import { USER_QUERIES } from "@/queries";
 import { Box, Center } from "@chakra-ui/layout";
 import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useContext, useEffect, useState } from "react";
-import {
-  NotRegisteredProfile,
-  RegisteredProfile,
-  RequireWalletConnection
-} from ".";
+import { RequireWalletConnection } from "../../home/components";
 import { Spinner } from "@chakra-ui/spinner";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useChain } from "@cosmos-kit/react";
+import { Navigate } from "react-router-dom";
+import { NotRegisteredProfile } from ".";
 
 export const Profile = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -84,12 +82,6 @@ export const Profile = () => {
         </Center>
       )}
       {!chainContext.address && <RequireWalletConnection />}
-      {onchainProfile && (
-        <RegisteredProfile
-          did={onchainProfile.did}
-          username={onchainProfile.username}
-        />
-      )}
       {!onchainProfile && userProfile && (
         <NotRegisteredProfile
           did={userProfile.did}
@@ -98,6 +90,10 @@ export const Profile = () => {
           registerProfile={registerProfile}
         />
       )}
+      {onchainProfile && <Navigate to={"/home"} />}
     </Box>
   );
 };
+
+//   did={onchainProfile.did}
+//   username={onchainProfile.username}
