@@ -1,4 +1,7 @@
 export enum BaseServerStateKeys {
   USER = "user",
-  UPDATE_PROFILE = "update_profile"
+  UPDATE_PROFILE = "update_profile",
+  FEED = "feed",
+  USER_FEED = "user_feed",
+  PUBLISH = "publish"
 }

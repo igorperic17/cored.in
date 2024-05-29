@@ -1,4 +1,9 @@
-import { AuthService, HttpService, StorageService } from "@/services";
+import {
+  AuthService,
+  FeedService,
+  HttpService,
+  StorageService
+} from "@/services";
 import { UserService } from "./modules/user/services";
 
 interface customWindow extends Window {
@@ -14,3 +19,4 @@ export const persistentStorageService = new StorageService();
 const httpService = new HttpService(apiUrl);
 export const authService = new AuthService(apiUrl);
 export const userService = new UserService(httpService);
+export const feedService = new FeedService(httpService);
