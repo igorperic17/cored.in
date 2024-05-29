@@ -33,7 +33,7 @@ function App() {
       >
         <QueryClientProvider client={queryClient}>
           <CoredinClientContextProvider>
-            <RouterProvider router={router} />º
+            <RouterProvider router={router} />
           </CoredinClientContextProvider>
         </QueryClientProvider>
       </ChainProvider>
