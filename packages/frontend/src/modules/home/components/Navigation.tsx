@@ -93,11 +93,17 @@ export const Navigation = () => {
             color="brand.500"
           /> */}
         <VStack align="start" spacing="1.25em">
-          <Text as="span" color="text.100" textTransform="uppercase">
-            {shortWalletAddress}
-          </Text>
-          <Text as="span" color="text.100" mt="-1em">
+          <Text as="span" color="text.100" fontSize="1rem">
             @username
+          </Text>
+          <Text
+            as="span"
+            color="text.400"
+            textTransform="uppercase"
+            mt="-1em"
+            fontSize="0.825rem"
+          >
+            {shortWalletAddress}
           </Text>
           <Button
             variant="empty"
