@@ -2,7 +2,7 @@ import { Controller, Get, Param, Req, UseGuards } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
-import { TypedBody, TypedRoute } from "@nestia/core";
+import { TypedBody, TypedParam, TypedRoute } from "@nestia/core";
 import { CreatePostDTO } from "@coredin/shared";
 
 @Controller("posts")
@@ -29,11 +29,20 @@ export class PostsController {
   }
 
   @TypedRoute.Post()
-  async updateProfile(
+  async create(
     @Req() req: AuthenticatedRequest,
     @TypedBody() createPostDTO: CreatePostDTO
   ) {
     // TODO - handle relevant return type and potential errors
     return await this.postsService.create(req.wallet, createPostDTO);
+  }
+  @TypedRoute.Post(":id/like")
+  async like(
+    @TypedParam("id") id: number,
+    @Req() req: AuthenticatedRequest,
+    @TypedBody() { liked }: { liked: boolean }
+  ) {
+    // TODO - handle relevant return type and potential errors
+    return await this.postsService.updateLikedPost(req.wallet, id, liked);
   }
 }

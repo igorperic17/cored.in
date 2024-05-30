@@ -1,8 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { ArrayContains, Repository } from "typeorm";
 import { Post } from "./post.entity";
 import { CreatePostDTO, PostDTO, PostVisibility } from "@coredin/shared";
+import { User } from "@/user/user.entity";
 
 @Injectable()
 export class PostsService {
@@ -50,6 +51,39 @@ export class PostsService {
       createdAt: new Date(),
       ...data
     });
+  }
+
+  async updateLikedPost(wallet: string, postId: number, liked: boolean) {
+    return await this.postRepository.manager.transaction(
+      "SERIALIZABLE",
+      async (transactionalEntityManager) => {
+        const alreadyLiked = await transactionalEntityManager.findOne(User, {
+          where: {
+            wallet,
+            likedPosts: ArrayContains([postId])
+          }
+        });
+        if ((alreadyLiked && liked) || (!alreadyLiked && !liked)) {
+          return;
+        }
+        await transactionalEntityManager.update(
+          User,
+          { wallet },
+          {
+            likedPosts: liked
+              ? () => `array_append("likedPosts", ${postId})`
+              : () => `array_remove("likedPosts", ${postId})`
+          }
+        );
+        await transactionalEntityManager.update(
+          Post,
+          { id: postId },
+          {
+            likes: liked ? () => "likes + 1" : () => "likes - 1"
+          }
+        );
+      }
+    );
   }
 
   private fromDb(post: Post): PostDTO {
