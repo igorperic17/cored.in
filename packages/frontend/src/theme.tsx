@@ -10,6 +10,17 @@ const fonts = {
 
 const styles = {
   global: {
+    "::-webkit-scrollbar": {
+      width: "12px",
+      backgroundColor: "background.800"
+    },
+    "::-webkit-scrollbar-thumb": {
+      backgroundColor: "background.600",
+      borderRadius: "6px"
+    },
+    "::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "background.100"
+    },
     "html, body": {
       color: "text.100",
       boxSizing: "border-box"
@@ -49,6 +60,7 @@ const colors = {
   background: {
     100: "#ebebeb", // - not in use yet
     600: "#3E3D3A", // card bg
+    700: "#272723",
     800: "#222320", // very dark bg / profile bg
     900: "#1C1C1A" // body bg / black
   }
