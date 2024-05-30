@@ -5,13 +5,18 @@ import {
   Column,
   PrimaryGeneratedColumn,
   Index,
-  ManyToOne
+  ManyToOne,
+  JoinColumn
 } from "typeorm";
 
 @Entity("posts")
 export class Post {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @Column()
+  @Index()
+  creatorWallet: string;
 
   @Column()
   text: string;
@@ -33,5 +38,6 @@ export class Post {
   replyToPostId: number;
 
   @ManyToOne(() => User, (user) => user.posts)
+  @JoinColumn({ name: "creatorWallet", referencedColumnName: "wallet" })
   user: User;
 }

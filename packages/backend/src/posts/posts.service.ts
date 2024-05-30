@@ -15,45 +15,38 @@ export class PostsService {
 
   async getPublic(): Promise<PostDTO[]> {
     return (
-      await this.postRepository
-        .createQueryBuilder("posts")
-        .where("posts.visibility = :visibility", {
-          visibility: PostVisibility.PUBLIC
-        })
-        .orderBy("posts.createdAt", "DESC")
-        .getMany()
+      await this.postRepository.find({
+        relations: ["user"],
+        where: { visibility: PostVisibility.PUBLIC },
+        order: { createdAt: "DESC" }
+      })
     ).map((post) => this.fromDb(post));
   }
 
-  async getPublicUserPosts(wallet: string): Promise<PostDTO[]> {
+  async getPublicUserPosts(creatorWallet: string): Promise<PostDTO[]> {
     return (
-      await this.postRepository
-        .createQueryBuilder("posts")
-        .where("posts.visibility = :visibility", {
-          visibility: PostVisibility.PUBLIC
-        })
-        .orderBy("posts.createdAt", "DESC")
-        .leftJoinAndSelect("posts.user", "user")
-        .where("user.wallet = :wallet", { wallet })
-        .getMany()
+      await this.postRepository.find({
+        relations: ["user"],
+        where: { visibility: PostVisibility.PUBLIC, creatorWallet },
+        order: { createdAt: "DESC" }
+      })
     ).map((post) => this.fromDb(post));
   }
 
-  async getAllUserPosts(wallet: string): Promise<PostDTO[]> {
+  async getAllUserPosts(creatorWallet: string): Promise<PostDTO[]> {
     return (
-      await this.postRepository
-        .createQueryBuilder("posts")
-        .orderBy("posts.createdAt", "DESC")
-        .leftJoinAndSelect("posts.user", "user")
-        .where("user.wallet = :wallet", { wallet })
-        .getMany()
+      await this.postRepository.find({
+        relations: ["user"],
+        where: { creatorWallet },
+        order: { createdAt: "DESC" }
+      })
     ).map((post) => this.fromDb(post));
   }
 
   async create(wallet: string, data: CreatePostDTO) {
     // Attention: using insert won't trigger cascades, relations, etc..
     return await this.postRepository.insert({
-      user: { wallet },
+      creatorWallet: wallet,
       createdAt: new Date(),
       ...data
     });
@@ -61,6 +54,10 @@ export class PostsService {
 
   private fromDb(post: Post): PostDTO {
     return {
+      id: post.id,
+      creatorWallet: post.creatorWallet,
+      creatorAvatar: post.user.avatar,
+      visibility: post.visibility,
       text: post.text,
       createdAt: post.createdAt,
       likes: post.likes,
