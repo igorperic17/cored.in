@@ -30,17 +30,14 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     >
       <Flex align="center" gap="1em" w="100%">
         <Avatar
-          name="Natalia Davtyan"
+          name="U N"
           // src="https://bit.ly/sage-adebayo"
           bg="background.600"
           color="brand.500"
         />
         <Flex direction="column">
           <Text as="span" color="text.100">
-            Natalia Davtyan
-          </Text>
-          <Text as="span" color="text.300">
-            @nataliadi
+            @username
           </Text>
         </Flex>
         <IconButton
@@ -49,7 +46,6 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           color="text.400"
           alignSelf="start"
           ml="auto"
-          mt="-0.375em"
           icon={<FaEllipsis fontSize="1.5rem" />}
           size="lg"
         />
