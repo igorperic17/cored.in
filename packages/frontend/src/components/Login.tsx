@@ -66,8 +66,8 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
         // borderRadius="3xl"
         // py="0.25em"
         // border="1px solid red"
-        pl="1em"
-        pr="0.25em"
+        // pl="1em"
+        // pr="0.25em"
         spacing="0.75em"
         align="end"
       >
