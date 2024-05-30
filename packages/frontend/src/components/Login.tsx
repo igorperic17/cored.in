@@ -33,8 +33,6 @@ interface LoginProps {
 export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
-  console.log(chainContext.address);
-  console.log(chainContext.isWalletConnected);
 
   useEffect(() => {
     if (chainContext.address) {

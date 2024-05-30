@@ -42,7 +42,6 @@ export const Post: React.FC<PostProps> = ({ post }) => {
   );
 
   useEffect(() => {
-    console.log(userProfile?.likedPosts);
     setIsLiked(userProfile?.likedPosts.includes(post.id) || false);
   }, [userProfile?.likedPosts]);
 

@@ -9,8 +9,6 @@ export const Feed = () => {
     FEED_QUERIES.getFeed(needsAuth)
   );
 
-  console.log(posts);
-
   return (
     <VStack spacing="1.5em" w="100%" mb="4em">
       {posts?.map((post, i) => <Post key={`post-${i}`} post={post} />)}
