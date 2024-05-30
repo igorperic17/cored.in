@@ -24,13 +24,11 @@ export const Navigation = () => {
     <Box
       as="nav"
       w="100%"
-      h={{ base: "8vh", lg: "max-content" }}
-      position={{ base: "fixed", lg: "sticky" }}
-      top={{ base: "", lg: "1em" }}
+      position={{ base: "fixed", lg: "static" }}
       bottom={{ base: "0", lg: "" }}
       bg="background.700"
       borderRadius={{ base: "0", lg: "0.5em" }}
-      p="1em"
+      p={{ base: "0", lg: "1em" }}
       zIndex="1"
       borderTop={{ base: "1px solid", lg: "none" }}
       borderTopColor="background.600"
@@ -38,12 +36,14 @@ export const Navigation = () => {
       <Grid
         as="ul"
         templateColumns={{ base: "repeat(5, 1fr)", lg: "repeat(1, 1fr)" }}
+        gap="0.5em"
         listStyleType="none"
         w="100%"
+        // border="1px solid red"
       >
         {navigationData.map((item, index) => (
           <Flex
-            // as="li"
+            as="li"
             key={`home-navigation-${index}`}
             color="text.100"
             justify="center"
@@ -72,7 +72,7 @@ export const Navigation = () => {
             >
               <HStack
                 spacing="0.75em"
-                p="0.5em"
+                p="0.75em"
                 borderRadius="0.5em"
                 w={{ base: "max-content", lg: "100%" }}
               >

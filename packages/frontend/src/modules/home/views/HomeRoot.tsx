@@ -27,7 +27,7 @@ export const HomeRoot = () => {
   }
 
   return (
-    <>
+    <Box>
       <Header username="natalia" />
 
       <Flex
@@ -39,7 +39,7 @@ export const HomeRoot = () => {
         p="1em"
       >
         {isLargerThanLg ? (
-          <VStack spacing="1.25em" w="25%">
+          <VStack spacing="1.25em" w="25%" position="sticky" top="1em">
             <Box bg="background.700" borderRadius="0.5em" p="2em" w="100%">
               <Link
                 as={ReactRouterLink}
@@ -76,6 +76,6 @@ export const HomeRoot = () => {
           </VStack>
         )}
       </Flex>
-    </>
+    </Box>
   );
 };

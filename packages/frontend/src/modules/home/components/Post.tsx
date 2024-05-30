@@ -74,7 +74,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
         <Flex direction="column">
           <Text as="span" color="text.100">
             @username
-            {post.creatorWallet}
+            {/* {post.creatorWallet} */}
           </Text>
         </Flex>
         <IconButton
