@@ -15,4 +15,8 @@ export class FeedService {
   async publish(createDTO: CreatePostDTO): Promise<void> {
     return this.http.post("posts", createDTO);
   }
+
+  async likePost(postId: number, liked: boolean): Promise<void> {
+    return this.http.post("posts/" + postId + `/like`, { liked });
+  }
 }
