@@ -17,9 +17,18 @@ import { useChain } from "@cosmos-kit/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { FaIdCard, FaArrowRightFromBracket } from "react-icons/fa6";
 import React from "react";
+import { useAuth, useLoggedInServerState } from "@/hooks";
+import { USER_QUERIES } from "@/queries";
 
 export const Navigation = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const { needsAuth } = useAuth();
+  const { data: userProfile, isLoading } = useLoggedInServerState(
+    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
+    {
+      enabled: !!chainContext.address
+    }
+  );
   const handleDisconnectWallet = React.useCallback(() => {
     if (chainContext.isWalletConnected) {
       chainContext.disconnect();
@@ -27,6 +36,9 @@ export const Navigation = () => {
   }, [chainContext]);
   const shortWalletAddress =
     chainContext.address?.slice(0, 8) + "..." + chainContext.address?.slice(-8);
+
+  // TODO - use a single Navigation "smart" component that handles the logic,
+  // and render dummmy NavigationDesktop or NavigationMobile that receive everything as props
 
   return (
     <VStack
@@ -94,7 +106,7 @@ export const Navigation = () => {
           /> */}
         <VStack align="start" spacing="1.25em">
           <Text as="span" color="text.100" fontSize="1rem">
-            @username
+            {`@${userProfile?.username || "No username"}`}
           </Text>
           <Text
             as="span"
