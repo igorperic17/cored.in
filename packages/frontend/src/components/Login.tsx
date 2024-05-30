@@ -59,18 +59,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
 
   if (chainContext.isWalletConnected) {
     return (
-      <HStack
-        // borderWidth="1px"
-        // borderStyle="solid"
-        // borderColor="background.100"
-        // borderRadius="3xl"
-        // py="0.25em"
-        // border="1px solid red"
-        // pl="1em"
-        // pr="0.25em"
-        spacing="0.75em"
-        align="end"
-      >
+      <HStack spacing="0.75em" align="end">
         <Text
           color="text.100"
           textTransform="uppercase"
