@@ -36,7 +36,7 @@ export class User {
   profile: UserProfile | null;
 
   @Column("int", { array: true, default: {} })
-  likedTweets: number[];
+  likedPosts: number[];
 
   @Column({
     nullable: true,

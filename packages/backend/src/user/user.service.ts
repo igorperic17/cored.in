@@ -28,7 +28,8 @@ export class UserService {
       // TODO - get username from chain? or just remove from backend or duplicate? To discuss if rename is gonna be possible or not..
       return Effect.succeed({
         username: user.profile?.username || "",
-        did: did.did
+        did: did.did,
+        likedPosts: user.likedPosts
       });
     }
 
