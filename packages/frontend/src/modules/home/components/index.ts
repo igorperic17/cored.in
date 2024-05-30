@@ -4,4 +4,4 @@ export * from "./Feed";
 export * from "./Post";
 export * from "./NewPost";
 export * from "./Navigation";
-export * from "./NavigationMobile";
+export * from "./UserSignOut";

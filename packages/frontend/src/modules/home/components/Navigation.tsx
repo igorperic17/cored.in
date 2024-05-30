@@ -1,135 +1,105 @@
-import { Logo } from "@/components/Logo";
 import { ROUTES } from "@/router/routes";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { navigationData } from "../constants/navigationData";
 import {
-  Avatar,
   Box,
-  Button,
   Flex,
+  Grid,
   HStack,
   Icon,
   Link,
   Text,
-  VStack
+  useMediaQuery,
+  useTheme
 } from "@chakra-ui/react";
-import { useChain } from "@cosmos-kit/react";
-import { TESTNET_CHAIN_NAME } from "@coredin/shared";
-import { FaIdCard, FaArrowRightFromBracket } from "react-icons/fa6";
-import React from "react";
-import { useAuth, useLoggedInServerState } from "@/hooks";
-import { USER_QUERIES } from "@/queries";
+import { FaTriangleExclamation } from "react-icons/fa6";
 
 export const Navigation = () => {
-  const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const { needsAuth } = useAuth();
-  const { data: userProfile, isLoading } = useLoggedInServerState(
-    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
-    {
-      enabled: !!chainContext.address
-    }
+  const theme = useTheme();
+  const [isLargerThanLg] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.lg})`
   );
-  const handleDisconnectWallet = React.useCallback(() => {
-    if (chainContext.isWalletConnected) {
-      chainContext.disconnect();
-    }
-  }, [chainContext]);
-  const shortWalletAddress =
-    chainContext.address?.slice(0, 8) + "..." + chainContext.address?.slice(-8);
-
-  // TODO - use a single Navigation "smart" component that handles the logic,
-  // and render dummmy NavigationDesktop or NavigationMobile that receive everything as props
 
   return (
-    <VStack
-      w="25%"
-      h="max-content"
+    <Box
+      as="nav"
+      w="100%"
+      h={{ base: "8vh", lg: "max-content" }}
+      position={{ base: "fixed", lg: "sticky" }}
+      top={{ base: "", lg: "1em" }}
+      bottom={{ base: "0", lg: "" }}
       bg="background.700"
-      borderRadius="0.5em"
-      p="2em"
-      align="start"
-      spacing="6em"
-      position="sticky"
-      top="1em"
-      flex="1"
-      // outline="1px solid red"
+      borderRadius={{ base: "0", lg: "0.5em" }}
+      p="1em"
+      zIndex="1"
+      borderTop={{ base: "1px solid", lg: "none" }}
+      borderTopColor="background.600"
     >
-      <VStack align="start" spacing="2em">
-        <Link
-          as={ReactRouterLink}
-          to={ROUTES.ROOT.path}
-          _hover={{ textDecoration: "none" }}
-          aria-label="Main page."
-        >
-          <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
-        </Link>
-      </VStack>
-      <Box as="nav" w="100%">
-        <Flex as="ul" direction="column" listStyleType="none" gap="1em">
-          {navigationData.map((item, index) => (
-            <Box as="li" key={`home-navigation-${index}`} color="text.100">
-              <Link
-                as={ReactRouterLink}
-                to={item.link}
-                fontSize="1.375rem"
-                color="inherit"
-                _hover={{
-                  div: {
-                    background: "background.600"
-                  }
-                  // textDecoration: "none"
-                }}
-                _focus={{
-                  div: {
-                    background: "background.600"
-                  }
-                  // outline: "none",
-                  // textDecoration: "none"
-                }}
+      <Grid
+        as="ul"
+        templateColumns={{ base: "repeat(5, 1fr)", lg: "repeat(1, 1fr)" }}
+        listStyleType="none"
+        w="100%"
+      >
+        {navigationData.map((item, index) => (
+          <Flex
+            // as="li"
+            key={`home-navigation-${index}`}
+            color="text.100"
+            justify="center"
+            align="center"
+            // p="1em"
+          >
+            <Link
+              as={ReactRouterLink}
+              to={item.link}
+              fontSize="1.375rem"
+              color="inherit"
+              w={{ base: "max-content", lg: "100%" }}
+              _hover={{
+                div: {
+                  background: "background.600"
+                }
+                // textDecoration: "none"
+              }}
+              _focus={{
+                div: {
+                  background: "background.600"
+                }
+                // outline: "none",
+                // textDecoration: "none"
+              }}
+            >
+              <HStack
+                spacing="0.75em"
+                p="0.5em"
+                borderRadius="0.5em"
+                w={{ base: "max-content", lg: "100%" }}
               >
-                <HStack spacing="0.75em" p="0.5em 1.75em" borderRadius="0.5em">
-                  <Icon as={item.icon} />
+                <Icon as={item.icon} />
+                {isLargerThanLg && (
                   <Text as="span">{`${item.title[0].toUpperCase()}${item.title.slice(1)}`}</Text>
-                </HStack>
-              </Link>
-            </Box>
-          ))}
-        </Flex>
-      </Box>
-      <HStack spacing="1em" align="start">
-        <Icon as={FaIdCard} fontSize="1.5rem" />
-        {/* <Avatar
-            name="U N"
-            // src="https://bit.ly/sage-adebayo"
-            bg="background.600"
-            color="brand.500"
-          /> */}
-        <VStack align="start" spacing="1.25em">
-          <Text as="span" color="text.100" fontSize="1rem">
-            {`@${userProfile?.username || "No username"}`}
-          </Text>
-          <Text
-            as="span"
-            color="text.400"
-            textTransform="uppercase"
-            mt="-1em"
-            fontSize="0.825rem"
+                )}
+              </HStack>
+            </Link>
+          </Flex>
+        ))}
+        {!isLargerThanLg && (
+          <Flex
+            as="li"
+            key={`home-navigation-mobile-4`}
+            p="0.5em"
+            borderRadius="0.5em"
+            listStyleType="none"
+            w="max-content"
+            mx="auto"
+            justify="center"
+            align="center"
           >
-            {shortWalletAddress}
-          </Text>
-          <Button
-            variant="empty"
-            size="xs"
-            color="text.400"
-            onClick={handleDisconnectWallet}
-            rightIcon={<FaArrowRightFromBracket />}
-          >
-            <Text as="span" mt="3px" mr="0.5em">
-              Sign out
-            </Text>
-          </Button>
-        </VStack>
-      </HStack>
-    </VStack>
+            <Icon as={FaTriangleExclamation} fontSize="1.375rem" />
+          </Flex>
+        )}
+      </Grid>
+    </Box>
   );
 };

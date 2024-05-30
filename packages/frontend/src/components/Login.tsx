@@ -27,9 +27,10 @@ import { chain } from "chain-registry/testnet/coreumtestnet";
 interface LoginProps {
   variant: "primary" | "empty";
   signInText: string;
+  username: string;
 }
 
-export const Login: FC<LoginProps> = ({ variant, signInText }) => {
+export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   console.log(chainContext.address);
@@ -51,22 +52,13 @@ export const Login: FC<LoginProps> = ({ variant, signInText }) => {
     }
   }, [chainContext]);
 
-  const shortWalletAddress = chainContext.address
-    ? chainContext.address.slice(0, 4) + "..." + chainContext.address.slice(-4)
-    : "";
-
   const wallets = [...keplrWallets, ...leapWallets, ...cosmostationWallets];
 
   if (chainContext.isWalletConnected) {
     return (
       <HStack spacing="0.75em" align="end">
-        <Text
-          color="text.100"
-          textTransform="uppercase"
-          fontSize={{ base: "0.75em", md: "0.825rem" }}
-          mb="1px"
-        >
-          {shortWalletAddress}
+        <Text color="text.100" fontSize={{ base: "0.85rem", md: "1rem" }}>
+          @{username}
         </Text>
         <Button
           borderStartStartRadius="0"

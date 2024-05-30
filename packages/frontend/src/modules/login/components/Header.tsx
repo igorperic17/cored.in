@@ -1,9 +1,14 @@
 import { Login, Logo } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { Flex, Link } from "@chakra-ui/react";
+import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-export const Header = () => {
+type HeaderProps = {
+  username: string;
+};
+
+export const Header: FC<HeaderProps> = ({ username }) => {
   return (
     <Flex
       as="header"
@@ -27,7 +32,7 @@ export const Header = () => {
         <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
       </Link>
 
-      <Login variant="empty" signInText="Connect wallet" />
+      <Login username={username} variant="empty" signInText="Connect wallet" />
     </Flex>
   );
 };

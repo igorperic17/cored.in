@@ -1,12 +1,20 @@
-import { SocialMedia } from "@/components";
+import { Logo, SocialMedia } from "@/components";
 import { Disclaimer } from "@/components/Disclaimer";
-import { Navigation, NavigationMobile } from "@/modules/home/components";
+import { Navigation, UserSignOut } from "@/modules/home/components";
 import { Header } from "@/modules/login/components";
 import { ROUTES } from "@/router/routes";
-import { Box, Flex, VStack, useMediaQuery, useTheme } from "@chakra-ui/react";
+import {
+  Box,
+  Flex,
+  Link,
+  VStack,
+  useMediaQuery,
+  useTheme
+} from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { Navigate, Outlet, ScrollRestoration } from "react-router-dom";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -20,22 +28,40 @@ export const HomeRoot = () => {
 
   return (
     <>
-      {isLargerThanLg && (
-        <Flex
-          justify="center"
-          align="start"
-          gap="1.5em"
-          // outline="1px solid yellow"
-          maxW="1200px"
-          mx="auto"
-          my="1em"
-          p="1em"
-        >
+      <Header username="natalia" />
+
+      <Flex
+        justify="center"
+        align="start"
+        gap="1.5em"
+        maxW="1200px"
+        mx="auto"
+        p="1em"
+      >
+        {isLargerThanLg ? (
+          <VStack spacing="1.25em" w="25%">
+            <Box bg="background.700" borderRadius="0.5em" p="2em" w="100%">
+              <Link
+                as={ReactRouterLink}
+                to={ROUTES.ROOT.path}
+                _hover={{ textDecoration: "none" }}
+                aria-label="Main page."
+              >
+                <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
+              </Link>
+            </Box>
+            <Navigation />
+            <UserSignOut />
+          </VStack>
+        ) : (
           <Navigation />
-          <Box as="main" flex="2">
-            <Outlet />
-            <ScrollRestoration />
-          </Box>
+        )}
+
+        <Box as="main" flex="2">
+          <Outlet />
+          <ScrollRestoration />
+        </Box>
+        {isLargerThanLg && (
           <VStack
             position="sticky"
             top="1em"
@@ -48,18 +74,8 @@ export const HomeRoot = () => {
             <Disclaimer />
             <SocialMedia size="2rem" gap="2.25em" color="text.400" />
           </VStack>
-        </Flex>
-      )}
-      {!isLargerThanLg && (
-        <>
-          <Header />
-          <Box as="main" flex="2" p="1em">
-            <Outlet />
-            <ScrollRestoration />
-          </Box>
-          <NavigationMobile />
-        </>
-      )}
+        )}
+      </Flex>
     </>
   );
 };
