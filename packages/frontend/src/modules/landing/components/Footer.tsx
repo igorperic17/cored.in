@@ -40,7 +40,7 @@ export const Footer = () => {
           </Text>{" "}
           is ready
         </Heading>
-        <SocialMedia />
+        <SocialMedia size="3rem" gap="3.5em" />
       </Flex>
       <Text color="text.400" textAlign="center" p="1em">
         All rights reserved — cored.in &copy;{" "}

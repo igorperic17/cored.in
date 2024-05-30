@@ -1,9 +1,15 @@
 import { Flex, Icon, Link } from "@chakra-ui/react";
+import { FC } from "react";
 import { FaXTwitter, FaDiscord } from "react-icons/fa6";
 
-export const SocialMedia = () => (
-  <Flex direction="row" justify="space-between" w="100%" maxW="150px">
-    <Link href="https://twitter.com/cored_in" isExternal fontSize="3rem">
+type SocialMediaSize = {
+  size: string;
+  gap: string;
+};
+
+export const SocialMedia: FC<SocialMediaSize> = ({ size, gap }) => (
+  <Flex direction="row" justify="center" gap={gap}>
+    <Link href="https://twitter.com/cored_in" isExternal fontSize={size}>
       <Icon
         as={FaXTwitter}
         aria-label="X."
@@ -12,7 +18,7 @@ export const SocialMedia = () => (
         }}
       />
     </Link>
-    <Link href="https://discord.gg/fhsyaEJ5VZ" isExternal fontSize="3rem">
+    <Link href="https://discord.gg/fhsyaEJ5VZ" isExternal fontSize={size}>
       <Icon
         as={FaDiscord}
         aria-label="Discord."
