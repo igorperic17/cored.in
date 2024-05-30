@@ -3,17 +3,20 @@ import { Logo } from "@/components/Logo";
 import { ROUTES } from "@/router/routes";
 import { Box, Link, VStack } from "@chakra-ui/layout";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { navigationData } from "../constants/navigationData";
 
 export const Navigation = () => {
   return (
     <VStack
       w="25%"
       h="max-content"
-      bg="background.800"
+      bg="background.600"
       borderRadius="0.5em"
       p="2em"
       align="start"
       spacing="3em"
+      position="sticky"
+      top="1em"
       // outline="1px solid red"
     >
       <Link
@@ -26,12 +29,11 @@ export const Navigation = () => {
       </Link>
       <Box as="nav">
         <VStack as="ul" listStyleType="none" align="start">
-          <li>
-            <Link fontSize="1.5rem">Profile</Link>
-          </li>
-          <li>
-            <Link fontSize="1.5rem">Settings</Link>
-          </li>
+          {navigationData.map((item, index) => (
+            <li key={`home-navigation-${index}`}>
+              <Link fontSize="1.5rem">{`${item.title[0].toUpperCase()}${item.title.slice(1)}`}</Link>
+            </li>
+          ))}
         </VStack>
       </Box>
       <Login variant={"empty"} signInText={"Test"} />

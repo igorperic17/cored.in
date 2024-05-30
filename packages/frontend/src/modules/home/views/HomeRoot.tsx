@@ -21,6 +21,7 @@ export const HomeRoot = () => {
       // outline="1px solid yellow"
       maxW="1200px"
       mx="auto"
+      my="1em"
     >
       <Navigation />
       <Box
@@ -32,9 +33,11 @@ export const HomeRoot = () => {
         <ScrollRestoration />
       </Box>
       <VStack
+        position="sticky"
+        top="1em"
         w="30%"
         h="max-content"
-        bg="background.800"
+        bg="background.600"
         borderRadius="0.5em"
         pb="1.5em"
         // outline="1px solid red"
