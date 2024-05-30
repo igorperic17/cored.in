@@ -28,7 +28,7 @@ export const HomeRoot = () => {
 
   return (
     <Box>
-      <Header username="natalia" />
+      {!isLargerThanLg && <Header username="natalia" />}
 
       <Flex
         justify="center"
