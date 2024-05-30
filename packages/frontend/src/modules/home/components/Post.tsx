@@ -23,7 +23,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
       spacing="2em"
       w="100%"
       h="max-content"
-      bg="background.800"
+      bg="background.600"
       borderRadius="0.5em"
       //   border="1px solid red"
       p="1.5em"
@@ -76,7 +76,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           color="text.100"
           leftIcon={<FaRetweet />}
         >
-          Share
+          Repost
         </Button>
       </Flex>
     </VStack>

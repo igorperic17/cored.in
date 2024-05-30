@@ -22,6 +22,7 @@ export const NewPost = () => {
     await queryClient.invalidateQueries({
       queryKey: [BaseServerStateKeys.FEED]
     });
+    setPostContent("");
   };
 
   return (
@@ -30,7 +31,7 @@ export const NewPost = () => {
       spacing="2em"
       w="100%"
       h="max-content"
-      bg="background.800"
+      bg="background.600"
       borderRadius="0.5em"
       // outline="1px solid red"
       p="1.5em"
@@ -50,6 +51,11 @@ export const NewPost = () => {
       <Textarea
         // w="100%"
         placeholder="Share your thoughts"
+        // bg="background.800"
+        border="none"
+        borderRadius="0"
+        borderBottom="2px solid"
+        borderBottomColor="background.800"
         value={postContent}
         onChange={(e) => setPostContent(e.target.value)}
       />
