@@ -20,10 +20,10 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     <VStack
       as="article"
       align="start"
-      spacing="2em"
+      spacing="1.5em"
       w="100%"
       h="max-content"
-      bg="background.600"
+      bg="background.700"
       borderRadius="0.5em"
       //   border="1px solid red"
       p="1.5em"
@@ -32,51 +32,58 @@ export const Post: React.FC<PostProps> = ({ post }) => {
         <Avatar
           name="Natalia Davtyan"
           // src="https://bit.ly/sage-adebayo"
-          bg="brand.500"
-          color="text.900"
+          bg="background.600"
+          color="brand.500"
         />
         <Flex direction="column">
-          <Text as="span">Natalia Davtyan</Text>
-          <Text as="span">@nataliadi</Text>
+          <Text as="span" color="text.100">
+            Natalia Davtyan
+          </Text>
+          <Text as="span" color="text.300">
+            @nataliadi
+          </Text>
         </Flex>
         <IconButton
           variant="empty"
           aria-label="See menu."
-          color="inherit"
+          color="text.400"
           alignSelf="start"
-          // border="1px solid red"
           ml="auto"
           mt="-0.375em"
-          icon={<FaEllipsis />}
+          icon={<FaEllipsis fontSize="1.5rem" />}
+          size="lg"
         />
       </Flex>
       <Box>
-        <Text>{post.text}</Text>
+        <Text color="text.100">{post.text}</Text>
       </Box>
       <Flex w="100%" justify="space-around">
         <Button
           variant="empty"
-          size="xs"
-          color="text.100"
-          leftIcon={<FaRegHeart />}
+          aria-label="Like the post."
+          size="1rem"
+          color="text.400"
+          leftIcon={<FaRegHeart fontSize="1.25rem" />}
         >
-          Like
+          27
         </Button>
         <Button
           variant="empty"
-          size="xs"
-          color="text.100"
-          leftIcon={<FaComment />}
+          aria-label="Add comment."
+          fontSize="1rem"
+          color="text.400"
+          leftIcon={<FaComment fontSize="1.25rem" />}
         >
-          Comment
+          3
         </Button>
         <Button
           variant="empty"
-          size="xs"
-          color="text.100"
-          leftIcon={<FaRetweet />}
+          aria-label="Repost."
+          size="1rem"
+          color="text.400"
+          leftIcon={<FaRetweet fontSize="1.5rem" />}
         >
-          Repost
+          1
         </Button>
       </Flex>
     </VStack>

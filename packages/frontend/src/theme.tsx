@@ -1,4 +1,4 @@
-import { extendTheme } from "@chakra-ui/react";
+import { border, extendTheme, textDecoration } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 import "@fontsource/noto-sans";
 import { inputTheme, stepperTheme } from "./themes";
@@ -112,8 +112,15 @@ const components = {
       }),
       empty: {
         border: "none",
+        borderRadius: "0",
         color: "brand.500",
-        px: "0"
+        px: "0",
+        _hover: {
+          color: "text.100"
+        },
+        _focus: {
+          color: "text.100"
+        }
       }
       // secondary: () => ({
       //   border: "2px solid",
