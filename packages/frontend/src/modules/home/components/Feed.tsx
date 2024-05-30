@@ -1,5 +1,5 @@
 import { VStack } from "@chakra-ui/layout";
-import { NewPost, Post } from ".";
+import { Post } from ".";
 import { useAuth, useLoggedInServerState } from "@/hooks";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 
@@ -12,8 +12,7 @@ export const Feed = () => {
   console.log(posts);
 
   return (
-    <VStack spacing="1em">
-      <NewPost />
+    <VStack spacing="1em" w="100%">
       {posts?.map((post, i) => <Post key={`post-${i}`} post={post} />)}
     </VStack>
   );

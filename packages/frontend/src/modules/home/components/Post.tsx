@@ -2,14 +2,8 @@ import {
   Avatar,
   Box,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Flex,
-  Heading,
   IconButton,
-  Image,
   Text,
   VStack
 } from "@chakra-ui/react";
@@ -28,7 +22,6 @@ export const Post: React.FC<PostProps> = ({ post }) => {
       align="start"
       spacing="2em"
       w="100%"
-      maxW="450px"
       h="max-content"
       bg="background.800"
       borderRadius="0.5em"
@@ -58,11 +51,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
         />
       </Flex>
       <Box>
-        <Text>
-          {post.text}
-          {/* This is the first post (ever!) created in cored.in. And it doesn't
-          matter that this is a test. Hi! */}
-        </Text>
+        <Text>{post.text}</Text>
       </Box>
       <Flex w="100%" justify="space-around">
         <Button

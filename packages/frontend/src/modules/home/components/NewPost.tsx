@@ -29,11 +29,10 @@ export const NewPost = () => {
       align="start"
       spacing="2em"
       w="100%"
-      maxW="450px"
       h="max-content"
       bg="background.800"
       borderRadius="0.5em"
-      //   border="1px solid red"
+      // outline="1px solid red"
       p="1.5em"
     >
       <Flex align="center" gap="1em" w="100%">
@@ -49,6 +48,7 @@ export const NewPost = () => {
         </Flex>
       </Flex>
       <Textarea
+        // w="100%"
         placeholder="Share your thoughts"
         value={postContent}
         onChange={(e) => setPostContent(e.target.value)}

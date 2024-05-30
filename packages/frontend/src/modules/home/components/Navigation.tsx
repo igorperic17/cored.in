@@ -7,13 +7,14 @@ import { Link as ReactRouterLink } from "react-router-dom";
 export const Navigation = () => {
   return (
     <VStack
-      maxW="400px"
+      w="25%"
       h="max-content"
       bg="background.800"
       borderRadius="0.5em"
       p="2em"
       align="start"
       spacing="3em"
+      // outline="1px solid red"
     >
       <Link
         as={ReactRouterLink}
