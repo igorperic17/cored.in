@@ -20,7 +20,7 @@ export default function ResourceNotFoundPage() {
       <Text textAlign="center">We coudn't found the requested resource</Text>
       <Link as={ReactRouterLink} to="/">
         <Button variant="primary" size="sm">
-          Go back home
+          Return to home
         </Button>
       </Link>
     </VStack>
