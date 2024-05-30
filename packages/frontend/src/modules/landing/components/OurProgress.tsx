@@ -1,7 +1,7 @@
 import {
   appearFromRightOneByOne,
   fadeInOneByOne
-} from "@/components/constants/animations";
+} from "@/constants/animations";
 import {
   Box,
   Flex,

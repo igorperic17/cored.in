@@ -1,6 +1,6 @@
 // import { BackToTop } from "@/modules/landing/components/BackToTop";
 import { SocialMedia } from "@/components";
-import { fadeInAnimation } from "@/constants";
+import { fadeInAnimation } from "@/constants/animations";
 import { Box, Flex, Heading, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 

@@ -1,4 +1,4 @@
-import { fadeInWithDelayAnimation } from "@/components/constants/animations";
+import { fadeInWithDelayAnimation } from "@/constants/animations";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 

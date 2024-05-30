@@ -1,4 +1,4 @@
-import { appearFromRightOneByOne } from "@/components/constants/animations";
+import { appearFromRightOneByOne } from "@/constants/animations";
 import { Box, Collapse, Heading, ListItem, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
