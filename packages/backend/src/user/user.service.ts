@@ -18,12 +18,14 @@ export class UserService {
   async get(
     wallet: string
   ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
-    const user = await this.userRepository.findOne({ where: { wallet } });
+    const user = await this.userRepository.findOne({
+      where: { wallet },
+      relations: ["posts"]
+    });
     if (user) {
-      console.log("user from db ", user);
       // Get DID
       const did = await this.waltId.getOrCreateDid(wallet);
-      // TODO - get username from chain? or just remove from backend..
+      // TODO - get username from chain? or just remove from backend or duplicate? To discuss if rename is gonna be possible or not..
       return Effect.succeed({
         username: user.profile?.username || "",
         did: did.did
