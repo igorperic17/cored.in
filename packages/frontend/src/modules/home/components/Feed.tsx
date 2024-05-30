@@ -12,7 +12,7 @@ export const Feed = () => {
   console.log(posts);
 
   return (
-    <VStack spacing="1em" w="100%">
+    <VStack spacing="1.5em" w="100%">
       {posts?.map((post, i) => <Post key={`post-${i}`} post={post} />)}
     </VStack>
   );

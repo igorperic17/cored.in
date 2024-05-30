@@ -31,27 +31,22 @@ export const NewPost = () => {
       spacing="2em"
       w="100%"
       h="max-content"
-      bg="background.600"
+      bg="background.700"
       borderRadius="0.5em"
       // outline="1px solid red"
       p="1.5em"
     >
       <Flex align="center" gap="1em" w="100%">
         <Avatar
-          name="Natalia Davtyan"
+          name="U N"
           // src="https://bit.ly/sage-adebayo"
-          bg="brand.500"
-          color="text.900"
+          bg="background.600"
+          color="brand.500"
         />
-        <Flex direction="column">
-          <Text as="span">Natalia Davtyan</Text>
-          <Text as="span">@nataliadi</Text>
-        </Flex>
       </Flex>
       <Textarea
         // w="100%"
         placeholder="Share your thoughts"
-        // bg="background.800"
         border="none"
         borderRadius="0"
         borderBottom="2px solid"
