@@ -28,6 +28,8 @@ import {
   FaTrash
 } from "react-icons/fa6";
 import { NewPost } from "./NewPost";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { ROUTES } from "@/router/routes";
 
 export type PostProps = {
   post: PostDTO;
@@ -148,7 +150,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           onClick={handleLike}
           // isLoading={isLiking}
         >
-          {post.likes}
+          {post?.likes || ""}
         </Button>
         <Button
           variant="empty"
@@ -157,6 +159,18 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           color={opened ? theme.colors.brand["500"] : "text.400"}
           leftIcon={<FaComment fontSize="1.25rem" />}
           onClick={handleComment}
+          isLoading={isDetailLoading}
+        >
+          {postDetail?.replies.length}
+        </Button>
+        <Button
+          as={ReactRouterLink}
+          to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
+          variant="empty"
+          aria-label="Add comment."
+          fontSize="1rem"
+          color={opened ? theme.colors.brand["500"] : "text.400"}
+          leftIcon={<FaComment fontSize="1.25rem" />}
           isLoading={isDetailLoading}
         >
           {postDetail?.replies.length}
