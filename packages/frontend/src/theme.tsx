@@ -1,7 +1,7 @@
-import { border, extendTheme, textDecoration } from "@chakra-ui/react";
+import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 import "@fontsource/noto-sans";
-import { inputTheme, stepperTheme } from "./themes";
+import { inputTheme, menuTheme, stepperTheme } from "./themes";
 
 const fonts = {
   heading: `'Space Grotesk', sans-serif`,
@@ -59,6 +59,7 @@ const colors = {
   },
   background: {
     100: "#ebebeb", // - not in use yet
+    400: "#828178", /// === text.400
     600: "#3E3D3A", // card bg
     700: "#272723",
     800: "#222320", // very dark bg / profile bg
@@ -157,7 +158,8 @@ const components = {
     // },
   },
   Stepper: stepperTheme,
-  Input: inputTheme
+  Input: inputTheme,
+  Menu: menuTheme
 };
 
 const breakpoints = {
