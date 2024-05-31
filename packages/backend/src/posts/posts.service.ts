@@ -53,6 +53,13 @@ export class PostsService {
     });
   }
 
+  async delete(wallet: string, postId: number) {
+    return await this.postRepository.delete({
+      creatorWallet: wallet,
+      id: postId
+    });
+  }
+
   async updateLikedPost(wallet: string, postId: number, liked: boolean) {
     return await this.postRepository.manager.transaction(
       "SERIALIZABLE",

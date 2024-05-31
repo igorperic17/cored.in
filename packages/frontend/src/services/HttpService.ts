@@ -78,6 +78,26 @@ export class HttpService {
       });
   }
 
+  async delete<T>(path: string, config?: AxiosRequestConfig<any>): Promise<T> {
+    const token = this.getBearerToken();
+    return axios
+      .delete(this.baseApiUrl + path, {
+        headers: {
+          Authorization: "Bearer " + token
+        },
+        ...config
+      })
+      .then(function (response) {
+        return response.data;
+      })
+      .catch(function (error) {
+        if (error.response.status === 401) {
+          document.dispatchEvent(makeUnauthorizedAPIRequestEvent(error));
+        }
+        throw error;
+      });
+  }
+
   private getBearerToken() {
     const wallet = persistentStorageService.getString(ConnectedWalletKey);
 

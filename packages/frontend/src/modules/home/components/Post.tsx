@@ -11,6 +11,10 @@ import {
   Button,
   Flex,
   IconButton,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
   VStack,
   useTheme
@@ -19,7 +23,13 @@ import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
-import { FaComment, FaEllipsis, FaRegHeart, FaRetweet } from "react-icons/fa6";
+import {
+  FaComment,
+  FaEllipsis,
+  FaRegHeart,
+  FaRetweet,
+  FaTrash
+} from "react-icons/fa6";
 
 export type PostProps = {
   post: PostDTO;
@@ -31,6 +41,8 @@ export const Post: React.FC<PostProps> = ({ post }) => {
   const { mutateAsync: like, isPending: isLiking } = useMutableServerState(
     FEED_MUTATIONS.likePost()
   );
+  const { mutateAsync: deletePost, isPending: isDeleting } =
+    useMutableServerState(FEED_MUTATIONS.deletePost());
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { needsAuth } = useAuth();
   const { data: userProfile } = useLoggedInServerState(
@@ -51,6 +63,12 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     });
   };
 
+  const handleDelete = async () => {
+    await deletePost({ postId: post.id }).then(() => {
+      queryClient.invalidateQueries();
+    });
+  };
+
   return (
     <VStack
       as="article"
@@ -63,28 +81,45 @@ export const Post: React.FC<PostProps> = ({ post }) => {
       //   border="1px solid red"
       p="1.5em"
     >
-      <Flex align="center" gap="1em" w="100%">
+      <Flex align="center" gap="1em" maxW="100%">
         <Avatar
           name="U N"
           // src="https://bit.ly/sage-adebayo"
           bg="background.600"
           color="brand.500"
         />
-        <Flex direction="column">
+        <Flex
+          direction="column"
+          maxW="50%"
+          textOverflow={"ellipsis"}
+          whiteSpace="nowrap"
+          overflow="hidden"
+        >
           <Text as="span" color="text.100">
             @username
             {/* {post.creatorWallet} */}
           </Text>
         </Flex>
-        <IconButton
-          variant="empty"
-          aria-label="See menu."
-          color="text.400"
-          alignSelf="start"
-          ml="auto"
-          icon={<FaEllipsis fontSize="1.5rem" />}
-          size="lg"
-        />
+        <Menu>
+          <MenuButton
+            as={IconButton}
+            variant="empty"
+            aria-label="See menu."
+            color="text.400"
+            alignSelf="start"
+            ml="auto"
+            icon={<FaEllipsis fontSize="1.5rem" />}
+            size="lg"
+            isLoading={isDeleting}
+          />
+          <MenuList>
+            <MenuItem onClick={handleDelete} icon={<FaTrash color="red" />}>
+              <Text as="span" color="red">
+                Delete
+              </Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
       </Flex>
       <Box>
         <Text color="text.100">{post.text}</Text>

@@ -19,4 +19,8 @@ export class FeedService {
   async likePost(postId: number, liked: boolean): Promise<void> {
     return this.http.post("posts/" + postId + `/like`, { liked });
   }
+
+  async deletePost(postId: number): Promise<void> {
+    return this.http.delete("posts/" + postId);
+  }
 }

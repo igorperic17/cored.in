@@ -11,5 +11,10 @@ export const FEED_MUTATIONS = {
     mutationKey: [BaseServerStateKeys.LIKE_POST],
     mutationFn: ({ postId, liked }: { postId: number; liked: boolean }) =>
       feedService.likePost(postId, liked)
+  }),
+  deletePost: () => ({
+    mutationKey: [BaseServerStateKeys.DELETE_POST],
+    mutationFn: ({ postId }: { postId: number }) =>
+      feedService.deletePost(postId)
   })
 };
