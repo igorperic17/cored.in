@@ -1,7 +1,7 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
-import { Header } from "../components";
 import { Disclaimer } from "@/components/Disclaimer";
+import { Header } from "@/components";
 
 export const LoginRoot = () => {
   return (

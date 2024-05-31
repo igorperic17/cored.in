@@ -5,7 +5,7 @@ import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 type HeaderProps = {
-  username: string;
+  username?: string;
 };
 
 export const Header: FC<HeaderProps> = ({ username }) => {

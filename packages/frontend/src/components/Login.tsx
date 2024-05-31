@@ -27,7 +27,7 @@ import { chain } from "chain-registry/testnet/coreumtestnet";
 interface LoginProps {
   variant: "primary" | "empty";
   signInText: string;
-  username: string;
+  username?: string;
 }
 
 export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {

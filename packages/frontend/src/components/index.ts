@@ -5,3 +5,4 @@ export { Logo } from "./Logo";
 export { Disclaimer } from "./Disclaimer";
 export { SocialMedia } from "./SocialMedia";
 export { AutoResizeTextarea } from "./AutoResizeTextarea";
+export { Header } from "./Header";

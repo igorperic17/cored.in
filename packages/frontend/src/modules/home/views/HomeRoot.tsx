@@ -1,7 +1,6 @@
-import { Logo, SocialMedia } from "@/components";
+import { Header, Logo, SocialMedia } from "@/components";
 import { Disclaimer } from "@/components/Disclaimer";
 import { Navigation, UserSignOut } from "@/modules/home/components";
-import { Header } from "@/modules/login/components";
 import { ROUTES } from "@/router/routes";
 import {
   Box,

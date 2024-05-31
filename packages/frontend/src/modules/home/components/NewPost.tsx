@@ -58,28 +58,10 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
           onChange={(e) => setPostContent(e.target.value)}
           border="none"
           borderRadius="0"
-          // bg="background.600"
           borderBottom="2px solid"
           borderBottomColor="background.400"
           variant="unstyled"
         />
-        {/* <Textarea
-          // w="100%"
-          minH="24"
-          resize="none"
-          // resize="vertical"
-          overflow="auto"
-          placeholder="Share your thoughts"
-          _placeholder={{
-            color: "text.400"
-          }}
-          border="none"
-          borderRadius="0"
-          // bg="background.600"
-          borderBottom="2px solid"
-          borderBottomColor="background.400"
-          
-        /> */}
       </Flex>
       <Button
         variant="primary"
