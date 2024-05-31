@@ -63,6 +63,7 @@ export const HomeRoot = () => {
         </Box>
         {isLargerThanLg && (
           <VStack
+            as="aside"
             position="sticky"
             top="1em"
             w="30%"
