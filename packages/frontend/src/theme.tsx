@@ -118,10 +118,10 @@ const components = {
         px: "0",
         _hover: {
           color: "text.100"
-        },
-        _focus: {
-          color: "text.100"
         }
+        // _focus: {
+        //   color: "text.100"
+        // }
       }
       // secondary: () => ({
       //   border: "2px solid",
