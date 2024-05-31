@@ -1,3 +1,4 @@
+import { AutoResizeTextarea } from "@/components";
 import { BaseServerStateKeys } from "@/constants";
 import { useMutableServerState } from "@/hooks";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
@@ -26,9 +27,10 @@ export const NewPost = () => {
   };
 
   return (
-    <VStack
+    <Flex
+      direction="column"
       align="start"
-      spacing="2em"
+      gap="2em"
       w="100%"
       h="max-content"
       bg="background.700"
@@ -36,24 +38,42 @@ export const NewPost = () => {
       // outline="1px solid red"
       p="1.5em"
     >
-      <Flex align="center" gap="1em" w="100%">
+      <Flex align="start" gap="1.5em" w="100%">
         <Avatar
           name="U N"
           // src="https://bit.ly/sage-adebayo"
           bg="background.600"
           color="brand.500"
         />
+        <AutoResizeTextarea
+          placeholder="Share your thoughts"
+          value={postContent}
+          onChange={(e) => setPostContent(e.target.value)}
+          border="none"
+          borderRadius="0"
+          // bg="background.600"
+          borderBottom="2px solid"
+          borderBottomColor="background.400"
+          variant="unstyled"
+        />
+        {/* <Textarea
+          // w="100%"
+          minH="24"
+          resize="none"
+          // resize="vertical"
+          overflow="auto"
+          placeholder="Share your thoughts"
+          _placeholder={{
+            color: "text.400"
+          }}
+          border="none"
+          borderRadius="0"
+          // bg="background.600"
+          borderBottom="2px solid"
+          borderBottomColor="background.400"
+          
+        /> */}
       </Flex>
-      <Textarea
-        // w="100%"
-        placeholder="Share your thoughts"
-        border="none"
-        borderRadius="0"
-        borderBottom="2px solid"
-        borderBottomColor="background.800"
-        value={postContent}
-        onChange={(e) => setPostContent(e.target.value)}
-      />
       <Button
         variant="primary"
         size="md"
@@ -63,6 +83,6 @@ export const NewPost = () => {
       >
         Post
       </Button>
-    </VStack>
+    </Flex>
   );
 };
