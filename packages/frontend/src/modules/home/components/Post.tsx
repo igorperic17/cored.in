@@ -81,15 +81,19 @@ export const Post: React.FC<PostProps> = ({ post }) => {
       //   border="1px solid red"
       p="1.5em"
     >
-      <Flex align="center" gap="1em" maxW="100%">
+      <Flex
+        align="center"
+        gap="1em"
+        w="100%"
+        // border="1px solid red"
+      >
         <Avatar
           name="U N"
           // src="https://bit.ly/sage-adebayo"
           bg="background.600"
           color="brand.500"
         />
-        <Flex
-          direction="column"
+        <Box
           maxW="50%"
           textOverflow={"ellipsis"}
           whiteSpace="nowrap"
@@ -99,21 +103,24 @@ export const Post: React.FC<PostProps> = ({ post }) => {
             @username
             {/* {post.creatorWallet} */}
           </Text>
-        </Flex>
-        <Menu>
+        </Box>
+        <Menu offset={[-105, -10]}>
           <MenuButton
             as={IconButton}
             variant="empty"
-            aria-label="See menu."
             color="text.400"
-            alignSelf="start"
-            ml="auto"
+            aria-label="See menu."
             icon={<FaEllipsis fontSize="1.5rem" />}
             size="lg"
             isLoading={isDeleting}
+            ml="auto"
           />
           <MenuList>
-            <MenuItem onClick={handleDelete} icon={<FaTrash color="red" />}>
+            <MenuItem
+              onClick={handleDelete}
+              // border="1px solid red"
+              icon={<FaTrash color="red" />}
+            >
               <Text as="span" color="red">
                 Delete
               </Text>
@@ -133,7 +140,7 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           // color={"text.400"}
           leftIcon={<FaRegHeart fontSize="1.25rem" />}
           onClick={handleLike}
-          isLoading={isLiking}
+          // isLoading={isLiking}
         >
           {post.likes}
         </Button>
