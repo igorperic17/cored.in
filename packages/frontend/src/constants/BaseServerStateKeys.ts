@@ -4,6 +4,7 @@ export enum BaseServerStateKeys {
   FEED = "feed",
   USER_FEED = "user_feed",
   PUBLISH = "publish",
+  POST = "post",
   LIKE_POST = "like_post",
   DELETE_POST = "delete_post"
 }

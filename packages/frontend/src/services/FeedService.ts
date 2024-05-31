@@ -1,8 +1,12 @@
 import { HttpService } from "@/services";
-import { CreatePostDTO, PostDTO } from "@coredin/shared";
+import { CreatePostDTO, PostDTO, PostDetailDTO } from "@coredin/shared";
 
 export class FeedService {
   constructor(private readonly http: HttpService) {}
+
+  async get(id: number): Promise<PostDetailDTO> {
+    return this.http.get("posts/" + id);
+  }
 
   async getFeed(): Promise<PostDTO[]> {
     return this.http.get("posts");

@@ -6,7 +6,8 @@ import {
   PrimaryGeneratedColumn,
   Index,
   ManyToOne,
-  JoinColumn
+  JoinColumn,
+  OneToMany
 } from "typeorm";
 
 @Entity("posts")
@@ -34,10 +35,20 @@ export class Post {
   @Column({ default: 0 })
   likes: number;
 
+  // TODO - add reply count??
+
   @Column({ nullable: true })
   replyToPostId: number;
 
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: "creatorWallet", referencedColumnName: "wallet" })
   user: User;
+
+  @ManyToOne(() => Post, (post) => post.replies)
+  @JoinColumn({ name: "replyToPostId" })
+  parent: Post;
+
+  @OneToMany(() => Post, (post) => post.parent)
+  @JoinColumn({ name: "replyToPostId" })
+  replies: Post[];
 }

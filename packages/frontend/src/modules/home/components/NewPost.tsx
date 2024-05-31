@@ -7,7 +7,11 @@ import { CreatePostDTO, PostVisibility } from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-export const NewPost = () => {
+export type NewPostProps = {
+  replyToPostId?: number;
+};
+
+export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
   const queryClient = useQueryClient();
   const [postContent, setPostContent] = useState("");
   const { mutateAsync, isPending } = useMutableServerState(
@@ -17,11 +21,14 @@ export const NewPost = () => {
   const handlePost = async () => {
     const post: CreatePostDTO = {
       text: postContent,
-      visibility: PostVisibility.PUBLIC
+      visibility: PostVisibility.PUBLIC,
+      replyToPostId
     };
     await mutateAsync({ post });
     await queryClient.invalidateQueries({
-      queryKey: [BaseServerStateKeys.FEED]
+      queryKey: replyToPostId
+        ? [BaseServerStateKeys.POST] // todo - handle single post refresh!
+        : [BaseServerStateKeys.FEED]
     });
     setPostContent("");
   };

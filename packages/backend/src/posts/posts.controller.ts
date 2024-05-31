@@ -15,6 +15,11 @@ export class PostsController {
     return this.postsService.getPublic();
   }
 
+  @Get(":id")
+  async getPost(@TypedParam("id") id: number) {
+    return this.postsService.get(id);
+  }
+
   @Get(":owner")
   async getOwn(
     @Param("owner") owner: string,

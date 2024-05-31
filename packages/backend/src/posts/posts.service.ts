@@ -1,8 +1,13 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ArrayContains, Repository } from "typeorm";
+import { ArrayContains, IsNull, Repository } from "typeorm";
 import { Post } from "./post.entity";
-import { CreatePostDTO, PostDTO, PostVisibility } from "@coredin/shared";
+import {
+  CreatePostDTO,
+  PostDTO,
+  PostDetailDTO,
+  PostVisibility
+} from "@coredin/shared";
 import { User } from "@/user/user.entity";
 
 @Injectable()
@@ -14,11 +19,27 @@ export class PostsService {
     private readonly postRepository: Repository<Post>
   ) {}
 
+  async get(id: number): Promise<PostDetailDTO> {
+    const postWithReplies = await this.postRepository.findOne({
+      relations: ["user", "replies", "replies.user"],
+      where: { id, visibility: PostVisibility.PUBLIC },
+      order: { createdAt: "DESC" }
+    });
+    if (!postWithReplies) {
+      throw new NotFoundException("Post not found");
+    }
+
+    return {
+      ...this.fromDb(postWithReplies),
+      replies: postWithReplies.replies.map(this.fromDb)
+    };
+  }
+
   async getPublic(): Promise<PostDTO[]> {
     return (
       await this.postRepository.find({
         relations: ["user"],
-        where: { visibility: PostVisibility.PUBLIC },
+        where: { visibility: PostVisibility.PUBLIC, replyToPostId: IsNull() },
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));
@@ -28,7 +49,11 @@ export class PostsService {
     return (
       await this.postRepository.find({
         relations: ["user"],
-        where: { visibility: PostVisibility.PUBLIC, creatorWallet },
+        where: {
+          visibility: PostVisibility.PUBLIC,
+          creatorWallet,
+          replyToPostId: IsNull()
+        },
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));
@@ -38,7 +63,7 @@ export class PostsService {
     return (
       await this.postRepository.find({
         relations: ["user"],
-        where: { creatorWallet },
+        where: { creatorWallet, replyToPostId: IsNull() },
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));

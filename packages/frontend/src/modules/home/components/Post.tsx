@@ -1,10 +1,7 @@
-import {
-  useAuth,
-  useLoggedInServerState,
-  useMutableServerState
-} from "@/hooks";
+import { useLoggedInServerState, useMutableServerState } from "@/hooks";
 import { USER_QUERIES } from "@/queries";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
+import { FEED_QUERIES } from "@/queries/FeedQueries";
 import {
   Avatar,
   Box,
@@ -30,6 +27,7 @@ import {
   FaRetweet,
   FaTrash
 } from "react-icons/fa6";
+import { NewPost } from "./NewPost";
 
 export type PostProps = {
   post: PostDTO;
@@ -44,14 +42,18 @@ export const Post: React.FC<PostProps> = ({ post }) => {
   const { mutateAsync: deletePost, isPending: isDeleting } =
     useMutableServerState(FEED_MUTATIONS.deletePost());
   const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const { needsAuth } = useAuth();
   const { data: userProfile } = useLoggedInServerState(
-    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
+    USER_QUERIES.getUser(chainContext.address || ""),
     { enabled: !!chainContext.address }
   );
+
   const [isLiked, setIsLiked] = React.useState(
     userProfile?.likedPosts.includes(post.id) || false
   );
+
+  const [opened, setOpened] = React.useState(false);
+  const { data: postDetail, isLoading: isDetailLoading } =
+    useLoggedInServerState(FEED_QUERIES.get(post.id), { enabled: opened });
 
   useEffect(() => {
     setIsLiked(userProfile?.likedPosts.includes(post.id) || false);
@@ -61,6 +63,10 @@ export const Post: React.FC<PostProps> = ({ post }) => {
     await like({ postId: post.id, liked: !isLiked }).then(() => {
       queryClient.invalidateQueries();
     });
+  };
+
+  const handleComment = async () => {
+    setOpened(!opened);
   };
 
   const handleDelete = async () => {
@@ -148,10 +154,12 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           variant="empty"
           aria-label="Add comment."
           fontSize="1rem"
-          color="text.400"
+          color={opened ? theme.colors.brand["500"] : "text.400"}
           leftIcon={<FaComment fontSize="1.25rem" />}
+          onClick={handleComment}
+          isLoading={isDetailLoading}
         >
-          3
+          {postDetail?.replies.length}
         </Button>
         <Button
           variant="empty"
@@ -163,6 +171,10 @@ export const Post: React.FC<PostProps> = ({ post }) => {
           1
         </Button>
       </Flex>
+      {opened && <NewPost replyToPostId={post.id} />}
+      {opened &&
+        postDetail &&
+        postDetail.replies.map((reply) => <Post key={reply.id} post={reply} />)}
     </VStack>
   );
 };
