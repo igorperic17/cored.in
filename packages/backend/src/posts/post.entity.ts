@@ -35,16 +35,18 @@ export class Post {
   @Column({ default: 0 })
   likes: number;
 
-  // TODO - add reply count??
-
   @Column({ nullable: true })
+  @Index()
   replyToPostId: number;
 
   @ManyToOne(() => User, (user) => user.posts)
   @JoinColumn({ name: "creatorWallet", referencedColumnName: "wallet" })
   user: User;
 
-  @ManyToOne(() => Post, (post) => post.replies)
+  @ManyToOne(() => Post, (post) => post.replies, {
+    nullable: true,
+    createForeignKeyConstraints: false
+  })
   @JoinColumn({ name: "replyToPostId" })
   parent: Post;
 
