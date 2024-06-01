@@ -1,10 +1,11 @@
+import { ROUTES } from "@/router/routes";
 import { FaGear, FaHouse, FaPaperPlane, FaUser } from "react-icons/fa6";
 
 export const navigationData = [
   {
     title: "home",
     icon: FaHouse,
-    link: "#"
+    link: ROUTES.HOME.path
   },
   {
     title: "messages",

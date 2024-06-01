@@ -12,7 +12,12 @@ import {
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import { Navigate, Outlet, ScrollRestoration } from "react-router-dom";
+import {
+  Navigate,
+  Outlet,
+  ScrollRestoration,
+  useLocation
+} from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 export const HomeRoot = () => {
@@ -20,9 +25,12 @@ export const HomeRoot = () => {
   const [isLargerThanLg] = useMediaQuery(
     `(min-width: ${theme.breakpoints.lg})`
   );
+  const location = useLocation();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   if (!chainContext.isWalletConnected) {
-    return <Navigate to={ROUTES.LOGIN.path} />;
+    return (
+      <Navigate to={ROUTES.LOGIN.path + "?redirect=" + location.pathname} />
+    );
   }
 
   return (

@@ -21,7 +21,7 @@ export class PostsService {
 
   async get(id: number): Promise<PostDetailDTO> {
     const postWithReplies = await this.postRepository.findOne({
-      relations: ["user", "replies", "replies.user"],
+      relations: ["user", "parent", "parent.user", "replies", "replies.user"],
       where: { id, visibility: PostVisibility.PUBLIC },
       order: { createdAt: "DESC" }
     });
@@ -31,6 +31,9 @@ export class PostsService {
 
     return {
       ...this.fromDb(postWithReplies),
+      parent: postWithReplies.parent
+        ? this.fromDb(postWithReplies.parent)
+        : undefined,
       replies: postWithReplies.replies.map(this.fromDb)
     };
   }

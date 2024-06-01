@@ -2,6 +2,7 @@ export * from "./RegisteredProfile";
 export * from "./RequireWalletConnection";
 export * from "./Feed";
 export * from "./Post";
+export * from "./PostContent";
 export * from "./NewPost";
 export * from "./Navigation";
 export * from "./UserSignOut";

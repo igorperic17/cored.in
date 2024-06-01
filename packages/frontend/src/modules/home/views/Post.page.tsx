@@ -1,4 +1,4 @@
-import { Box, VStack } from "@chakra-ui/react";
+import { Box, Text, VStack } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { Post } from "../components";
 import { useLoggedInServerState } from "@/hooks";
@@ -15,6 +15,7 @@ export const PostPage = () => {
 
   return (
     <Box mx="auto" maxW="1200px" pt="1.5em" mb="32">
+      {!postDetail && <Text>Post not found...</Text>}
       <VStack px="2em">{postDetail && <Post post={postDetail} />}</VStack>
     </Box>
   );

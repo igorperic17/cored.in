@@ -7,13 +7,13 @@ import { RequireWalletConnection } from "../../home/components";
 import { Spinner } from "@chakra-ui/spinner";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useChain } from "@cosmos-kit/react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useSearchParams } from "react-router-dom";
 import { NotRegisteredProfile } from ".";
 import { ROUTES } from "@/router/routes";
 
 export const Profile = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
-  // chainContext.isWalletConnected; // this shows if the user is connected
+  const [queryParams] = useSearchParams();
   const coredinClient = useContext(CoredinClientContext);
   const { needsAuth } = useAuth();
   const { data: userProfile, isLoading } = useLoggedInServerState(
@@ -92,7 +92,7 @@ export const Profile = () => {
         />
       )}
       {onchainProfile && chainContext.isWalletConnected && (
-        <Navigate to={ROUTES.HOME.path} />
+        <Navigate to={queryParams.get("redirect") ?? ROUTES.HOME.path} />
       )}
     </Box>
   );
