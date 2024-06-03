@@ -14,6 +14,31 @@ export class WaltIdWalletService {
     return (await this.getDids(wallet)).find((did) => did.default) || dids[0];
   }
 
+  async getVCs(wallet: string) {
+    const token = await this.getAuthToken(wallet, wallet);
+    const wallets = await this.getWallets(wallet, token);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallets.wallets[0].id}/credentials`;
+    const response = await axios.get(targetUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+    return response.data;
+  }
+
+  async useOfferRequest(wallet: string, offerRequest: string) {
+    const token = await this.getAuthToken(wallet, wallet);
+    const wallets = await this.getWallets(wallet, token);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallets.wallets[0].id}/exchange/useOfferRequest?requireUserInput=false`;
+    const offerResponse = await axios.post(targetUrl, offerRequest, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    return offerResponse.data;
+  }
+
   async getDids(wallet: string): Promise<Did[]> {
     const token = await this.getAuthToken(wallet, wallet);
     const wallets = await this.getWallets(wallet, token);
@@ -43,7 +68,7 @@ export class WaltIdWalletService {
     return createResponse.data;
   }
 
-  async getWallets(
+  private async getWallets(
     wallet: string,
     token?: string
   ): Promise<{ wallets: Wallet[] }> {
