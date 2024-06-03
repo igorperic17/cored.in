@@ -13,3 +13,7 @@ db:
 wallet:
   api:
     url: 'http://localhost:7001'
+
+issuer:
+  api:
+    url: 'http://localhost:7002'
