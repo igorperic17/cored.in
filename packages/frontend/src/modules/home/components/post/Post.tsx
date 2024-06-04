@@ -69,7 +69,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
       w="100%"
       h="max-content"
       //   border="1px solid red"
-      p="1.5em"
+      p="1.125em"
       layerStyle="cardBox"
     >
       {postDetail?.parent && (

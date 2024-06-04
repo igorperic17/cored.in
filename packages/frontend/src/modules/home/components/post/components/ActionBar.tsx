@@ -1,5 +1,5 @@
 import { ROUTES } from "@/router/routes";
-import { Button, Flex } from "@chakra-ui/react";
+import { Button, Flex, IconButton } from "@chakra-ui/react";
 import { FC } from "react";
 import {
   FaEye,
@@ -32,30 +32,30 @@ export const ActionBar: FC<PostActionBarProps> = ({
 }) => {
   return (
     <Flex w="100%" justify="space-around">
-      <Button
+      <IconButton
+        icon={<FaRegComment fontSize="1.25rem" />}
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
         color={opened ? "text.100" : "text.400"}
-        leftIcon={<FaRegComment fontSize="1.25rem" />}
         onClick={handleComment}
         isLoading={isDetailLoading}
       />
-      <Button
+      <IconButton
         as={ReactRouterLink}
+        icon={<FaEye fontSize="1.25rem" />}
         to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
         color={"text.400"}
-        leftIcon={<FaEye fontSize="1.25rem" />}
       />
-      <Button
+      <IconButton
+        icon={<FaRetweet fontSize="1.5rem" />}
         variant="empty"
         aria-label="Repost."
         size="1rem"
         color="text.400"
-        leftIcon={<FaRetweet fontSize="1.5rem" />}
       />
       <Button
         variant="empty"

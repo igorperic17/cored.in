@@ -10,7 +10,7 @@ const HomePage = () => {
   // chainContext.isWalletConnected; // this shows if the user is connected
 
   return (
-    <VStack spacing="1.5em" maxW="600px" mx="auto">
+    <VStack spacing="1.5em" maxW="600px">
       <NewPost />
       <Feed />
     </VStack>

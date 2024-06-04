@@ -37,14 +37,14 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
     <Flex
       direction="column"
       align="start"
-      gap="2em"
+      gap="1.125em"
       w="100%"
       h="max-content"
       layerStyle="cardBox"
       // outline="1px solid red"
-      p="1.5em"
+      p="1.125em"
     >
-      <Flex align="start" gap="1.5em" w="100%">
+      <Flex align="start" gap="1.125em" w="100%">
         <Avatar
           name="U N"
           // src="https://bit.ly/sage-adebayo"

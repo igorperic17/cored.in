@@ -4,11 +4,11 @@ export const Disclaimer = () => {
   return (
     <Text
       color="text.400"
-      fontSize={{ base: "0.875rem", md: "1rem" }}
+      textStyle="sm"
       mt="auto"
       mx="auto"
       py="2em"
-      px={{ base: "1em", md: "2.5em", lg: "3.5em", xl: "4em" }}
+      px={{ base: "1em", md: "2.5em", lg: "3.5em" }}
       textAlign="center"
       maxW="1100px"
     >

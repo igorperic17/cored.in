@@ -1,4 +1,4 @@
-import { Flex, Box, Text } from "@chakra-ui/layout";
+import { Flex, Box, Text, VStack } from "@chakra-ui/layout";
 import React from "react";
 import { PostDTO } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
@@ -20,7 +20,7 @@ export const Content: React.FC<PostContentProps> = ({
     <>
       <Flex
         align="center"
-        gap="1em"
+        gap="1.125em"
         w="100%"
         // border="1px solid red"
       >
@@ -65,19 +65,19 @@ export const Content: React.FC<PostContentProps> = ({
           </MenuList>
         </Menu>
       </Flex>
-      <Box>
+      <VStack align="start" spacing="1.5em">
         <Text color="text.100" textStyle="md">
           {post.text}
         </Text>
-      </Box>
-      {/* to add dateTime later */}
-      <Text as="time" dateTime="" color="text.400" textStyle="sm">
-        14:34 PM
-        <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
-          {"    •    "}
+        {/* to add dateTime later */}
+        <Text as="time" dateTime="" color="text.400" textStyle="sm">
+          14:34 PM
+          <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
+            {"    •    "}
+          </Text>
+          Jun 4, 2024
         </Text>
-        Jun 4, 2024
-      </Text>
+      </VStack>
     </>
   );
 };
