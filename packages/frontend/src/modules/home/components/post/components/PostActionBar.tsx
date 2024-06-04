@@ -1,7 +1,13 @@
 import { ROUTES } from "@/router/routes";
-import { Button, Flex, useTheme } from "@chakra-ui/react";
+import { Button, Flex } from "@chakra-ui/react";
 import { FC } from "react";
-import { FaComment, FaEye, FaRegHeart, FaRetweet } from "react-icons/fa6";
+import {
+  FaEye,
+  FaHeart,
+  FaRegComment,
+  FaRegHeart,
+  FaRetweet
+} from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { PostDTO } from "@coredin/shared";
 
@@ -24,16 +30,14 @@ export const PostActionBar: FC<PostActionBarProps> = ({
   handleLike,
   isLiking
 }) => {
-  const theme = useTheme();
-
   return (
     <Flex w="100%" justify="space-around">
       <Button
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
-        color={opened ? theme.colors.brand["500"] : "text.400"}
-        leftIcon={<FaComment fontSize="1.25rem" />}
+        color={opened ? "text.100" : "text.400"}
+        leftIcon={<FaRegComment fontSize="1.25rem" />}
         onClick={handleComment}
         isLoading={isDetailLoading}
       />
@@ -57,9 +61,14 @@ export const PostActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Like the post."
         size="1rem"
-        color={isLiked ? theme.colors.brand["500"] : "text.400"}
-        // color={"text.400"}
-        leftIcon={<FaRegHeart fontSize="1.25rem" />}
+        color={isLiked ? "brand.500" : "text.400"}
+        leftIcon={
+          isLiked ? (
+            <FaHeart fontSize="1.25rem" />
+          ) : (
+            <FaRegHeart fontSize="1.25rem" />
+          )
+        }
         onClick={handleLike}
         isLoading={isLiking}
       >
