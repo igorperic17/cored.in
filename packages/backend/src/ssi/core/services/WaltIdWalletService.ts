@@ -9,27 +9,26 @@ export class WaltIdWalletService {
     if (dids.length > 0) {
       return dids.find((did) => did.default) || dids[0];
     }
-
     await this.createDid(wallet);
+
     return (await this.getDids(wallet)).find((did) => did.default) || dids[0];
   }
 
   async getVCs(wallet: string) {
-    const token = await this.getAuthToken(wallet, wallet);
-    const wallets = await this.getWallets(wallet, token);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallets.wallets[0].id}/credentials`;
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials`;
     const response = await axios.get(targetUrl, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
+
     return response.data;
   }
 
   async useOfferRequest(wallet: string, offerRequest: string) {
-    const token = await this.getAuthToken(wallet, wallet);
-    const wallets = await this.getWallets(wallet, token);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallets.wallets[0].id}/exchange/useOfferRequest?requireUserInput=false`;
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/exchange/useOfferRequest?requireUserInput=false`;
     const offerResponse = await axios.post(targetUrl, offerRequest, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -39,22 +38,54 @@ export class WaltIdWalletService {
     return offerResponse.data;
   }
 
+  async usePresentationRequest(wallet: string, offerRequest: string) {
+    const { presentationDefinition, state } =
+      await this.decodePresentationURL(offerRequest);
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const matchResponse = await this.matchCredentialsForPresentationDefinition(
+      presentationDefinition,
+      ssiWallet,
+      token
+    );
+    const resolvedData = await this.resolvePresentationRequest(
+      offerRequest,
+      ssiWallet,
+      token
+    );
+
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/exchange/usePresentationRequest`;
+    await axios.post(
+      targetUrl,
+      {
+        did: matchResponse[0].parsedDocument.credentialSubject.id,
+        presentationRequest: resolvedData,
+        selectedCredentials: [matchResponse[0].id]
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    return state;
+  }
+
   async getDids(wallet: string): Promise<Did[]> {
-    const token = await this.getAuthToken(wallet, wallet);
-    const wallets = await this.getWallets(wallet, token);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallets.wallets[0].id}/dids`;
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids`;
     const didsResponse = await axios.get(targetUrl, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
+
     return didsResponse.data;
   }
 
   async createDid(wallet: string) {
-    const token = await this.getAuthToken(wallet, wallet);
-    const wallets = await this.getWallets(wallet, token);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallets.wallets[0].id}/dids/create/key`;
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids/create/key`;
     const createResponse = await axios.post(
       targetUrl,
       {},
@@ -66,6 +97,66 @@ export class WaltIdWalletService {
     );
 
     return createResponse.data;
+  }
+
+  private async decodePresentationURL(offerURL: string): Promise<{
+    presentationDefinition: string;
+    state: string;
+  }> {
+    // Create URL object
+    const url = new URL(offerURL);
+
+    const state = url.searchParams.get("state");
+    if (!state) {
+      throw new Error("Invalid offerURL: state query parameter not found");
+    }
+
+    // Get `presentation_definition_uri` query parameter
+    const offerParam = url.searchParams.get("presentation_definition_uri");
+    if (!offerParam) {
+      throw new Error(
+        "Invalid offerURL: presentation_definition_uri query parameter not found"
+      );
+    }
+
+    // Resolve the URL and get the result
+    const response = await axios.get(offerParam);
+
+    return { presentationDefinition: response.data, state };
+  }
+
+  private async matchCredentialsForPresentationDefinition(
+    definition: unknown,
+    wallet: string,
+    token: string
+  ) {
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${wallet}/exchange/matchCredentialsForPresentationDefinition`;
+    const response = await axios.post(targetUrl, definition, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    if (response.data.length === 0) {
+      throw new Error("No valid credentials found for presentation request");
+    }
+
+    return response.data;
+  }
+
+  private async resolvePresentationRequest(
+    offerRequest: string,
+    ssiWallet: string,
+    token: string
+  ) {
+    const resolveUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/exchange/resolvePresentationRequest`;
+    const resolveResponse = await axios.post(resolveUrl, offerRequest, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    return resolveResponse.data;
   }
 
   private async getWallets(
@@ -132,5 +223,13 @@ export class WaltIdWalletService {
 
         return false;
       });
+  }
+
+  private async getSsiWallet(wallet: string) {
+    const token = await this.getAuthToken(wallet, wallet);
+    const wallets = await this.getWallets(wallet, token);
+    const ssiWallet = wallets.wallets[0].id;
+
+    return { token, ssiWallet };
   }
 }
