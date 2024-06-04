@@ -7,8 +7,7 @@ import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
-import { NewPost } from "./NewPost";
-import { PostContent } from "./PostContent";
+import { NewPost, PostContent } from ".";
 
 export type PostProps = {
   post: PostDTO;

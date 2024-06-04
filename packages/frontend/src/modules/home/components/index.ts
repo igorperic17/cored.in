@@ -6,3 +6,4 @@ export * from "./PostContent";
 export * from "./NewPost";
 export * from "./Navigation";
 export * from "./UserSignOut";
+export * from "./PostActionBar";
