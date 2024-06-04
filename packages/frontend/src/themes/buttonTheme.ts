@@ -6,7 +6,13 @@ const baseStyle = defineStyle({
 
 const sizes = defineStyle({
   xs: {
-    fontSize: { base: "0.75em", md: "0.825rem" }
+    fontSize: { base: "0.75em", md: "0.875rem" }
+  },
+  sm: {
+    fontSize: { base: "0.875rem", md: "1rem" },
+    borderRadius: "1em",
+    px: "1.5em",
+    py: "0.5em"
   },
   md: {
     fontSize: { base: "1rem", md: "1.125rem" },

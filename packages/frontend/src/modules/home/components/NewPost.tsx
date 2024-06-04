@@ -2,7 +2,7 @@ import { AutoResizeTextarea } from "@/components";
 import { BaseServerStateKeys } from "@/constants";
 import { useMutableServerState } from "@/hooks";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
-import { Avatar, Button, Flex, Text, Textarea, VStack } from "@chakra-ui/react";
+import { Avatar, Button, Flex } from "@chakra-ui/react";
 import { CreatePostDTO, PostVisibility } from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
@@ -55,16 +55,19 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
           placeholder="Share your thoughts"
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
-          border="none"
-          borderRadius="0"
-          borderBottom="2px solid"
-          borderBottomColor="background.400"
           variant="unstyled"
+          border="1px solid grey"
+          borderRadius="0.5em"
+          p="0.5em"
+          // border="none"
+          // borderRadius="0"
+          // borderBottom="2px solid"
+          // borderBottomColor="background.400"
         />
       </Flex>
       <Button
         variant="primary"
-        size="md"
+        size="sm"
         alignSelf="end"
         onClick={handlePost}
         isLoading={isPending}
