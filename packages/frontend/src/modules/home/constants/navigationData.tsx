@@ -15,7 +15,7 @@ export const navigationData = [
   {
     title: "profile",
     icon: FaUser, // maybe replace with a user avatar
-    link: "#"
+    link: ROUTES.USER.path
   },
   {
     title: "settings",
