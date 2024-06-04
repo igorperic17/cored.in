@@ -41,8 +41,12 @@ const primary = defineStyle({
     bg: "background.100",
     color: "text.900",
     _disabled: {
-      bg: "background.100"
+      bg: "background.400"
     }
+  },
+  _disabled: {
+    bg: "background.400",
+    color: "text.900"
   }
 });
 

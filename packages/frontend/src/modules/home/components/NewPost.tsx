@@ -71,6 +71,7 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
         alignSelf="end"
         onClick={handlePost}
         isLoading={isPending}
+        isDisabled={!postContent}
       >
         Post
       </Button>
