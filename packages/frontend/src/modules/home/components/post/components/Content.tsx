@@ -11,7 +11,7 @@ export type PostContentProps = {
   isDeleting: boolean;
 };
 
-export const PostContent: React.FC<PostContentProps> = ({
+export const Content: React.FC<PostContentProps> = ({
   post,
   handleDelete,
   isDeleting
@@ -36,7 +36,7 @@ export const PostContent: React.FC<PostContentProps> = ({
           whiteSpace="nowrap"
           overflow="hidden"
         >
-          <Text as="span" color="text.100">
+          <Text as="span" color="text.100" textStyle="sm">
             @username
             {/* {post.creatorWallet} */}
           </Text>
@@ -66,8 +66,18 @@ export const PostContent: React.FC<PostContentProps> = ({
         </Menu>
       </Flex>
       <Box>
-        <Text color="text.100">{post.text}</Text>
+        <Text color="text.100" textStyle="md">
+          {post.text}
+        </Text>
       </Box>
+      {/* to add dateTime later */}
+      <Text as="time" dateTime="" color="text.400" textStyle="sm">
+        14:34 PM
+        <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
+          {"    •    "}
+        </Text>
+        Jun 4, 2024
+      </Text>
     </>
   );
 };

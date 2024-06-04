@@ -8,7 +8,7 @@ import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { CreatePostDTO, PostVisibility } from "@coredin/shared";
 import { NewPostProps as NewReplyProps } from "../../NewPost";
 
-export const PostReply: FC<NewReplyProps> = ({ replyToPostId }) => {
+export const Reply: FC<NewReplyProps> = ({ replyToPostId }) => {
   const queryClient = useQueryClient();
   const [replyContent, setReplyContent] = useState("");
   const { mutateAsync, isPending } = useMutableServerState(

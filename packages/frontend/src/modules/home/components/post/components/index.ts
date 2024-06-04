@@ -1,3 +1,3 @@
-export { PostActionBar } from "./PostActionBar";
-export { PostContent } from "./PostContent";
-export { PostReply } from "./PostReply";
+export { ActionBar } from "./ActionBar";
+export { Content } from "./Content";
+export { Reply } from "./Reply";

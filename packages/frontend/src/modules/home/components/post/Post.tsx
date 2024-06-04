@@ -7,7 +7,7 @@ import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
-import { PostActionBar, PostContent, PostReply } from "./components";
+import { ActionBar, Content, Reply } from "./components";
 
 export type PostProps = {
   post: PostDTO;
@@ -84,12 +84,12 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
           This post is a reply to a post that has been deleted by its author
         </Text>
       )}
-      <PostContent
+      <Content
         post={post}
         isDeleting={isDeleting}
         handleDelete={handleDelete}
       />
-      <PostActionBar
+      <ActionBar
         post={post}
         opened={opened}
         isLiked={isLiked}
@@ -98,7 +98,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
         handleComment={handleComment}
         handleLike={handleLike}
       />
-      {opened && !isParent && <PostReply replyToPostId={post.id} />}
+      {opened && !isParent && <Reply replyToPostId={post.id} />}
       {opened &&
         postDetail &&
         postDetail.replies.map((reply) => <Post key={reply.id} post={reply} />)}

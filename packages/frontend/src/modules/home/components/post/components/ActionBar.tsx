@@ -21,7 +21,7 @@ type PostActionBarProps = {
   isLiking: boolean;
 };
 
-export const PostActionBar: FC<PostActionBarProps> = ({
+export const ActionBar: FC<PostActionBarProps> = ({
   post,
   opened,
   isLiked,
