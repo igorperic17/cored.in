@@ -17,3 +17,7 @@ wallet:
 issuer:
   api:
     url: 'http://localhost:7002'
+
+verifier:
+  api:
+    url: 'http://localhost:7003'
