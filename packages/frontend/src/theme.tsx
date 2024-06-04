@@ -6,7 +6,8 @@ import {
   inputTheme,
   layerStyles,
   menuTheme,
-  stepperTheme
+  stepperTheme,
+  textStyles
 } from "./themes";
 
 const fonts = {
@@ -40,10 +41,7 @@ const styles = {
     a: {
       textUnderlineOffset: "0.5em"
     },
-    p: {
-      fontSize: { base: "1rem", md: "1.25rem" },
-      lineHeight: "1.35"
-    }
+    p: textStyles.md
   }
 };
 
@@ -95,5 +93,6 @@ export const theme = extendTheme({
   colors,
   components,
   breakpoints,
-  layerStyles
+  layerStyles,
+  textStyles
 });
