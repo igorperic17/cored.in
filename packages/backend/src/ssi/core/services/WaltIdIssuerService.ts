@@ -4,7 +4,7 @@ export type IssuerInfo = {
   issuerDid: string;
   issuerKey: {
     type: string;
-    jwk: string;
+    jwk: unknown;
   };
 };
 
@@ -15,11 +15,11 @@ export class WaltIdIssuerService {
     const createIssuerKeyResult = await axios.post(
       `${this.issuerApiUrl}/onboard/issuer`,
       {
-        issuerKeyConfig: {
-          type: "jwk",
-          algorithm: "secp256r1"
+        key: {
+          backend: "jwk",
+          keyType: "secp256r1"
         },
-        issuerDidConfig: {
+        did: {
           method: "jwk"
         }
       }
@@ -53,7 +53,8 @@ export class WaltIdIssuerService {
   ): string {
     return JSON.stringify({
       ...issuerInfo,
-      vc: {
+      credentialConfigurationId: "UniversityDegree_jwt_vc_json",
+      credentialData: {
         "@context": [
           "https://www.w3.org/2018/credentials/v1",
           "https://www.w3.org/2018/credentials/examples/v1"
