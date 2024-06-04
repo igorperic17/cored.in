@@ -7,7 +7,7 @@ import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
-import { NewPost, PostContent } from ".";
+import { PostActionBar, PostContent, PostReply } from "./components";
 
 export type PostProps = {
   post: PostDTO;
@@ -86,16 +86,19 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
       )}
       <PostContent
         post={post}
+        isDeleting={isDeleting}
+        handleDelete={handleDelete}
+      />
+      <PostActionBar
+        post={post}
         opened={opened}
         isLiked={isLiked}
         isLiking={isLiking}
         isDetailLoading={isDetailLoading}
-        isDeleting={isDeleting}
         handleComment={handleComment}
-        handleDelete={handleDelete}
         handleLike={handleLike}
       />
-      {opened && !isParent && <NewPost replyToPostId={post.id} />}
+      {opened && !isParent && <PostReply replyToPostId={post.id} />}
       {opened &&
         postDetail &&
         postDetail.replies.map((reply) => <Post key={reply.id} post={reply} />)}

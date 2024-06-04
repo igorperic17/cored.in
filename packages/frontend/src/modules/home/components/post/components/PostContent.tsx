@@ -4,30 +4,17 @@ import { PostDTO } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
 import { Avatar, IconButton } from "@chakra-ui/react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
-import { PostActionBar } from "./PostActionBar";
 
 export type PostContentProps = {
   post: PostDTO;
-  opened: boolean;
-  isLiked: boolean;
-  isDetailLoading: boolean;
-  handleComment: () => void;
-  handleLike: () => void;
   handleDelete: () => void;
-  isLiking: boolean;
   isDeleting: boolean;
 };
 
 export const PostContent: React.FC<PostContentProps> = ({
   post,
-  opened,
-  isLiked,
-  isDetailLoading,
-  handleComment,
   handleDelete,
-  handleLike,
-  isDeleting,
-  isLiking
+  isDeleting
 }) => {
   return (
     <>
@@ -81,15 +68,6 @@ export const PostContent: React.FC<PostContentProps> = ({
       <Box>
         <Text color="text.100">{post.text}</Text>
       </Box>
-      <PostActionBar
-        post={post}
-        opened={opened}
-        isLiked={isLiked}
-        isLiking={isLiking}
-        isDetailLoading={isDetailLoading}
-        handleComment={handleComment}
-        handleLike={handleLike}
-      />
     </>
   );
 };

@@ -2,12 +2,20 @@ import { ROUTES } from "@/router/routes";
 import { Button, Flex, useTheme } from "@chakra-ui/react";
 import { FC } from "react";
 import { FaComment, FaEye, FaRegHeart, FaRetweet } from "react-icons/fa6";
-import { PostContentProps } from "./PostContent";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { PostDTO } from "@coredin/shared";
 
-export const PostActionBar: FC<
-  Omit<PostContentProps, "handleDelete" | "isDeleting">
-> = ({
+type PostActionBarProps = {
+  post: PostDTO;
+  opened: boolean;
+  isLiked: boolean;
+  isDetailLoading: boolean;
+  handleComment: () => void;
+  handleLike: () => void;
+  isLiking: boolean;
+};
+
+export const PostActionBar: FC<PostActionBarProps> = ({
   post,
   opened,
   isLiked,
