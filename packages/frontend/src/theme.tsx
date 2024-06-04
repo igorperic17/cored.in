@@ -1,7 +1,13 @@
 import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 import "@fontsource/noto-sans";
-import { inputTheme, layerStyles, menuTheme, stepperTheme } from "./themes";
+import {
+  buttonTheme,
+  inputTheme,
+  layerStyles,
+  menuTheme,
+  stepperTheme
+} from "./themes";
 
 const fonts = {
   heading: `'Space Grotesk', sans-serif`,
@@ -68,95 +74,7 @@ const colors = {
 };
 
 const components = {
-  Button: {
-    // 1. We can update the base styles
-    baseStyle: {
-      //fontWeight: 'bold', // Normally, it is "semibold"
-      textTransform: "uppercase"
-    },
-    sizes: {
-      xs: {
-        fontSize: { base: "0.75em", md: "0.825rem" }
-      },
-      md: {
-        fontSize: { base: "1rem", md: "1.125rem" },
-        px: "1.5em",
-        py: "0.5em",
-        borderRadius: "3xl"
-      },
-      xl: {
-        fontSize: "2rem",
-        px: "1.5em",
-        py: "0.5em",
-        borderRadius: "2em"
-      }
-    },
-    // 3. We can add a new visual variant
-    variants: {
-      primary: () => ({
-        bg: "brand.500",
-        color: "text.900",
-        // borderRadius: "3xl",
-        fontWeight: 600,
-        _loading: {
-          _hover: {
-            bg: "background.100"
-          }
-        },
-        _hover: {
-          bg: "background.100",
-          color: "text.900",
-          _disabled: {
-            bg: "background.100"
-          }
-        }
-      }),
-      empty: {
-        border: "none",
-        borderRadius: "0",
-        color: "brand.500",
-        px: "0",
-        _hover: {
-          color: "text.100"
-        }
-        // _focus: {
-        //   color: "text.100"
-        // }
-      }
-      // secondary: () => ({
-      //   border: "2px solid",
-      //   borderColor:
-      //     props.colorMode === "dark" ? "headingGrey" : "headingBlack",
-      //   color: props.colorMode === "dark" ? "white" : "headingBlack",
-      //   borderRadius: "3xl",
-      //   fontWeight: 600,
-      //   _hover: {
-      //     bg: "headingBlack",
-      //     color: "white"
-      //   }
-      // }
-      // })
-      // 'with-shadow': {
-      //   bg: 'teal.400',
-      //   boxShadow: '0 0 2px 2px #efdfde',
-      // },
-      // 4. We can override existing variants
-      // solid: (props: StyleFunctionProps) => ({
-      //   bg: props.colorMode === 'dark' ? 'blue.300' : 'teal.500',
-      // }),
-      // 5. We can add responsive variants
-      // sm: {
-      //   bg: 'teal.500',
-      //   fontSize: 'md',
-      // },
-    }
-    // 6. We can overwrite defaultProps
-    // defaultProps: {
-    //   size: 'lg', // default is md
-    //   variant: 'sm', // default is solid
-    //   colorScheme: 'blue', // default is gray
-    // },
-  },
+  Button: buttonTheme,
   Stepper: stepperTheme,
   Input: inputTheme,
   Menu: menuTheme
