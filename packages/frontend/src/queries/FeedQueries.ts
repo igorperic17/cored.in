@@ -10,8 +10,8 @@ export const FEED_QUERIES = {
     queryKey: [BaseServerStateKeys.FEED, needsAuth.toString()],
     queryFn: () => feedService.getFeed()
   }),
-  getUserFeed: (user: string, needsAuth: boolean) => ({
-    queryKey: [BaseServerStateKeys.USER_FEED, user, needsAuth.toString()],
+  getUserFeed: (user: string) => ({
+    queryKey: [BaseServerStateKeys.USER_FEED, user],
     queryFn: () => feedService.getUserFeed(user)
   })
 };

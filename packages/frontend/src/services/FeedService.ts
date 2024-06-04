@@ -13,7 +13,7 @@ export class FeedService {
   }
 
   async getUserFeed(user: string): Promise<PostDTO[]> {
-    return this.http.get("posts/" + user);
+    return this.http.get("posts/user/" + user);
   }
 
   async publish(createDTO: CreatePostDTO): Promise<void> {

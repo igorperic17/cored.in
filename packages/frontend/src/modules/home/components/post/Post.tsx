@@ -8,6 +8,7 @@ import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { ActionBar, Content, Reply } from "./components";
+import { NewPost } from "../NewPost";
 
 export type PostProps = {
   post: PostDTO;
@@ -34,7 +35,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
   const [opened, setOpened] = React.useState(isParent ?? false);
   const { data: postDetail, isLoading: isDetailLoading } =
     useLoggedInServerState(FEED_QUERIES.get(post.id), {
-      enabled: opened && !isParent
+      enabled: opened
     });
 
   useEffect(() => {
@@ -73,10 +74,11 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
       layerStyle="cardBox"
     >
       {postDetail?.parent && (
-        <Post
+        <Content
           post={postDetail.parent}
           key={postDetail.parent.id}
-          isParent={true}
+          // isParent={true}
+          // TODO - add ActionBar and revise this part
         />
       )}
       {postDetail && !postDetail.parent && post.replyToPostId && (
@@ -98,7 +100,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
         handleComment={handleComment}
         handleLike={handleLike}
       />
-      {opened && !isParent && <Reply replyToPostId={post.id} />}
+      {opened && !isParent && <NewPost replyToPostId={post.id} />}
       {opened &&
         postDetail &&
         postDetail.replies.map((reply) => <Post key={reply.id} post={reply} />)}

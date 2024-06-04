@@ -1,7 +1,7 @@
 import { ROUTES } from "@/router/routes";
 import { FaGear, FaHouse, FaPaperPlane, FaUser } from "react-icons/fa6";
 
-export const navigationData = [
+export const navigationData = (wallet: string) => [
   {
     title: "home",
     icon: FaHouse,
@@ -15,7 +15,7 @@ export const navigationData = [
   {
     title: "profile",
     icon: FaUser, // maybe replace with a user avatar
-    link: ROUTES.USER.path
+    link: ROUTES.USER.buildPath(wallet)
   },
   {
     title: "settings",

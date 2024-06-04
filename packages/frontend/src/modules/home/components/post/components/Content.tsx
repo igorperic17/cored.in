@@ -7,8 +7,8 @@ import { FaEllipsis, FaTrash } from "react-icons/fa6";
 
 export type PostContentProps = {
   post: PostDTO;
-  handleDelete: () => void;
-  isDeleting: boolean;
+  handleDelete?: () => void;
+  isDeleting?: boolean;
 };
 
 export const Content: React.FC<PostContentProps> = ({

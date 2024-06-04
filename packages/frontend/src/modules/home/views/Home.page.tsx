@@ -1,18 +1,19 @@
 import { VStack } from "@chakra-ui/react";
 import { Feed } from "../components/Feed";
-import { useChain } from "@cosmos-kit/react";
-import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { NewPost } from "../components";
+import { useAuth, useLoggedInServerState } from "@/hooks";
+import { FEED_QUERIES } from "@/queries/FeedQueries";
 
 const HomePage = () => {
-  const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const isUserConnected = chainContext.isWalletConnected;
-  // chainContext.isWalletConnected; // this shows if the user is connected
+  const { needsAuth } = useAuth();
+  const { data: posts } = useLoggedInServerState(
+    FEED_QUERIES.getFeed(needsAuth)
+  );
 
   return (
     <VStack spacing="1.5em" maxW="600px">
       <NewPost />
-      <Feed />
+      <Feed posts={posts || []} />
     </VStack>
   );
 };

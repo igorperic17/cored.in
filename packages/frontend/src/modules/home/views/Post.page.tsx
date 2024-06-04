@@ -8,15 +8,15 @@ export const PostPage = () => {
   const { wallet, id } = useParams();
   const { data: postDetail, isLoading: isDetailLoading } =
     useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0")));
-
   if (!id || !wallet) {
     return "This post does not exist.";
   }
+  console.log(postDetail);
 
   return (
     <Box maxW="600px">
-      {!postDetail && <Text>Post not found...</Text>}
       {postDetail && <Post post={postDetail} />}
+      {!postDetail && <Text>Post not found...</Text>}
     </Box>
   );
 };

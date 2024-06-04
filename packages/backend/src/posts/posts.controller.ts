@@ -20,7 +20,7 @@ export class PostsController {
     return this.postsService.get(id);
   }
 
-  @Get(":owner")
+  @Get("user/:owner")
   async getOwn(
     @Param("owner") owner: string,
     @Req() req: AuthenticatedRequest

@@ -57,11 +57,11 @@ export const HomeRoot = () => {
                 <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
               </Link>
             </Box>
-            <Navigation />
+            <Navigation wallet={chainContext.address || ""} />
             <UserSignOut />
           </VStack>
         ) : (
-          <Navigation />
+          <Navigation wallet={chainContext.address || ""} />
         )}
 
         <Box as="main" flex="2">

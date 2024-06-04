@@ -13,8 +13,13 @@ import {
   useTheme
 } from "@chakra-ui/react";
 import { FaTriangleExclamation } from "react-icons/fa6";
+import { FC } from "react";
 
-export const Navigation = () => {
+type NavigationProps = {
+  wallet: string;
+};
+
+export const Navigation: FC<NavigationProps> = ({ wallet }) => {
   const theme = useTheme();
   const [isLargerThanLg] = useMediaQuery(
     `(min-width: ${theme.breakpoints.lg})`
@@ -41,7 +46,7 @@ export const Navigation = () => {
         w="100%"
         // border="1px solid red"
       >
-        {navigationData.map((item, index) => (
+        {navigationData(wallet).map((item, index) => (
           <Flex
             as="li"
             key={`home-navigation-${index}`}
