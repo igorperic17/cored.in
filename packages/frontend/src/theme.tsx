@@ -1,7 +1,7 @@
 import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 import "@fontsource/noto-sans";
-import { inputTheme, menuTheme, stepperTheme } from "./themes";
+import { inputTheme, layerStyles, menuTheme, stepperTheme } from "./themes";
 
 const fonts = {
   heading: `'Space Grotesk', sans-serif`,
@@ -176,5 +176,6 @@ export const theme = extendTheme({
   styles,
   colors,
   components,
-  breakpoints
+  breakpoints,
+  layerStyles
 });

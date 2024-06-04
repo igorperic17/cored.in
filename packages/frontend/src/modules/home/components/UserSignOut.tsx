@@ -27,14 +27,7 @@ export const UserSignOut = () => {
   // and render dummmy NavigationDesktop or NavigationMobile that receive everything as props
 
   return (
-    <HStack
-      spacing="1em"
-      align="start"
-      bg="background.700"
-      borderRadius="0.5em"
-      p="2em"
-      w="100%"
-    >
+    <HStack spacing="1em" align="start" layerStyle="cardBox" p="2em" w="100%">
       <Icon as={FaIdCard} fontSize="1.5rem" />
       {/* <Avatar
             name="U N"

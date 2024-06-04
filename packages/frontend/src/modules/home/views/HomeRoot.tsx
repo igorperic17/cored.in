@@ -47,7 +47,7 @@ export const HomeRoot = () => {
       >
         {isLargerThanLg ? (
           <VStack spacing="1.25em" w="25%" position="sticky" top="1em">
-            <Box bg="background.700" borderRadius="0.5em" p="2em" w="100%">
+            <Box layerStyle="cardBox" p="2em" w="100%">
               <Link
                 as={ReactRouterLink}
                 to={ROUTES.ROOT.path}
@@ -75,8 +75,7 @@ export const HomeRoot = () => {
             top="1em"
             w="30%"
             h="max-content"
-            bg="background.700"
-            borderRadius="0.5em"
+            layerStyle="cardBox"
             pb="1.5em"
           >
             <Disclaimer />

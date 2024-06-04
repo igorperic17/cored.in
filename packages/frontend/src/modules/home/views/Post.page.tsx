@@ -14,9 +14,9 @@ export const PostPage = () => {
   }
 
   return (
-    <Box mx="auto" maxW="1200px" pt="1.5em" mb="32">
+    <Box maxW="600px" mx="auto">
       {!postDetail && <Text>Post not found...</Text>}
-      <VStack px="2em">{postDetail && <Post post={postDetail} />}</VStack>
+      {postDetail && <Post post={postDetail} />}
     </Box>
   );
 };

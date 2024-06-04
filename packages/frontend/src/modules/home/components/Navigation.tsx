@@ -26,7 +26,7 @@ export const Navigation = () => {
       w="100%"
       position={{ base: "fixed", lg: "static" }}
       bottom={{ base: "0", lg: "" }}
-      bg="background.700"
+      layerStyle="cardBox"
       borderRadius={{ base: "0", lg: "0.5em" }}
       p={{ base: "0", lg: "1em" }}
       zIndex="1"

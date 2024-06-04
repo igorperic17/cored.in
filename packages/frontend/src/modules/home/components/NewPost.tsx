@@ -40,8 +40,7 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
       gap="2em"
       w="100%"
       h="max-content"
-      bg="background.700"
-      borderRadius="0.5em"
+      layerStyle="cardBox"
       // outline="1px solid red"
       p="1.5em"
     >
