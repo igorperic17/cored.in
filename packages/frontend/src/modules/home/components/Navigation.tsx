@@ -1,4 +1,4 @@
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useLocation } from "react-router-dom";
 import { navigationData } from "../constants/navigationData";
 import {
   Box,
@@ -8,32 +8,26 @@ import {
   HStack,
   Icon,
   Link,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
   Modal,
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
-  ModalHeader,
   ModalOverlay,
   Text,
   useDisclosure,
   useMediaQuery,
   useTheme
 } from "@chakra-ui/react";
-import { FaEllipsis, FaTrash, FaTriangleExclamation } from "react-icons/fa6";
+import { FaTriangleExclamation } from "react-icons/fa6";
 import { FC } from "react";
-import { IconButton } from "@interchain-ui/react";
-import { Disclaimer } from "@/components";
+import { Disclaimer, SocialMedia } from "@/components";
 
 type NavigationProps = {
   wallet: string;
 };
 
 export const Navigation: FC<NavigationProps> = ({ wallet }) => {
+  const location = useLocation();
   const theme = useTheme();
   const [isLargerThanLg] = useMediaQuery(
     `(min-width: ${theme.breakpoints.lg})`
@@ -49,7 +43,6 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       layerStyle="cardBox"
       p={{ base: "0", lg: "1em" }}
       zIndex="1"
-      borderTop={{ base: "1px solid", lg: "none" }}
       // border="1px solid red"
     >
       <Grid
@@ -67,38 +60,28 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
             color="text.100"
             justify="center"
             align="center"
-            // border="1px solid white"
-            borderRadius="0.5em"
-
-            // p="1em"
           >
             <Link
               as={ReactRouterLink}
               to={item.link}
               fontSize="1.375rem"
               color="inherit"
-              w={{ base: "max-content", lg: "100%" }}
+              w={{ base: "100%", lg: "100%" }}
+              bg={location.pathname === item.link ? "background.600" : "none"}
+              borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
                 div: {
-                  background: "background.600"
+                  background: "background.600",
+                  borderRadius: "inherit"
                 }
-                // textDecoration: "none"
-              }}
-              _focus={{
-                div: {
-                  background: "background.600"
-                }
-                // outline: "none",
-                // textDecoration: "none"
               }}
             >
               <HStack
                 spacing="0.75em"
                 p="0.75em"
-                borderRadius="0.5em"
-                w={{ base: "max-content", lg: "100%" }}
+                w={{ base: "100%", lg: "100%" }}
               >
-                <Icon as={item.icon} />
+                <Icon as={item.icon} mx={{ base: "auto", lg: "0" }} />
                 {isLargerThanLg && (
                   <Text as="span">{`${item.title[0].toUpperCase()}${item.title.slice(1)}`}</Text>
                 )}
@@ -115,6 +98,8 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                 color="inherit"
                 onClick={onOpen}
                 p="1em"
+                w="100%"
+                h="100%"
               >
                 <Icon as={FaTriangleExclamation} fontSize="1.5rem" />
               </Button>
@@ -125,6 +110,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                 <ModalCloseButton color="text.100" />
                 <ModalBody layerStyle="cardBox">
                   <Disclaimer />
+                  <SocialMedia size="1.75rem" gap="2.25em" color="text.400" />
                 </ModalBody>
               </ModalContent>
             </Modal>
