@@ -9,7 +9,7 @@ export const SubscribeToProfile = () => {
       pb="1.75em"
       spacing="3em"
       boxShadow="0 0 15px 0px #7AF9B3"
-      my={{ base: "1em", lg: "none" }}
+      my={{ base: "1em", lg: "0" }}
     >
       <Text
         textStyle="lg"
