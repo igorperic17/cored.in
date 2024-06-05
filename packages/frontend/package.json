@@ -21,7 +21,7 @@
     "@chakra-ui/spinner": "^2.1.0",
     "@chakra-ui/system": "^2.6.2",
     "@coredin/shared": "workspace:^",
-    "@cosmjs/cosmwasm-stargate": "^0.28.4",
+    "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmos-kit/core": "^2.11.0",
     "@cosmos-kit/cosmostation": "^2.9.0",
     "@cosmos-kit/frontier": "^2.8.0",
