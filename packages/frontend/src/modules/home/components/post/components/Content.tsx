@@ -4,17 +4,30 @@ import { PostDTO } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
 import { Avatar, IconButton } from "@chakra-ui/react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
+import { ActionBar } from "./ActionBar";
 
 export type PostContentProps = {
   post: PostDTO;
   handleDelete?: () => void;
   isDeleting?: boolean;
+  opened: boolean;
+  isLiked: boolean;
+  isLiking: boolean;
+  isDetailLoading: boolean;
+  handleComment: () => void;
+  handleLike: () => void;
 };
 
 export const Content: React.FC<PostContentProps> = ({
   post,
   handleDelete,
-  isDeleting
+  isDeleting,
+  opened,
+  isLiked,
+  isLiking,
+  isDetailLoading,
+  handleComment,
+  handleLike
 }) => {
   return (
     <>
@@ -37,18 +50,45 @@ export const Content: React.FC<PostContentProps> = ({
           w="100%"
           // border="1px solid yellow"
         >
-          <Box
-            maxW="300px"
-            textOverflow={"ellipsis"}
-            whiteSpace="nowrap"
-            overflow="hidden"
-          >
-            <Text as="span" color="text.100" textStyle="md">
-              @username
-              {/* {post.creatorWallet} */}
-            </Text>
-          </Box>
-          <Text color="text.100" textStyle="sm">
+          <Flex justify="space-between" w="100%">
+            <Box
+              maxW={{ base: "190px" }}
+              textOverflow={"ellipsis"}
+              whiteSpace="nowrap"
+              overflow="hidden"
+            >
+              {/* recommended username width 12 characters */}
+              <Text as="span" color="text.100" textStyle="md">
+                @username
+                {/* {post.creatorWallet} */}
+              </Text>
+            </Box>
+            <Menu offset={[-105, -10]}>
+              <MenuButton
+                as={IconButton}
+                variant="empty"
+                color="text.400"
+                aria-label="See menu."
+                icon={<FaEllipsis fontSize="1.5rem" />}
+                size="lg"
+                isLoading={isDeleting}
+                ml="auto"
+                mt="-0.5em"
+              />
+              <MenuList>
+                <MenuItem
+                  onClick={handleDelete}
+                  // border="1px solid red"
+                  icon={<FaTrash color="red" />}
+                >
+                  <Text as="span" color="red">
+                    Delete
+                  </Text>
+                </MenuItem>
+              </MenuList>
+            </Menu>
+          </Flex>
+          <Text color="text.100" textStyle="sm" wordBreak="break-word">
             {post.text}
           </Text>
           {/* to add dateTime later */}
@@ -59,31 +99,16 @@ export const Content: React.FC<PostContentProps> = ({
             </Text>
             Jun 4, 2024
           </Text>
-        </VStack>
-        <Menu offset={[-105, -10]}>
-          <MenuButton
-            as={IconButton}
-            variant="empty"
-            color="text.400"
-            aria-label="See menu."
-            icon={<FaEllipsis fontSize="1.5rem" />}
-            size="lg"
-            isLoading={isDeleting}
-            ml="auto"
-            mt="-0.5em"
+          <ActionBar
+            post={post}
+            opened={opened}
+            isLiked={isLiked}
+            isLiking={isLiking}
+            isDetailLoading={isDetailLoading}
+            handleComment={handleComment}
+            handleLike={handleLike}
           />
-          <MenuList>
-            <MenuItem
-              onClick={handleDelete}
-              // border="1px solid red"
-              icon={<FaTrash color="red" />}
-            >
-              <Text as="span" color="red">
-                Delete
-              </Text>
-            </MenuItem>
-          </MenuList>
-        </Menu>
+        </VStack>
       </Flex>
     </>
   );

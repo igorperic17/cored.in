@@ -7,7 +7,7 @@ import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
-import { ActionBar, Content, Reply } from "./components";
+import { Content } from "./components";
 import { NewPost } from "../NewPost";
 
 export type PostProps = {
@@ -70,13 +70,22 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
       w="100%"
       h="max-content"
       //   border="1px solid red"
-      p="1.125em"
+      p="1em"
+      pb="0.25em"
       layerStyle="cardBox"
     >
       {postDetail?.parent && (
         <Content
           post={postDetail.parent}
           key={postDetail.parent.id}
+          isDeleting={isDeleting}
+          handleDelete={handleDelete}
+          opened={opened}
+          isLiked={isLiked}
+          isLiking={isLiking}
+          isDetailLoading={isDetailLoading}
+          handleComment={handleComment}
+          handleLike={handleLike}
           // isParent={true}
           // TODO - add ActionBar and revise this part
         />
@@ -90,9 +99,6 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
         post={post}
         isDeleting={isDeleting}
         handleDelete={handleDelete}
-      />
-      <ActionBar
-        post={post}
         opened={opened}
         isLiked={isLiked}
         isLiking={isLiking}

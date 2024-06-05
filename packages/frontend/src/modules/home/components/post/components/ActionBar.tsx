@@ -2,9 +2,9 @@ import { ROUTES } from "@/router/routes";
 import { Button, Flex, IconButton } from "@chakra-ui/react";
 import { FC } from "react";
 import {
-  FaEye,
   FaHeart,
   FaRegComment,
+  FaRegEye,
   FaRegHeart,
   FaRetweet
 } from "react-icons/fa6";
@@ -32,36 +32,11 @@ export const ActionBar: FC<PostActionBarProps> = ({
 }) => {
   return (
     <Flex
-      w="90%"
+      w="100%"
       ml="auto"
       justify="space-between"
-      // border="1px solid red
+      // border="1px solid red"
     >
-      <IconButton
-        icon={<FaRegComment fontSize="1.25rem" />}
-        variant="empty"
-        aria-label="Add comment."
-        fontSize="1rem"
-        color={opened ? "text.100" : "text.400"}
-        onClick={handleComment}
-        isLoading={isDetailLoading}
-      />
-      <IconButton
-        as={ReactRouterLink}
-        icon={<FaEye fontSize="1.25rem" />}
-        to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
-        variant="empty"
-        aria-label="Add comment."
-        fontSize="1rem"
-        color={"text.400"}
-      />
-      <IconButton
-        icon={<FaRetweet fontSize="1.5rem" />}
-        variant="empty"
-        aria-label="Repost."
-        size="1rem"
-        color="text.400"
-      />
       <Button
         variant="empty"
         aria-label="Like the post."
@@ -79,6 +54,33 @@ export const ActionBar: FC<PostActionBarProps> = ({
       >
         {post.likes}
       </Button>
+      <IconButton
+        icon={<FaRegComment fontSize="1.25rem" />}
+        variant="empty"
+        aria-label="Add comment."
+        fontSize="1rem"
+        color={opened ? "text.100" : "text.400"}
+        onClick={handleComment}
+        isLoading={isDetailLoading}
+      />
+
+      <IconButton
+        icon={<FaRetweet fontSize="1.5rem" />}
+        variant="empty"
+        aria-label="Repost."
+        size="1rem"
+        color="text.400"
+      />
+
+      <IconButton
+        as={ReactRouterLink}
+        icon={<FaRegEye fontSize="1.25rem" />}
+        to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
+        variant="empty"
+        aria-label="Add comment."
+        fontSize="1rem"
+        color={"text.400"}
+      />
     </Flex>
   );
 };
