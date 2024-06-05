@@ -1,4 +1,4 @@
-import { ShortString } from ".";
+import { ShortString } from "..";
 
 export interface UserProfile {
   username: ShortString;

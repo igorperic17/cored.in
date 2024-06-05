@@ -125,7 +125,7 @@ export class PostsService {
     return {
       id: post.id,
       creatorWallet: post.creatorWallet,
-      creatorAvatar: post.user.avatar,
+      creatorAvatar: post.user.avatarUrl,
       visibility: post.visibility,
       text: post.text,
       createdAt: post.createdAt,

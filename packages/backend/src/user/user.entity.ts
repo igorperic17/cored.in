@@ -1,5 +1,4 @@
 import { Post } from "@/posts/post.entity";
-import { UserProfile } from "@coredin/shared";
 import {
   Entity,
   Column,
@@ -10,16 +9,10 @@ import {
 
 @Entity("users")
 export class User {
-  constructor(
-    id: number,
-    wallet: string,
-    lastSeen: Date,
-    profile: UserProfile | null
-  ) {
+  constructor(id: number, wallet: string, lastSeen: Date) {
     this.id = id;
     this.wallet = wallet;
     this.lastSeen = lastSeen;
-    this.profile = profile;
   }
 
   @PrimaryGeneratedColumn()
@@ -29,11 +22,15 @@ export class User {
   @Column({ unique: true })
   wallet: string;
 
+  @Column({
+    type: "varchar",
+    length: 99,
+    nullable: true
+  })
+  username: string;
+
   @Column()
   lastSeen: Date;
-
-  @Column("jsonb", { nullable: true })
-  profile: UserProfile | null;
 
   @Column("int", { array: true, default: {} })
   likedPosts: number[];
@@ -42,7 +39,24 @@ export class User {
     nullable: true,
     default: "https://testcdn/somehting.jpg"
   })
-  avatar: string;
+  avatarUrl: string;
+
+  @Column({
+    nullable: true
+  })
+  backgroundColor: string;
+
+  @Column({
+    nullable: true
+  })
+  avatarFallbackColor: string;
+
+  @Column({
+    type: "varchar",
+    length: 250,
+    nullable: true
+  })
+  bio: string;
 
   @OneToMany(() => Post, (post: Post) => post.user)
   posts: Post[];

@@ -2,9 +2,10 @@ import { Inject, Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
-import { NotFoundError, UserProfile } from "@coredin/shared";
+import { NotFoundError, UserProfile, UpdateProfileDTO } from "@coredin/shared";
 import { Effect } from "effect";
 import { WaltIdWalletService } from "../ssi/core/services";
+import { CoredinContractService } from "@/coreum/services";
 
 @Injectable()
 export class UserService {
@@ -12,7 +13,9 @@ export class UserService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     @Inject(WaltIdWalletService)
-    private readonly waltId: WaltIdWalletService
+    private readonly waltId: WaltIdWalletService,
+    @Inject(CoredinContractService)
+    private readonly coredinContractService: CoredinContractService
   ) {}
 
   async get(
@@ -25,9 +28,8 @@ export class UserService {
     if (user) {
       // Get DID
       const did = await this.waltId.getOrCreateDid(wallet);
-      // TODO - get username from chain? or just remove from backend or duplicate? To discuss if rename is gonna be possible or not..
       return Effect.succeed({
-        username: user.profile?.username || "",
+        username: user.username || "no_username",
         did: did.did,
         likedPosts: user.likedPosts
       });
@@ -42,7 +44,13 @@ export class UserService {
     ]);
   }
 
-  async updateProfile(wallet: string, profile: UserProfile) {
-    return this.userRepository.update({ wallet }, { profile });
+  async updateProfile(wallet: string, profile: UpdateProfileDTO) {
+    const onchainProfile =
+      await this.coredinContractService.getWalletInfo(wallet);
+
+    return this.userRepository.update(
+      { wallet },
+      { ...profile, username: onchainProfile.did_info?.username }
+    );
   }
 }
