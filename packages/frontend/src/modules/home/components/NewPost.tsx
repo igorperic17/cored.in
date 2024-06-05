@@ -56,7 +56,7 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
           variant="unstyled"
-          border="1px solid grey"
+          border="1px solid #828178"
           borderRadius="0.5em"
           p="0.5em"
           // border="none"

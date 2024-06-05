@@ -4,16 +4,16 @@ export const SubscribeToProfile = () => {
   return (
     <VStack
       layerStyle="cardBox"
-      bg="background.700"
       w="100%"
       p="1.125em"
       pb="1.75em"
       spacing="3em"
+      boxShadow="0 0 15px 0px #7AF9B3"
     >
       <Text
         textStyle="lg"
         // fontSize="1.5em"
-        color="brand.500"
+        color="text.100"
         // textTransform="uppercase"
       >
         Subscribe to this user's profile to see their private information and

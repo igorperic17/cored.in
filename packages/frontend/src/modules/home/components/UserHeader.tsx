@@ -24,6 +24,7 @@ export const UserHeader = () => {
         size={{ base: "lg", lg: "2xl" }}
         mt="-1.25em"
         ml="0.5em"
+        border="4px solid #1C1C1A"
       />
       <Flex direction="column" gap="1.5em" px="1.125em" pt="1.75em" pb="2.5em">
         <Flex justify="space-between">

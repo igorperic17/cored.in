@@ -20,6 +20,9 @@ export const ROUTES = {
       }
     }
   },
+  SETTINGS: {
+    path: "/settings"
+  },
   PRIVACY_POLICY: {
     path: "/privacy-policy"
   }

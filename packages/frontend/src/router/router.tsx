@@ -12,6 +12,7 @@ import { LoginRoot } from "@/modules/login/views/LoginRoot";
 import LoginPage from "@/modules/login/views/Login.Page";
 import { PostPage } from "@/modules/home/views/Post.page";
 import UserPage from "@/modules/home/views/User.page";
+import SettingsPage from "@/modules/home/views/Settings.page";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,21 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.USER.POST.path,
         element: <PostPage />
+      }
+    ]
+  },
+  {
+    path: ROUTES.SETTINGS.path,
+    element: (
+      // <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.HOME}>
+      <HomeRoot />
+      // </FeatureFlagProtectedPage>
+    ),
+    errorElement: <ResourceNotFoundPage />,
+    children: [
+      {
+        index: true,
+        element: <SettingsPage />
       }
     ]
   }

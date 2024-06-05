@@ -20,6 +20,6 @@ export const navigationData = (wallet: string) => [
   {
     title: "settings",
     icon: FaGear,
-    link: "#"
+    link: ROUTES.SETTINGS.path
   }
 ];

@@ -66,8 +66,11 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
             onChange={handleChangeUserName}
             value={usernameInput}
             focusBorderColor="brand.500"
+            py="0.875em"
+            textAlign="center"
+            fontSize={{ base: "1.25rem", md: "1.75rem" }}
           />
-          <Text my="16px" color="text.300">
+          <Text my="1em" color="text.300">
             At least 3 characters required, only letters and numbers allowed.
           </Text>
           <Button
