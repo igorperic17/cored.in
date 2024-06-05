@@ -6,7 +6,7 @@ export type PostDTO = {
   creatorAvatar: string;
   visibility: PostVisibility;
   text: string;
-  createdAt: Date;
+  createdAt: string;
   likes: number;
   replyToPostId?: number;
 };

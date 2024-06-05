@@ -13,9 +13,10 @@ import { NewPost } from "../NewPost";
 export type PostProps = {
   post: PostDTO;
   isParent?: boolean;
+  isReply?: boolean;
 };
 
-export const Post: React.FC<PostProps> = ({ post, isParent }) => {
+export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   const queryClient = useQueryClient();
   const { mutateAsync: like, isPending: isLiking } = useMutableServerState(
     FEED_MUTATIONS.likePost()
@@ -40,6 +41,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
 
   useEffect(() => {
     setIsLiked(userProfile?.likedPosts.includes(post.id) || false);
+    console.log(userProfile?.likedPosts.includes(post.id), post.id);
   }, [userProfile?.likedPosts]);
 
   const handleLike = async () => {
@@ -69,12 +71,12 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
       spacing="0.5em"
       w="100%"
       h="max-content"
-      //   border="1px solid red"
+      // border="1px solid red"
       p="1em"
       pb="0.25em"
       layerStyle="cardBox"
     >
-      {postDetail?.parent && (
+      {postDetail?.parent && !isReply && (
         <Content
           post={postDetail.parent}
           key={postDetail.parent.id}
@@ -109,7 +111,9 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
       {opened && !isParent && <NewPost replyToPostId={post.id} />}
       {opened &&
         postDetail &&
-        postDetail.replies.map((reply) => <Post key={reply.id} post={reply} />)}
+        postDetail.replies.map((reply) => (
+          <Post key={reply.id} post={reply} isReply={true} />
+        ))}
     </VStack>
   );
 };

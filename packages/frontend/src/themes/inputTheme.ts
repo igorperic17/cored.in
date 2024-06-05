@@ -8,7 +8,7 @@ const baseStyle = definePartsStyle({
   field: {
     color: "text.100",
     fontFamily: "body",
-    fontSize: { base: "1rem", lg: "1.25rem" },
+    fontSize: { base: "0.875rem", lg: "1rem" },
     textAlign: "start",
     _placeholder: {
       color: "text.700"

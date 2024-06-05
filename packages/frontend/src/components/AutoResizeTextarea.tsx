@@ -15,6 +15,7 @@ export const AutoResizeTextarea = React.forwardRef<
       resize="none"
       ref={ref}
       minRows={1}
+      fontSize={{ base: "0.875rem", lg: "1rem" }}
       _placeholder={{
         color: "text.400"
       }}

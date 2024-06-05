@@ -93,11 +93,11 @@ export const Content: React.FC<PostContentProps> = ({
           </Text>
           {/* to add dateTime later */}
           <Text as="time" dateTime="" color="text.400" textStyle="sm">
-            14:34 PM
+            {new Date(post.createdAt).toLocaleTimeString()}
             <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
               {"    •    "}
             </Text>
-            Jun 4, 2024
+            {new Date(post.createdAt).toLocaleDateString()}
           </Text>
           <ActionBar
             post={post}
