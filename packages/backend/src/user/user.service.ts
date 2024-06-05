@@ -31,7 +31,11 @@ export class UserService {
       return Effect.succeed({
         username: user.username || "no_username",
         did: did.did,
-        likedPosts: user.likedPosts
+        likedPosts: user.likedPosts,
+        avatarUrl: user.avatarUrl,
+        avatarFallbackColor: user.avatarFallbackColor,
+        backgroundColor: user.backgroundColor,
+        bio: user.bio
       });
     }
 
