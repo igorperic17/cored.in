@@ -19,8 +19,8 @@ export const Header: FC<HeaderProps> = ({ username }) => {
       w="100%"
       maxW="1920px"
       mx="auto"
-      px={{ base: "1em", md: "2.5em", lg: "3.5em", xl: "4em" }}
-      py={{ base: "0.5em", md: "0.25em" }}
+      px={{ base: "1em", lg: "3.5em" }}
+      py={{ base: "0.5em", lg: "0.25em" }}
       background="background.900"
     >
       <Link
@@ -29,7 +29,7 @@ export const Header: FC<HeaderProps> = ({ username }) => {
         _hover={{ textDecoration: "none" }}
         aria-label="Main page."
       >
-        <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
+        <Logo fontSize={{ base: "1.5rem", lg: "2rem" }} />
       </Link>
 
       <Login username={username} variant="empty" signInText="Connect wallet" />

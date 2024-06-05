@@ -41,12 +41,12 @@ export const HomeRoot = () => {
         justify="center"
         align="start"
         gap="1.5em"
-        maxW="1200px"
+        maxW="1300px"
         mx="auto"
         p="1em"
       >
         {isLargerThanLg ? (
-          <VStack spacing="1.25em" w="25%" position="sticky" top="1em">
+          <VStack spacing="1.25em" w="23%" position="sticky" top="1em">
             <Box layerStyle="cardBox" p="2em" w="100%">
               <Link
                 as={ReactRouterLink}
@@ -54,7 +54,7 @@ export const HomeRoot = () => {
                 _hover={{ textDecoration: "none" }}
                 aria-label="Main page."
               >
-                <Logo fontSize={{ base: "1.5rem", md: "2rem" }} />
+                <Logo fontSize={{ base: "1.5rem", lg: "2rem" }} />
               </Link>
             </Box>
             <Navigation wallet={chainContext.address || ""} />
@@ -64,7 +64,7 @@ export const HomeRoot = () => {
           <Navigation wallet={chainContext.address || ""} />
         )}
 
-        <Box as="main" flex="2">
+        <Box as="main" flex="2" maxW={{ base: "600px", lg: "none" }} mx="auto">
           <Outlet />
           <ScrollRestoration />
         </Box>
@@ -73,7 +73,7 @@ export const HomeRoot = () => {
             as="aside"
             position="sticky"
             top="1em"
-            w="30%"
+            w="25%"
             h="max-content"
             layerStyle="cardBox"
             pb="1.5em"

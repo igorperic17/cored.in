@@ -31,7 +31,12 @@ export const ActionBar: FC<PostActionBarProps> = ({
   isLiking
 }) => {
   return (
-    <Flex w="100%" justify="space-around">
+    <Flex
+      w="90%"
+      ml="auto"
+      justify="space-between"
+      // border="1px solid red
+    >
       <IconButton
         icon={<FaRegComment fontSize="1.25rem" />}
         variant="empty"

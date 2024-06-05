@@ -19,7 +19,7 @@ export const Content: React.FC<PostContentProps> = ({
   return (
     <>
       <Flex
-        align="center"
+        // align="center"
         gap="1.125em"
         w="100%"
         // border="1px solid red"
@@ -29,18 +29,37 @@ export const Content: React.FC<PostContentProps> = ({
           // src="https://bit.ly/sage-adebayo"
           bg="background.600"
           color="brand.500"
+          size="md"
         />
-        <Box
-          maxW="50%"
-          textOverflow={"ellipsis"}
-          whiteSpace="nowrap"
-          overflow="hidden"
+        <VStack
+          align="start"
+          spacing="0.5em"
+          w="100%"
+          // border="1px solid yellow"
         >
-          <Text as="span" color="text.100" textStyle="sm">
-            @username
-            {/* {post.creatorWallet} */}
+          <Box
+            maxW="300px"
+            textOverflow={"ellipsis"}
+            whiteSpace="nowrap"
+            overflow="hidden"
+          >
+            <Text as="span" color="text.100" textStyle="md">
+              @username
+              {/* {post.creatorWallet} */}
+            </Text>
+          </Box>
+          <Text color="text.100" textStyle="sm">
+            {post.text}
           </Text>
-        </Box>
+          {/* to add dateTime later */}
+          <Text as="time" dateTime="" color="text.400" textStyle="sm">
+            14:34 PM
+            <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
+              {"    •    "}
+            </Text>
+            Jun 4, 2024
+          </Text>
+        </VStack>
         <Menu offset={[-105, -10]}>
           <MenuButton
             as={IconButton}
@@ -51,6 +70,7 @@ export const Content: React.FC<PostContentProps> = ({
             size="lg"
             isLoading={isDeleting}
             ml="auto"
+            mt="-0.5em"
           />
           <MenuList>
             <MenuItem
@@ -65,19 +85,6 @@ export const Content: React.FC<PostContentProps> = ({
           </MenuList>
         </Menu>
       </Flex>
-      <VStack align="start" spacing="1.5em">
-        <Text color="text.100" textStyle="md">
-          {post.text}
-        </Text>
-        {/* to add dateTime later */}
-        <Text as="time" dateTime="" color="text.400" textStyle="sm">
-          14:34 PM
-          <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
-            {"    •    "}
-          </Text>
-          Jun 4, 2024
-        </Text>
-      </VStack>
     </>
   );
 };

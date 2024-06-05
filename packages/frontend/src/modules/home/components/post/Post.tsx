@@ -66,7 +66,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent }) => {
     <VStack
       as="article"
       align="start"
-      spacing="1.5em"
+      spacing="0.5em"
       w="100%"
       h="max-content"
       //   border="1px solid red"
