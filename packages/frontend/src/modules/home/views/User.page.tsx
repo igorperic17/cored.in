@@ -1,7 +1,4 @@
-import { Avatar, Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
-import { useChain } from "@cosmos-kit/react";
-import { TESTNET_CHAIN_NAME } from "@coredin/shared";
-import { FaPen } from "react-icons/fa6";
+import { VStack } from "@chakra-ui/react";
 import { Feed, NewPost, SubscribeToProfile, UserHeader } from "../components";
 import { useParams } from "react-router-dom";
 import { useLoggedInServerState } from "@/hooks";
@@ -18,11 +15,11 @@ const UserPage = () => {
   }
 
   return (
-    <VStack spacing="1.5em" maxW="600px">
+    <VStack spacing={{ base: "0.5em", lg: "1.5em" }}>
       <UserHeader />
       <SubscribeToProfile />
-      <Feed posts={posts || []} />
       <NewPost />
+      <Feed posts={posts || []} />
     </VStack>
   );
 };

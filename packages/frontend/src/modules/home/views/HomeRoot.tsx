@@ -35,7 +35,8 @@ export const HomeRoot = () => {
 
   return (
     <Box>
-      {!isLargerThanLg && <Header username="natalia" />}
+      {/* TODO - username */}
+      {!isLargerThanLg && <Header username="username" />}
 
       <Flex
         justify="center"
@@ -44,6 +45,7 @@ export const HomeRoot = () => {
         maxW="1300px"
         mx="auto"
         p="1em"
+        minH="100dvh"
       >
         {isLargerThanLg ? (
           <VStack spacing="1.25em" w="23%" position="sticky" top="1em">
@@ -64,7 +66,13 @@ export const HomeRoot = () => {
           <Navigation wallet={chainContext.address || ""} />
         )}
 
-        <Box as="main" flex="2" maxW={{ base: "600px", lg: "none" }} mx="auto">
+        <Box
+          as="main"
+          flex="2"
+          w="52%"
+          maxW={{ base: "600px", lg: "none" }}
+          mx="auto"
+        >
           <Outlet />
           <ScrollRestoration />
         </Box>

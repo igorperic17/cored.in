@@ -14,9 +14,7 @@ export const PostPage = () => {
   console.log(postDetail);
 
   return (
-    <Box
-    // maxW="600px"
-    >
+    <Box>
       {postDetail && <Post post={postDetail} />}
       {!postDetail && <Text>Post not found...</Text>}
     </Box>

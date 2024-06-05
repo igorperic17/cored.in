@@ -11,7 +11,7 @@ const HomePage = () => {
   );
 
   return (
-    <VStack spacing="1.5em">
+    <VStack spacing={{ base: "0.5em", lg: "1.5em" }}>
       <NewPost />
       <Feed posts={posts || []} />
     </VStack>
