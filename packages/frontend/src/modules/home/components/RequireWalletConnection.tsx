@@ -1,17 +1,17 @@
 import { Login } from "@/components";
-import { VStack, Text, Heading, Link, Stack } from "@chakra-ui/react";
+import { VStack, Text, Heading, Link, Stack, Box } from "@chakra-ui/react";
 
 export const RequireWalletConnection = () => {
   return (
     <VStack
-      h="82vh"
+      minH="70vh"
       align="center"
       justify="center"
       spacing="15vh"
       textAlign="center"
       maxW="600px"
       mx="auto"
-      //   border="1px solid red"
+      // border="1px solid red"
     >
       <Heading as="h1" fontSize={{ base: "3rem", md: "4rem" }}>
         Connect your wallet to begin
@@ -30,51 +30,62 @@ export const RequireWalletConnection = () => {
           Don't have a wallet yet? We support the following:
         </Text>
         <Stack
+          as="ul"
+          listStyleType="none"
           spacing={{ base: "1em", md: "1.5em" }}
           direction={{ base: "column", md: "row" }}
         >
-          <Link
-            href="https://www.keplr.app/"
-            isExternal
-            textDecoration="underline"
-            color="text.300"
-            _hover={{
-              color: "brand.500"
-            }}
-            _focus={{
-              color: "brand.500"
-            }}
-          >
-            Keplr
-          </Link>
-          <Link
-            href="https://www.leapwallet.io/download"
-            isExternal
-            textDecoration="underline"
-            color="text.300"
-            _hover={{
-              color: "brand.500"
-            }}
-            _focus={{
-              color: "brand.500"
-            }}
-          >
-            Leap
-          </Link>
-          <Link
-            href="https://cosmostation.io/products/cosmostation_extension"
-            isExternal
-            textDecoration="underline"
-            color="text.300"
-            _hover={{
-              color: "brand.500"
-            }}
-            _focus={{
-              color: "brand.500"
-            }}
-          >
-            Cosmostation
-          </Link>
+          <Box as="li">
+            <Link
+              href="https://www.keplr.app/"
+              isExternal
+              textDecoration="underline"
+              textDecorationThickness="1px"
+              color="text.300"
+              _hover={{
+                color: "brand.500"
+              }}
+              _focus={{
+                color: "brand.500"
+              }}
+            >
+              Keplr
+            </Link>
+          </Box>
+          <Box>
+            <Link
+              href="https://www.leapwallet.io/download"
+              isExternal
+              textDecoration="underline"
+              textDecorationThickness="1px"
+              color="text.300"
+              _hover={{
+                color: "brand.500"
+              }}
+              _focus={{
+                color: "brand.500"
+              }}
+            >
+              Leap
+            </Link>
+          </Box>
+          <Box>
+            <Link
+              href="https://cosmostation.io/products/cosmostation_extension"
+              isExternal
+              textDecoration="underline"
+              textDecorationThickness="1px"
+              color="text.300"
+              _hover={{
+                color: "brand.500"
+              }}
+              _focus={{
+                color: "brand.500"
+              }}
+            >
+              Cosmostation
+            </Link>
+          </Box>
         </Stack>
       </VStack>
     </VStack>
