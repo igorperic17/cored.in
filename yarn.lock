@@ -3535,6 +3535,8 @@ __metadata:
     "@codegenie/serverless-express": "npm:^4.14.0"
     "@coredin/shared": "workspace:^"
     "@cosmjs/cosmwasm-stargate": "npm:^0.32.3"
+    "@cosmjs/proto-signing": "npm:^0.32.3"
+    "@cosmjs/stargate": "npm:^0.32.3"
     "@keplr-wallet/cosmos": "npm:^0.12.79"
     "@nestia/core": "npm:^3.0.5"
     "@nestia/e2e": "npm:^0.4.3"

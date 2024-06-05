@@ -31,6 +31,8 @@
     "@codegenie/serverless-express": "^4.14.0",
     "@coredin/shared": "workspace:^",
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
+    "@cosmjs/proto-signing": "^0.32.3",
+    "@cosmjs/stargate": "^0.32.3",
     "@keplr-wallet/cosmos": "^0.12.79",
     "@nestia/core": "^3.0.5",
     "@nestia/e2e": "^0.4.3",

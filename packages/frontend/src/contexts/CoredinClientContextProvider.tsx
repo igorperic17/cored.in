@@ -32,7 +32,6 @@ const CoredinClientContextProvider = ({
     const initializeClient = async () => {
       const client = await SigningCosmWasmClient.connectWithSigner(
         TESTNET_CHAIN_RPC_ENDPOINT,
-        // @ts-expect-error should be valid
         chainContext.getOfflineSigner(),
         {
           gasPrice: GasPrice.fromString(TESTNET_GAS_PRICE)
