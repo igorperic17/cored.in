@@ -65,9 +65,17 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               as={ReactRouterLink}
               to={item.link}
               fontSize="1.375rem"
-              color="inherit"
+              color={
+                location.pathname === item.link || isLargerThanLg
+                  ? "inherit"
+                  : "text.400"
+              }
               w={{ base: "100%", lg: "100%" }}
-              bg={location.pathname === item.link ? "background.600" : "none"}
+              bg={
+                location.pathname === item.link && isLargerThanLg
+                  ? "background.600"
+                  : "none"
+              }
               borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
                 div: {
@@ -95,7 +103,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               <Button
                 aria-label="Disclaimer."
                 variant="empty"
-                color="inherit"
+                color="text.400"
                 onClick={onOpen}
                 p="1em"
                 w="100%"
