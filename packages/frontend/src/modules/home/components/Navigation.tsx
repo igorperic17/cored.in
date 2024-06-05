@@ -1,19 +1,33 @@
-import { ROUTES } from "@/router/routes";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { navigationData } from "../constants/navigationData";
 import {
   Box,
+  Button,
   Flex,
   Grid,
   HStack,
   Icon,
   Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Text,
+  useDisclosure,
   useMediaQuery,
   useTheme
 } from "@chakra-ui/react";
-import { FaTriangleExclamation } from "react-icons/fa6";
+import { FaEllipsis, FaTrash, FaTriangleExclamation } from "react-icons/fa6";
 import { FC } from "react";
+import { IconButton } from "@interchain-ui/react";
+import { Disclaimer } from "@/components";
 
 type NavigationProps = {
   wallet: string;
@@ -24,6 +38,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
   const [isLargerThanLg] = useMediaQuery(
     `(min-width: ${theme.breakpoints.lg})`
   );
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (
     <Box
@@ -32,11 +47,10 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       position={{ base: "fixed", lg: "static" }}
       bottom={{ base: "0", lg: "" }}
       layerStyle="cardBox"
-      borderRadius={{ base: "0", lg: "0.5em" }}
       p={{ base: "0", lg: "1em" }}
       zIndex="1"
       borderTop={{ base: "1px solid", lg: "none" }}
-      borderTopColor="background.600"
+      // border="1px solid red"
     >
       <Grid
         as="ul"
@@ -53,6 +67,9 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
             color="text.100"
             justify="center"
             align="center"
+            // border="1px solid white"
+            borderRadius="0.5em"
+
             // p="1em"
           >
             <Link
@@ -90,19 +107,28 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
           </Flex>
         ))}
         {!isLargerThanLg && (
-          <Flex
-            as="li"
-            key={`home-navigation-mobile-4`}
-            p="0.5em"
-            borderRadius="0.5em"
-            listStyleType="none"
-            w="max-content"
-            mx="auto"
-            justify="center"
-            align="center"
-          >
-            <Icon as={FaTriangleExclamation} fontSize="1.375rem" />
-          </Flex>
+          <>
+            <Flex as="li" justify="center" align="center">
+              <Button
+                aria-label="Disclaimer."
+                variant="empty"
+                color="inherit"
+                onClick={onOpen}
+                p="1em"
+              >
+                <Icon as={FaTriangleExclamation} fontSize="1.5rem" />
+              </Button>
+            </Flex>
+            <Modal isOpen={isOpen} onClose={onClose} isCentered>
+              <ModalOverlay />
+              <ModalContent bg="transparent">
+                <ModalCloseButton color="text.100" />
+                <ModalBody layerStyle="cardBox">
+                  <Disclaimer />
+                </ModalBody>
+              </ModalContent>
+            </Modal>
+          </>
         )}
       </Grid>
     </Box>
