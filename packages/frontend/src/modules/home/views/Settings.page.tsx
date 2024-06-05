@@ -1,5 +1,6 @@
 import { AutoResizeTextarea } from "@/components";
 import {
+  Button,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -12,7 +13,14 @@ import {
 
 const SettingsPage = () => {
   return (
-    <VStack spacing="2.5em" layerStyle="cardBox" p="1em" mb="4em" align="start">
+    <VStack
+      spacing="2.5em"
+      layerStyle="cardBox"
+      p="1em"
+      pb="1.5em"
+      mb="4em"
+      align="start"
+    >
       <Heading as="h1" fontFamily="body">
         Edit your information
       </Heading>
@@ -26,6 +34,7 @@ const SettingsPage = () => {
             type="text"
             border="1px solid #828178"
             focusBorderColor="brand.500"
+            placeholder="https://somewebsite.com/avatar.jpg"
           />
           <FormHelperText color="text.400">
             First two letters of your username will be shown in cases when there
@@ -83,7 +92,7 @@ const SettingsPage = () => {
       <FormControl>
         <FormLabel fontSize={{ base: "1.25rem", lg: "1.5rem" }}>Bio</FormLabel>
         <AutoResizeTextarea
-          placeholder="Tell about yourself"
+          placeholder="Add short bio about yourself"
           minH="80px"
           border="1px solid #828178"
           focusBorderColor="brand.500"
@@ -92,6 +101,9 @@ const SettingsPage = () => {
           Maximum length: 250 characters
         </FormHelperText>
       </FormControl>
+      <Button variant="primary" size="md" w="100%">
+        Save
+      </Button>
     </VStack>
   );
 };
