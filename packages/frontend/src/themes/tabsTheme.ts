@@ -1,5 +1,6 @@
 import { tabsAnatomy } from "@chakra-ui/anatomy";
 import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
+import { textStyles } from "./textStyles";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(tabsAnatomy.keys);
@@ -7,7 +8,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const sizes = {
   md: definePartsStyle({
     tab: {
-      fontSize: { base: "1rem", lg: "1.25rem" },
+      ...textStyles.md,
       py: "0.75em"
     }
   })
@@ -18,11 +19,20 @@ const baseStyle = definePartsStyle({
     color: "text.400"
   },
   tab: {
-    bg: "background.800",
+    bg: "background.900",
     _selected: {
       color: "brand.500",
       bg: "background.700"
+    },
+    _hover: {
+      color: "text.100",
+      _selected: {
+        color: "brand.500"
+      }
     }
+  },
+  tabpanel: {
+    p: "0"
   }
 });
 

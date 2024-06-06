@@ -10,3 +10,5 @@ export * from "./SubscribeToProfile";
 export * from "./TabsContainer";
 export * from "./Settings";
 export * from "./CredentialsContainer";
+export * from "./CredentialSection";
+export * from "./Credential";

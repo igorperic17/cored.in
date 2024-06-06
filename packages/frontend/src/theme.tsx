@@ -2,6 +2,7 @@ import { extendTheme } from "@chakra-ui/react";
 import "@fontsource/space-grotesk";
 import "@fontsource/noto-sans";
 import {
+  badgeTheme,
   buttonTheme,
   inputTheme,
   layerStyles,
@@ -77,7 +78,8 @@ const components = {
   Stepper: stepperTheme,
   Input: inputTheme,
   Menu: menuTheme,
-  Tabs: tabsTheme
+  Tabs: tabsTheme,
+  Badge: badgeTheme
 };
 
 const breakpoints = {

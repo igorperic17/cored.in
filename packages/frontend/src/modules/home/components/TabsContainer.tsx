@@ -6,12 +6,10 @@ import { CredentialsContainer } from "./CredentialsContainer";
 export const TabsContainer: FC<FeedProps> = ({ posts }) => {
   return (
     <Box layerStyle="cardBox" w="100%">
-      <Tabs size="md" variant="unstyled">
+      <Tabs isFitted size="md" variant="unstyled">
         <TabList>
-          <Tab w="50%">Posts</Tab>
-          <Tab w="50%" borderBottom="none">
-            Credentials
-          </Tab>
+          <Tab borderTopLeftRadius="0.5em">Posts</Tab>
+          <Tab borderTopRightRadius="0.5em">Credentials</Tab>
         </TabList>
         <TabPanels>
           <TabPanel>
