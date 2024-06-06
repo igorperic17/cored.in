@@ -3,7 +3,7 @@ import { Post } from ".";
 import { PostDTO } from "@coredin/shared";
 import { FC } from "react";
 
-type FeedProps = {
+export type FeedProps = {
   posts: PostDTO[];
 };
 

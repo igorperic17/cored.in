@@ -7,6 +7,7 @@ import {
   layerStyles,
   menuTheme,
   stepperTheme,
+  tabsTheme,
   textStyles
 } from "./themes";
 
@@ -75,7 +76,8 @@ const components = {
   Button: buttonTheme,
   Stepper: stepperTheme,
   Input: inputTheme,
-  Menu: menuTheme
+  Menu: menuTheme,
+  Tabs: tabsTheme
 };
 
 const breakpoints = {
