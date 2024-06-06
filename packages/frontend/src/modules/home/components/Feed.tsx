@@ -9,7 +9,7 @@ export type FeedProps = {
 
 export const Feed: FC<FeedProps> = ({ posts }) => {
   return (
-    <VStack spacing={{ base: "0.5em", lg: "1.5em" }} w="100%" mb="4em">
+    <VStack spacing="0.5em" w="100%" mb="4em" layerStyle="cardBox">
       {posts.map((post, i) => (
         <Post key={`post-${i}`} post={post} />
       ))}
