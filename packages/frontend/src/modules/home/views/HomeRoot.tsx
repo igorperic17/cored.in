@@ -1,6 +1,10 @@
 import { Header, Logo, SocialMedia } from "@/components";
 import { Disclaimer } from "@/components/Disclaimer";
-import { Navigation, UserSignOut } from "@/modules/home/components";
+import {
+  Navigation,
+  SubscribeToProfile,
+  UserSignOut
+} from "@/modules/home/components";
 import { ROUTES } from "@/router/routes";
 import {
   Box,
@@ -41,7 +45,7 @@ export const HomeRoot = () => {
       <Flex
         justify="center"
         align="start"
-        gap="1.5em"
+        gap="1.25em"
         maxW="1300px"
         mx="auto"
         p="1em"
@@ -68,8 +72,8 @@ export const HomeRoot = () => {
 
         <Box
           as="main"
-          flex="2"
-          w="52%"
+          flex="1"
+          // w="52%"
           maxW={{ base: "600px", lg: "none" }}
           mx="auto"
         >
@@ -78,16 +82,20 @@ export const HomeRoot = () => {
         </Box>
         {isLargerThanLg && (
           <VStack
+            spacing="1.25em"
+            w="25%"
             as="aside"
             position="sticky"
             top="1em"
-            w="25%"
-            h="max-content"
-            layerStyle="cardBox"
-            pb="1.5em"
           >
-            <Disclaimer />
-            <SocialMedia size="2rem" gap="2.25em" color="text.400" />
+            <VStack h="max-content" layerStyle="cardBox" pb="1.5em">
+              <Disclaimer />
+              <SocialMedia size="2rem" gap="2.25em" color="text.400" />
+            </VStack>
+            {location.pathname ===
+              ROUTES.USER.buildPath(chainContext.address || "") && (
+              <SubscribeToProfile />
+            )}
           </VStack>
         )}
       </Flex>

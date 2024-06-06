@@ -1,5 +1,5 @@
 import { VStack } from "@chakra-ui/react";
-import { Feed, NewPost, SubscribeToProfile, UserHeader } from "../components";
+import { UserHeader } from "../components";
 import { useParams } from "react-router-dom";
 import { useLoggedInServerState } from "@/hooks";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
@@ -17,9 +17,6 @@ const UserPage = () => {
   return (
     <VStack spacing={{ base: "0.5em", lg: "1.5em" }}>
       <UserHeader />
-      <SubscribeToProfile />
-      <NewPost />
-      <Feed posts={posts || []} />
     </VStack>
   );
 };
