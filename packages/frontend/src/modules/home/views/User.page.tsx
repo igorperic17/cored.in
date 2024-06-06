@@ -19,7 +19,7 @@ const UserPage = () => {
   }
 
   return (
-    <VStack spacing={{ base: "0.5em", lg: "1.5em" }}>
+    <VStack spacing={{ base: "0.5em", lg: "1.5em" }} mb="4em">
       <UserHeader />
       <TabsContainer posts={posts || []} />
       {/* {!isLargerThanLg && <SubscribeToProfile />} */}
