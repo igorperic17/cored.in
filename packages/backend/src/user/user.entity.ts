@@ -36,8 +36,7 @@ export class User {
   likedPosts: number[];
 
   @Column({
-    nullable: true,
-    default: "https://testcdn/somehting.jpg"
+    nullable: true
   })
   avatarUrl: string;
 

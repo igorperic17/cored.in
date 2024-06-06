@@ -9,7 +9,14 @@ import {
   FormHelperText,
   VStack,
   Heading,
-  Text
+  Text,
+  useToast,
+  Box,
+  useMediaQuery,
+  useTheme,
+  CloseButton,
+  HStack,
+  Flex
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME, UpdateProfileDTO } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
@@ -32,20 +39,43 @@ export const Settings = () => {
   const { mutateAsync, isPending } = useMutableServerState(
     USER_MUTATIONS.updateProfile()
   );
+  const toast = useToast();
+  const theme = useTheme();
+  const [isLargerThanLg] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.lg})`
+  );
 
-  const handleSubmit = async () => {
-    await mutateAsync({ profile: settings });
+  const handleSubmit = () => {
+    mutateAsync({ profile: settings }).then(() => {
+      //   alert("Profile updated");
+      toast({
+        position: isLargerThanLg ? "top-right" : "top-right",
+        status: "success",
+        duration: 1000,
+        render: () => (
+          <Box
+            color="text.900"
+            p="1em 1.5em"
+            bg="brand.500"
+            borderRadius="0.5em"
+          >
+            Saved successfully!
+          </Box>
+        ),
+        isClosable: true
+      });
+    });
   };
 
-  console.log(settings);
+  //   console.log(settings);
   return (
     <VStack
       spacing="2.5em"
       layerStyle="cardBox"
       p="1em"
       pb="1.5em"
-      mb="4em"
       align="start"
+      mb="4em"
     >
       <Heading as="h1" fontFamily="body">
         Edit your information
@@ -62,7 +92,7 @@ export const Settings = () => {
             focusBorderColor="brand.500"
             placeholder="https://somewebsite.com/avatar.jpg"
             onChange={(e) =>
-              setSettings({ ...settings, avatarUrl: e.target.value })
+              setSettings({ ...settings, avatarUrl: e.target.value || "" })
             }
             value={settings.avatarUrl}
           />
@@ -140,7 +170,13 @@ export const Settings = () => {
           Maximum length: 250 characters
         </FormHelperText>
       </FormControl>
-      <Button variant="primary" size="md" w="100%" onClick={handleSubmit}>
+      <Button
+        variant="primary"
+        size="md"
+        w="100%"
+        onClick={handleSubmit}
+        isLoading={isPending}
+      >
         Save
       </Button>
     </VStack>
