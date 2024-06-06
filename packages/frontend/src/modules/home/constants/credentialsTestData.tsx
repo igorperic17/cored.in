@@ -8,11 +8,12 @@ export const credentialsTestData: {
   education: [
     {
       id: 0,
-      title: "Master in Engineering",
+      title: "Master in Computer Science",
       establishment: "University of Barcelona",
       startDate: "September 2022",
       endDate: "June 2024",
-      verified: true
+      verified: true,
+      issuer: "Jane Doe"
     },
     {
       id: 1,
@@ -20,7 +21,8 @@ export const credentialsTestData: {
       establishment: "University of Barcelona",
       startDate: "September 2018",
       endDate: "June 2022",
-      verified: false
+      verified: false,
+      issuer: ""
     }
   ],
   experience: [
@@ -30,7 +32,8 @@ export const credentialsTestData: {
       establishment: "Design agency",
       startDate: "May 2020",
       endDate: "January 2021",
-      verified: false
+      verified: false,
+      issuer: ""
     },
     {
       id: 3,
@@ -38,7 +41,8 @@ export const credentialsTestData: {
       establishment: "cored.in",
       startDate: "November 2023",
       endDate: "", // === currently working there
-      verified: true
+      verified: true,
+      issuer: "John Doe"
     }
   ],
   activities: []
