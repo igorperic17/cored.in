@@ -13,14 +13,11 @@ import {
   useToast,
   Box,
   useMediaQuery,
-  useTheme,
-  CloseButton,
-  HStack,
-  Flex
+  useTheme
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME, UpdateProfileDTO } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export const Settings = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -36,6 +33,16 @@ export const Settings = () => {
     backgroundColor: userProfile?.backgroundColor || "#7AF9B3",
     bio: userProfile?.bio || ""
   });
+
+  useEffect(() => {
+    setSettings({
+      avatarUrl: userProfile?.avatarUrl || "",
+      avatarFallbackColor: userProfile?.avatarFallbackColor || "#7AF9B3",
+      backgroundColor: userProfile?.backgroundColor || "#7AF9B3",
+      bio: userProfile?.bio || ""
+    });
+  }, [userProfile]);
+
   const { mutateAsync, isPending } = useMutableServerState(
     USER_MUTATIONS.updateProfile()
   );
@@ -47,7 +54,6 @@ export const Settings = () => {
 
   const handleSubmit = () => {
     mutateAsync({ profile: settings }).then(() => {
-      //   alert("Profile updated");
       toast({
         position: isLargerThanLg ? "top-right" : "top-right",
         status: "success",
@@ -67,7 +73,6 @@ export const Settings = () => {
     });
   };
 
-  //   console.log(settings);
   return (
     <VStack
       spacing="2.5em"
