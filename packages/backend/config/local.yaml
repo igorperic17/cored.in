@@ -10,6 +10,10 @@ db:
   synchronize: true
   debug: true
 
+vault:
+  api:
+    url: 'http://host.docker.internal:8200'
+
 wallet:
   api:
     url: 'http://localhost:7001'

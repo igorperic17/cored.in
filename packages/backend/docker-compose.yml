@@ -36,6 +36,21 @@ services:
       main:
         aliases:
           - db
+  vault:
+    image: hashicorp/vault:1.16
+    container_name: coredin_hashicorp_vault
+    environment:
+      VAULT_ADDR: 'https://0.0.0.0:8200'
+      VAULT_LOCAL_CONFIG: '{"listener": [{"tcp":{"address": "0.0.0.0:8200","tls_disable":"1"}}], "ui": true, "storage": [{"file": {"path":"/vault/data"}}]}'
+    ports:
+        - 8200:8200
+    cap_add:
+      - IPC_LOCK
+    volumes:
+      - vault_config:/vault/config
+      - vault_data:/vault/file
+    command: vault server -config=/vault/config/local.json
+
   wallet-api:
     image: waltid/wallet-api:1.0.2406040651-SNAPSHOT
     platform: linux/amd64
@@ -76,6 +91,8 @@ services:
 volumes:
   postgres_data:
   postgres_ssi_data:
+  vault_config:
+  vault_data:
 
 networks:
   main:

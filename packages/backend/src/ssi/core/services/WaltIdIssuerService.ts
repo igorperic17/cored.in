@@ -2,25 +2,30 @@ import axios from "axios";
 
 export type IssuerInfo = {
   issuerDid: string;
-  issuerKey: {
-    type: string;
-    jwk: unknown;
-  };
+  issuerKeyVaultId: string;
 };
 
 export class WaltIdIssuerService {
-  constructor(private readonly issuerApiUrl: string) {}
+  constructor(
+    private readonly issuerApiUrl: string,
+    private readonly vaultUrl: string,
+    private readonly vaultAccessKey: string
+  ) {}
 
   async onboardIssuer(wallet: string) {
     const createIssuerKeyResult = await axios.post(
       `${this.issuerApiUrl}/onboard/issuer`,
       {
         key: {
-          backend: "jwk",
-          keyType: "secp256r1"
+          backend: "tse",
+          keyType: "Ed25519",
+          config: {
+            server: this.vaultUrl + "/v1/transit",
+            accessKey: this.vaultAccessKey
+          }
         },
         did: {
-          method: "jwk"
+          method: "key"
         }
       }
     );
@@ -52,7 +57,13 @@ export class WaltIdIssuerService {
     issuerInfo: IssuerInfo
   ): string {
     return JSON.stringify({
-      ...issuerInfo,
+      issuerKey: {
+        type: "tse",
+        server: this.vaultUrl + "/v1/transit",
+        accessKey: this.vaultAccessKey,
+        id: issuerInfo.issuerKeyVaultId
+      },
+      issuerDid: issuerInfo.issuerDid,
       credentialConfigurationId: "UniversityDegree_jwt_vc_json",
       credentialData: {
         "@context": [

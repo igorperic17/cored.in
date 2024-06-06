@@ -44,3 +44,12 @@ yarn workspace @coredin/frontend add (package-name)
 ```
 yarn docker
 ```
+
+
+## Vault Setup
+
+```
+1. Run the vault via docker compose
+2. Go to server:8002/ui, initialize the vault and add update backend_secrets_local.yaml file with the access key
+3. Unlock the vault and enable "Transit" Secret Engine
+```
