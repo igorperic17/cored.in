@@ -36,18 +36,21 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
 
   return (
     <>
-      <NewPostContent
-        postContent={postContent}
-        setPostContent={setPostContent}
-        handlePost={handlePost}
-        isLoading={isPending}
-      />
-      <NewReplyContent
-        postContent={postContent}
-        setPostContent={setPostContent}
-        handlePost={handlePost}
-        isLoading={isPending}
-      />
+      {replyToPostId ? (
+        <NewReplyContent
+          postContent={postContent}
+          setPostContent={setPostContent}
+          handlePost={handlePost}
+          isLoading={isPending}
+        />
+      ) : (
+        <NewPostContent
+          postContent={postContent}
+          setPostContent={setPostContent}
+          handlePost={handlePost}
+          isLoading={isPending}
+        />
+      )}
     </>
   );
 };

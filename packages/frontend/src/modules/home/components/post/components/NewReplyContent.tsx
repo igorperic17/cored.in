@@ -36,7 +36,7 @@ export const NewReplyContent: FC<NewContentProps> = ({
         borderRadius="0.5em"
         p="0.5em"
         minH="unset"
-        placeholder="This needs to be placed inside the post when we try to comment"
+        placeholder="Add your comment"
       />
       <Button
         variant="primary"
