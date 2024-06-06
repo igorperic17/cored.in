@@ -1,11 +1,11 @@
 import { userService } from "@/dependencies";
-import { UserProfile } from "@coredin/shared";
+import { UpdateProfileDTO } from "@coredin/shared";
 import { BaseServerStateKeys } from "../constants";
 
 export const USER_MUTATIONS = {
   updateProfile: () => ({
     mutationKey: [BaseServerStateKeys.UPDATE_PROFILE],
-    mutationFn: ({ profile }: { profile: UserProfile }) =>
+    mutationFn: ({ profile }: { profile: UpdateProfileDTO }) =>
       userService.updateProfile(profile)
   })
 };

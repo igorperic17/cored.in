@@ -39,7 +39,7 @@ export const Content: React.FC<PostContentProps> = ({
       >
         <Avatar
           name="U N"
-          // src="https://bit.ly/sage-adebayo"
+          src={post.creatorAvatar}
           bg="background.600"
           color="brand.500"
           size="md"
@@ -60,7 +60,6 @@ export const Content: React.FC<PostContentProps> = ({
               {/* recommended username width 12 characters */}
               <Text as="span" color="text.100" textStyle="md">
                 @username
-                {/* {post.creatorWallet} */}
               </Text>
             </Box>
             <Menu offset={[-105, -10]}>

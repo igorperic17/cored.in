@@ -1,5 +1,5 @@
 import { HttpService } from "@/services";
-import { UserProfile } from "@coredin/shared";
+import { UpdateProfileDTO, UserProfile } from "@coredin/shared";
 
 export class UserService {
   constructor(private readonly http: HttpService) {}
@@ -8,7 +8,7 @@ export class UserService {
     return this.http.get("user");
   }
 
-  async updateProfile(profile: UserProfile): Promise<void> {
+  async updateProfile(profile: UpdateProfileDTO): Promise<void> {
     return this.http.post("user", profile);
   }
 }
