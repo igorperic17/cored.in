@@ -128,7 +128,7 @@ export class PostsService {
       creatorAvatar: post.user.avatarUrl,
       visibility: post.visibility,
       text: post.text,
-      createdAt: post.createdAt,
+      createdAt: post.createdAt.toISOString(),
       likes: post.likes,
       replyToPostId: post.replyToPostId
     };
