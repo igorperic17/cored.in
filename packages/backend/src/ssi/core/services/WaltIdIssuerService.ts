@@ -29,10 +29,9 @@ export class WaltIdIssuerService {
         }
       }
     );
+    console.log("Onboarded issuer for wallet,", wallet);
 
-    console.log("Created issuer for wallet,", wallet);
-    // TODO - store issuerDID somewhere safe
-    console.dir(createIssuerKeyResult.data, { depth: 10 });
+    return createIssuerKeyResult.data;
   }
 
   async getCredentialOfferUrl(subjectDid: string, issuerInfo: IssuerInfo) {

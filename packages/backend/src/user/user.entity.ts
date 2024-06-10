@@ -29,6 +29,21 @@ export class User {
   })
   username: string;
 
+  @Column({
+    nullable: true
+  })
+  didKeyId: string;
+
+  @Column({
+    nullable: true
+  })
+  issuerDid: string;
+
+  @Column({
+    nullable: true
+  })
+  issuerKeyId: string;
+
   @Column()
   lastSeen: Date;
 

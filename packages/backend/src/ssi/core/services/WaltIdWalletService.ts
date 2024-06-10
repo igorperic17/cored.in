@@ -2,16 +2,21 @@ import { Did, Wallet } from "../data-classes";
 import axios from "axios";
 
 export class WaltIdWalletService {
-  constructor(private readonly walletApiUrl: string) {}
+  constructor(
+    private readonly walletApiUrl: string,
+    private readonly vaultUrl: string,
+    private readonly vaultAccessKey: string
+  ) {}
 
-  async getOrCreateDid(wallet: string) {
+  async getOrCreateDid(wallet: string, didKeyId: string) {
     const dids = await this.getDids(wallet);
-    if (dids.length > 0) {
-      return dids.find((did) => did.default) || dids[0];
+    const did = dids.find((did) => did.keyId === didKeyId);
+    if (did) {
+      return did;
     }
-    await this.createDid(wallet);
+    await this.createDid(wallet, didKeyId);
 
-    return (await this.getDids(wallet)).find((did) => did.default) || dids[0];
+    return (await this.getDids(wallet)).find((did) => did.keyId === didKeyId);
   }
 
   async getVCs(wallet: string) {
@@ -80,14 +85,49 @@ export class WaltIdWalletService {
       }
     });
 
+    console.log("didsResponse", didsResponse.data);
+
     return didsResponse.data;
   }
 
-  async createDid(wallet: string) {
+  async generateKey(wallet: string) {
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids/create/key`;
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/keys/generate`;
     const createResponse = await axios.post(
       targetUrl,
+      {
+        backend: "tse",
+        config: {
+          server: this.vaultUrl + "/v1/transit",
+          accessKey: this.vaultAccessKey
+        },
+        keyType: "Ed25519"
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    return createResponse.data;
+  }
+
+  async createDid(wallet: string, keyId: string) {
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids/create/jwk?keyId=${keyId}`;
+    const createResponse = await axios.post(
+      targetUrl,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      }
+    );
+
+    await axios.post(
+      `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids/default?did=${createResponse.data}`,
       {},
       {
         headers: {

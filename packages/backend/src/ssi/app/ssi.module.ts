@@ -1,14 +1,24 @@
 import { Module } from "@nestjs/common";
-import { WaltIdWalletService } from "@/ssi/core/services";
+import {
+  WaltIdIssuerService,
+  WaltIdVerifierService,
+  WaltIdWalletService
+} from "@/ssi/core/services";
 import { ConfigModule } from "@nestjs/config";
 import {
   WaltIdIssuerServiceProvider,
+  WaltIdVerifierServiceProvider,
   WaltIdWalletServiceProvider
 } from "./providers";
+import { SecretsModule } from "@/secrets/secrets.module";
 
 @Module({
-  imports: [ConfigModule],
-  providers: [WaltIdWalletServiceProvider, WaltIdIssuerServiceProvider],
-  exports: [WaltIdWalletService]
+  imports: [ConfigModule, SecretsModule],
+  providers: [
+    WaltIdWalletServiceProvider,
+    WaltIdIssuerServiceProvider,
+    WaltIdVerifierServiceProvider
+  ],
+  exports: [WaltIdWalletService, WaltIdIssuerService, WaltIdVerifierService]
 })
 export class SsiModule {}
