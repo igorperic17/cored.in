@@ -11,7 +11,7 @@ import { Request } from "express";
 @Injectable()
 export class InternalEndpoint implements CanActivate {
   constructor(
-    @Inject("SecretsService") private readonly secretsService: SecretsService
+    @Inject(SecretsService) private readonly secretsService: SecretsService
   ) {}
 
   canActivate(context: ExecutionContext): boolean {

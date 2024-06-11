@@ -11,6 +11,7 @@ import { SecretsModule } from "./secrets/secrets.module";
 import { SecretsService } from "./secrets/SecretsService";
 import { SsiModule } from "./ssi/app/ssi.module";
 import { PostsModule } from "./posts/posts.module";
+import { InternalModule } from "./internal/internal.module";
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { PostsModule } from "./posts/posts.module";
       inject: [ConfigService, SecretsService]
     }),
     UserModule,
-    PostsModule
+    PostsModule,
+    InternalModule
   ],
   controllers: [AppController],
   providers: [AppService]
