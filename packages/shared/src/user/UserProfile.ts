@@ -9,4 +9,5 @@ export interface UserProfile {
   avatarFallbackColor?: HexColor;
   backgroundColor?: HexColor;
   bio?: string & tags.MaxLength<250>;
+  issuerDid?: string;
 }

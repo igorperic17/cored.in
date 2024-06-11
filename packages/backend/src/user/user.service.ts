@@ -49,7 +49,8 @@ export class UserService {
         avatarUrl: user.avatarUrl,
         avatarFallbackColor: user.avatarFallbackColor,
         backgroundColor: user.backgroundColor,
-        bio: user.bio
+        bio: user.bio,
+        issuerDid: user.issuerDid
       });
     }
 

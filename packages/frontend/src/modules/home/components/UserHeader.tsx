@@ -1,4 +1,14 @@
-import { Avatar, Box, Flex, Icon, Link, Text } from "@chakra-ui/react";
+import {
+  Avatar,
+  Badge,
+  Box,
+  Flex,
+  HStack,
+  Icon,
+  Link,
+  Text,
+  Tooltip
+} from "@chakra-ui/react";
 import { useChain } from "@cosmos-kit/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { FaPen } from "react-icons/fa6";
@@ -63,10 +73,20 @@ export const UserHeader = () => {
         </Link>
       </Flex>
       <Flex direction="column" gap="1.5em" px="1.125em" pt="1.75em" pb="2.5em">
-        <Text as="span" color="text.100" textStyle="md">
-          {`@${userProfile?.username}`}
-          {/* {post.creatorWallet} */}
-        </Text>
+        <HStack justify="space-between">
+          <Text as="span" color="text.100" textStyle="md">
+            {`@${userProfile?.username}`}
+            {/* {post.creatorWallet} */}
+          </Text>
+          {userProfile?.issuerDid && (
+            <Tooltip hasArrow label={`${userProfile.issuerDid}`} maxW="500px">
+              <Badge colorScheme="brand" variant="outline">
+                Issuer
+              </Badge>
+            </Tooltip>
+          )}
+        </HStack>
+
         <Text textStyle="sm" wordBreak="break-word">
           {userProfile?.bio}
         </Text>
