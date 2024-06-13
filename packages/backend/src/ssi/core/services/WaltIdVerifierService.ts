@@ -1,14 +1,16 @@
 import axios from "axios";
+import { CredentialType, CredentialDTO } from "@coredin/shared";
 
 export class WaltIdVerifierService {
   constructor(private readonly verifierApiUrl: string) {}
 
-  async requestPresentation(credentialType: string) {
+  async requestPresentation(
+    credentialType: CredentialType,
+    values: Partial<CredentialDTO>
+  ) {
     const response = await axios.post(
       `${this.verifierApiUrl}/openid4vc/verify`,
-      {
-        request_credentials: [credentialType]
-      },
+      this.formatPresentationPayload(credentialType, values),
       {
         headers: {
           responseMode: "direct_post"
@@ -25,5 +27,49 @@ export class WaltIdVerifierService {
     );
 
     return response.data;
+  }
+
+  private formatPresentationPayload(
+    credentialType: CredentialType,
+    values: Partial<CredentialDTO>
+  ) {
+    const fields = [
+      {
+        path: ["$.type"],
+        filter: {
+          type: "string",
+          pattern: credentialType
+        }
+      },
+      ...Object.entries(values).map(([key, value]) => {
+        return {
+          path: [`$.credentialSubject.${key}`],
+          filter: {
+            type: "string",
+            pattern: value
+          }
+        };
+      })
+    ];
+
+    return {
+      request_credentials: [credentialType],
+      presentation_definition: {
+        id: "<automatically assigned>",
+        input_descriptors: [
+          {
+            id: credentialType,
+            format: {
+              jwt_vc_json: {
+                alg: ["EdDSA"]
+              }
+            },
+            constraints: {
+              fields
+            }
+          }
+        ]
+      }
+    };
   }
 }
