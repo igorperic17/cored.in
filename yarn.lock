@@ -3656,7 +3656,7 @@ __metadata:
   dependencies:
     "@cosmwasm/ts-codegen": "npm:^1.9.0"
     typescript: "npm:^5.4.5"
-    typia: "npm:^5.4.10"
+    typia: "npm:^6.0.3"
   languageName: unknown
   linkType: soft
 
@@ -21258,22 +21258,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10/dddcdd55dab8823f6ab618d74b6b09f8c010e4fe3ae28904c3c17f176e186773ad7b99410176bf0a2ec4ea07e0edec9ccf11fe05e0ca6e7958bf05ee7ce487f6
-  languageName: node
-  linkType: hard
-
-"typia@npm:^5.4.10":
-  version: 5.5.10
-  resolution: "typia@npm:5.5.10"
-  dependencies:
-    commander: "npm:^10.0.0"
-    comment-json: "npm:^4.2.3"
-    inquirer: "npm:^8.2.5"
-    randexp: "npm:^0.5.3"
-  peerDependencies:
-    typescript: ">=4.8.0 <5.5.0"
-  bin:
-    typia: lib/executable/typia.js
-  checksum: 10/d3dd44474ebd927f1aa1744812676db20fccf475d0808dae05cad8a65c60a0c4ca83cd3073dccbe32412e6eaa319c20715f775042ae42fc64d950ec1f13bc6f3
   languageName: node
   linkType: hard
 
