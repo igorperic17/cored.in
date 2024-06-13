@@ -18,7 +18,8 @@ export class UserController {
     console.log("User requested: ", req.wallet);
     await this.userService.updateLastSeen(req.wallet);
     const user = await Effect.runPromise(
-      await this.userService.get(req.wallet)
+      // TODO - handle private / public info depending on subscriptions
+      await this.userService.getPrivate(req.wallet)
     );
 
     return user;
