@@ -1,3 +1,4 @@
+import { CredentialDTO } from "@coredin/shared";
 import axios from "axios";
 
 export type IssuerInfo = {
@@ -34,8 +35,16 @@ export class WaltIdIssuerService {
     return createIssuerKeyResult.data;
   }
 
-  async getCredentialOfferUrl(subjectDid: string, issuerInfo: IssuerInfo) {
-    const payload = this.generateCredentialPayload(subjectDid, issuerInfo);
+  async getCredentialOfferUrl(
+    subjectDid: string,
+    data: CredentialDTO,
+    issuerInfo: IssuerInfo
+  ) {
+    const payload = this.generateCredentialPayload(
+      subjectDid,
+      data,
+      issuerInfo
+    );
     const createCredentialOfferResult = await axios.post(
       `${this.issuerApiUrl}/openid4vc/jwt/issue`,
       payload,
@@ -50,9 +59,9 @@ export class WaltIdIssuerService {
     return createCredentialOfferResult.data;
   }
 
-  // TODO - properly handle different issuers, credential types etc..
   private generateCredentialPayload(
     subjectDid: string,
+    data: CredentialDTO,
     issuerInfo: IssuerInfo
   ): string {
     return JSON.stringify({
@@ -63,23 +72,23 @@ export class WaltIdIssuerService {
         id: issuerInfo.issuerKeyVaultId
       },
       issuerDid: issuerInfo.issuerDid,
-      credentialConfigurationId: "UniversityDegree_jwt_vc_json",
+      credentialConfigurationId: data.type + "_jwt_vc_json",
       credentialData: {
         "@context": [
           "https://www.w3.org/2018/credentials/v1",
           "https://www.w3.org/2018/credentials/examples/v1"
         ],
-        type: ["VerifiableCredential", "UniversityDegreeCredential"],
+        type: ["VerifiableCredential", data.type],
         issuer: {
-          id: "did:web:vc.transmute.world"
+          id: issuerInfo.issuerDid
         },
-        issuanceDate: "2020-03-10T04:24:12.164Z",
+        issuanceDate: new Date().toISOString(),
         credentialSubject: {
           id: subjectDid,
-          degree: {
-            type: "BachelorDegree",
-            name: "Bachelor of Science and Arts"
-          }
+          title: data.title,
+          establishment: data.establishment,
+          startDate: data.startDate,
+          endDate: data.endDate
         }
       },
       mapping: {
