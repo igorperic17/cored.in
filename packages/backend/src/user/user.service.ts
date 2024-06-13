@@ -2,7 +2,12 @@ import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
 import { User } from "./user.entity";
-import { NotFoundError, UserProfile, UpdateProfileDTO } from "@coredin/shared";
+import {
+  NotFoundError,
+  UserProfile,
+  UpdateProfileDTO,
+  CredentialDTO
+} from "@coredin/shared";
 import { Effect } from "effect";
 import { WaltIdIssuerService, WaltIdWalletService } from "../ssi/core/services";
 import { CoredinContractService } from "@/coreum/services";
@@ -20,7 +25,7 @@ export class UserService {
     private readonly coredinContractService: CoredinContractService
   ) {}
 
-  async get(
+  async getPrivate(
     wallet: string
   ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
     const user = await this.userRepository.findOne({
@@ -42,6 +47,8 @@ export class UserService {
       }
       // Get DID
       const did = await this.walletService.getOrCreateDid(wallet, didKeyId);
+      const credentials = await this.getCredentials(wallet);
+
       return Effect.succeed({
         username: user.username || "no_username",
         did: did?.did || "",
@@ -50,7 +57,8 @@ export class UserService {
         avatarFallbackColor: user.avatarFallbackColor,
         backgroundColor: user.backgroundColor,
         bio: user.bio,
-        issuerDid: user.issuerDid
+        issuerDid: user.issuerDid,
+        credentials
       });
     }
 
@@ -92,5 +100,18 @@ export class UserService {
     );
 
     return updateResult.affected === 1;
+  }
+
+  private async getCredentials(wallet: string): Promise<CredentialDTO[]> {
+    return (await this.walletService.getVCs(wallet)).map((vc) => ({
+      id: vc.id,
+      type: vc.parsedDocument.type[1],
+      issuer: vc.parsedDocument.issuer.id,
+      title: vc.parsedDocument.credentialSubject.title,
+      establishment: vc.parsedDocument.credentialSubject.establishment,
+      startDate: vc.parsedDocument.credentialSubject.startDate,
+      endDate: vc.parsedDocument.credentialSubject.endDate,
+      verified: true
+    }));
   }
 }

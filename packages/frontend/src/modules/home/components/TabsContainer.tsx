@@ -1,9 +1,15 @@
 import { Box, Tab, TabList, TabPanel, TabPanels, Tabs } from "@chakra-ui/react";
 import { Feed, FeedProps } from "./Feed";
 import { FC } from "react";
-import { CredentialsContainer } from "./CredentialsContainer";
+import {
+  CredentialsContainer,
+  CredentialsContainerProps
+} from "./CredentialsContainer";
 
-export const TabsContainer: FC<FeedProps> = ({ posts }) => {
+export const TabsContainer: FC<FeedProps & CredentialsContainerProps> = ({
+  posts,
+  sections
+}) => {
   return (
     <Box w="100%">
       <Tabs isFitted size="md" variant="unstyled">
@@ -16,7 +22,7 @@ export const TabsContainer: FC<FeedProps> = ({ posts }) => {
             <Feed posts={posts} />
           </TabPanel>
           <TabPanel>
-            <CredentialsContainer />
+            <CredentialsContainer sections={sections} />
           </TabPanel>
         </TabPanels>
       </Tabs>

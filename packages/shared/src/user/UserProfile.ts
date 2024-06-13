@@ -1,5 +1,5 @@
 import { tags } from "typia";
-import { HexColor, PhotoUrl, ShortString } from "..";
+import { CredentialDTO, HexColor, PhotoUrl, ShortString } from "..";
 
 export interface UserProfile {
   username: ShortString;
@@ -10,4 +10,5 @@ export interface UserProfile {
   backgroundColor?: HexColor;
   bio?: string & tags.MaxLength<250>;
   issuerDid?: string;
+  credentials: CredentialDTO[];
 }

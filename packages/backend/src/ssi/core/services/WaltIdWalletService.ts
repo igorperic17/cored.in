@@ -1,4 +1,4 @@
-import { Did, Wallet } from "../data-classes";
+import { Did, VerifiableCredential, Wallet } from "../data-classes";
 import axios from "axios";
 
 export class WaltIdWalletService {
@@ -19,7 +19,8 @@ export class WaltIdWalletService {
     return (await this.getDids(wallet)).find((did) => did.keyId === didKeyId);
   }
 
-  async getVCs(wallet: string) {
+  async getVCs(wallet: string): Promise<VerifiableCredential[]> {
+    // TODO - refactor to enable reusage of same token / wallet queries
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
     const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials`;
     const response = await axios.get(targetUrl, {

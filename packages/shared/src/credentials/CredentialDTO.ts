@@ -1,7 +1,7 @@
 import { CredentialType } from "./CredentialTypes";
 
 export type CredentialDTO = {
-  id: number;
+  id: string;
   type: CredentialType;
   title: string;
   establishment: string;
