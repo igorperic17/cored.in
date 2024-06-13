@@ -1,11 +1,11 @@
-import { Controller, Get, Req, UseGuards } from "@nestjs/common";
+import { Controller, Delete, Get, Req, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
 // import { UserProfile } from "@coredin/shared";
 // import { TypedBody, TypedRoute } from "@nestia/core";
 import { Effect } from "effect";
-import { TypedBody, TypedRoute } from "@nestia/core";
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 import { UpdateProfileDTO } from "@coredin/shared";
 
 @Controller("user")
@@ -34,5 +34,15 @@ export class UserController {
     const res = await this.userService.updateProfile(req.wallet, profile);
 
     return res.affected === 1;
+  }
+
+  @Delete("credentials/:id")
+  @UseGuards(LoggedIn)
+  async deleteCredential(
+    @Req() req: AuthenticatedRequest,
+    @TypedParam("id") id: string,
+    @TypedQuery() { permanent }: { permanent: boolean }
+  ) {
+    return this.walletService.deleteCredential(req.wallet, id, permanent);
   }
 }

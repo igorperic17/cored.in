@@ -11,4 +11,8 @@ export class UserService {
   async updateProfile(profile: UpdateProfileDTO): Promise<void> {
     return this.http.post("user", profile);
   }
+
+  async deleteCredential(id: string, permanent: boolean): Promise<void> {
+    return this.http.delete(`user/credentials/${id}?permanent=${permanent}`);
+  }
 }

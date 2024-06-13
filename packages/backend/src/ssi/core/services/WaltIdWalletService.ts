@@ -22,12 +22,14 @@ export class WaltIdWalletService {
   async getVCs(wallet: string): Promise<VerifiableCredential[]> {
     // TODO - refactor to enable reusage of same token / wallet queries
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials`;
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials?showDeleted=false`;
     const response = await axios.get(targetUrl, {
       headers: {
         Authorization: `Bearer ${token}`
       }
     });
+
+    // console.dir(response.data, { depth: 10 });
 
     return response.data;
   }
@@ -87,8 +89,6 @@ export class WaltIdWalletService {
       }
     });
 
-    console.log("didsResponse", didsResponse.data);
-
     return didsResponse.data;
   }
 
@@ -139,6 +139,23 @@ export class WaltIdWalletService {
     );
 
     return createResponse.data;
+  }
+
+  // TODO - somehow permanent delete is not working.. investigate
+  async deleteCredential(
+    wallet: string,
+    credentialId: string,
+    permanent: boolean
+  ) {
+    const { token, ssiWallet } = await this.getSsiWallet(wallet);
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials/${credentialId}?permanent=${permanent}}`;
+    const deleteResponse = await axios.delete(targetUrl, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    });
+
+    return deleteResponse.status === 202;
   }
 
   private async decodePresentationURL(offerURL: string): Promise<{
