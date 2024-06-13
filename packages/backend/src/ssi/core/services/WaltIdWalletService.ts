@@ -31,9 +31,9 @@ export class WaltIdWalletService {
     return response.data;
   }
 
-  async useOfferRequest(wallet: string, offerRequest: string) {
+  async useOfferRequest(wallet: string, did: string, offerRequest: string) {
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/exchange/useOfferRequest?requireUserInput=false`;
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/exchange/useOfferRequest?did=${did}&requireUserInput=false`;
     const offerResponse = await axios.post(targetUrl, offerRequest, {
       headers: {
         Authorization: `Bearer ${token}`
@@ -62,9 +62,10 @@ export class WaltIdWalletService {
     await axios.post(
       targetUrl,
       {
-        did: matchResponse[0].parsedDocument.credentialSubject.id,
+        did: matchResponse[matchResponse.length - 1].parsedDocument
+          .credentialSubject.id,
         presentationRequest: resolvedData,
-        selectedCredentials: [matchResponse[0].id]
+        selectedCredentials: [matchResponse[matchResponse.length - 1].id]
       },
       {
         headers: {
@@ -115,7 +116,7 @@ export class WaltIdWalletService {
 
   async createDid(wallet: string, keyId: string) {
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids/create/jwk?keyId=${keyId}`;
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/dids/create/jwk?keyId=${keyId}&alias=coredin`;
     const createResponse = await axios.post(
       targetUrl,
       {},
