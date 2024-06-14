@@ -3,11 +3,11 @@
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_binary, Addr, Coin};
+    use cosmwasm_std::{coin, coins, from_json, Addr};
 
-    use crate::contract::{execute, instantiate, query};
+    use crate::contract::{execute, query};
     use crate::error::ContractError;
-    use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
+    use crate::msg::{ExecuteMsg, GetDIDResponse, QueryMsg};
     use crate::state::Config;
     use crate::tests::common::common::{
         assert_name_owner, assert_config_state, mock_init_with_price, mock_init_no_price, mock_alice_registers_name,
@@ -101,7 +101,7 @@ mod tests {
             username: "alice".to_string(),
         };
         let read_res = query(deps.as_ref(), mock_env(), read_msg).ok().unwrap();
-        let value: GetDIDResponse = from_binary(&read_res).unwrap();
+        let value: GetDIDResponse = from_json(&read_res).unwrap();
 
         assert!(value.did_info.is_none(), "DID not removed from storage");
     }
@@ -248,7 +248,7 @@ mod tests {
             },
         )
         .unwrap();
-        let value: GetDIDResponse = from_binary(&res).unwrap();
+        let value: GetDIDResponse = from_json(&res).unwrap();
         assert_eq!(None, value.did_info);
     }
 }

@@ -1,11 +1,6 @@
 use std::collections::LinkedList;
-use sha2::digest::consts::True;
-use sha2::{Sha256, Digest}; // Importing cryptographic hash functions
-use hex;
-
-use coreum_wasm_sdk::types::cosmos::group::v1::Exec;
 use cosmwasm_std::{
-    entry_point, to_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage
+    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage
 };
 
 use crate::coin_helpers::assert_sent_sufficient_coin;
@@ -28,7 +23,7 @@ use crate::state::{
 use crate::subscription::{set_subscription_price, subscribe, is_subscriber};
 use cosmwasm_storage::{ReadonlyBucket};
 
-use crate::merkle_tree::{MerkleTree};
+use crate::merkle_tree::MerkleTree;
 
 const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
@@ -107,7 +102,7 @@ pub fn execute_remove(
     _env: Env,
     info: MessageInfo,
     username: String,
-    did: String,
+    _did: String,
 ) -> Result<Response, ContractError> {
 
     let key = username.as_bytes();
@@ -134,7 +129,7 @@ pub fn execute_remove(
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
-        QueryMsg::Config {} => to_binary(&config_storage_read(deps.storage).load()?),
+        QueryMsg::Config {} => to_json_binary(&config_storage_read(deps.storage).load()?),
 
         QueryMsg::GetWalletDID { wallet } => query_resolver(deps, env, wallet, wallet_storage_read),
         QueryMsg::GetUsernameDID { username } => query_resolver(deps, env, username, username_storage_read),
@@ -158,7 +153,7 @@ fn query_resolver(deps: Deps, _env: Env, query_key: String, storage_resolver: Re
         did_info: did_info
     };
 
-    to_binary(&did_response)
+    to_json_binary(&did_response)
 }
 
 fn query_verify_credential(deps: Deps, _env: Env, did: String, credential_hash: String, merkle_proofs: LinkedList<String>) -> StdResult<Binary> {
@@ -175,7 +170,7 @@ fn query_verify_credential(deps: Deps, _env: Env, did: String, credential_hash: 
     let verification_result = MerkleTree::verify_proof_for_root(&stored_root.unwrap(), &credential_hash, proof_slices);
     println!("Res: {:}", verification_result);
 
-    Ok(to_binary(&verification_result)?)
+    Ok(to_json_binary(&verification_result)?)
 }
 
 
@@ -213,7 +208,7 @@ fn validate_name(name: &str) -> Result<(), ContractError> {
 pub fn execute_update_vc_root(
     deps: DepsMut,
     _env: Env,
-    info: MessageInfo,
+    _info: MessageInfo,
     did: String,
     root: String
 ) -> Result<Response, ContractError> {

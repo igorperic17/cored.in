@@ -1,12 +1,10 @@
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_binary, Addr, Coin};
-    use std::collections::LinkedList;
-    use crate::contract::{execute, instantiate, query};
-    use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
-    use crate::state::Config;
-    use crate::tests::common::common::{assert_config_state, mock_init_no_price};
+    use cosmwasm_std::{coin, coins, from_json};
+    use crate::contract::{execute, query};
+    use crate::msg::{ExecuteMsg, QueryMsg};
+    use crate::tests::common::common::mock_init_no_price;
 
     #[test]
     fn set_subscription_price() {
@@ -59,7 +57,7 @@ mod tests {
         };
 
         let res = query(deps.as_ref(), mock_env(), is_subscriber_msg).unwrap();
-        let value: bool = from_binary(&res).unwrap();
+        let value: bool = from_json(&res).unwrap();
         assert!(value, "Expected bob_key to be a subscriber of alice_key");
     }
 
@@ -119,7 +117,7 @@ mod tests {
         };
 
         let res = query(deps.as_ref(), mock_env(), is_subscriber_msg).unwrap();
-        let value: bool = from_binary(&res).unwrap();
+        let value: bool = from_json(&res).unwrap();
         assert!(value, "Expected bob_key to be a subscriber of alice_key");
     }
 

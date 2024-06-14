@@ -1,4 +1,4 @@
-use cosmwasm_std::{Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Coin, to_binary, Binary};
+use cosmwasm_std::{to_json_binary, Binary, Coin, Deps, DepsMut, MessageInfo, Response, StdError, StdResult};
 use crate::state::{subscription_price_storage, subscription_storage, subscription_storage_read, SubscriptionInfo};
 use crate::error::ContractError;
 use crate::coin_helpers::assert_sent_sufficient_coin;
@@ -66,6 +66,6 @@ pub fn is_subscriber(
     let subscriber_info = subscription_storage_read(deps.storage).may_load(key.as_bytes())?;
 
     let response = subscriber_info.is_some();
-    to_binary(&response)
+    to_json_binary(&response)
 }
 

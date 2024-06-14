@@ -2,13 +2,12 @@
 
 #[cfg(test)]
 pub mod common {
-    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_binary, Addr, Coin, Deps, DepsMut};
+    use cosmwasm_std::testing::{mock_env, mock_info};
+    use cosmwasm_std::{coins, from_json, Addr, Coin, Deps, DepsMut};
 
     use crate::contract::{execute, instantiate, query};
-    use crate::error::ContractError;
     use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
-    use crate::state::{username_storage, Config, USERNAME_RESOLVER_KEY};
+    use crate::state::Config;
 
     pub fn assert_name_owner(deps: Deps, name: &str, owner: &Addr) {
         let res = query(
@@ -20,7 +19,7 @@ pub mod common {
         )
         .unwrap();
 
-        let value: GetDIDResponse = from_binary(&res).unwrap();
+        let value: GetDIDResponse = from_json(&res).unwrap();
         assert_eq!(
             Some(owner.to_string()),
             Some(value.did_info.unwrap().wallet.to_string())
@@ -29,7 +28,7 @@ pub mod common {
 
     pub fn assert_config_state(deps: Deps, expected: Config) {
         let res = query(deps, mock_env(), QueryMsg::Config {}).unwrap();
-        let value: Config = from_binary(&res).unwrap();
+        let value: Config = from_json(&res).unwrap();
         assert_eq!(value, expected);
     }
 
