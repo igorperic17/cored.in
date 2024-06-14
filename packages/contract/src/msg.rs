@@ -1,3 +1,5 @@
+use std::collections::LinkedList;
+
 use cosmwasm_schema::QueryResponses;
 use cosmwasm_std::Coin;
 use schemars::JsonSchema;
@@ -24,7 +26,12 @@ pub enum ExecuteMsg {
     RemoveDID {
         did: String,
         username: String
-    }
+    },
+    // register DID and username with the sender's account
+    UpdateCredentialMerkeRoot {
+        did: String,
+        root: String
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, QueryResponses)]
@@ -39,6 +46,14 @@ pub enum QueryMsg {
     GetUsernameDID { username: String },
     #[returns(GetDIDResponse)]
     GetDID { did: String },
+
+    // verify if the the provided credential is in the set of VCs for given DID 
+    #[returns(bool)]
+    VerifyCredential {
+        did: String,
+        credential_hash: String,
+        merkle_proofs: LinkedList<String>
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

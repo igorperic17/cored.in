@@ -27,6 +27,12 @@ export type ExecuteMsg = {
     username: string;
     [k: string]: unknown;
   };
+} | {
+  update_credential_merke_root: {
+    did: string;
+    root: string;
+    [k: string]: unknown;
+  };
 };
 export type QueryMsg = {
   config: {
@@ -47,6 +53,13 @@ export type QueryMsg = {
     did: string;
     [k: string]: unknown;
   };
+} | {
+  verify_credential: {
+    credential_hash: string;
+    did: string;
+    merkle_proofs: string[];
+    [k: string]: unknown;
+  };
 };
 export type Addr = string;
 export interface Config {
@@ -64,3 +77,4 @@ export interface DidInfo {
   wallet: Addr;
   [k: string]: unknown;
 }
+export type Boolean = boolean;

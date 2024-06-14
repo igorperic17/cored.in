@@ -73,6 +73,37 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "verify_credential"
+      ],
+      "properties": {
+        "verify_credential": {
+          "type": "object",
+          "required": [
+            "credential_hash",
+            "did",
+            "merkle_proofs"
+          ],
+          "properties": {
+            "credential_hash": {
+              "type": "string"
+            },
+            "did": {
+              "type": "string"
+            },
+            "merkle_proofs": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

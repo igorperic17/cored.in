@@ -101,6 +101,30 @@
           }
         },
         "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "update_credential_merke_root"
+        ],
+        "properties": {
+          "update_credential_merke_root": {
+            "type": "object",
+            "required": [
+              "did",
+              "root"
+            ],
+            "properties": {
+              "did": {
+                "type": "string"
+              },
+              "root": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
       }
     ]
   },
@@ -174,6 +198,37 @@
             "properties": {
               "did": {
                 "type": "string"
+              }
+            }
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "verify_credential"
+        ],
+        "properties": {
+          "verify_credential": {
+            "type": "object",
+            "required": [
+              "credential_hash",
+              "did",
+              "merkle_proofs"
+            ],
+            "properties": {
+              "credential_hash": {
+                "type": "string"
+              },
+              "did": {
+                "type": "string"
+              },
+              "merkle_proofs": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
               }
             }
           }
@@ -358,6 +413,11 @@
           }
         }
       }
+    },
+    "verify_credential": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Boolean",
+      "type": "boolean"
     }
   }
 }

@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, InstantiateMsg, Coin, ExecuteMsg, QueryMsg, Addr, Config, GetDIDResponse, DidInfo } from "./Coredin.types";
+import { Uint128, InstantiateMsg, Coin, ExecuteMsg, QueryMsg, Addr, Config, GetDIDResponse, DidInfo, Boolean } from "./Coredin.types";
 export interface CoredinReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -25,6 +25,15 @@ export interface CoredinReadOnlyInterface {
   }: {
     did: string;
   }) => Promise<GetDIDResponse>;
+  verifyCredential: ({
+    credentialHash,
+    did,
+    merkleProofs
+  }: {
+    credentialHash: string;
+    did: string;
+    merkleProofs: string[];
+  }) => Promise<Boolean>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -36,6 +45,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getWalletDID = this.getWalletDID.bind(this);
     this.getUsernameDID = this.getUsernameDID.bind(this);
     this.getDID = this.getDID.bind(this);
+    this.verifyCredential = this.verifyCredential.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -75,6 +85,23 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
       }
     });
   };
+  verifyCredential = async ({
+    credentialHash,
+    did,
+    merkleProofs
+  }: {
+    credentialHash: string;
+    did: string;
+    merkleProofs: string[];
+  }): Promise<Boolean> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      verify_credential: {
+        credential_hash: credentialHash,
+        did,
+        merkle_proofs: merkleProofs
+      }
+    });
+  };
 }
 export interface CoredinInterface extends CoredinReadOnlyInterface {
   contractAddress: string;
@@ -93,6 +120,13 @@ export interface CoredinInterface extends CoredinReadOnlyInterface {
     did: string;
     username: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  updateCredentialMerkeRoot: ({
+    did,
+    root
+  }: {
+    did: string;
+    root: string;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class CoredinClient extends CoredinQueryClient implements CoredinInterface {
   client: SigningCosmWasmClient;
@@ -105,6 +139,7 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     this.contractAddress = contractAddress;
     this.register = this.register.bind(this);
     this.removeDID = this.removeDID.bind(this);
+    this.updateCredentialMerkeRoot = this.updateCredentialMerkeRoot.bind(this);
   }
   register = async ({
     did,
@@ -131,6 +166,20 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
       remove_d_i_d: {
         did,
         username
+      }
+    }, fee, memo, _funds);
+  };
+  updateCredentialMerkeRoot = async ({
+    did,
+    root
+  }: {
+    did: string;
+    root: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      update_credential_merke_root: {
+        did,
+        root
       }
     }, fee, memo, _funds);
   };

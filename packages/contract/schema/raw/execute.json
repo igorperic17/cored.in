@@ -49,6 +49,30 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "update_credential_merke_root"
+      ],
+      "properties": {
+        "update_credential_merke_root": {
+          "type": "object",
+          "required": [
+            "did",
+            "root"
+          ],
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "root": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

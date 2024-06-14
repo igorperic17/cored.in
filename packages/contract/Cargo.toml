@@ -5,9 +5,7 @@ version = "0.1.0"
 authors = ["Igor Peric <igorperic@live.com>"]
 edition = "2018"
 license = "Apache-2.0"
-repository = "https://github.com/InterWasm/cw-contracts"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+repository = "https://gitlab.com/cryptonize/coredin"
 
 [lib]
 crate-type = ["cdylib", "rlib"]
@@ -37,6 +35,8 @@ serde = { version = "1.0.125", default-features = false, features = ["derive"] }
 cosmwasm-schema = "1.0.0-beta"
 coreum-wasm-sdk = "0.2.4"
 cargo-post = "0.1.7"
+sha2 = "0.10.8"
+hex = "0.4.3"
 
 [dev-dependencies]
 cosmwasm-schema = { version = "1.0.0-beta" }

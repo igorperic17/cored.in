@@ -12,6 +12,7 @@ pub static CONFIG_KEY: &[u8] = b"config";
 pub static DID_RESOLVER_KEY: &[u8] = b"didresolver";
 pub static USERNAME_RESOLVER_KEY: &[u8] = b"usernameresolver";
 pub static WALLET_RESOLVER_KEY: &[u8] = b"walletlresolver";
+pub static VC_MERKLE_RESOLVER_KEY: &[u8] = b"vcmerklelresolver";
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
@@ -57,4 +58,12 @@ pub fn wallet_storage(storage: &mut dyn Storage) -> Bucket<DidInfo> {
 
 pub fn wallet_storage_read(storage: &dyn Storage) -> ReadonlyBucket<DidInfo> {
     bucket_read(storage, WALLET_RESOLVER_KEY)
+}
+
+pub fn vc_storage(storage: &mut dyn Storage) -> Bucket<String> {
+    bucket(storage, VC_MERKLE_RESOLVER_KEY)
+}
+
+pub fn vc_storage_read(storage: &dyn Storage) -> ReadonlyBucket<String> {
+    bucket_read(storage, VC_MERKLE_RESOLVER_KEY)
 }
