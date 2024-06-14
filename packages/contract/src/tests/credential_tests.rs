@@ -66,7 +66,7 @@ mod tests {
         let info = mock_info("alice_key", &[]);
         // let credentials = vec!["dummy_credential_hash1", "dummy_credential_hash2", "dummy_credential_hash3"];
         let credentials = vec![
-            "dummyscresoiadsuojdojidfojdensss_tialhah1".to_string(),
+            "dummyscresoiatialhah1".to_string(),
             "credential2".to_string(),
             "dummycredentialhash3".to_string(),
         ];
