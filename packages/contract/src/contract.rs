@@ -24,6 +24,7 @@ use crate::state::{
     Config, 
     DidInfo
 };
+use crate::subscription::{set_subscription_price, subscribe, is_subscriber};
 use cosmwasm_storage::{ReadonlyBucket};
 
 const MIN_NAME_LENGTH: u64 = 3;
@@ -56,7 +57,9 @@ pub fn execute(
     match msg {
         ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did),
         ExecuteMsg::RemoveDID { did, username } => execute_remove(deps, env, info, username, did),
-        ExecuteMsg::UpdateCredentialMerkeRoot { did, root } => execute_update_vc_root(deps, env, info, did, root)
+        ExecuteMsg::UpdateCredentialMerkeRoot { did, root } => execute_update_vc_root(deps, env, info, did, root),
+        ExecuteMsg::SetSubscriptionPrice { price } => set_subscription_price(deps, info, price),
+        ExecuteMsg::Subscribe { did } => subscribe(deps, info, did),
     }
 }
 
@@ -104,10 +107,6 @@ pub fn execute_remove(
     did: String,
 ) -> Result<Response, ContractError> {
 
-    // TODO: agree how much will new DID registration cost
-    let config_state = config_storage(deps.storage).load()?;
-    assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
-
     let key = username.as_bytes();
     let did_record = username_storage_read(deps.storage).may_load(key)?;
     if did_record.is_none() {
@@ -121,14 +120,7 @@ pub fn execute_remove(
         return Err(ContractError::Unauthorized {});
     }
 
-    // name is available
-    let record = DidInfo {
-        wallet: info.sender,
-        username: username.clone(),
-        did: did
-    };
-
-    // store for querying in all three buckets
+    // Remove from all three buckets
     did_storage(deps.storage).remove(record.did.as_bytes());
     username_storage(deps.storage).remove(record.username.as_bytes());
     wallet_storage(deps.storage).remove(record.wallet.as_bytes());
@@ -144,7 +136,8 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         QueryMsg::GetWalletDID { wallet } => query_resolver(deps, env, wallet, wallet_storage_read),
         QueryMsg::GetUsernameDID { username } => query_resolver(deps, env, username, username_storage_read),
         QueryMsg::GetDID { did } => query_resolver(deps, env, did, did_storage_read),
-        QueryMsg::VerifyCredential { did, credential_hash, merkle_proofs } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs)
+        QueryMsg::VerifyCredential { did, credential_hash, merkle_proofs } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
+        QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, did, subscriber),
     }
 }
 
@@ -175,7 +168,7 @@ fn query_verify_credential(deps: Deps, _env: Env, did: String, credential_hash: 
     let mut current_hash = credential_hash;
     for proof in merkle_proofs {
         let mut hasher = Sha256::new();
-        if proof < current_hash {
+        if proof.to_string() < current_hash {
             hasher.update(proof.as_bytes());
             hasher.update(current_hash.as_bytes());
         } else {
@@ -222,6 +215,7 @@ fn validate_name(name: &str) -> Result<(), ContractError> {
     }
 }
 
+
 pub fn execute_update_vc_root(
     deps: DepsMut,
     _env: Env,
@@ -248,4 +242,3 @@ pub fn execute_update_vc_root(
 
     Ok(Response::default())
 }
-

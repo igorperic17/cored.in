@@ -32,6 +32,14 @@ pub enum ExecuteMsg {
         did: String,
         root: String
     },
+    // set subscription price for a DID
+    SetSubscriptionPrice {
+        price: Coin,
+    },
+    // subscribe to a DID
+    Subscribe {
+        did: String,
+    },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, QueryResponses)]
@@ -53,6 +61,12 @@ pub enum QueryMsg {
         did: String,
         credential_hash: String,
         merkle_proofs: LinkedList<String>
+    },
+    // check if the user is a subscriber to the DID
+    #[returns(bool)]
+    IsSubscriber {
+        did: String,
+        subscriber: String,
     },
 }
 

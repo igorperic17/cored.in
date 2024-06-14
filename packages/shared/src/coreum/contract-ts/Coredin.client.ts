@@ -34,6 +34,13 @@ export interface CoredinReadOnlyInterface {
     did: string;
     merkleProofs: string[];
   }) => Promise<Boolean>;
+  isSubscriber: ({
+    did,
+    subscriber
+  }: {
+    did: string;
+    subscriber: string;
+  }) => Promise<Boolean>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -46,6 +53,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getUsernameDID = this.getUsernameDID.bind(this);
     this.getDID = this.getDID.bind(this);
     this.verifyCredential = this.verifyCredential.bind(this);
+    this.isSubscriber = this.isSubscriber.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -102,6 +110,20 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
       }
     });
   };
+  isSubscriber = async ({
+    did,
+    subscriber
+  }: {
+    did: string;
+    subscriber: string;
+  }): Promise<Boolean> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      is_subscriber: {
+        did,
+        subscriber
+      }
+    });
+  };
 }
 export interface CoredinInterface extends CoredinReadOnlyInterface {
   contractAddress: string;
@@ -127,6 +149,16 @@ export interface CoredinInterface extends CoredinReadOnlyInterface {
     did: string;
     root: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  setSubscriptionPrice: ({
+    price
+  }: {
+    price: Coin;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
+  subscribe: ({
+    did
+  }: {
+    did: string;
+  }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
 }
 export class CoredinClient extends CoredinQueryClient implements CoredinInterface {
   client: SigningCosmWasmClient;
@@ -140,6 +172,8 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     this.register = this.register.bind(this);
     this.removeDID = this.removeDID.bind(this);
     this.updateCredentialMerkeRoot = this.updateCredentialMerkeRoot.bind(this);
+    this.setSubscriptionPrice = this.setSubscriptionPrice.bind(this);
+    this.subscribe = this.subscribe.bind(this);
   }
   register = async ({
     did,
@@ -180,6 +214,28 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
       update_credential_merke_root: {
         did,
         root
+      }
+    }, fee, memo, _funds);
+  };
+  setSubscriptionPrice = async ({
+    price
+  }: {
+    price: Coin;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      set_subscription_price: {
+        price
+      }
+    }, fee, memo, _funds);
+  };
+  subscribe = async ({
+    did
+  }: {
+    did: string;
+  }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
+    return await this.client.execute(this.sender, this.contractAddress, {
+      subscribe: {
+        did
       }
     }, fee, memo, _funds);
   };

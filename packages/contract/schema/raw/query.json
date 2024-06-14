@@ -104,6 +104,30 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "is_subscriber"
+      ],
+      "properties": {
+        "is_subscriber": {
+          "type": "object",
+          "required": [
+            "did",
+            "subscriber"
+          ],
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "subscriber": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

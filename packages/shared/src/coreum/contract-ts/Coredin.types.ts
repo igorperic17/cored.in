@@ -33,6 +33,16 @@ export type ExecuteMsg = {
     root: string;
     [k: string]: unknown;
   };
+} | {
+  set_subscription_price: {
+    price: Coin;
+    [k: string]: unknown;
+  };
+} | {
+  subscribe: {
+    did: string;
+    [k: string]: unknown;
+  };
 };
 export type QueryMsg = {
   config: {
@@ -58,6 +68,12 @@ export type QueryMsg = {
     credential_hash: string;
     did: string;
     merkle_proofs: string[];
+    [k: string]: unknown;
+  };
+} | {
+  is_subscriber: {
+    did: string;
+    subscriber: string;
     [k: string]: unknown;
   };
 };
