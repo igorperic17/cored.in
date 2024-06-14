@@ -1,1 +1,1 @@
-export const CONTRACT_ADDRESS="testcore1cue5qp6d8z2p49p6u955mf240qe3yugtlp5vym337mtpfvmu9cfstat2jp";
+export const CONTRACT_ADDRESS="testcore134xp2m8t0rmlvmfzly8s2w8n8dct9gqsy93m8uazefvwlm507mxq685kxu";
