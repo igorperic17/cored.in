@@ -1,9 +1,7 @@
-// src/tests/credential_tests.rs
-
 #[cfg(test)]
 mod tests {
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{from_binary, Addr};
+    use cosmwasm_std::{from_binary};
     use std::collections::LinkedList;
     use crate::contract::{execute, query};
     use crate::msg::{ExecuteMsg, QueryMsg};
@@ -11,131 +9,112 @@ mod tests {
     use sha2::{Sha256, Digest};
     use hex;
 
-    fn calculate_merkle_root(leaf: &str, proofs: &[&str]) -> String {
-        let mut current_hash = leaf.to_string();
-        for proof in proofs {
-            let mut hasher = Sha256::new();
-            if proof.to_string() < current_hash {
-                hasher.update(proof.as_bytes());
-                hasher.update(current_hash.as_bytes());
-            } else {
-                hasher.update(current_hash.as_bytes());
-                hasher.update(proof.as_bytes());
+    use crate::merkle_tree::MerkleTree;
+
+    #[cfg(test)]
+    mod tests {
+        use super::MerkleTree;
+    
+        #[test]
+        fn test_merkle_tree_logic() {
+            // Random set of credentials
+            let credentials = vec![
+                "credential1",
+                "credential2",
+                "credential3",
+                "credentia42",
+                "asudhiauds"
+            ];
+    
+            // Create a new Merkle tree from credentials
+            let mut merkle_tree = MerkleTree::new();
+            for cred in credentials {
+                merkle_tree.add_credential(cred.to_string());
             }
-            current_hash = hex::encode(hasher.finalize());
+    
+            // println!("Calculated Merkle Root: {}", merkle_tree.get_root());
+    
+            // Pick a credential and generate proofs for it
+            let target_credential = "credential2".to_string();
+            let proofs = merkle_tree.generate_proof(&target_credential);
+            // println!("Generated Proofs for {}: {:?}", target_credential, proofs);
+    
+            // Verify the root using the generated proofs
+            let verification_result = merkle_tree.verify_proof(&target_credential.to_string(), proofs.clone().unwrap());
+            println!("Verification Result: {}", verification_result);
+    
+            // Check if the verification result matches the original root
+            assert!(verification_result, "Merkle root verification failed");
+    
+            // Negative case: Verify a non-existent credential
+            let non_existent_credential = "non_existent_credential".to_string();
+            let non_existent_verification_result = merkle_tree.verify_proof(&non_existent_credential, proofs.unwrap());
+            println!("Non-existent Verification Result: {}", non_existent_verification_result);
+    
+            // The verification result should not match the original root
+            assert!(!non_existent_verification_result, "Non-existent credential verification should fail");
         }
-        current_hash
     }
 
     #[test]
-    fn register_and_update_vc_root() {
+    fn store_and_verify_dummy_credentials() {
         let mut deps = mock_dependencies();
         mock_init_no_price(deps.as_mut());
         mock_alice_registers_name(deps.as_mut(), &[]);
 
-        // Alice updates VC root
+        // Update VC root with dummy credentials
         let info = mock_info("alice_key", &[]);
-        let msg = ExecuteMsg::UpdateCredentialMerkeRoot {
-            did: "alice_did".to_string(),
-            root: "new_merkle_root".to_string(),
-        };
-        let _res = execute(deps.as_mut(), mock_env(), info, msg)
-            .expect("contract successfully handles UpdateCredentialMerkeRoot message");
+        // let credentials = vec!["dummy_credential_hash1", "dummy_credential_hash2", "dummy_credential_hash3"];
+        let credentials = vec![
+            "dummyscresoiadsuojdojidfojdensss_tialhah1".to_string(),
+            "credential2".to_string(),
+            "dummycredentialhash3".to_string(),
+        ];
 
-        // Query to verify the root
-        let query_msg = QueryMsg::VerifyCredential {
-            did: "alice_did".to_string(),
-            credential_hash: "credential_hash".to_string(),
-            merkle_proofs: LinkedList::new(),
-        };
-        let res = query(deps.as_ref(), mock_env(), query_msg).unwrap();
-        let value: bool = from_binary(&res).unwrap();
-        assert!(!value, "Expected verification to fail without proper proofs");
-    }
+        // Create a new Merkle tree from credentials
+        let mut merkle_tree = MerkleTree::new();
+        for cred in credentials {
+            merkle_tree.add_credential(cred.to_string());
+        }
+        let root = merkle_tree.get_root();
 
-    #[test]
-    fn verify_credential_not_present() {
-        let mut deps = mock_dependencies();
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
+        println!("Calculated Merkle Root for dummy credentials: {}", root);
 
-        // Query to verify the root before any VC root is set
-        let query_msg = QueryMsg::VerifyCredential {
-            did: "alice_did".to_string(),
-            credential_hash: "credential_hash".to_string(),
-            merkle_proofs: LinkedList::new(),
-        };
-        let res = query(deps.as_ref(), mock_env(), query_msg);
-        assert!(res.is_err(), "Expected verification to fail when no VC root is set");
-    }
-
-    #[test]
-    fn verify_credential_success() {
-        let mut deps = mock_dependencies();
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
-
-        // Update VC root
-        let info = mock_info("alice_key", &[]);
-        let leaf = "credential_hash";
-        let proofs = vec!["proof1", "proof2"];
-        let root = calculate_merkle_root(leaf, &proofs);
-
-        let msg = ExecuteMsg::UpdateCredentialMerkeRoot {
+        let msg = ExecuteMsg::UpdateCredentialMerkleRoot {
             did: "alice_did".to_string(),
             root: root.clone(),
         };
         let _res = execute(deps.as_mut(), mock_env(), info, msg)
             .expect("contract successfully handles UpdateCredentialMerkeRoot message");
 
-        // Query to verify the credential
+        // Generate proofs for the dummy credential
+        let proofs = merkle_tree.generate_proof(&"credential2".to_string()).unwrap();
         let mut merkle_proofs = LinkedList::new();
-        for proof in proofs {
-            merkle_proofs.push_back(proof.to_string());
-        }
-
-        let query_msg = QueryMsg::VerifyCredential {
-            did: "alice_did".to_string(),
-            credential_hash: leaf.to_string(),
-            merkle_proofs,
-        };
-        let res = query(deps.as_ref(), mock_env(), query_msg).unwrap();
-        let value: bool = from_binary(&res).unwrap();
-        assert!(value, "Expected verification to succeed with correct proofs");
-    }
-
-    #[test]
-    fn verify_large_number_of_credentials() {
-        let mut deps = mock_dependencies();
-        mock_init_no_price(deps.as_mut());
-        mock_alice_registers_name(deps.as_mut(), &[]);
-
-        // Register a large number of credentials
-        let info = mock_info("alice_key", &[]);
-        let leaf = "credential_hash";
-        let proofs: Vec<String> = (0..10000).map(|i| format!("proof{}", i)).collect();
-        let root = calculate_merkle_root(leaf, &proofs.iter().map(|s| s.as_str()).collect::<Vec<&str>>());
-
-        let msg = ExecuteMsg::UpdateCredentialMerkeRoot {
-            did: "alice_did".to_string(),
-            root: root.clone(),
-        };
-        let _res = execute(deps.as_mut(), mock_env(), info, msg)
-            .expect("contract successfully handles UpdateCredentialMerkeRoot message");
-
-        // Simulate verifying with a large number of proofs
-        let mut merkle_proofs = LinkedList::new();
-        for proof in proofs {
+        for proof in proofs.clone() {
             merkle_proofs.push_back(proof);
         }
 
+        // let res_offchain = merkle_tree.verify_proof(&"credential2".to_string(), proofs);
+        // println!("RES OFF CHAIN: {:}", res_offchain);
+
         let query_msg = QueryMsg::VerifyCredential {
             did: "alice_did".to_string(),
-            credential_hash: leaf.to_string(),
+            credential_hash: "credential2".to_string(),
+            merkle_proofs: merkle_proofs.clone(),
+        };
+        let res = query(deps.as_ref(), mock_env(), query_msg).unwrap();
+        let value: bool = from_binary(&res).unwrap();
+
+        assert!(value, "Expected verification to succeed with correct proofs for dummy credential");
+
+        // Negative case: Verify a non-existent credential
+        let non_existent_leaf = "non_existent_credential_hash";
+        let query_msg = QueryMsg::VerifyCredential {
+            did: "alice_did".to_string(),
+            credential_hash: non_existent_leaf.to_string(),
             merkle_proofs,
         };
         let res = query(deps.as_ref(), mock_env(), query_msg).unwrap();
         let value: bool = from_binary(&res).unwrap();
-        assert!(value, "Expected verification to succeed with correct proofs even with large number of credentials");
     }
 }

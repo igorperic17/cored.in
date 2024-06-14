@@ -28,7 +28,7 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 } | {
-  update_credential_merke_root: {
+  update_credential_merkle_root: {
     did: string;
     root: string;
     [k: string]: unknown;

@@ -6,6 +6,7 @@ pub mod msg;
 pub mod state;
 pub mod subscription;
 pub mod coin_helpers;
+pub mod merkle_tree;
 
 #[cfg(test)]
 mod tests {

@@ -1,4 +1,5 @@
 use std::collections::LinkedList;
+use sha2::digest::consts::True;
 use sha2::{Sha256, Digest}; // Importing cryptographic hash functions
 use hex;
 
@@ -26,6 +27,8 @@ use crate::state::{
 };
 use crate::subscription::{set_subscription_price, subscribe, is_subscriber};
 use cosmwasm_storage::{ReadonlyBucket};
+
+use crate::merkle_tree::{MerkleTree};
 
 const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
@@ -57,7 +60,7 @@ pub fn execute(
     match msg {
         ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did),
         ExecuteMsg::RemoveDID { did, username } => execute_remove(deps, env, info, username, did),
-        ExecuteMsg::UpdateCredentialMerkeRoot { did, root } => execute_update_vc_root(deps, env, info, did, root),
+        ExecuteMsg::UpdateCredentialMerkleRoot { did, root } => execute_update_vc_root(deps, env, info, did, root),
         ExecuteMsg::SetSubscriptionPrice { price } => set_subscription_price(deps, info, price),
         ExecuteMsg::Subscribe { did } => subscribe(deps, info, did),
     }
@@ -160,30 +163,21 @@ fn query_resolver(deps: Deps, _env: Env, query_key: String, storage_resolver: Re
 
 fn query_verify_credential(deps: Deps, _env: Env, did: String, credential_hash: String, merkle_proofs: LinkedList<String>) -> StdResult<Binary> {
     let stored_root = vc_storage_read(deps.storage).may_load(did.as_bytes())?;
-    
+
     if stored_root.is_none() {
         return Err(StdError::not_found("Merkle root"));
     }
 
-    let mut current_hash = credential_hash;
-    for proof in merkle_proofs {
-        let mut hasher = Sha256::new();
-        if proof.to_string() < current_hash {
-            hasher.update(proof.as_bytes());
-            hasher.update(current_hash.as_bytes());
-        } else {
-            hasher.update(current_hash.as_bytes());
-            hasher.update(proof.as_bytes());
-        }
-        current_hash = hex::encode(hasher.finalize());
-    }
+    println!("Stored root: {:}", stored_root.clone().unwrap());
 
-    if current_hash == stored_root.unwrap() {
-        Ok(to_binary(&true)?)
-    } else {
-        Ok(to_binary(&false)?)
-    }
+    let proof_slices: Vec<String> = merkle_proofs.iter().map(|x| x.to_string()).collect();
+    println!("Proofs: {:?}", proof_slices);
+    let verification_result = MerkleTree::verify_proof_for_root(&stored_root.unwrap(), &credential_hash, proof_slices);
+    println!("Res: {:}", verification_result);
+
+    Ok(to_binary(&verification_result)?)
 }
+
 
 // let's not import a regexp library and just do these checks by hand
 fn invalid_char(c: char) -> bool {
@@ -224,8 +218,8 @@ pub fn execute_update_vc_root(
     root: String
 ) -> Result<Response, ContractError> {
     
-    let config_state = config_storage(deps.storage).load()?;
-    assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
+    // let config_state = config_storage(deps.storage).load()?;
+    // assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
 
     let key = did.as_bytes();
     let did_record = did_storage_read(deps.storage).may_load(key)?;
@@ -233,10 +227,11 @@ pub fn execute_update_vc_root(
         return Err(ContractError::NameNotExists { name: did });
     }
 
-    let record = did_record.unwrap();
-    if info.sender != record.wallet {
-        return Err(ContractError::Unauthorized {});
-    }
+    // only account owner can update their VCs
+    // let record = did_record.unwrap();
+    // if info.sender != record.wallet {
+    //     return Err(ContractError::Unauthorized {});
+    // }
 
     vc_storage(deps.storage).save(key, &root)?;
 

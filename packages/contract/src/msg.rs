@@ -28,7 +28,7 @@ pub enum ExecuteMsg {
         username: String
     },
     // register DID and username with the sender's account
-    UpdateCredentialMerkeRoot {
+    UpdateCredentialMerkleRoot {
         did: String,
         root: String
     },

@@ -142,7 +142,7 @@ export interface CoredinInterface extends CoredinReadOnlyInterface {
     did: string;
     username: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  updateCredentialMerkeRoot: ({
+  updateCredentialMerkleRoot: ({
     did,
     root
   }: {
@@ -171,7 +171,7 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     this.contractAddress = contractAddress;
     this.register = this.register.bind(this);
     this.removeDID = this.removeDID.bind(this);
-    this.updateCredentialMerkeRoot = this.updateCredentialMerkeRoot.bind(this);
+    this.updateCredentialMerkleRoot = this.updateCredentialMerkleRoot.bind(this);
     this.setSubscriptionPrice = this.setSubscriptionPrice.bind(this);
     this.subscribe = this.subscribe.bind(this);
   }
@@ -203,7 +203,7 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
       }
     }, fee, memo, _funds);
   };
-  updateCredentialMerkeRoot = async ({
+  updateCredentialMerkleRoot = async ({
     did,
     root
   }: {
@@ -211,7 +211,7 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     root: string;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      update_credential_merke_root: {
+      update_credential_merkle_root: {
         did,
         root
       }
