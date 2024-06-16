@@ -123,6 +123,13 @@ export class UserService {
       return keccak256(Buffer.from(vc.id));
     });
 
+    const leavesRaw = rawVCs.map((vc) => {
+      return vc.id;
+    });
+    // console.log("rawVCs", rawVCs);
+
+    console.log("leaves", leavesRaw);
+
     // const leaves = ["a", "b", "c"].map((vc) => {
     //   return keccak256(vc);
     // });
@@ -130,14 +137,14 @@ export class UserService {
     const tree = new MerkleTree(leaves, keccak256, { sort: true });
     const root = tree.getHexRoot().substring(2); // remove 0x since not needed for WASM contract
 
-    // const leaf = leaves[0];
-    // console.log(leaf);
-    // const proof = tree.getHexProof(leaf); // .map((p) => p.substring(2));
+    const leaf = leaves[0];
+    console.log(leaf);
+    const proof = tree.getHexProof(leaf); // .map((p) => p.substring(2));
     // const proof = [
     //   { position: "right", data: Buffer.from("proof1") },
     //   { position: "right", data: Buffer.from("proof2") }
     // ];
-    //console.log("root", root, "leaf", leaf, "proof", proof);
+    console.log("root", root, "leaf", leaf, "proof", proof);
     // console.log("verify", tree.verify(proof .map((p) => p.substring(2)), leaf, root.substring(2)));
     return root;
   }

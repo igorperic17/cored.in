@@ -26,13 +26,14 @@ impl MerkleTree {
 
     // Add a credential to the Merkle tree
     pub fn add_credential(&mut self, credential: String) {
-        self.credentials.push(credential);
+        let encoded = hex::encode(credential);
+        self.credentials.push(Self::hash(&encoded.to_string()));
         self.root = self.compute_root();
     }
 
     // Compute the Merkle root of the tree
     fn compute_root(&self) -> String {
-        let mut hashes: Vec<String> = self.credentials.iter().map(|cred| Self::hash(cred)).collect();
+        let mut hashes: Vec<String> = self.credentials.iter().map(|cred| cred.clone()).collect();
 
         while hashes.len() > 1 {
             hashes = self.pair_hashes(hashes);
@@ -43,18 +44,22 @@ impl MerkleTree {
 
     // Helper function to pair hashes
     fn pair_hashes(&self, mut hashes: Vec<String>) -> Vec<String> {
-        if hashes.len() % 2 != 0 {
-            hashes.push(hashes.last().unwrap().clone());
-        }
-
         let mut paired_hashes = Vec::new();
         let mut i = 0;
 
         while i < hashes.len() {
+            if (i == hashes.len() - 1) {
+                break;
+            }
             let left = &hashes[i];
             let right = &hashes[i + 1];
             paired_hashes.push(Self::hash(&(left.clone() + right)));
             i += 2;
+        }
+
+        if hashes.len() % 2 != 0 {
+            // hashes.push(hashes.last().unwrap().clone());
+            paired_hashes.push(hashes.last().unwrap().clone());
         }
 
         paired_hashes
@@ -68,10 +73,15 @@ impl MerkleTree {
     // Generate proof for a given credential
     pub fn generate_proof(&self, credential: &String) -> Option<Vec<String>> {
         let mut index = self.credentials.iter().position(|x| x == credential)?;
-        
+
+        println!("Credentials: {:?}", self.credentials);
 
         let mut proof = Vec::new();
-        let mut level_hashes: Vec<String> = self.credentials.iter().map(|cred| Self::hash(cred)).collect();
+        let mut level_hashes: Vec<String> = self
+            .credentials
+            .iter()
+            .map(|cred| Self::hash(cred))
+            .collect();
 
         while level_hashes.len() > 1 {
             // println!("AAAAAAA");
@@ -92,8 +102,8 @@ impl MerkleTree {
     }
 
     // Verify a proof for a given credential and a root (static method)
-    pub fn verify_proof_for_root(root: &String, credential: &String, proof: Vec<String>) -> bool {
-        let mut current_hash = credential.clone();
+    pub fn verify_proof_for_root(root: &String, leaf: &String, proof: Vec<String>) -> bool {
+        let mut current_hash = leaf.clone();
         for sibling_hash in proof {
             if current_hash <= sibling_hash {
                 current_hash = Self::hash(&(current_hash + &sibling_hash));
@@ -106,7 +116,7 @@ impl MerkleTree {
     }
 
     // Verify a proof for a given credential and locally stored credentials
-    pub fn verify_proof(&self, credential: &String, proof: Vec<String>) -> bool {
-        Self::verify_proof_for_root(&self.root, credential, proof)
+    pub fn verify_proof(&self, leaf: &String, proof: Vec<String>) -> bool {
+        Self::verify_proof_for_root(&self.root, leaf, proof)
     }
 }
