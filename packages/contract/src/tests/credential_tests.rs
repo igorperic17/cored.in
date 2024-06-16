@@ -14,7 +14,24 @@ mod tests {
     #[cfg(test)]
     mod tests {
         use super::MerkleTree;
-    
+
+        #[test]
+        fn test_static_verify() {
+            // Sample values generated from cored.in backend
+            let mut root =
+                "343b781460b1484625b8dc47d69d8af0d9fe2eb5a6dc4aea114b50aa8d204a64".to_string();
+            let mut leaf =
+                "5b88eec706f39fec172b7328f57839dcdeec893bfda5e763e55a424c28022642".to_string();
+            let proof = vec![
+                "57b62ddde8cc706659e5c1db6c2d5096fac49e477e8bf9f5992967c6cb305acd".to_string(),
+                "e4962589fd26724a71cb7609475e7260b8e92e55fb33753369ef0c964ecee50d".to_string(),
+                "ad358cb5c113b643d6c452791d03a62db1589b49f9f8920e18a32e72e7aa81a4".to_string(),
+            ];
+
+            let mut res = MerkleTree::verify_proof_for_root(&root, &leaf, proof);
+            assert!(res, "Invalid proof");
+        }
+
         #[test]
         fn test_merkle_tree_logic() {
             // Random set of credentials

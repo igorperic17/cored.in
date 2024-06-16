@@ -1,6 +1,6 @@
-extern crate sha2;
+extern crate sha3;
 
-use sha2::{Sha256, Digest};
+use sha3::{Digest, Keccak256};
 
 pub struct MerkleTree {
     credentials: Vec<String>,
@@ -16,10 +16,11 @@ impl MerkleTree {
         }
     }
 
-    // Helper function to hash a string using SHA-256
+    // Helper function to hash a string using Keccak256
     fn hash(data: &str) -> String {
-        let mut hasher = Sha256::new();
-        hasher.update(data);
+        let mut hasher = Keccak256::new();
+        let decoded = hex::decode(data).expect("Decoding failed");
+        hasher.update(decoded);
         format!("{:x}", hasher.finalize())
     }
 
@@ -92,8 +93,7 @@ impl MerkleTree {
 
     // Verify a proof for a given credential and a root (static method)
     pub fn verify_proof_for_root(root: &String, credential: &String, proof: Vec<String>) -> bool {
-        let mut current_hash = Self::hash(credential);
-
+        let mut current_hash = credential.clone();
         for sibling_hash in proof {
             if current_hash <= sibling_hash {
                 current_hash = Self::hash(&(current_hash + &sibling_hash));
