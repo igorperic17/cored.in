@@ -16,23 +16,22 @@ impl MerkleTree {
         }
     }
 
-    // // Helper function to hash a hex encoded string using Keccak256
-    // pub fn hash(data: &str) -> String {
-    //     let mut hasher = Keccak256::new();
-    //     let decoded = hex::decode(data).expect("Decoding failed");
-    //     hasher.update(decoded);
-    //     format!("{:x}", hasher.finalize())
-    // }
-
     // Helper function to hash a hex encoded string using Keccak256
     pub fn hash(data: &str) -> String {
-        return data.to_string()
+        let mut hasher = Keccak256::new();
+        let decoded = hex::decode(data).expect("Decoding failed");
+        hasher.update(decoded);
+        format!("{:x}", hasher.finalize())
     }
+
+    // // Helper function to hash a hex encoded string using Keccak256
+    // pub fn hash(data: &str) -> String {
+    //     return data.to_string()
+    // }
 
     // Add a credential to the Merkle tree
     pub fn add_credential(&mut self, raw_credential: String) {
-        // let encoded = hex::encode(raw_credential);
-        let encoded = raw_credential.clone();
+        let encoded = hex::encode(raw_credential);
         self.credentials.push(Self::hash(&encoded.to_string()));
         self.root = self.compute_root();
     }
@@ -57,12 +56,19 @@ impl MerkleTree {
             let left = &hashes[i];
             let right = if i + 1 < hashes.len() { Some(&hashes[i + 1]) } else { None };
             match right {
-                Some(right_val) => { paired_hashes.push(Self::hash(&(left.clone() + right_val))); }
+                Some(right_val) => {
+                    if left < right_val {
+                        paired_hashes.push(Self::hash(&(left.clone() + right_val))); 
+                    } else {
+                        paired_hashes.push(Self::hash(&(right_val.clone() + &left))); 
+                    }
+                }
                 None => { paired_hashes.push(left.clone()); }
             }
             i += 2;
         }
 
+        // paired_hashes.reverse();
         paired_hashes
     }
 
@@ -72,8 +78,8 @@ impl MerkleTree {
     }
     // Generate proof for a given credential (not hashed)
     pub fn generate_proof(&self, raw_credential: &String) -> Option<Vec<String>> {
-        // let hashed_credential = Self::hash(hex::encode(raw_credential).as_ref());
-        let hashed_credential = Self::hash(raw_credential.as_ref());
+        let hashed_credential = Self::hash(hex::encode(raw_credential).as_ref());
+        // let hashed_credential = Self::hash(raw_credential.as_ref());
 
         let mut index = self.credentials.iter().position(|x| *x == hashed_credential)?;
 
@@ -104,7 +110,7 @@ impl MerkleTree {
                 current_hash = Self::hash(&(sibling_hash + &current_hash));
             }
         }
-
+        println!("Computed root form proofs: {}", current_hash);
         current_hash == *root
     }
 
