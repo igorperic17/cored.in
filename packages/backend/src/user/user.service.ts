@@ -11,6 +11,9 @@ import {
 import { Effect } from "effect";
 import { WaltIdIssuerService, WaltIdWalletService } from "../ssi/core/services";
 import { CoredinContractService } from "@/coreum/services";
+import { MerkleTree } from "merkletreejs";
+import { keccak256 } from "@ethersproject/keccak256";
+import { VerifiableCredential } from "@/ssi/core/data-classes";
 
 @Injectable()
 export class UserService {
@@ -47,8 +50,7 @@ export class UserService {
       }
       // Get DID
       const did = await this.walletService.getOrCreateDid(wallet, didKeyId);
-      const credentials = await this.getCredentials(wallet);
-
+      const credentials = await this.walletService.getVCs(wallet);
       return Effect.succeed({
         username: user.username || "no_username",
         did: did?.did || "",
@@ -58,7 +60,8 @@ export class UserService {
         backgroundColor: user.backgroundColor,
         bio: user.bio,
         issuerDid: user.issuerDid,
-        credentials
+        credentials: this.adaptCredentials(credentials),
+        credentialsMerkleRoot: this.genereateMerkleTree(credentials)
       });
     }
 
@@ -102,8 +105,8 @@ export class UserService {
     return updateResult.affected === 1;
   }
 
-  private async getCredentials(wallet: string): Promise<CredentialDTO[]> {
-    return (await this.walletService.getVCs(wallet)).map((vc) => ({
+  private adaptCredentials(rawVCs: VerifiableCredential[]): CredentialDTO[] {
+    return rawVCs.map((vc) => ({
       id: vc.id,
       type: vc.parsedDocument.type[1],
       issuer: vc.parsedDocument.issuer.id,
@@ -113,5 +116,29 @@ export class UserService {
       endDate: vc.parsedDocument.credentialSubject.endDate,
       verified: true
     }));
+  }
+
+  private genereateMerkleTree(rawVCs: VerifiableCredential[]) {
+    const leaves = rawVCs.map((vc) => {
+      return keccak256(Buffer.from(vc.id));
+    });
+
+    // const leaves = ["a", "b", "c"].map((vc) => {
+    //   return keccak256(vc);
+    // });
+
+    const tree = new MerkleTree(leaves, keccak256, { sort: true });
+    const root = tree.getHexRoot().substring(2); // remove 0x since not needed for WASM contract
+
+    // const leaf = leaves[0];
+    // console.log(leaf);
+    // const proof = tree.getHexProof(leaf); // .map((p) => p.substring(2));
+    // const proof = [
+    //   { position: "right", data: Buffer.from("proof1") },
+    //   { position: "right", data: Buffer.from("proof2") }
+    // ];
+    //console.log("root", root, "leaf", leaf, "proof", proof);
+    // console.log("verify", tree.verify(proof .map((p) => p.substring(2)), leaf, root.substring(2)));
+    return root;
   }
 }
