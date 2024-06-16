@@ -16,24 +16,30 @@ impl MerkleTree {
         }
     }
 
-    // Helper function to hash a string using Keccak256
-    fn hash(data: &str) -> String {
-        let mut hasher = Keccak256::new();
-        let decoded = hex::decode(data).expect("Decoding failed");
-        hasher.update(decoded);
-        format!("{:x}", hasher.finalize())
+    // // Helper function to hash a hex encoded string using Keccak256
+    // pub fn hash(data: &str) -> String {
+    //     let mut hasher = Keccak256::new();
+    //     let decoded = hex::decode(data).expect("Decoding failed");
+    //     hasher.update(decoded);
+    //     format!("{:x}", hasher.finalize())
+    // }
+
+    // Helper function to hash a hex encoded string using Keccak256
+    pub fn hash(data: &str) -> String {
+        return data.to_string()
     }
 
     // Add a credential to the Merkle tree
-    pub fn add_credential(&mut self, credential: String) {
-        let encoded = hex::encode(credential);
+    pub fn add_credential(&mut self, raw_credential: String) {
+        // let encoded = hex::encode(raw_credential);
+        let encoded = raw_credential.clone();
         self.credentials.push(Self::hash(&encoded.to_string()));
         self.root = self.compute_root();
     }
 
     // Compute the Merkle root of the tree
     fn compute_root(&self) -> String {
-        let mut hashes: Vec<String> = self.credentials.iter().map(|cred| cred.clone()).collect();
+        let mut hashes: Vec<String> = self.credentials.clone();
 
         while hashes.len() > 1 {
             hashes = self.pair_hashes(hashes);
@@ -43,23 +49,18 @@ impl MerkleTree {
     }
 
     // Helper function to pair hashes
-    fn pair_hashes(&self, mut hashes: Vec<String>) -> Vec<String> {
+    fn pair_hashes(&self, hashes: Vec<String>) -> Vec<String> {
         let mut paired_hashes = Vec::new();
         let mut i = 0;
 
         while i < hashes.len() {
-            if (i == hashes.len() - 1) {
-                break;
-            }
             let left = &hashes[i];
-            let right = &hashes[i + 1];
-            paired_hashes.push(Self::hash(&(left.clone() + right)));
+            let right = if i + 1 < hashes.len() { Some(&hashes[i + 1]) } else { None };
+            match right {
+                Some(right_val) => { paired_hashes.push(Self::hash(&(left.clone() + right_val))); }
+                None => { paired_hashes.push(left.clone()); }
+            }
             i += 2;
-        }
-
-        if hashes.len() % 2 != 0 {
-            // hashes.push(hashes.last().unwrap().clone());
-            paired_hashes.push(hashes.last().unwrap().clone());
         }
 
         paired_hashes
@@ -69,26 +70,17 @@ impl MerkleTree {
     pub fn get_root(&self) -> String {
         self.root.clone()
     }
+    // Generate proof for a given credential (not hashed)
+    pub fn generate_proof(&self, raw_credential: &String) -> Option<Vec<String>> {
+        // let hashed_credential = Self::hash(hex::encode(raw_credential).as_ref());
+        let hashed_credential = Self::hash(raw_credential.as_ref());
 
-    // Generate proof for a given credential
-    pub fn generate_proof(&self, credential: &String) -> Option<Vec<String>> {
-        let mut index = self.credentials.iter().position(|x| x == credential)?;
-
-        println!("Credentials: {:?}", self.credentials);
+        let mut index = self.credentials.iter().position(|x| *x == hashed_credential)?;
 
         let mut proof = Vec::new();
-        let mut level_hashes: Vec<String> = self
-            .credentials
-            .iter()
-            .map(|cred| Self::hash(cred))
-            .collect();
+        let mut level_hashes: Vec<String> = self.credentials.clone();
 
         while level_hashes.len() > 1 {
-            // println!("AAAAAAA");
-            if level_hashes.len() % 2 != 0 {
-                level_hashes.push(level_hashes.last().unwrap().clone());
-            }
-
             let sibling_index = if index % 2 == 0 { index + 1 } else { index - 1 };
             if sibling_index < level_hashes.len() {
                 proof.push(level_hashes[sibling_index].clone());
@@ -98,6 +90,7 @@ impl MerkleTree {
             level_hashes = self.pair_hashes(level_hashes);
         }
 
+        // proof.reverse();  // Reverse the order of the proof
         Some(proof)
     }
 
