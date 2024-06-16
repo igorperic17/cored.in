@@ -104,7 +104,7 @@ impl MerkleTree {
     pub fn verify_proof_for_root(root: &String, leaf: &String, proof: Vec<String>) -> bool {
         let mut current_hash = leaf.clone();
         for sibling_hash in proof {
-            if current_hash <= sibling_hash {
+            if current_hash < sibling_hash {
                 current_hash = Self::hash(&(current_hash + &sibling_hash));
             } else {
                 current_hash = Self::hash(&(sibling_hash + &current_hash));
