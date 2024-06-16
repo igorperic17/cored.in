@@ -5,12 +5,18 @@ import { LoggedIn } from "../authentication/guard";
 // import { UserProfile } from "@coredin/shared";
 // import { TypedBody, TypedRoute } from "@nestia/core";
 import { Effect } from "effect";
+import {
+  WaltIdIssuerService,
+  WaltIdVerifierService,
+  WaltIdWalletService
+} from "@/ssi/core/services";
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 import { UpdateProfileDTO } from "@coredin/shared";
 
 @Controller("user")
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+    private readonly userService: UserService,
+    private readonly walletService: WaltIdWalletService,
 
   @Get()
   @UseGuards(LoggedIn)

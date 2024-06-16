@@ -4,13 +4,13 @@ import { useEffect, useState } from "react";
 import { useChain } from "@cosmos-kit/react";
 import {
   CoredinClient,
+  CONTRACT_ADDRESS,
   TESTNET_CHAIN_NAME,
   TESTNET_CHAIN_RPC_ENDPOINT,
   TESTNET_GAS_PRICE
 } from "@coredin/shared";
 import { CoredinClientContext } from "./CoredinClientContext";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
-import { CONTRACT_ADDRESS } from "@coredin/shared/src/coreum/contract_address";
 
 const CoredinClientContextProvider = ({
   children
@@ -37,9 +37,12 @@ const CoredinClientContextProvider = ({
           gasPrice: GasPrice.fromString(TESTNET_GAS_PRICE)
         }
       );
-      setCoredinClient(
-        new CoredinClient(client, chainContext.address || "", CONTRACT_ADDRESS)
+      const newClient = new CoredinClient(
+        client,
+        chainContext.address || "",
+        CONTRACT_ADDRESS
       );
+      setCoredinClient(newClient);
     };
     if (chainContext.isWalletConnected) {
       initializeClient();

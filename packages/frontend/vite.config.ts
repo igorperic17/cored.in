@@ -22,7 +22,12 @@ export default defineConfig(({ mode }) => {
       }
     },
     optimizeDeps: {
-      include: ["@coredin/shared/*", "@coredin/shared/posts/*"]
+      include: [
+        "@coredin/shared/*",
+        "@coredin/shared/posts/*",
+        "@coredin/shared/credentials/*",
+        "@coredin/shared/coreum/*"
+      ]
     },
     build: {
       commonjsOptions: {
