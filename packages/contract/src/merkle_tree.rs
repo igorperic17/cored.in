@@ -24,15 +24,11 @@ impl MerkleTree {
         format!("{:x}", hasher.finalize())
     }
 
-    // // Helper function to hash a hex encoded string using Keccak256
-    // pub fn hash(data: &str) -> String {
-    //     return data.to_string()
-    // }
-
     // Add a credential to the Merkle tree
     pub fn add_credential(&mut self, raw_credential: String) {
         let encoded = hex::encode(raw_credential);
         self.credentials.push(Self::hash(&encoded.to_string()));
+        self.credentials.sort();
         self.root = self.compute_root();
     }
 
@@ -68,9 +64,8 @@ impl MerkleTree {
             i += 2;
         }
 
-        // paired_hashes.reverse();
         paired_hashes
-    }
+    }   
 
     // Get the Merkle root
     pub fn get_root(&self) -> String {
@@ -79,7 +74,6 @@ impl MerkleTree {
     // Generate proof for a given credential (not hashed)
     pub fn generate_proof(&self, raw_credential: &String) -> Option<Vec<String>> {
         let hashed_credential = Self::hash(hex::encode(raw_credential).as_ref());
-        // let hashed_credential = Self::hash(raw_credential.as_ref());
 
         let mut index = self.credentials.iter().position(|x| *x == hashed_credential)?;
 
@@ -96,7 +90,6 @@ impl MerkleTree {
             level_hashes = self.pair_hashes(level_hashes);
         }
 
-        // proof.reverse();  // Reverse the order of the proof
         Some(proof)
     }
 
