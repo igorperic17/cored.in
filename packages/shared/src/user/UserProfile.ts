@@ -11,5 +11,5 @@ export interface UserProfile {
   bio?: string & tags.MaxLength<250>;
   issuerDid?: string;
   credentials: CredentialDTO[];
-  credentialsMerkleRoot: string;
+  // credentialsMerkleRoot: string;
 }

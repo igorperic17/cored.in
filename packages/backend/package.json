@@ -33,6 +33,7 @@
     "@cosmjs/cosmwasm-stargate": "^0.32.3",
     "@cosmjs/proto-signing": "^0.32.3",
     "@cosmjs/stargate": "^0.32.3",
+    "@ethersproject/keccak256": "^5.7.0",
     "@keplr-wallet/cosmos": "^0.12.79",
     "@nestia/core": "^3.0.5",
     "@nestia/e2e": "^0.4.3",

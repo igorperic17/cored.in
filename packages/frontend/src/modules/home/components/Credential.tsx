@@ -1,4 +1,5 @@
 import { BaseServerStateKeys } from "@/constants";
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useMutableServerState } from "@/hooks";
 import { USER_MUTATIONS } from "@/queries";
 import {
@@ -13,24 +14,74 @@ import {
   useToast,
   VStack
 } from "@chakra-ui/react";
-import { CredentialDTO } from "@coredin/shared";
+import { CredentialDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { FC } from "react";
+import MerkleTree from "merkletreejs";
+import { FC, useContext } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { generateProof } from "../helpers/generateProof";
 
 type CredentialProps = {
   credential: CredentialDTO;
+  tree: MerkleTree;
 };
 
-export const Credential: FC<CredentialProps> = ({ credential }) => {
-  const { id, title, establishment, startDate, endDate, verified, issuer } =
-    credential;
+export const Credential: FC<CredentialProps> = ({ credential, tree }) => {
+  const {
+    id,
+    title,
+    subjectDid,
+    establishment,
+    startDate,
+    endDate,
+    verified,
+    issuer
+  } = credential;
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const coredinClient = useContext(CoredinClientContext);
   const { mutateAsync } = useMutableServerState(
     USER_MUTATIONS.deleteCredential(id)
   );
   const toast = useToast();
   const queryClient = useQueryClient();
+
+  // TODO - remove hardcoded values and properly handle root update and credential validation!
+  const verifyLeaf = () => {
+    if (chainContext.address) {
+      console.log("verifying leaf...");
+      const { leaf, proof } = generateProof(credential, tree);
+      console.log(leaf, proof);
+      coredinClient
+        ?.verifyCredential({
+          did: subjectDid,
+          credentialHash: leaf,
+          merkleProofs: proof
+        })
+        .then((result: boolean) => {
+          console.log(result);
+          if (result) {
+            toast({
+              position: "top-right",
+              status: "success",
+              duration: 1000,
+              render: () => (
+                <Box
+                  color="text.900"
+                  p="1em 1.5em"
+                  bg="brand.500"
+                  borderRadius="0.5em"
+                >
+                  Credential successfully verified onchain.
+                </Box>
+              ),
+              isClosable: true
+            });
+          }
+        });
+    }
+  };
 
   const handleDelete = () => {
     mutateAsync({ permanent: false }).then(() => {
@@ -67,7 +118,9 @@ export const Credential: FC<CredentialProps> = ({ credential }) => {
     >
       {verified && issuer && (
         <>
-          <Badge variant="verified">Verified</Badge>
+          <Badge cursor="pointer" onClick={verifyLeaf} variant="verified">
+            Verified
+          </Badge>
         </>
       )}
       <VStack align="start" spacing="0.25em" w="100%">

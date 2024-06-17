@@ -21,6 +21,7 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
             key={`credential-section-${index}`}
             section={section.section}
             credentials={section.credentials}
+            tree={section.tree}
           />
         );
       })}

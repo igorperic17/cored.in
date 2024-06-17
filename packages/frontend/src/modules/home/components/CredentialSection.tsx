@@ -4,15 +4,18 @@ import { FC } from "react";
 import { Credential } from "./Credential";
 import { IconButton } from "@interchain-ui/react";
 import { FaPlus } from "react-icons/fa6";
+import MerkleTree from "merkletreejs";
 
 export type CredentialSectionProps = {
   section: string;
   credentials: CredentialDTO[];
+  tree: MerkleTree;
 };
 
 export const CredentialSection: FC<CredentialSectionProps> = ({
   section,
-  credentials
+  credentials,
+  tree
 }) => {
   if (credentials.length === 0) {
     return;
@@ -33,7 +36,7 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
         </Button>
       </Flex>
       {credentials.map((cred, index) => (
-        <Credential key={`credential-${index}`} credential={cred} />
+        <Credential key={`credential-${index}`} credential={cred} tree={tree} />
       ))}
     </Box>
   );

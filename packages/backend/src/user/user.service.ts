@@ -50,7 +50,9 @@ export class UserService {
       }
       // Get DID
       const did = await this.walletService.getOrCreateDid(wallet, didKeyId);
-      const credentials = await this.walletService.getVCs(wallet);
+      const credentials = this.adaptCredentials(
+        await this.walletService.getVCs(wallet)
+      );
       return Effect.succeed({
         username: user.username || "no_username",
         did: did?.did || "",
@@ -60,8 +62,10 @@ export class UserService {
         backgroundColor: user.backgroundColor,
         bio: user.bio,
         issuerDid: user.issuerDid,
-        credentials: this.adaptCredentials(credentials),
-        credentialsMerkleRoot: this.genereateMerkleTree(credentials)
+        credentials: credentials
+        // credentialsMerkleRoot: this.genereateMerkleTree(
+        //   credentials.filter((c) => c.verified)
+        // )
       });
     }
 
@@ -108,6 +112,7 @@ export class UserService {
   private adaptCredentials(rawVCs: VerifiableCredential[]): CredentialDTO[] {
     return rawVCs.map((vc) => ({
       id: vc.id,
+      subjectDid: vc.parsedDocument.credentialSubject.id,
       type: vc.parsedDocument.type[1],
       issuer: vc.parsedDocument.issuer.id,
       title: vc.parsedDocument.credentialSubject.title,
@@ -118,34 +123,27 @@ export class UserService {
     }));
   }
 
-  private genereateMerkleTree(rawVCs: VerifiableCredential[]) {
-    const leaves = rawVCs.map((vc) => {
-      return keccak256(Buffer.from(vc.id));
-    });
+  // private genereateMerkleTree(rawVCs: CredentialDTO[]) {
+  //   const leaves = rawVCs.map((vc) => {
+  //     return keccak256(Buffer.from(JSON.stringify(vc), "utf8"));
+  //   });
 
-    const leavesRaw = rawVCs.map((vc) => {
-      return vc.id;
-    });
-    // console.log("rawVCs", rawVCs);
+  //   // const leaves = ["a", "b", "c"].map((vc) => {
+  //   //   return keccak256(vc);
+  //   // });
 
-    console.log("leaves", leavesRaw);
+  //   const tree = new MerkleTree(leaves, keccak256, { sort: true });
+  //   const root = tree.getHexRoot().substring(2); // remove 0x since not needed for WASM contract
 
-    // const leaves = ["a", "b", "c"].map((vc) => {
-    //   return keccak256(vc);
-    // });
-
-    const tree = new MerkleTree(leaves, keccak256, { sort: true });
-    const root = tree.getHexRoot().substring(2); // remove 0x since not needed for WASM contract
-
-    const leaf = leaves[0];
-    console.log(leaf);
-    const proof = tree.getHexProof(leaf); // .map((p) => p.substring(2));
-    // const proof = [
-    //   { position: "right", data: Buffer.from("proof1") },
-    //   { position: "right", data: Buffer.from("proof2") }
-    // ];
-    console.log("root", root, "leaf", leaf, "proof", proof);
-    // console.log("verify", tree.verify(proof .map((p) => p.substring(2)), leaf, root.substring(2)));
-    return root;
-  }
+  //   // const leaf = leaves[0];
+  //   // console.log(leaf);
+  //   // const proof = tree.getHexProof(leaf); // .map((p) => p.substring(2));
+  //   // const proof = [
+  //   //   { position: "right", data: Buffer.from("proof1") },
+  //   //   { position: "right", data: Buffer.from("proof2") }
+  //   // ];
+  //   // console.log("root", root, "leaf", leaf, "proof", proof);
+  //   // console.log("verify", tree.verify(proof .map((p) => p.substring(2)), leaf, root.substring(2)));
+  //   return root;
+  // }
 }
