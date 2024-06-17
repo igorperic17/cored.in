@@ -49,7 +49,11 @@ yarn docker
 ## Vault Setup
 
 ```
-1. Run the vault via docker compose
-2. Go to server:8002/ui, initialize the vault and add update backend_secrets_local.yaml file with the access key
-3. Unlock the vault and enable "Transit" Secret Engine
+1. Run the openbao vault with the docker compose in packagaes/backend
+2. Initialize the vault with `bao operator init -key-shares=1 -key-threshold=1` (run directly inside the running container)
+3. Store the generated root access token and unseal key
+4. Add the root access token to secrets_backend_local.json
+5. Unseal the vault with `bao operator unseal` inside the running docker
+6. Log into the vault with `bao login token=..`
+7. Enable transit secrets engine with `bao secrets enable transit`
 ```
