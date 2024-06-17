@@ -1,27 +1,19 @@
-use std::collections::LinkedList;
 use cosmwasm_std::{
-    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage
+    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
+    StdResult, Storage,
 };
+use std::collections::LinkedList;
 
 use crate::coin_helpers::assert_sent_sufficient_coin;
 use crate::error::ContractError;
-use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
+use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
 use crate::state::{
-    config_storage,
-    config_storage_read,
-    username_storage,
-    username_storage_read,
-    did_storage,
-    did_storage_read,
-    wallet_storage,
-    wallet_storage_read,
-    vc_storage,
-    vc_storage_read,
-    Config, 
-    DidInfo
+    config_storage, config_storage_read, did_storage, did_storage_read, username_storage,
+    username_storage_read, vc_storage, vc_storage_read, wallet_storage, wallet_storage_read,
+    Config, DidInfo,
 };
-use crate::subscription::{set_subscription_price, subscribe, is_subscriber};
-use cosmwasm_storage::{ReadonlyBucket};
+use crate::subscription::{is_subscriber, set_subscription_price, subscribe};
+use cosmwasm_storage::ReadonlyBucket;
 
 use crate::merkle_tree::MerkleTree;
 
@@ -55,7 +47,9 @@ pub fn execute(
     match msg {
         ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did),
         ExecuteMsg::RemoveDID { did, username } => execute_remove(deps, env, info, username, did),
-        ExecuteMsg::UpdateCredentialMerkleRoot { did, root } => execute_update_vc_root(deps, env, info, did, root),
+        ExecuteMsg::UpdateCredentialMerkleRoot { did, root } => {
+            execute_update_vc_root(deps, env, info, did, root)
+        }
         ExecuteMsg::SetSubscriptionPrice { price } => set_subscription_price(deps, info, price),
         ExecuteMsg::Subscribe { did } => subscribe(deps, info, did),
     }
@@ -68,7 +62,6 @@ pub fn execute_register(
     username: String,
     did: String,
 ) -> Result<Response, ContractError> {
-    
     validate_name(&username)?;
 
     // TODO: agree how much will new DID registration cost
@@ -85,7 +78,7 @@ pub fn execute_register(
     let record = DidInfo {
         wallet: info.sender,
         username: username.clone(),
-        did: did
+        did: did,
     };
 
     // store for querying in all three buckets
@@ -96,7 +89,6 @@ pub fn execute_register(
     Ok(Response::default())
 }
 
-
 pub fn execute_remove(
     deps: DepsMut,
     _env: Env,
@@ -104,7 +96,6 @@ pub fn execute_remove(
     username: String,
     _did: String,
 ) -> Result<Response, ContractError> {
-
     let key = username.as_bytes();
     let did_record = username_storage_read(deps.storage).may_load(key)?;
     if did_record.is_none() {
@@ -132,31 +123,59 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         QueryMsg::Config {} => to_json_binary(&config_storage_read(deps.storage).load()?),
 
         QueryMsg::GetWalletDID { wallet } => query_resolver(deps, env, wallet, wallet_storage_read),
-        QueryMsg::GetUsernameDID { username } => query_resolver(deps, env, username, username_storage_read),
+        QueryMsg::GetUsernameDID { username } => {
+            query_resolver(deps, env, username, username_storage_read)
+        }
         QueryMsg::GetDID { did } => query_resolver(deps, env, did, did_storage_read),
-        QueryMsg::VerifyCredential { did, credential_hash, merkle_proofs } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
+        QueryMsg::GetMerkleRoot { did } => query_merkle_root(deps, env, did),
+        QueryMsg::VerifyCredential {
+            did,
+            credential_hash,
+            merkle_proofs,
+        } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
         QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, did, subscriber),
     }
 }
 
 type ResolverFnPointer = fn(&dyn Storage) -> ReadonlyBucket<DidInfo>;
-fn query_resolver(deps: Deps, _env: Env, query_key: String, storage_resolver: ResolverFnPointer) -> StdResult<Binary> {
+fn query_resolver(
+    deps: Deps,
+    _env: Env,
+    query_key: String,
+    storage_resolver: ResolverFnPointer,
+) -> StdResult<Binary> {
     let key = query_key.as_bytes();
 
     // read the DID from an appropriate storage bucket
     let did_info = match storage_resolver(deps.storage).may_load(key) {
         Ok(info) => info,
-        Err(_) => None
+        Err(_) => None,
     };
 
-    let did_response: GetDIDResponse = GetDIDResponse {
-        did_info: did_info
-    };
+    let did_response: GetDIDResponse = GetDIDResponse { did_info: did_info };
 
     to_json_binary(&did_response)
 }
 
-fn query_verify_credential(deps: Deps, _env: Env, did: String, credential_hash: String, merkle_proofs: LinkedList<String>) -> StdResult<Binary> {
+fn query_merkle_root(deps: Deps, _env: Env, did: String) -> StdResult<Binary> {
+    let stored_root = vc_storage_read(deps.storage).may_load(did.as_bytes())?;
+
+    if stored_root.is_none() {
+        return Err(StdError::not_found("Merkle root"));
+    }
+
+    let merkle_root_response: GetMerkleRootResponse = GetMerkleRootResponse { root: stored_root };
+
+    Ok(to_json_binary(&merkle_root_response)?)
+}
+
+fn query_verify_credential(
+    deps: Deps,
+    _env: Env,
+    did: String,
+    credential_hash: String,
+    merkle_proofs: LinkedList<String>,
+) -> StdResult<Binary> {
     let stored_root = vc_storage_read(deps.storage).may_load(did.as_bytes())?;
 
     if stored_root.is_none() {
@@ -167,12 +186,12 @@ fn query_verify_credential(deps: Deps, _env: Env, did: String, credential_hash: 
 
     let proof_slices: Vec<String> = merkle_proofs.iter().map(|x| x.to_string()).collect();
     println!("Proofs: {:?}", proof_slices);
-    let verification_result = MerkleTree::verify_proof_for_root(&stored_root.unwrap(), &credential_hash, proof_slices);
+    let verification_result =
+        MerkleTree::verify_proof_for_root(&stored_root.unwrap(), &credential_hash, proof_slices);
     println!("Res: {:}", verification_result);
 
     Ok(to_json_binary(&verification_result)?)
 }
-
 
 // let's not import a regexp library and just do these checks by hand
 fn invalid_char(c: char) -> bool {
@@ -204,15 +223,13 @@ fn validate_name(name: &str) -> Result<(), ContractError> {
     }
 }
 
-
 pub fn execute_update_vc_root(
     deps: DepsMut,
     _env: Env,
     _info: MessageInfo,
     did: String,
-    root: String
+    root: String,
 ) -> Result<Response, ContractError> {
-    
     // let config_state = config_storage(deps.storage).load()?;
     // assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
 
@@ -222,11 +239,11 @@ pub fn execute_update_vc_root(
         return Err(ContractError::NameNotExists { name: did });
     }
 
-    // only account owner can update their VCs
-    // let record = did_record.unwrap();
-    // if info.sender != record.wallet {
-    //     return Err(ContractError::Unauthorized {});
-    // }
+    // only account owner can update their VCs root
+    let record = did_record.unwrap();
+    if _info.sender != record.wallet {
+        return Err(ContractError::Unauthorized {});
+    }
 
     vc_storage(deps.storage).save(key, &root)?;
 

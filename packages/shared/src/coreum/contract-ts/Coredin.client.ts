@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, InstantiateMsg, Coin, ExecuteMsg, QueryMsg, Addr, Config, GetDIDResponse, DidInfo, Boolean } from "./Coredin.types";
+import { Uint128, InstantiateMsg, Coin, ExecuteMsg, QueryMsg, Addr, Config, GetDIDResponse, DidInfo, GetMerkleRootResponse, Boolean } from "./Coredin.types";
 export interface CoredinReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -25,6 +25,11 @@ export interface CoredinReadOnlyInterface {
   }: {
     did: string;
   }) => Promise<GetDIDResponse>;
+  getMerkleRoot: ({
+    did
+  }: {
+    did: string;
+  }) => Promise<GetMerkleRootResponse>;
   verifyCredential: ({
     credentialHash,
     did,
@@ -52,6 +57,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getWalletDID = this.getWalletDID.bind(this);
     this.getUsernameDID = this.getUsernameDID.bind(this);
     this.getDID = this.getDID.bind(this);
+    this.getMerkleRoot = this.getMerkleRoot.bind(this);
     this.verifyCredential = this.verifyCredential.bind(this);
     this.isSubscriber = this.isSubscriber.bind(this);
   }
@@ -89,6 +95,17 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
   }): Promise<GetDIDResponse> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_d_i_d: {
+        did
+      }
+    });
+  };
+  getMerkleRoot = async ({
+    did
+  }: {
+    did: string;
+  }): Promise<GetMerkleRootResponse> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_merkle_root: {
         did
       }
     });

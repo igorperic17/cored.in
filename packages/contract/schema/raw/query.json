@@ -77,6 +77,26 @@
     {
       "type": "object",
       "required": [
+        "get_merkle_root"
+      ],
+      "properties": {
+        "get_merkle_root": {
+          "type": "object",
+          "required": [
+            "did"
+          ],
+          "properties": {
+            "did": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
         "verify_credential"
       ],
       "properties": {

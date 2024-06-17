@@ -26,7 +26,8 @@ export default defineConfig(({ mode }) => {
         "@coredin/shared/*",
         "@coredin/shared/posts/*",
         "@coredin/shared/credentials/*",
-        "@coredin/shared/coreum/*"
+        "@coredin/shared/coreum/*",
+        "@coredin/shared/coreum/contract-ts/*"
       ]
     },
     build: {

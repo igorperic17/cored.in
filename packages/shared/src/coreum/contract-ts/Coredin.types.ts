@@ -64,6 +64,11 @@ export type QueryMsg = {
     [k: string]: unknown;
   };
 } | {
+  get_merkle_root: {
+    did: string;
+    [k: string]: unknown;
+  };
+} | {
   verify_credential: {
     credential_hash: string;
     did: string;
@@ -91,6 +96,10 @@ export interface DidInfo {
   did: string;
   username: string;
   wallet: Addr;
+  [k: string]: unknown;
+}
+export interface GetMerkleRootResponse {
+  root?: string | null;
   [k: string]: unknown;
 }
 export type Boolean = boolean;

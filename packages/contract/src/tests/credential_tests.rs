@@ -1,7 +1,7 @@
 #[cfg(test)]
 mod tests {
     use crate::contract::{execute, query};
-    use crate::msg::{ExecuteMsg, QueryMsg};
+    use crate::msg::{ExecuteMsg, GetMerkleRootResponse, QueryMsg};
     use crate::tests::common::common::{mock_alice_registers_name, mock_init_no_price};
     use cosmwasm_std::from_json;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
@@ -13,10 +13,8 @@ mod tests {
     #[test]
     fn test_static_verify() {
         // Sample values generated from cored.in backend
-        let root =
-            "343b781460b1484625b8dc47d69d8af0d9fe2eb5a6dc4aea114b50aa8d204a64".to_string();
-        let leaf =
-            "5b88eec706f39fec172b7328f57839dcdeec893bfda5e763e55a424c28022642".to_string();
+        let root = "343b781460b1484625b8dc47d69d8af0d9fe2eb5a6dc4aea114b50aa8d204a64".to_string();
+        let leaf = "5b88eec706f39fec172b7328f57839dcdeec893bfda5e763e55a424c28022642".to_string();
         let proof = vec![
             "57b62ddde8cc706659e5c1db6c2d5096fac49e477e8bf9f5992967c6cb305acd".to_string(),
             "e4962589fd26724a71cb7609475e7260b8e92e55fb33753369ef0c964ecee50d".to_string(),
@@ -63,7 +61,8 @@ mod tests {
         assert!(verification_result, "Merkle root verification failed");
 
         // Negative case: Verify a non-existent credential
-        let non_existent_credential = MerkleTree::hash(hex::encode("non_existent_credential").as_ref());
+        let non_existent_credential =
+            MerkleTree::hash(hex::encode("non_existent_credential").as_ref());
         let non_existent_verification_result =
             merkle_tree.verify_proof(&non_existent_credential, proofs);
         println!(
@@ -86,10 +85,8 @@ mod tests {
         let info = mock_info("alice_key", &[]);
 
         // Sample values generated from cored.in backend
-        let root =
-            "343b781460b1484625b8dc47d69d8af0d9fe2eb5a6dc4aea114b50aa8d204a64".to_string();
-        let leaf =
-            "5b88eec706f39fec172b7328f57839dcdeec893bfda5e763e55a424c28022642".to_string();
+        let root = "343b781460b1484625b8dc47d69d8af0d9fe2eb5a6dc4aea114b50aa8d204a64".to_string();
+        let leaf = "5b88eec706f39fec172b7328f57839dcdeec893bfda5e763e55a424c28022642".to_string();
         let proof = vec![
             "57b62ddde8cc706659e5c1db6c2d5096fac49e477e8bf9f5992967c6cb305acd".to_string(),
             "e4962589fd26724a71cb7609475e7260b8e92e55fb33753369ef0c964ecee50d".to_string(),
@@ -102,6 +99,17 @@ mod tests {
         };
         let _res = execute(deps.as_mut(), mock_env(), info, msg)
             .expect("contract successfully handles UpdateCredentialMerkeRoot message");
+
+        let query_root_msg = QueryMsg::GetMerkleRoot {
+            did: "alice_did".to_string(),
+        };
+        let query_root_res = query(deps.as_ref(), mock_env(), query_root_msg).unwrap();
+        let query_root_value: GetMerkleRootResponse = from_json(&query_root_res).unwrap();
+        assert!(
+            query_root_value.root == Some(root),
+            "Expected onchain root to match"
+        );
+
         let linked_proof: LinkedList<String> = proof.iter().map(|x| x.to_string()).collect();
         let query_msg = QueryMsg::VerifyCredential {
             did: "alice_did".to_string(),
@@ -151,9 +159,7 @@ mod tests {
             .expect("contract successfully handles UpdateCredentialMerkeRoot message");
 
         // Generate proofs for the dummy credential
-        let proofs = merkle_tree
-            .generate_proof(&target_credential)
-            .unwrap();
+        let proofs = merkle_tree.generate_proof(&target_credential).unwrap();
         let mut merkle_proofs = LinkedList::new();
         for proof in proofs.clone() {
             merkle_proofs.push_back(proof);
@@ -181,6 +187,9 @@ mod tests {
         };
         let res = query(deps.as_ref(), mock_env(), query_msg).unwrap();
         let value_fail: bool = from_json(&res).unwrap();
-        assert!(!value_fail, "Expected verification to fail with wrong proofs for a credential");
+        assert!(
+            !value_fail,
+            "Expected verification to fail with wrong proofs for a credential"
+        );
     }
 }
