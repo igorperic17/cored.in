@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Repository } from "typeorm";
+import { IsNull, Not, Repository } from "typeorm";
 import { User } from "./user.entity";
 import {
   NotFoundError,
@@ -11,8 +11,8 @@ import {
 import { Effect } from "effect";
 import { WaltIdIssuerService, WaltIdWalletService } from "../ssi/core/services";
 import { CoredinContractService } from "@/coreum/services";
-import { MerkleTree } from "merkletreejs";
-import { keccak256 } from "@ethersproject/keccak256";
+// import { MerkleTree } from "merkletreejs";
+// import { keccak256 } from "@ethersproject/keccak256";
 import { VerifiableCredential } from "@/ssi/core/data-classes";
 
 @Injectable()
@@ -109,6 +109,14 @@ export class UserService {
     return updateResult.affected === 1;
   }
 
+  async getIssuers() {
+    const issuers = await this.userRepository.find({
+      where: { issuerDid: Not(IsNull()) }
+    });
+
+    return issuers.map((issuer) => this.adaptPrivateProfile(issuer));
+  }
+
   private adaptCredentials(rawVCs: VerifiableCredential[]): CredentialDTO[] {
     return rawVCs.map((vc) => ({
       id: vc.id,
@@ -121,6 +129,20 @@ export class UserService {
       endDate: vc.parsedDocument.credentialSubject.endDate,
       verified: true
     }));
+  }
+
+  private adaptPrivateProfile(user: User): UserProfile {
+    return {
+      username: user.username || "no_username",
+      did: "",
+      likedPosts: user.likedPosts,
+      avatarUrl: user.avatarUrl,
+      avatarFallbackColor: user.avatarFallbackColor,
+      backgroundColor: user.backgroundColor,
+      bio: user.bio,
+      issuerDid: user.issuerDid,
+      credentials: []
+    };
   }
 
   // private genereateMerkleTree(rawVCs: CredentialDTO[]) {

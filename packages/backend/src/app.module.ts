@@ -12,6 +12,7 @@ import { SecretsService } from "./secrets/SecretsService";
 import { SsiModule } from "./ssi/app/ssi.module";
 import { PostsModule } from "./posts/posts.module";
 import { InternalModule } from "./internal/internal.module";
+import { IssuersModule } from "./issuers/issuers.module";
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { InternalModule } from "./internal/internal.module";
     }),
     UserModule,
     PostsModule,
-    InternalModule
+    InternalModule,
+    IssuersModule
   ],
   controllers: [AppController],
   providers: [AppService]
