@@ -141,14 +141,13 @@ export class WaltIdWalletService {
     return createResponse.data;
   }
 
-  // TODO - somehow permanent delete is not working.. investigate
   async deleteCredential(
     wallet: string,
     credentialId: string,
     permanent: boolean
   ) {
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
-    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials/${credentialId}?permanent=${permanent}}`;
+    const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/credentials/${credentialId}?permanent=${permanent}`;
     const deleteResponse = await axios.delete(targetUrl, {
       headers: {
         Authorization: `Bearer ${token}`
