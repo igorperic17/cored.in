@@ -47,7 +47,6 @@ export const Credential: FC<CredentialProps> = ({ credential, tree }) => {
   const toast = useToast();
   const queryClient = useQueryClient();
 
-  // TODO - remove hardcoded values and properly handle root update and credential validation!
   const verifyLeaf = () => {
     if (chainContext.address) {
       console.log("verifying leaf...");
@@ -84,7 +83,7 @@ export const Credential: FC<CredentialProps> = ({ credential, tree }) => {
   };
 
   const handleDelete = () => {
-    mutateAsync({ permanent: false }).then(() => {
+    mutateAsync({ permanent: true }).then(() => {
       toast({
         position: "top-right",
         status: "success",
