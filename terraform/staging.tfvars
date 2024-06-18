@@ -27,3 +27,8 @@ issuer_api_image         = "rubentewierik/issuer-api:x86"
 issuer_api_cpu           = 256
 issuer_api_memory        = 512
 issuer_api_port          = 7002
+
+vault_image              = "rubentewierik/vault:x86"
+vault_cpu                = 256
+vault_memory             = 512
+vault_port               = 8200

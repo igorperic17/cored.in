@@ -103,6 +103,41 @@ resource "aws_iam_role" "issuer_api_ecs_execution_role" {
   })
 }
 
+# Vault
+resource "aws_iam_role" "vault_ecs_service_role" {
+  name = "${var.app_name}-vault-ecs-service-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      }
+    ],
+  })
+}
+
+resource "aws_iam_role" "vault_ecs_execution_role" {
+  name = "${var.app_name}-vault-ecs-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      },
+    ],
+  })
+}
+
 resource "aws_iam_policy" "allow_logs" {
   name        = "${var.app_name}-logs-policy"
   path        = "/"
@@ -213,5 +248,26 @@ resource "aws_iam_role_policy_attachment" "issuer_api_ecs_execution_role_policy_
 
 resource "aws_iam_role_policy_attachment" "issuer_api_ecs_execution_role_policy_attachments_read_ecr" {
   role       = aws_iam_role.issuer_api_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_read_ecr.arn
+}
+
+# Vault
+resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attachments_allow_ecr" {
+  role       = aws_iam_role.vault_ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attachments_allow_logs" {
+  role       = aws_iam_role.vault_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_logs.arn
+}
+
+resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attachments_read_secret" {
+  role       = aws_iam_role.vault_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_read_secret.arn
+}
+
+resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attachments_read_ecr" {
+  role       = aws_iam_role.vault_ecs_execution_role.name
   policy_arn = aws_iam_policy.allow_read_ecr.arn
 }

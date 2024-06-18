@@ -27,3 +27,8 @@ issuer_api_image         = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin
 issuer_api_cpu           = 256
 issuer_api_memory        = 512
 issuer_api_port          = 7002
+
+vault_image              = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/vault:x86"
+vault_cpu                = 256
+vault_memory             = 512
+vault_port               = 8200

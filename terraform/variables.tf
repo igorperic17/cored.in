@@ -123,3 +123,27 @@ variable "issuer_api_logs_retention" {
   type    = number
   default = 1
 }
+
+# Vault
+variable "vault_image" {
+  type = string
+}
+
+variable "vault_cpu" {
+  type        = number
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units) for Vault"
+}
+
+variable "vault_memory" {
+  type        = number
+  description = "Fargate instance memory to provision (in MiB) for Vault"
+}
+
+variable "vault_port" {
+  type = number
+}
+
+variable "vault_logs_retention" {
+  type    = number
+  default = 1
+}
