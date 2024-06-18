@@ -50,7 +50,7 @@ yarn docker
 
 ```
 1. Run the openbao vault with the docker compose in packagaes/backend
-2. Initialize the vault with `bao operator init -key-shares=1 -key-threshold=1` (run directly inside the running container)
+2. Initialize the vault with `bao operator init -key-shares=1 -key-threshold=1` (run directly inside the running container, if you get a permission denied issue run `chmod -R 777 /vault` first)
 3. Store the generated root access token and unseal key
 4. Add the root access token to secrets_backend_local.json
 5. Unseal the vault with `bao operator unseal` inside the running docker
