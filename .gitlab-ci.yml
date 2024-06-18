@@ -44,3 +44,15 @@
 #   script:
 #     - echo "Deploying application..."
 #     - echo "Application successfully deployed."
+
+# TODO: Remove this when CI is used again. This is just here to avoid triggering failed pipeline emails.
+stages:
+  - default
+
+# An empty job to ensure the pipeline does not fail
+dummy-job:
+  stage: default
+  script:
+    - echo "This is a dummy job to ensure the pipeline does not fail"
+  only:
+    - schedules # Restrict this job to run only if triggered by a schedule (it won't run in normal pipelines)
