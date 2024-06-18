@@ -1,8 +1,6 @@
-import { AutoResizeTextarea } from "@/components";
 import { BaseServerStateKeys } from "@/constants";
 import { useMutableServerState } from "@/hooks";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
-import { Avatar, Button, Flex } from "@chakra-ui/react";
 import { CreatePostDTO, PostVisibility } from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
