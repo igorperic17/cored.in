@@ -48,6 +48,7 @@ variable "db_retention_window_days" {
   type = number
 }
 
+# Wallet API
 variable "wallet_api_db_name" {
   type = string
 }
@@ -71,6 +72,54 @@ variable "wallet_api_port" {
 }
 
 variable "wallet_api_logs_retention" {
+  type    = number
+  default = 1
+}
+
+# Verifier API
+variable "verifier_api_image" {
+  type = string
+}
+
+variable "verifier_api_cpu" {
+  type        = number
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units) for Verifier API"
+}
+
+variable "verifier_api_memory" {
+  type        = number
+  description = "Fargate instance memory to provision (in MiB) for Verifier API"
+}
+
+variable "verifier_api_port" {
+  type = number
+}
+
+variable "verifier_api_logs_retention" {
+  type    = number
+  default = 1
+}
+
+# Issuer API
+variable "issuer_api_image" {
+  type = string
+}
+
+variable "issuer_api_cpu" {
+  type        = number
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units) for Issuer API"
+}
+
+variable "issuer_api_memory" {
+  type        = number
+  description = "Fargate instance memory to provision (in MiB) for Issuer API"
+}
+
+variable "issuer_api_port" {
+  type = number
+}
+
+variable "issuer_api_logs_retention" {
   type    = number
   default = 1
 }

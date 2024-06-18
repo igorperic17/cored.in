@@ -65,8 +65,8 @@ resource "aws_ecs_task_definition" "wallet_api" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.wallet_api_cpu
   memory                   = var.wallet_api_memory
-  task_role_arn            = aws_iam_role.ecs_service_role.arn
-  execution_role_arn       = aws_iam_role.ecs_execution_role.arn
+  task_role_arn            = aws_iam_role.wallet_api_ecs_service_role.arn
+  execution_role_arn       = aws_iam_role.wallet_api_ecs_execution_role.arn
 
   volume {
     name = "tmp-volume"

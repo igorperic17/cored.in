@@ -1,5 +1,6 @@
-resource "aws_iam_role" "ecs_service_role" {
-  name = "${var.app_name}-ecs-service-role"
+# Wallet API
+resource "aws_iam_role" "wallet_api_ecs_service_role" {
+  name = "${var.app_name}-wallet-api-ecs-service-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -15,8 +16,78 @@ resource "aws_iam_role" "ecs_service_role" {
   })
 }
 
-resource "aws_iam_role" "ecs_execution_role" {
-  name = "${var.app_name}-ecs-execution-role"
+resource "aws_iam_role" "wallet_api_ecs_execution_role" {
+  name = "${var.app_name}-wallet-api-ecs-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      },
+    ],
+  })
+}
+
+# Verifier API
+resource "aws_iam_role" "verifier_api_ecs_service_role" {
+  name = "${var.app_name}-verifier-api-ecs-service-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      }
+    ],
+  })
+}
+
+resource "aws_iam_role" "verifier_api_ecs_execution_role" {
+  name = "${var.app_name}-verifier-api-ecs-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      },
+    ],
+  })
+}
+
+# Issuer API
+resource "aws_iam_role" "issuer_api_ecs_service_role" {
+  name = "${var.app_name}-issuer-api-ecs-service-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      }
+    ],
+  })
+}
+
+resource "aws_iam_role" "issuer_api_ecs_execution_role" {
+  name = "${var.app_name}-issuer-api-ecs-execution-role"
 
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
@@ -92,22 +163,55 @@ resource "aws_iam_policy" "allow_read_ecr" {
   })
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_allow_ecr" {
-  role       = aws_iam_role.ecs_execution_role.name
+# Wallet API
+resource "aws_iam_role_policy_attachment" "wallet_api_ecs_execution_role_policy_attachments_allow_ecr" {
+  role       = aws_iam_role.wallet_api_ecs_execution_role.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_allow_logs" {
-  role       = aws_iam_role.ecs_execution_role.name
+resource "aws_iam_role_policy_attachment" "wallet_api_ecs_execution_role_policy_attachments_allow_logs" {
+  role       = aws_iam_role.wallet_api_ecs_execution_role.name
   policy_arn = aws_iam_policy.allow_logs.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_read_secret" {
-  role       = aws_iam_role.ecs_execution_role.name
+resource "aws_iam_role_policy_attachment" "wallet_api_ecs_execution_role_policy_attachments_read_secret" {
+  role       = aws_iam_role.wallet_api_ecs_execution_role.name
   policy_arn = aws_iam_policy.allow_read_secret.arn
 }
 
-resource "aws_iam_role_policy_attachment" "ecs_execution_role_policy_attachments_read_ecr" {
-  role       = aws_iam_role.ecs_execution_role.name
+resource "aws_iam_role_policy_attachment" "wallet_api_ecs_execution_role_policy_attachments_read_ecr" {
+  role       = aws_iam_role.wallet_api_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_read_ecr.arn
+}
+
+# Verifier API
+resource "aws_iam_role_policy_attachment" "verifier_api_ecs_execution_role_policy_attachments_allow_ecr" {
+  role       = aws_iam_role.verifier_api_ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "verifier_api_ecs_execution_role_policy_attachments_allow_logs" {
+  role       = aws_iam_role.verifier_api_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_logs.arn
+}
+
+resource "aws_iam_role_policy_attachment" "verifier_api_ecs_execution_role_policy_attachments_read_ecr" {
+  role       = aws_iam_role.verifier_api_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_read_ecr.arn
+}
+
+# Issuer API
+resource "aws_iam_role_policy_attachment" "issuer_api_ecs_execution_role_policy_attachments_allow_ecr" {
+  role       = aws_iam_role.issuer_api_ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "issuer_api_ecs_execution_role_policy_attachments_allow_logs" {
+  role       = aws_iam_role.issuer_api_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_logs.arn
+}
+
+resource "aws_iam_role_policy_attachment" "issuer_api_ecs_execution_role_policy_attachments_read_ecr" {
+  role       = aws_iam_role.issuer_api_ecs_execution_role.name
   policy_arn = aws_iam_policy.allow_read_ecr.arn
 }
