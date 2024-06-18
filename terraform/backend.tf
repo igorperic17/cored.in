@@ -89,15 +89,33 @@ resource "aws_lambda_function" "lambda_backend" {
           synchronize = true,
           debug       = false,
         },
+        vault = {
+          api = {
+            url = "TODO"
+          }
+        },
         wallet = {
           api = {
             url = "http://${aws_alb.wallet_api.dns_name}:${var.wallet_api_port}"
+          }
+        },
+        issuer = {
+          api = {
+            url = "TODO"
+          }
+        },
+        verifier = {
+          api = {
+            url = "TODO"
           }
         }
       }),
       "SECRETS_JSON" = jsonencode({
         jwt_secret  = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
-        db_password = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}"
+        db_password = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}",
+        signer_pkey = "sm://TODO",
+        vault_access_key = "sm://TODO",
+        internal_endpoint_secrets = "sm://TODO"
       })
     }
   }
