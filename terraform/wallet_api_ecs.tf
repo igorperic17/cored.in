@@ -47,7 +47,7 @@ resource "aws_ecs_cluster" "wallet_api" {
   name = "${var.app_name}-wallet-api-cluster"
 }
 
-resource "aws_ecs_cluster_capacity_providers" "example" {
+resource "aws_ecs_cluster_capacity_providers" "wallet_api_capacity_providers" {
   cluster_name = aws_ecs_cluster.wallet_api.name
 
   capacity_providers = ["FARGATE_SPOT"]

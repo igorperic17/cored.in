@@ -67,6 +67,7 @@ resource "aws_security_group" "aurora_cluster" {
   }
 }
 
+# Wallet API
 resource "aws_security_group" "wallet_api_elb" {
   name        = "${var.app_name}-wallet-api-elb-sg"
   description = "Allow inbound traffic to Wallet API ELB"
@@ -97,6 +98,88 @@ resource "aws_security_group" "wallet_api" {
     from_port       = 0
     to_port         = var.wallet_api_port
     security_groups = [aws_security_group.wallet_api_elb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Verifier API
+resource "aws_security_group" "verifier_api_elb" {
+  name        = "${var.app_name}-verifier-api-elb-sg"
+  description = "Allow inbound traffic to Verifier API ELB"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    from_port   = var.verifier_api_port
+    to_port     = var.verifier_api_port
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "verifier_api" {
+  name        = "${var.app_name}-verifier-api-ecs-sg"
+  description = "Allow inbound access for Verifier API"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 0
+    to_port         = var.verifier_api_port
+    security_groups = [aws_security_group.verifier_api_elb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Issuer API
+resource "aws_security_group" "issuer_api_elb" {
+  name        = "${var.app_name}-issuer-api-elb-sg"
+  description = "Allow inbound traffic to Issuer API ELB"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    from_port   = var.issuer_api_port
+    to_port     = var.issuer_api_port
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "issuer_api" {
+  name        = "${var.app_name}-issuer-api-ecs-sg"
+  description = "Allow inbound access for Issuer API"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 0
+    to_port         = var.issuer_api_port
+    security_groups = [aws_security_group.issuer_api_elb.id]
   }
 
   egress {
