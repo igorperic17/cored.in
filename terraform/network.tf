@@ -190,6 +190,49 @@ resource "aws_security_group" "issuer_api" {
   }
 }
 
+
+# Vault
+resource "aws_security_group" "vault_elb" {
+  name        = "${var.app_name}-vault-elb-sg"
+  description = "Allow inbound traffic to Vault ELB"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    from_port   = var.vault_port
+    to_port     = var.vault_port
+    protocol    = "tcp"
+    cidr_blocks = [aws_vpc.default.cidr_block]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "vault" {
+  name        = "${var.app_name}-vault-ecs-sg"
+  description = "Allow inbound access for Vault"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    protocol        = "tcp"
+    from_port       = 0
+    to_port         = var.vault_port
+    security_groups = [aws_security_group.vault_elb.id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Backend
 resource "aws_security_group" "lambda_backend" {
   name        = "${var.app_name}-lambda-backend-sg"
   description = "Allow outbound access for Lambda backend SG"
