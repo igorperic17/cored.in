@@ -1,4 +1,4 @@
-FROM openbao/openbao:2.0.0-alpha20240329
+FROM openbao/openbao:2.0.0-beta20240618-amd64
 
 RUN apk update && \
     apk add --no-cache \
