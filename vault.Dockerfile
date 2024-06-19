@@ -1,12 +1,21 @@
 FROM openbao/openbao:2.0.0-alpha20240329
 
+RUN apk update && \
+    apk add --no-cache \
+        python3 \
+        py3-pip
+
+RUN pip install awscli --upgrade --user
+
+ENV PATH="/root/.local/bin:${PATH}"
+
 RUN apk add --no-cache curl
 
 RUN curl -sSL -o /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" \
     && chmod +x /usr/local/bin/jq
 
 EXPOSE 8200
-
+  
 ENV BAO_ADDR=http://0.0.0.0:8200
 
 VOLUME /vault/data
