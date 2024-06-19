@@ -1,3 +1,10 @@
+resource "aws_kms_key" "vault_kms_key" {
+  description               = "KMS key for managing the Vault that persists Wallet API secrets"
+  key_usage                 = "ENCRYPT_DECRYPT"
+  customer_master_key_spec  = "SYMMETRIC_DEFAULT"
+  deletion_window_in_days   = 7
+}
+
 resource "aws_ecs_cluster" "vault" {
   name = "${var.app_name}-vault-cluster"
 }
@@ -55,8 +62,17 @@ resource "aws_ecs_task_definition" "vault" {
           hostPort      = var.vault_port
         }
       ]
-      environment = []
-      secrets = [] // TODO: Add secrets.
+      environment = [
+        {
+          name = "AWS_REGION",
+          value = var.region
+        },
+        {
+          name = "VAULT_AWSKMS_SEAL_KEY_ID",
+          value = aws_kms_key.vault_kms_key.id
+        }
+        // TODO: Add AWS credentials if needed.
+      ]
       healthCheck = {
         // TODO: Update health check.
         command     = ["CMD-SHELL", "curl -f http://localhost:${var.vault_port}/.well-known/openid-configuration || exit 1"],

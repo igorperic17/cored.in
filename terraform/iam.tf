@@ -237,6 +237,28 @@ resource "aws_iam_policy" "allow_read_ecr" {
   })
 }
 
+resource "aws_iam_policy" "allow_vault_key_usage" {
+  name        = "${var.app_name}-vault-key-usage-policy"
+  path        = "/"
+  description = "Policy to use AWS KMS key for Vault."
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = [
+          "kms:Encrypt",
+          "kms:Decrypt",
+          "kms:GenerateDataKey",
+          "kms:DescribeKey"
+        ]
+        Resource = aws_kms_key.vault_kms_key.arn,
+      },
+    ],
+  })
+}
+
 # Wallet API
 resource "aws_iam_role_policy_attachment" "wallet_api_ecs_execution_role_policy_attachments_allow_ecr" {
   role       = aws_iam_role.wallet_api_ecs_execution_role.name
@@ -311,8 +333,12 @@ resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attac
   policy_arn = aws_iam_policy.allow_read_ecr.arn
 }
 
+resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachments_vault_key_usage" {
+  role       = aws_iam_role.vault_ecs_service_role.name
+  policy_arn = aws_iam_policy.allow_vault_key_usage.arn
+}
+
 resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachments_vault_secrets_management" {
   role       = aws_iam_role.vault_ecs_service_role.name
   policy_arn = aws_iam_policy.allow_vault_secrets_management.arn
 }
-
