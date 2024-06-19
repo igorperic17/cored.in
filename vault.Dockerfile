@@ -15,7 +15,7 @@ RUN curl -sSL -o /usr/local/bin/jq "https://github.com/stedolan/jq/releases/down
     && chmod +x /usr/local/bin/jq
 
 EXPOSE 8200
-  
+
 ENV BAO_ADDR=http://0.0.0.0:8200
 
 VOLUME /vault/data

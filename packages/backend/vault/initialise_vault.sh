@@ -46,7 +46,7 @@ echo $(aws --version)
 for i in $NUMBERS; do
   index=$(expr $i - 1)
   unseal_key=$(echo "$VAULT_INIT_OUTPUT" | jq -r ".unseal_keys_b64[$index]")
-  update_secret "unseal-key-$index" "$unseal_key"
+  update_secret "unseal-key-$i" "$unseal_key"
 done
 
 update_secret "root-token" "$initial_root_token"
