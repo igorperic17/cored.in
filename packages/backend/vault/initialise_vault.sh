@@ -1,9 +1,5 @@
 #!/bin/sh
 
-VAULT_INIT_OUTPUT=$(vault operator init -format=json)
-AWS_REGION="eu-west-1"
-SECRET_NAME_PREFIX="coredin-vault/"
-
 install_aws_cli() {
     if ! command -v aws &> /dev/null; then
         echo "AWS CLI not found. Installing AWS CLI..."
@@ -36,7 +32,22 @@ update_secret() {
 }
 
 chmod -R 777 /vault && bao server -config /vault/config/bao_config.json
-echo "Vault initialised."
+echo "Vault server launched."
+
+VAULT_INIT_OUTPUT=$(bao operator init -format=json)
+AWS_REGION="eu-west-1"
+SECRET_NAME_PREFIX="coredin-vault/"
+
+for i in {1..5}; do
+    recovery_key=$(echo "$VAULT_INIT_OUTPUT" | jq -r ".recovery_keys_b64[$i-1]")
+    bao unseal $recovery_key
+done
+
+initial_root_token=$(echo "$VAULT_INIT_OUTPUT" | jq -r ".root_token")
+bao login $initial_root_token
+bao secrets enable transit
+
+echo "Vault server successfully initialised. Writing secrets to AWS..."
 
 install_aws_cli
 
@@ -45,5 +56,6 @@ for i in {1..5}; do
     update_secret "recovery-key-$i" "$recovery_key"
 done
 
-initial_root_token=$(echo "$VAULT_INIT_OUTPUT" | jq -r ".root_token")
 update_secret "root-token" "$initial_root_token"
+
+echo "Vault setup complete."
