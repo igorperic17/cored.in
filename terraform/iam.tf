@@ -171,7 +171,46 @@ resource "aws_iam_policy" "allow_read_secret" {
         Effect   = "Allow",
         Action   = "secretsmanager:GetSecretValue",
         Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-*",
-      },
+        NotResource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-vault-*"
+      }
+    ],
+  })
+}
+
+resource "aws_iam_policy" "allow_read_vault_access_token" {
+  name        = "${var.app_name}-read-vault-access-token-policy"
+  path        = "/"
+  description = "Policy to read the Vault access token secret from AWS Secrets Manager."
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = "secretsmanager:GetSecretValue",
+        Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-vault/root-token",
+      }
+    ],
+  })
+}
+
+resource "aws_iam_policy" "allow_vault_secrets_management" {
+  name        = "${var.app_name}-manage-vault-secrets-policy"
+  path        = "/"
+  description = "Policy to manage the Vault secrets in AWS Secrets Manager."
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect   = "Allow",
+        Action   = [
+          "secretsmanager:CreateSecret",
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:PutSecretValue"
+        ],
+        Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-vault/*",
+      }
     ],
   })
 }
