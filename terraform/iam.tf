@@ -310,3 +310,9 @@ resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attac
   role       = aws_iam_role.vault_ecs_execution_role.name
   policy_arn = aws_iam_policy.allow_read_ecr.arn
 }
+
+resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachments_vault_secrets_management" {
+  role       = aws_iam_role.vault_ecs_service_role.name
+  policy_arn = aws_iam_policy.allow_vault_secrets_management.arn
+}
+

@@ -20,6 +20,15 @@ resource "aws_secretsmanager_secret" "internal_endpoint_secret_asm_secret" {
   recovery_window_in_days = 7
 }
 
+# Non-TF managed ASM secrets
+data "aws_secretsmanager_secret" "wallet_sign_private_key_asm_secret" {
+  name = "${var.app_name}-wallet-sign-private-key"
+}
+
+data "aws_secretsmanager_secret" "vault_root_token" {
+  name = "${var.app_name}-vault/root-token"
+}
+
 # ASM secret versions
 resource "aws_secretsmanager_secret_version" "jwt_secret_asm_secret_version" {
   secret_id     = aws_secretsmanager_secret.jwt_secret_asm_secret.id
@@ -68,7 +77,9 @@ resource "aws_iam_policy" "lambda_backend_secrets_manager_read_policy" {
         Resource = [
           aws_secretsmanager_secret.jwt_secret_asm_secret.arn,
           aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn,
-          aws_secretsmanager_secret.aurora_password_asm_secret.arn
+          aws_secretsmanager_secret.aurora_password_asm_secret.arn,
+          aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn,
+          aws_secretsmanager_secret.vault_root_token.arn
         ]
       },
     ],
@@ -120,12 +131,12 @@ resource "aws_lambda_function" "lambda_backend" {
         },
         issuer = {
           api = {
-            url = "TODO"
+            url = "http://${aws_alb.issuer_api.dns_name}:${var.issuer_api_port}"
           }
         },
         verifier = {
           api = {
-            url = "TODO"
+            url = "http://${aws_alb.verifier_api.dns_name}:${var.verifier_api_port}"
           }
         }
       }),
@@ -133,8 +144,8 @@ resource "aws_lambda_function" "lambda_backend" {
         jwt_secret                 = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
         internal_endpoint_secrets  = "sm://${aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn}",
         db_password                = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}",
-        signer_pkey                = "sm://TODO",
-        vault_access_key           = "sm://TODO",
+        signer_pkey                = "sm://${aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn}",
+        vault_access_key           = "sm://${aws_secretsmanager_secret.vault_root_token.arn}",
       })
     }
   }
