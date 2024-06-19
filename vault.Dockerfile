@@ -8,4 +8,8 @@ VOLUME /vault/data
 
 COPY packages/backend/vault/prod/config /vault/config
 
-CMD ["sh", "-c", "chmod -R 777 /vault && bao server -config /vault/config/bao_config.json"]
+COPY packages/backend/vault/initialise_vault.sh /vault/initialise_vault.sh
+
+RUN chmod +x /vault/initialise_vault.sh
+
+CMD ["sh", "-c", "/vault/initialise_vault.sh"]
