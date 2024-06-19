@@ -23,4 +23,4 @@ COPY packages/backend/vault/initialise_vault_bash.sh /vault/initialise_vault_bas
 RUN chmod +x /vault/initialise_vault.sh
 RUN chmod +x /vault/initialise_vault_bash.sh
 
-CMD ["bash", "chmod -R 777 /vault && bao server -config /vault/config/bao_config.json & /vault/initialise_vault.sh && wait"]
+CMD ["bash", "-c", "chmod -R 777 /vault && bao server -config /vault/config/bao_config.json & /vault/initialise_vault_bash.sh && wait"]
