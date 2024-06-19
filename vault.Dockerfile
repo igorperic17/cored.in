@@ -20,6 +20,9 @@ COPY packages/backend/vault/prod/config /vault/config
 COPY packages/backend/vault/initialise_vault.sh /vault/initialise_vault.sh
 COPY packages/backend/vault/initialise_vault_bash.sh /vault/initialise_vault_bash.sh
 
+RUN dos2unix /vault/initialise_vault.sh
+RUN dos2unix /vault/initialise_vault_bash.sh
+
 RUN chmod +x /vault/initialise_vault.sh
 RUN chmod +x /vault/initialise_vault_bash.sh
 
