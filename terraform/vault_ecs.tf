@@ -41,7 +41,7 @@ resource "aws_ecs_task_definition" "vault" {
       memory      = var.vault_memory
       name        = "${var.app_name}-vault-container"
       networkMode = "awsvpc"
-      logConfiguration = var.use_private_subnets ? null : {
+      logConfiguration = {
         logDriver = "awslogs",
         options = {
           "awslogs-group" : "${aws_cloudwatch_log_group.ecs_log_group.name}",

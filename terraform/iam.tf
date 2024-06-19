@@ -151,7 +151,9 @@ resource "aws_iam_policy" "allow_logs" {
         Action = [
           "logs:CreateLogGroup",
           "logs:CreateLogStream",
-          "logs:PutLogEvents"
+          "logs:PutLogEvents",
+          "logs:DescribeLogGroups",
+          "logs:DescribeLogStreams"
         ]
         Resource = "*"
       }
@@ -341,4 +343,20 @@ resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachm
 resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachments_vault_secrets_management" {
   role       = aws_iam_role.vault_ecs_service_role.name
   policy_arn = aws_iam_policy.allow_vault_secrets_management.arn
+}
+
+# TODO: Should not be necessary.
+resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attachments_vault_key_usage" {
+  role       = aws_iam_role.vault_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_vault_key_usage.arn
+}
+
+resource "aws_iam_role_policy_attachment" "vault_ecs_execution_role_policy_attachments_vault_secrets_management" {
+  role       = aws_iam_role.vault_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_vault_secrets_management.arn
+}
+
+resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachments_allow_logs" {
+  role       = aws_iam_role.vault_ecs_service_role.name
+  policy_arn = aws_iam_policy.allow_logs.arn
 }
