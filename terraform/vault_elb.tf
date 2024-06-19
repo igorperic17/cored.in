@@ -21,8 +21,7 @@ resource "aws_alb_target_group" "vault" {
   health_check {
     interval            = 15
     timeout             = 10
-    // TODO: Update health check.
-    path                = "/.well-known/openid-configuration"
+    path                = "/v1/sys/health"
     healthy_threshold   = 5
     unhealthy_threshold = 5
     matcher             = "200"

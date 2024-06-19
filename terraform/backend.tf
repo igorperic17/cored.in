@@ -121,7 +121,7 @@ resource "aws_lambda_function" "lambda_backend" {
         },
         vault = {
           api = {
-            url = "TODO"
+            url = "http://${aws_alb.vault.dns_name}:${var.vault_port}"
           }
         },
         wallet = {

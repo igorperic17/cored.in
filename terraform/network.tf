@@ -40,10 +40,22 @@ resource "aws_subnet" "private" {
 resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
   vpc_id              = aws_vpc.default.id
   subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
-  service_name        = "com.amazonaws.eu-west-1.secretsmanager"
+  service_name        = "com.amazonaws.${var.region}.secretsmanager"
   vpc_endpoint_type   = "Interface"
   private_dns_enabled = true
   security_group_ids = [
+    aws_security_group.wallet_api.id,
+    aws_security_group.lambda_backend.id,
+  ]
+}
+
+resource "aws_vpc_endpoint" "kms_endpoint" {
+  vpc_id              = aws_vpc.default.id
+  subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
+  service_name        = "com.amazonaws.${var.region}.kms"
+  vpc_endpoint_type   = "Interface"
+  private_dns_enabled = true
+  security_group_ids  = [
     aws_security_group.wallet_api.id,
     aws_security_group.lambda_backend.id,
   ]

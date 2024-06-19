@@ -70,12 +70,15 @@ resource "aws_ecs_task_definition" "vault" {
         {
           name = "VAULT_AWSKMS_SEAL_KEY_ID",
           value = aws_kms_key.vault_kms_key.id
+        },
+        {
+          name = "AWS_KMS_ENDPOINT",
+          value = aws_vpc_endpoint.kms.dns_entry_id
         }
         // TODO: Add AWS credentials if needed.
       ]
       healthCheck = {
-        // TODO: Update health check.
-        command     = ["CMD-SHELL", "curl -f http://localhost:${var.vault_port}/.well-known/openid-configuration || exit 1"],
+        command     = ["CMD-SHELL", "curl -f http://localhost:${var.vault_port}/v1/sys/health || exit 1"],
         interval    = 30,
         timeout     = 5,
         retries     = 3,
