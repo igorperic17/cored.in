@@ -13,5 +13,13 @@
                 "path": "/vault/data"
             }
         }
-    ]
+    ],
+    "seal": {
+        "awskms": {
+            "region": "eu-west-1",
+            "access_key": "REDACTED",
+            "secret_key": "REDACTED",
+            "kms_key_id": "88a1d607-26c7-4fd8-ab6d-0ceb145bcce3"
+        }
+    }
 }

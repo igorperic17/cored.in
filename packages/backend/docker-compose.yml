@@ -37,8 +37,8 @@ services:
         aliases:
           - db
   vault:
-    image: rubentewierik/vault
-    platform: linux/amd64
+    image: rubentewierik/vault # openbao/openbao:2.0.0-alpha20240329
+    platform: linux/amd64 # linux/arm64
     container_name: coredin_openbao_vault
     environment:
       BAO_ADDR: 'http://0.0.0.0:8200'
@@ -48,7 +48,7 @@ services:
       - IPC_LOCK
     volumes:
       - ./vault/local/config:/vault/config
-      - vault_data:/vault/data:rw
+      # - vault_data:/vault/data:rw
 
   wallet-api:
     image: waltid/wallet-api:0.3.1
