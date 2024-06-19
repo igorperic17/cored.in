@@ -78,8 +78,8 @@ resource "aws_iam_policy" "lambda_backend_secrets_manager_read_policy" {
           aws_secretsmanager_secret.jwt_secret_asm_secret.arn,
           aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn,
           aws_secretsmanager_secret.aurora_password_asm_secret.arn,
-          aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn,
-          aws_secretsmanager_secret.vault_root_token.arn
+          data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn,
+          data.aws_secretsmanager_secret.vault_root_token.arn
         ]
       },
     ],
@@ -144,8 +144,8 @@ resource "aws_lambda_function" "lambda_backend" {
         jwt_secret                 = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
         internal_endpoint_secrets  = "sm://${aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn}",
         db_password                = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}",
-        signer_pkey                = "sm://${aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn}",
-        vault_access_key           = "sm://${aws_secretsmanager_secret.vault_root_token.arn}",
+        signer_pkey                = "sm://${data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn}",
+        vault_access_key           = "sm://${data.aws_secretsmanager_secret.vault_root_token.arn}",
       })
     }
   }

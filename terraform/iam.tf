@@ -159,6 +159,7 @@ resource "aws_iam_policy" "allow_logs" {
   })
 }
 
+// TODO: Split this policy into two separate policies: one for Wallet API, another one for Vault.
 resource "aws_iam_policy" "allow_read_secret" {
   name        = "${var.app_name}-read-secrets-policy"
   path        = "/"
@@ -170,8 +171,7 @@ resource "aws_iam_policy" "allow_read_secret" {
       {
         Effect   = "Allow",
         Action   = "secretsmanager:GetSecretValue",
-        Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-*",
-        NotResource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-vault-*"
+        Resource = "arn:aws:secretsmanager:${var.region}:${data.aws_caller_identity.current.account_id}:secret:${var.app_name}-*"
       }
     ],
   })
