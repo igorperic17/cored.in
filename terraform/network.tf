@@ -190,7 +190,6 @@ resource "aws_security_group" "issuer_api" {
   }
 }
 
-
 # Vault
 resource "aws_security_group" "vault_elb" {
   name        = "${var.app_name}-vault-elb-sg"

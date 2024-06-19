@@ -37,8 +37,8 @@ services:
         aliases:
           - db
   vault:
-    image: openbao/openbao:2.0.0-alpha20240329
-    platform: linux/arm64
+    image: rubentewierik/vault
+    platform: linux/amd64
     container_name: coredin_openbao_vault
     environment:
       BAO_ADDR: 'http://0.0.0.0:8200'
@@ -49,8 +49,6 @@ services:
     volumes:
       - ./vault/local/config:/vault/config
       - vault_data:/vault/data:rw
-    command: bao server -config /vault/config/bao_config.json
-    user: root
 
   wallet-api:
     image: waltid/wallet-api:0.3.1
