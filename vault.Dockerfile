@@ -1,5 +1,10 @@
 FROM openbao/openbao:2.0.0-alpha20240329
 
+RUN apk add --no-cache curl
+
+RUN curl -sSL -o /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" \
+    && chmod +x /usr/local/bin/jq
+
 EXPOSE 8200
 
 ENV BAO_ADDR=http://0.0.0.0:8200
@@ -12,4 +17,4 @@ COPY packages/backend/vault/initialise_vault.sh /vault/initialise_vault.sh
 
 RUN chmod +x /vault/initialise_vault.sh
 
-CMD ["sh", "-c", "/vault/initialise_vault.sh"]
+CMD ["sh", "-c", "chmod -R 777 /vault && bao server -config /vault/config/bao_config.json & /vault/initialise_vault.sh && wait"]
