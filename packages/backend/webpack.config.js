@@ -92,4 +92,10 @@ module.exports = () => ({
       },
     }),
   ],
+  ignoreWarnings: [
+    {
+      module: /typeorm/,
+      message: /Module not found|dependency is an expression/,
+    }
+  ]
 });

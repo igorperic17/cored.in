@@ -1,10 +1,8 @@
-import { Post } from "@/posts/post.entity";
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
-  Index,
-  OneToMany
+  Index
 } from "typeorm";
 
 @Entity("users")
@@ -22,7 +20,6 @@ export class User {
     backgroundColor: string,
     avatarFallbackColor: string,
     bio: string,
-    posts: Post[]
   ) {
     this.id = id;
     this.wallet = wallet;
@@ -36,7 +33,6 @@ export class User {
     this.backgroundColor = backgroundColor;
     this.avatarFallbackColor = avatarFallbackColor;
     this.bio = bio;
-    this.posts = posts;
   }
 
   @PrimaryGeneratedColumn()
@@ -95,7 +91,4 @@ export class User {
     nullable: true
   })
   bio: string;
-
-  @OneToMany(() => Post, (post: Post) => post.user)
-  posts: Post[];
 }

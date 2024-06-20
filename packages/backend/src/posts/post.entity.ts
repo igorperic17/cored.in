@@ -63,7 +63,7 @@ export class Post {
   @Index()
   replyToPostId: number;
 
-  @ManyToOne(() => User, (user) => user.posts)
+  @ManyToOne(() => User)
   @JoinColumn({ name: "creatorWallet", referencedColumnName: "wallet" })
   user: User;
 
