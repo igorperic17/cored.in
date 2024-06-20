@@ -13,3 +13,5 @@ export const TESTNET_SITE_ICON_URL = "/coreum.svg";
 export const TESTNET_GAS_PRICE = "0.0625utestcore";
 export const TESTNET_CONTRACT_ADDRESS =
   "testcore1wnc64xdun6m754crqhxsht09ad4zv7dw0t26msq7m36004rjnlyqhpykdn";
+
+export const MAINNET_CHAIN_BECH32_PREFIX = "core";

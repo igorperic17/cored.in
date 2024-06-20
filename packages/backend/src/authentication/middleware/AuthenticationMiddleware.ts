@@ -3,7 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import { Request, Response, NextFunction } from "express";
 import { WALLET_HEADER, MaxLoginDurationMs, LoginMessage } from "../constants";
 import * as Cosmos from "@keplr-wallet/cosmos";
-import { TESTNET_CHAIN_BECH32_PREFIX } from "@coredin/shared";
+import { MAINNET_CHAIN_BECH32_PREFIX, TESTNET_CHAIN_BECH32_PREFIX } from "@coredin/shared";
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
@@ -45,24 +45,38 @@ export class AuthenticationMiddleware implements NestMiddleware {
     ) {
       return;
     }
+    
+    if (this.trySetWalletHeader(req, decodedJwt, TESTNET_CHAIN_BECH32_PREFIX)) {
+      return;
+    }
+    this.trySetWalletHeader(req, decodedJwt, MAINNET_CHAIN_BECH32_PREFIX)
+  }
 
-    const message = LoginMessage + decodedJwt.expiration;
-    const { signature, pubKey, walletAddress } = decodedJwt;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  private trySetWalletHeader(req: Request, decodedJwt: any, prefix: string): boolean {
+    try {
+      const message = LoginMessage + decodedJwt.expiration;
+      const { signature, pubKey, walletAddress } = decodedJwt;
 
-    const signatureBuffer = Buffer.from(signature, "base64");
-    const uint8Signature = new Uint8Array(signatureBuffer); // Convert the buffer to an Uint8Array
-    const pubKeyValueBuffer = Buffer.from(pubKey, "base64"); // Decode the base64 encoded value
-    const pubKeyUint8Array = new Uint8Array(pubKeyValueBuffer); // Convert the buffer to an Uint8Array
-    const isRecovered = Cosmos.verifyADR36Amino(
-      TESTNET_CHAIN_BECH32_PREFIX,
-      walletAddress,
-      message,
-      pubKeyUint8Array,
-      uint8Signature
-    );
+      const signatureBuffer = Buffer.from(signature, "base64");
+      const uint8Signature = new Uint8Array(signatureBuffer); // Convert the buffer to an Uint8Array
+      const pubKeyValueBuffer = Buffer.from(pubKey, "base64"); // Decode the base64 encoded value
+      const pubKeyUint8Array = new Uint8Array(pubKeyValueBuffer); // Convert the buffer to an Uint8Array
+      const isRecovered = Cosmos.verifyADR36Amino(
+        prefix,
+        walletAddress,
+        message,
+        pubKeyUint8Array,
+        uint8Signature
+      );
 
-    if (isRecovered) {
-      req.headers[WALLET_HEADER] = walletAddress;
+      if (isRecovered) {
+        req.headers[WALLET_HEADER] = walletAddress;
+      }
+      return isRecovered;
+    } catch (exception: unknown) {
+      console.warn(`Wallet header could not be set for prefix ${prefix}`, exception);
+      return false;
     }
   }
 }
