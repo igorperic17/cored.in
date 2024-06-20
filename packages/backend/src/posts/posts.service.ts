@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ArrayContains, IsNull, Repository } from "typeorm";
 import { Post } from "./post.entity";
@@ -12,8 +12,6 @@ import { User } from "@/user/user.entity";
 
 @Injectable()
 export class PostsService {
-  private readonly logger = new Logger("PostsService");
-
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>

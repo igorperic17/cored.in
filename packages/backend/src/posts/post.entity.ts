@@ -12,6 +12,30 @@ import {
 
 @Entity("posts")
 export class Post {
+  constructor(
+    id: number,
+    creatorWallet: string,
+    text: string,
+    createdAt: Date,
+    visibility: PostVisibility,
+    likes: number,
+    replyToPostId: number,
+    user: User,
+    parent: Post,
+    replies: Post[]
+  ) {
+    this.id = id;
+    this.creatorWallet = creatorWallet;
+    this.text = text;
+    this.createdAt = createdAt;
+    this.visibility = visibility;
+    this.likes = likes;
+    this.replyToPostId = replyToPostId;
+    this.user = user;
+    this.parent = parent;
+    this.replies = replies;
+  }
+
   @PrimaryGeneratedColumn()
   id: number;
 

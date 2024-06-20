@@ -9,10 +9,34 @@ import {
 
 @Entity("users")
 export class User {
-  constructor(id: number, wallet: string, lastSeen: Date) {
+  constructor(
+    id: number,
+    wallet: string,
+    username: string,
+    didKeyId: string,
+    issuerDid: string,
+    issuerKeyId: string,
+    lastSeen: Date,
+    likedPosts: number[],
+    avatarUrl: string,
+    backgroundColor: string,
+    avatarFallbackColor: string,
+    bio: string,
+    posts: Post[]
+  ) {
     this.id = id;
     this.wallet = wallet;
+    this.username = username;
+    this.didKeyId = didKeyId;
+    this.issuerDid = issuerDid;
+    this.issuerKeyId = issuerKeyId;
     this.lastSeen = lastSeen;
+    this.likedPosts = likedPosts;
+    this.avatarUrl = avatarUrl;
+    this.backgroundColor = backgroundColor;
+    this.avatarFallbackColor = avatarFallbackColor;
+    this.bio = bio;
+    this.posts = posts;
   }
 
   @PrimaryGeneratedColumn()
