@@ -79,6 +79,35 @@ resource "aws_security_group" "aurora_cluster" {
   }
 }
 
+// TODO: Reconsider if NAT GW is really needed here.
+resource "aws_eip" "nat_eip" {
+  domain   = "vpc"
+}
+
+resource "aws_nat_gateway" "nat_gw" {
+  allocation_id = aws_eip.nat_eip.id
+  subnet_id     = aws_subnet.public[0].id
+
+  tags = {
+    Name = "${var.app_name}-ngw"
+  }
+}
+
+resource "aws_route_table" "private_rt" {
+  vpc_id = aws_vpc.default.id
+
+  route {
+    cidr_block     = "0.0.0.0/0"
+    nat_gateway_id = aws_nat_gateway.nat_gw.id
+  }
+}
+
+resource "aws_route_table_association" "private_rt_assoc" {
+  count          = length(aws_subnet.private)
+  subnet_id      = element(aws_subnet.private[*].id, count.index)
+  route_table_id = aws_route_table.private_rt.id
+}
+
 # Wallet API
 resource "aws_security_group" "wallet_api_elb" {
   name        = "${var.app_name}-wallet-api-elb-sg"
@@ -260,7 +289,7 @@ resource "aws_security_group" "lambda_backend" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.default.cidr_block]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
