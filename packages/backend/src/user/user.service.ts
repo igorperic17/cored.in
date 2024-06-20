@@ -32,8 +32,7 @@ export class UserService {
     wallet: string
   ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
     const user = await this.userRepository.findOne({
-      where: { wallet },
-      relations: ["posts"]
+      where: { wallet }
     });
     if (user) {
       let didKeyId = user.didKeyId;
