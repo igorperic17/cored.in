@@ -14,8 +14,8 @@ db_retention_window_days = 0
 
 wallet_api_image   = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/waltid-wallet-api:x86"
 wallet_api_db_name = "coredinwalletapiprod"
-wallet_api_cpu     = 256
-wallet_api_memory  = 512
+wallet_api_cpu     = 512
+wallet_api_memory  = 1024
 wallet_api_port    = 7001
 
 verifier_api_image  = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/waltid-verifier-api:x86"
@@ -29,6 +29,6 @@ issuer_api_memory = 512
 issuer_api_port   = 7002
 
 vault_image  = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/vault:x86"
-vault_cpu    = 256
-vault_memory = 512
+vault_cpu    = 512
+vault_memory = 1024
 vault_port   = 8200
