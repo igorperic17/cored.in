@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "verifier_api" {
         }
       ]
       environment = []
-      secrets = [ ]
+      secrets     = []
       healthCheck = {
         command     = ["CMD-SHELL", "curl -f http://localhost:${var.verifier_api_port}/openid4vc/policy-list || exit 1"],
         interval    = 30,

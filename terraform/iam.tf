@@ -205,8 +205,8 @@ resource "aws_iam_policy" "allow_vault_secrets_management" {
     Version = "2012-10-17"
     Statement = [
       {
-        Effect   = "Allow",
-        Action   = [
+        Effect = "Allow",
+        Action = [
           "secretsmanager:CreateSecret",
           "secretsmanager:GetSecretValue",
           "secretsmanager:PutSecretValue"

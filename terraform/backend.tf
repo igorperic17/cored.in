@@ -141,11 +141,11 @@ resource "aws_lambda_function" "lambda_backend" {
         }
       }),
       "SECRETS_JSON" = jsonencode({
-        jwt_secret                 = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
-        internal_endpoint_secrets  = "sm://${aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn}",
-        db_password                = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}",
-        signer_pkey                = "sm://${data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn}",
-        vault_access_key           = "sm://${data.aws_secretsmanager_secret.vault_root_token.arn}",
+        jwt_secret                = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
+        internal_endpoint_secrets = "sm://${aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn}",
+        db_password               = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}",
+        signer_pkey               = "sm://${data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn}",
+        vault_access_key          = "sm://${data.aws_secretsmanager_secret.vault_root_token.arn}",
       })
     }
   }
@@ -175,6 +175,7 @@ resource "aws_api_gateway_integration" "lambda_backend_api_integration" {
   integration_http_method = "POST"
   type                    = "AWS_PROXY"
   uri                     = aws_lambda_function.lambda_backend.invoke_arn
+  depends_on              = [aws_lambda_function.lambda_backend]
 }
 
 resource "aws_api_gateway_method_response" "lambda_backend_api_method_response" {
@@ -208,6 +209,7 @@ resource "aws_lambda_permission" "api_gateway_lambda_backend_api_permission" {
   function_name = aws_lambda_function.lambda_backend.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.lambda_backend_api.execution_arn}/*"
+  depends_on    = [aws_lambda_function.lambda_backend]
 }
 
 resource "aws_api_gateway_rest_api_policy" "invoke_api_gateway_policy" {

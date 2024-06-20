@@ -1,8 +1,8 @@
 resource "aws_kms_key" "vault_kms_key" {
-  description               = "KMS key for managing the Vault that persists Wallet API secrets"
-  key_usage                 = "ENCRYPT_DECRYPT"
-  customer_master_key_spec  = "SYMMETRIC_DEFAULT"
-  deletion_window_in_days   = 7
+  description              = "KMS key for managing the Vault that persists Wallet API secrets"
+  key_usage                = "ENCRYPT_DECRYPT"
+  customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  deletion_window_in_days  = 7
 }
 
 resource "aws_ecs_cluster" "vault" {
@@ -64,15 +64,15 @@ resource "aws_ecs_task_definition" "vault" {
       ]
       environment = [
         {
-          name = "AWS_REGION",
+          name  = "AWS_REGION",
           value = var.region
         },
         {
-          name = "VAULT_AWSKMS_SEAL_KEY_ID",
+          name  = "VAULT_AWSKMS_SEAL_KEY_ID",
           value = aws_kms_key.vault_kms_key.id
         },
         {
-          name = "AWS_KMS_ENDPOINT",
+          name  = "AWS_KMS_ENDPOINT",
           value = aws_vpc_endpoint.kms_endpoint.dns_entry[0].dns_name
         }
         // TODO: Add AWS credentials if needed.

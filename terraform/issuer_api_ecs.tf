@@ -56,7 +56,7 @@ resource "aws_ecs_task_definition" "issuer_api" {
         }
       ]
       environment = []
-      secrets = [ ]
+      secrets     = []
       healthCheck = {
         command     = ["CMD-SHELL", "curl -f http://localhost:${var.issuer_api_port}/.well-known/openid-configuration || exit 1"],
         interval    = 30,
