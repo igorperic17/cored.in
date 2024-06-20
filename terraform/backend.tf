@@ -216,7 +216,15 @@ resource "aws_lambda_permission" "api_gateway_lambda_backend_api_permission" {
   function_name = aws_lambda_function.lambda_backend.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.lambda_backend_api.execution_arn}/*"
-  depends_on    = [null_resource.trigger_lambda_permission, aws_api_gateway_integration.lambda_backend_api_integration, aws_lambda_function.lambda_backend]
+  depends_on = [
+    null_resource.trigger_lambda_permission,
+    aws_api_gateway_integration.lambda_backend_api_integration,
+    aws_lambda_function.lambda_backend
+  ]
+
+  lifecycle {
+    replace_triggered_by = [null_resource.trigger_lambda_permission]
+  }
 }
 
 resource "aws_api_gateway_rest_api_policy" "invoke_api_gateway_policy" {
