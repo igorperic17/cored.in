@@ -63,10 +63,11 @@ provider "postgresql" {
   password = random_password.aurora_password.result
 }
 
-resource "postgresql_database" "wallet_api_database" {
-  name  = var.wallet_api_db_name
-  owner = var.db_user
-}
+// TODO: This should not be commented, but adding the NAT GW made this instance unreachable. To be fixed.
+# resource "postgresql_database" "wallet_api_database" {
+#   name  = var.wallet_api_db_name
+#   owner = var.db_user
+# }
 
 resource "aws_secretsmanager_secret" "aurora_password_asm_secret" {
   name                    = "${var.app_name}-rds-password"

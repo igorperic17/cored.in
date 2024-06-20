@@ -79,7 +79,7 @@ resource "aws_ecs_task_definition" "wallet_api" {
       memory      = var.wallet_api_memory
       name        = "${var.app_name}-wallet-api-container"
       networkMode = "awsvpc"
-      logConfiguration = var.use_private_subnets ? null : {
+      logConfiguration = {
         logDriver = "awslogs",
         options = {
           "awslogs-group" : "${aws_cloudwatch_log_group.ecs_log_group.name}",
