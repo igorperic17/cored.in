@@ -203,13 +203,20 @@ resource "aws_api_gateway_deployment" "lambda_backend_api_deployment" {
   stage_name  = "prod"
 }
 
+resource "null_resource" "trigger_lambda_permission" {
+  triggers = {
+    lambda_version = aws_lambda_function.lambda_backend.version
+  }
+}
+
+
 resource "aws_lambda_permission" "api_gateway_lambda_backend_api_permission" {
   statement_id  = "AllowAPIGatewayInvoke"
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.lambda_backend.function_name
   principal     = "apigateway.amazonaws.com"
   source_arn    = "${aws_api_gateway_rest_api.lambda_backend_api.execution_arn}/*"
-  depends_on    = [aws_lambda_function.lambda_backend]
+  depends_on    = [null_resource.trigger_lambda_permission, aws_api_gateway_integration.lambda_backend_api_integration, aws_lambda_function.lambda_backend]
 }
 
 resource "aws_api_gateway_rest_api_policy" "invoke_api_gateway_policy" {
