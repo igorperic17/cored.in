@@ -3563,6 +3563,7 @@ __metadata:
     "@vercel/ncc": "npm:^0.38.1"
     aws-lambda: "npm:^1.0.7"
     axios: "npm:^1.6.7"
+    bufferutil: "npm:^4.0.8"
     clean-webpack-plugin: "npm:^4.0.0"
     copy-webpack-plugin: "npm:^12.0.2"
     effect: "npm:^2.4.18"
@@ -3589,6 +3590,7 @@ __metadata:
     typeorm: "npm:^0.3.20"
     typescript: "npm:5.4.2"
     typia: "npm:^6.0.3"
+    utf-8-validate: "npm:^6.0.4"
     webpack: "npm:^5.91.0"
     webpack-cli: "npm:^5.1.4"
     write-file-webpack-plugin: "npm:^4.5.1"
@@ -11306,6 +11308,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"bufferutil@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "bufferutil@npm:4.0.8"
+  dependencies:
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.3.0"
+  checksum: 10/d9337badc960a19d5a031db5de47159d7d8a11b6bab399bdfbf464ffa9ecd2972fef19bb61a7d2827e0c55f912c20713e12343386b86cb013f2b99c2324ab6a3
+  languageName: node
+  linkType: hard
+
 "builtin-modules@npm:^3.3.0":
   version: 3.3.0
   resolution: "builtin-modules@npm:3.3.0"
@@ -17752,6 +17764,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"node-gyp-build@npm:^4.3.0":
+  version: 4.8.1
+  resolution: "node-gyp-build@npm:4.8.1"
+  bin:
+    node-gyp-build: bin.js
+    node-gyp-build-optional: optional.js
+    node-gyp-build-test: build-test.js
+  checksum: 10/b9297770f96a92e5f2b854f3fd5e4bd418df81d7785a81ab60cec5cf2e5e72dc2c3319808978adc572cfa3885e6b12338cb5f4034bed2cab35f0d76a4b75ccdf
+  languageName: node
+  linkType: hard
+
 "node-gyp@npm:latest":
   version: 10.1.0
   resolution: "node-gyp@npm:10.1.0"
@@ -21812,6 +21835,16 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0 || ^18.0.0
   checksum: 10/a676216affc203876bd47981103f201f28c2731361bb186367e12d287a7566763213a8816910c6eb88265eccd4c230426eb783d64c373c4a180905be8820ed8e
+  languageName: node
+  linkType: hard
+
+"utf-8-validate@npm:^6.0.4":
+  version: 6.0.4
+  resolution: "utf-8-validate@npm:6.0.4"
+  dependencies:
+    node-gyp: "npm:latest"
+    node-gyp-build: "npm:^4.3.0"
+  checksum: 10/046fc81e7c7528661b8162262e62750ab23439e9901dece161b4c6faf36c699f55b8ebd3d9701da2881e315cdce1ee9597121f7dd2f4e405b8aeeec09ded8684
   languageName: node
   linkType: hard
 

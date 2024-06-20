@@ -46,12 +46,14 @@
     "@nestjs/typeorm": "^10.0.2",
     "aws-lambda": "^1.0.7",
     "axios": "^1.6.7",
+    "bufferutil": "^4.0.8",
     "clean-webpack-plugin": "^4.0.0",
     "effect": "^2.4.18",
     "merkletreejs": "^0.3.11",
     "pg": "^8.11.3",
     "typeorm": "^0.3.20",
-    "typia": "^6.0.3"
+    "typia": "^6.0.3",
+    "utf-8-validate": "^6.0.4"
   },
   "devDependencies": {
     "@nestia/sdk": "^3.0.5",
