@@ -76,6 +76,8 @@ resource "aws_ecs_service" "issuer_api" {
   platform_version = "1.3.0"
   propagate_tags   = "SERVICE"
 
+  enable_ecs_managed_tags = true
+
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
     weight            = 1
@@ -87,10 +89,13 @@ resource "aws_ecs_service" "issuer_api" {
     assign_public_ip = true
   }
 
-  load_balancer {
-    target_group_arn = aws_alb_target_group.issuer_api.arn
-    container_name   = "${var.app_name}-issuer-api-container"
-    container_port   = var.issuer_api_port
+  dynamic "load_balancer" {
+    for_each = var.use_elbs ? [1] : []
+    content {
+      target_group_arn = aws_alb_target_group.issuer_api.arn
+      container_name   = "${var.app_name}-issuer-api-container"
+      container_port   = var.issuer_api_port
+    }
   }
 
   depends_on = [aws_ecs_task_definition.issuer_api]

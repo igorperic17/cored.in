@@ -19,6 +19,10 @@ variable "use_vpc_endpoints" {
   type = bool
 }
 
+variable "use_elbs" {
+  type = bool
+}
+
 variable "backend_cloudfront_distribution_id" {
   type = string
 }

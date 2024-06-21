@@ -2,6 +2,7 @@ app_name                           = "coredin"
 is_app_https                       = true
 use_private_subnets                = false
 use_vpc_endpoints                  = false
+use_elbs                           = false
 backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
 availability_zones                 = ["eu-west-1a", "eu-west-1b"]
 

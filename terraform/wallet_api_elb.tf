@@ -1,11 +1,13 @@
 resource "aws_alb" "wallet_api" {
+  count           = var.use_elbs ? 1 : 0
   name            = "${var.app_name}-wallet-api-elb"
   internal        = true
   subnets         = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
-  security_groups = [aws_security_group.wallet_api_elb.id]
+  security_groups = [aws_security_group.wallet_api_elb[0].id]
 }
 
 resource "aws_alb_target_group" "wallet_api" {
+  count                = var.use_elbs ? 1 : 0
   name                 = "${var.app_name}-wallet-api-tg"
   port                 = var.wallet_api_port
   protocol             = "HTTP"
@@ -30,12 +32,13 @@ resource "aws_alb_target_group" "wallet_api" {
 }
 
 resource "aws_alb_listener" "wallet_api" {
-  load_balancer_arn = aws_alb.wallet_api.id
+  count             = var.use_elbs ? 1 : 0
+  load_balancer_arn = aws_alb.wallet_api[0].id
   port              = var.wallet_api_port
   protocol          = "HTTP"
 
   default_action {
-    target_group_arn = aws_alb_target_group.wallet_api.id
+    target_group_arn = aws_alb_target_group.wallet_api[0].id
     type             = "forward"
   }
 }

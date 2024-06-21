@@ -1,3 +1,64 @@
+# Network interfaces
+data "aws_network_interfaces" "vault" {
+  count = var.use_elbs ? 0 : 1
+  tags = {
+    "aws:ecs:serviceName" = aws_ecs_service.vault.name
+  }
+}
+
+data "aws_network_interfaces" "wallet_api" {
+  count = var.use_elbs ? 0 : 1
+  tags = {
+    "aws:ecs:serviceName" = aws_ecs_service.wallet_api.name
+  }
+}
+
+data "aws_network_interfaces" "issuer_api" {
+  count = var.use_elbs ? 0 : 1
+  tags = {
+    "aws:ecs:serviceName" = aws_ecs_service.issuer_api.name
+  }
+}
+
+data "aws_network_interfaces" "verifier_api" {
+  count = var.use_elbs ? 0 : 1
+  tags = {
+    "aws:ecs:serviceName" = aws_ecs_service.verifier_api.name
+  }
+}
+
+# Network interface
+data "aws_network_interface" "vault" {
+  count = var.use_elbs ? 0 : 1
+  depends_on = [aws_ecs_service.vault]
+  id = data.aws_network_interfaces.vault[0].ids[0]
+}
+
+data "aws_network_interface" "wallet_api" {
+  count = var.use_elbs ? 0 : 1
+  depends_on = [aws_ecs_service.wallet_api]
+  id = data.aws_network_interfaces.wallet_api[0].ids[0]
+}
+
+data "aws_network_interface" "issuer_api" {
+  count = var.use_elbs ? 0 : 1
+  depends_on = [aws_ecs_service.issuer_api]
+  id = data.aws_network_interfaces.issuer_api[0].ids[0]
+}
+
+data "aws_network_interface" "verifier_api" {
+  count = var.use_elbs ? 0 : 1
+  depends_on = [aws_ecs_service.verifier_api]
+  id = data.aws_network_interfaces.verifier_api[0].ids[0]
+}
+
+locals {
+  vault_address = var.use_elbs ? aws_alb.vault[0].dns_name : data.aws_network_interface.vault[0].association[0].public_ip
+  wallet_api_address = var.use_elbs ? aws_alb.wallet_api[0].dns_name : data.aws_network_interface.wallet_api[0].association[0].public_ip
+  issuer_api_address = var.use_elbs ? aws_alb.issuer_api[0].dns_name : data.aws_network_interface.issuer_api[0].association[0].public_ip
+  verifier_api_address = var.use_elbs ? aws_alb.verifier_api[0].dns_name : data.aws_network_interface.verifier_api[0].association[0].public_ip
+}
+
 # Generated ASM secret values
 resource "random_password" "jwt_secret" {
   length  = 32
@@ -121,22 +182,22 @@ resource "aws_lambda_function" "lambda_backend" {
         },
         vault = {
           api = {
-            url = "http://${aws_alb.vault.dns_name}:${var.vault_port}"
+            url = "http://${local.vault_address}:${var.vault_port}"
           }
         },
         wallet = {
           api = {
-            url = "http://${aws_alb.wallet_api.dns_name}:${var.wallet_api_port}"
+            url = "http://${local.wallet_api_address}:${var.wallet_api_port}"
           }
         },
         issuer = {
           api = {
-            url = "http://${aws_alb.issuer_api.dns_name}:${var.issuer_api_port}"
+            url = "http://${local.issuer_api_address}:${var.issuer_api_port}"
           }
         },
         verifier = {
           api = {
-            url = "http://${aws_alb.verifier_api.dns_name}:${var.verifier_api_port}"
+            url = "http://${local.verifier_api_address}:${var.verifier_api_port}"
           }
         }
       }),

@@ -113,15 +113,16 @@ resource "aws_route_table_association" "private_rt_assoc" {
 
 # Wallet API
 resource "aws_security_group" "wallet_api_elb" {
+  count       = var.use_elbs ? 1 : 0
   name        = "${var.app_name}-wallet-api-elb-sg"
   description = "Allow inbound traffic to Wallet API ELB"
   vpc_id      = aws_vpc.default.id
 
   ingress {
-    from_port   = var.wallet_api_port
-    to_port     = var.wallet_api_port
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.default.cidr_block]
+    from_port       = var.wallet_api_port
+    to_port         = var.wallet_api_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -141,7 +142,7 @@ resource "aws_security_group" "wallet_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.wallet_api_port
-    security_groups = [aws_security_group.wallet_api_elb.id]
+    security_groups = [var.use_elbs ? aws_security_group.wallet_api_elb[0].id : aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -154,15 +155,16 @@ resource "aws_security_group" "wallet_api" {
 
 # Verifier API
 resource "aws_security_group" "verifier_api_elb" {
+  count       = var.use_elbs ? 1 : 0
   name        = "${var.app_name}-verifier-api-elb-sg"
   description = "Allow inbound traffic to Verifier API ELB"
   vpc_id      = aws_vpc.default.id
 
   ingress {
-    from_port   = var.verifier_api_port
-    to_port     = var.verifier_api_port
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.default.cidr_block]
+    from_port       = var.verifier_api_port
+    to_port         = var.verifier_api_port
+    protocol        = "tcp"
+    security_groups = [aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -182,7 +184,7 @@ resource "aws_security_group" "verifier_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.verifier_api_port
-    security_groups = [aws_security_group.verifier_api_elb.id]
+    security_groups = [var.use_elbs ? aws_security_group.verifier_api_elb[0].id : aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -195,15 +197,16 @@ resource "aws_security_group" "verifier_api" {
 
 # Issuer API
 resource "aws_security_group" "issuer_api_elb" {
+  count       = var.use_elbs ? 1 : 0
   name        = "${var.app_name}-issuer-api-elb-sg"
   description = "Allow inbound traffic to Issuer API ELB"
   vpc_id      = aws_vpc.default.id
 
   ingress {
-    from_port   = var.issuer_api_port
-    to_port     = var.issuer_api_port
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.default.cidr_block]
+    protocol        = "tcp"
+    from_port       = var.issuer_api_port
+    to_port         = var.issuer_api_port
+    security_groups = [aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -223,7 +226,7 @@ resource "aws_security_group" "issuer_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.issuer_api_port
-    security_groups = [aws_security_group.issuer_api_elb.id]
+    security_groups = [var.use_elbs ? aws_security_group.issuer_api_elb[0].id : aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -236,15 +239,16 @@ resource "aws_security_group" "issuer_api" {
 
 # Vault
 resource "aws_security_group" "vault_elb" {
+  count       = var.use_elbs ? 1 : 0
   name        = "${var.app_name}-vault-elb-sg"
   description = "Allow inbound traffic to Vault ELB"
   vpc_id      = aws_vpc.default.id
 
   ingress {
-    from_port   = var.vault_port
-    to_port     = var.vault_port
-    protocol    = "tcp"
-    cidr_blocks = [aws_vpc.default.cidr_block]
+    protocol        = "tcp"
+    from_port       = var.vault_port
+    to_port         = var.vault_port
+    security_groups = [aws_security_group.wallet_api.id]
   }
 
   egress {
@@ -264,7 +268,7 @@ resource "aws_security_group" "vault" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.vault_port
-    security_groups = [aws_security_group.vault_elb.id]
+    security_groups = [var.use_elbs ? aws_security_group.vault_elb[0].id : aws_security_group.wallet_api.id]
   }
 
   egress {
@@ -285,7 +289,7 @@ resource "aws_security_group" "lambda_backend" {
     protocol    = "-1"
     from_port   = 0
     to_port     = 0
-    cidr_blocks = [aws_vpc.default.cidr_block]
+    cidr_blocks = [aws_vpc.default.cidr_block] // TODO: Set this source to API Gateway.
   }
 
   egress {
