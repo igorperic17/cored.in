@@ -29,6 +29,9 @@ export const RequestCredential = () => {
     years.push(i);
   }
 
+  console.log("start: ", state.startDate);
+  console.log("end: ", state.endDate);
+
   return (
     <VStack
       spacing="2.5em"
@@ -56,7 +59,7 @@ export const RequestCredential = () => {
             })
           }
         >
-          <option value="00">Select a type</option>
+          <option value="">Select a type</option>
           <option value="EducationCredential">Education</option>
           <option value="ProfessionalExperience">
             Professional experience
@@ -116,7 +119,7 @@ export const RequestCredential = () => {
                   })
                 }
               >
-                <option value="">Month</option>
+                <option value="0">Month</option>
                 {months.map((month, index) => {
                   return (
                     <option key={`start-date-month-${index}`} value={month}>
@@ -170,7 +173,7 @@ export const RequestCredential = () => {
                   })
                 }
               >
-                <option value="">Month</option>
+                <option value="0">Month</option>
                 {months.map((month, index) => {
                   return (
                     <option key={`end-date-month-${index}`} value={month}>
