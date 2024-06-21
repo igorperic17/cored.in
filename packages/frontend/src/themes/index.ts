@@ -1,6 +1,7 @@
 export { buttonTheme } from "./buttonTheme";
 export { stepperTheme } from "./stepperTheme";
 export { inputTheme } from "./inputTheme";
+export { selectTheme } from "./selectTheme";
 export { menuTheme } from "./menuTheme";
 export { tabsTheme } from "./tabsTheme";
 export { badgeTheme } from "./badgeTheme";

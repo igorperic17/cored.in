@@ -7,6 +7,7 @@ import {
   inputTheme,
   layerStyles,
   menuTheme,
+  selectTheme,
   stepperTheme,
   tabsTheme,
   textStyles
@@ -77,6 +78,7 @@ const components = {
   Button: buttonTheme,
   Stepper: stepperTheme,
   Input: inputTheme,
+  Select: selectTheme,
   Menu: menuTheme,
   Tabs: tabsTheme,
   Badge: badgeTheme
