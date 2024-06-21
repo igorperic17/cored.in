@@ -1,6 +1,7 @@
 app_name                           = "coredin"
 is_app_https                       = true
 use_private_subnets                = true
+use_vpc_endpoints                  = false
 backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
 db_instance_class                  = "db.serverless"
 db_availability_zones = [

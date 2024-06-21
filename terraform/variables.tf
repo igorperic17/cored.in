@@ -15,6 +15,10 @@ variable "use_private_subnets" {
   type = bool
 }
 
+variable "use_vpc_endpoints" {
+  type = bool
+}
+
 variable "backend_cloudfront_distribution_id" {
   type = string
 }

@@ -73,7 +73,7 @@ resource "aws_ecs_task_definition" "vault" {
         },
         {
           name  = "AWS_KMS_ENDPOINT",
-          value = aws_vpc_endpoint.kms_endpoint.dns_entry[0].dns_name
+          value = var.use_vpc_endpoints ? aws_vpc_endpoint.kms_endpoint[0].dns_entry[0].dns_name : "https://kms.${var.region}.amazonaws.com"
         }
         // TODO: Add AWS credentials if needed.
       ]

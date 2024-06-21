@@ -37,7 +37,9 @@ resource "aws_subnet" "private" {
   availability_zone = var.db_availability_zones[count.index]
 }
 
+# VPC endpoints
 resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
+  count               = var.use_vpc_endpoints ? 1 : 0
   vpc_id              = aws_vpc.default.id
   subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
   service_name        = "com.amazonaws.${var.region}.secretsmanager"
@@ -50,6 +52,7 @@ resource "aws_vpc_endpoint" "secrets_manager_endpoint" {
 }
 
 resource "aws_vpc_endpoint" "kms_endpoint" {
+  count               = var.use_vpc_endpoints ? 1 : 0
   vpc_id              = aws_vpc.default.id
   subnet_ids          = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
   service_name        = "com.amazonaws.${var.region}.kms"
