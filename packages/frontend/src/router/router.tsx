@@ -13,6 +13,7 @@ import LoginPage from "@/modules/login/views/Login.Page";
 import { PostPage } from "@/modules/home/views/Post.page";
 import UserPage from "@/modules/home/views/User.page";
 import SettingsPage from "@/modules/home/views/Settings.page";
+import { RequestCredentialPage } from "@/modules/home/views/RequestCredential.page";
 
 export const router = createBrowserRouter([
   {
@@ -72,6 +73,17 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.USER.POST.path,
         element: <PostPage />
+      }
+    ]
+  },
+  {
+    path: ROUTES.CREDENTIALS.path,
+    element: <HomeRoot />,
+    errorElement: <ResourceNotFoundPage />,
+    children: [
+      {
+        path: ROUTES.CREDENTIALS.REQUEST.path,
+        element: <RequestCredentialPage />
       }
     ]
   },

@@ -20,6 +20,12 @@ export const ROUTES = {
       }
     }
   },
+  CREDENTIALS: {
+    path: "/credentials",
+    REQUEST: {
+      path: "/credentials/request"
+    }
+  },
   SETTINGS: {
     path: "/settings"
   },

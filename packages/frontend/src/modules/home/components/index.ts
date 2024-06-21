@@ -12,3 +12,4 @@ export * from "./Settings";
 export * from "./CredentialsContainer";
 export * from "./CredentialSection";
 export * from "./Credential";
+export * from "./RequestCredential";
