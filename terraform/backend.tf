@@ -77,7 +77,7 @@ resource "aws_iam_policy" "lambda_backend_secrets_manager_read_policy" {
         Resource = [
           aws_secretsmanager_secret.jwt_secret_asm_secret.arn,
           aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn,
-          aws_secretsmanager_secret.aurora_password_asm_secret.arn,
+          aws_secretsmanager_secret.rds_password_asm_secret.arn,
           data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn,
           data.aws_secretsmanager_secret.vault_root_token.arn
         ]
@@ -112,8 +112,8 @@ resource "aws_lambda_function" "lambda_backend" {
           json_env_var = "SECRETS_JSON",
         },
         db = {
-          host        = aws_rds_cluster_instance.aurora_instance.endpoint,
-          port        = aws_rds_cluster_instance.aurora_instance.port,
+          host        = element(split(":", aws_db_instance.rds_instance.endpoint), 0),
+          port        = aws_db_instance.rds_instance.port,
           user        = var.db_user,
           database    = var.db_name,
           synchronize = true,
@@ -143,7 +143,7 @@ resource "aws_lambda_function" "lambda_backend" {
       "SECRETS_JSON" = jsonencode({
         jwt_secret                = "sm://${aws_secretsmanager_secret.jwt_secret_asm_secret.arn}",
         internal_endpoint_secrets = "sm://${aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn}",
-        db_password               = "sm://${aws_secretsmanager_secret.aurora_password_asm_secret.arn}",
+        db_password               = "sm://${aws_secretsmanager_secret.rds_password_asm_secret.arn}",
         signer_pkey               = "sm://${data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn}",
         vault_access_key          = "sm://${data.aws_secretsmanager_secret.vault_root_token.arn}",
       })
@@ -185,7 +185,7 @@ resource "aws_api_gateway_method_response" "lambda_backend_api_method_response" 
   status_code = "200"
 }
 
-resource "aws_api_gateway_integration_response" "example_integration_response" {
+resource "aws_api_gateway_integration_response" "lambda_backend_api_integration_response" {
   rest_api_id = aws_api_gateway_rest_api.lambda_backend_api.id
   resource_id = aws_api_gateway_resource.lambda_backend_api_proxy_resource.id
   http_method = aws_api_gateway_method.lambda_backend_api_method.http_method

@@ -1,12 +1,12 @@
-resource "random_password" "aurora_password" {
+resource "random_password" "rds_password" {
   length  = 32
   special = false
 }
 
-resource "aws_rds_cluster_parameter_group" "aurora_cluster_parameter_group" {
-  name        = "${var.app_name}-rds-aurora-cluster-parameter-group"
-  family      = "aurora-postgresql16"
-  description = "Parameter group for Aurora RDS cluster"
+resource "aws_db_parameter_group" "rds_parameter_group" {
+  name        = "${var.app_name}-rds-parameter-group"
+  family      = "postgres16"
+  description = "Parameter group for RDS instances"
 
   parameter {
     name  = "rds.force_ssl"
@@ -14,67 +14,58 @@ resource "aws_rds_cluster_parameter_group" "aurora_cluster_parameter_group" {
   }
 }
 
-resource "aws_rds_cluster" "aurora_cluster" {
-  cluster_identifier      = "${var.app_name}-rds-aurora-cluster"
-  engine                  = "aurora-postgresql"
-  engine_mode             = "provisioned"
-  engine_version          = "16.1"
-  database_name           = var.db_name
-  master_username         = var.db_user
-  master_password         = random_password.aurora_password.result
-  backup_retention_period = 7
-  preferred_backup_window = "03:00-05:00"
-  skip_final_snapshot     = true
+resource "aws_db_instance" "rds_instance" {
+  identifier            = "${var.app_name}-rds"
+  allocated_storage     = 10
+  db_name               = var.db_name
+  engine                = "postgres"
+  engine_version        = "16.1"
+  instance_class        = var.db_instance_class
+  username              = var.db_user
+  password              = random_password.rds_password.result
+  db_subnet_group_name  = aws_db_subnet_group.rds_subnet_group.name
+  parameter_group_name  = aws_db_parameter_group.rds_parameter_group.name
+  apply_immediately     = true
+  publicly_accessible   = true // TODO: Rollback after adding VPN (var.use_private_subnets ? false : true)
+  skip_final_snapshot   = true
 
-  serverlessv2_scaling_configuration {
-    min_capacity = 0.5
-    max_capacity = 1.0
-  }
+  availability_zone     = var.db_availability_zones[0]
 
-  db_subnet_group_name            = aws_db_subnet_group.aurora_subnet_group.name
-  db_cluster_parameter_group_name = aws_rds_cluster_parameter_group.aurora_cluster_parameter_group.name
-
-  vpc_security_group_ids = [aws_security_group.aurora_cluster.id]
+  vpc_security_group_ids = [aws_security_group.rds.id]
 
   tags = {
-    Name   = "coredin-rds-aurora-cluster"
-    Engine = "aurora-postgresql"
-  }
-}
-
-resource "aws_rds_cluster_instance" "aurora_instance" {
-  cluster_identifier  = aws_rds_cluster.aurora_cluster.id
-  engine              = aws_rds_cluster.aurora_cluster.engine
-  engine_version      = aws_rds_cluster.aurora_cluster.engine_version
-  instance_class      = var.db_instance_class
-  apply_immediately   = true
-  publicly_accessible = true // TODO: Rollback after adding VPN (var.use_private_subnets ? false : true)
-
-  tags = {
-    Name   = "coredin-rds-aurora-instance"
-    Engine = "aurora-postgresql"
+    Name   = "coredin-rds-instance"
+    Engine = "postgres"
   }
 }
 
 provider "postgresql" {
-  host     = aws_rds_cluster_instance.aurora_instance.endpoint
-  database = aws_rds_cluster.aurora_cluster.database_name
+  host     = element(split(":", aws_db_instance.rds_instance.endpoint), 0)
+  database = aws_db_instance.rds_instance.db_name
   username = var.db_user
-  password = random_password.aurora_password.result
+  password = random_password.rds_password.result
 }
 
-// TODO: This should not be commented, but adding the NAT GW made this instance unreachable. To be fixed.
+provider "postgresql" {
+  alias    = "wallet_api"
+  host     = element(split(":", aws_db_instance.rds_instance.endpoint), 0)
+  database = "postgres"
+  username = var.db_user
+  password = random_password.rds_password.result
+}
+
 # resource "postgresql_database" "wallet_api_database" {
-#   name  = var.wallet_api_db_name
-#   owner = var.db_user
+#   provider = postgresql.wallet_api
+#   name     = var.wallet_api_db_name
+#   owner    = var.db_user
 # }
 
-resource "aws_secretsmanager_secret" "aurora_password_asm_secret" {
+resource "aws_secretsmanager_secret" "rds_password_asm_secret" {
   name                    = "${var.app_name}-rds-password"
   recovery_window_in_days = 7
 }
 
-resource "aws_secretsmanager_secret_version" "aurora_password_asm_secret_version" {
-  secret_id     = aws_secretsmanager_secret.aurora_password_asm_secret.id
-  secret_string = aws_rds_cluster.aurora_cluster.master_password
+resource "aws_secretsmanager_secret_version" "rds_password_asm_secret_version" {
+  secret_id     = aws_secretsmanager_secret.rds_password_asm_secret.id
+  secret_string = aws_db_instance.rds_instance.password
 }

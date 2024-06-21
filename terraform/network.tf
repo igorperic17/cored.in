@@ -9,10 +9,10 @@ resource "aws_vpc" "default" {
 }
 
 resource "aws_subnet" "public" {
-  count                   = length(var.db_availability_zones)
+  count                   = length(var.availability_zones)
   vpc_id                  = aws_vpc.default.id
   cidr_block              = cidrsubnet(aws_vpc.default.cidr_block, 8, 1 + count.index)
-  availability_zone       = var.db_availability_zones[count.index]
+  availability_zone       = var.availability_zones[count.index]
   map_public_ip_on_launch = true
 }
 
@@ -31,10 +31,10 @@ resource "aws_route" "internet_access" {
 }
 
 resource "aws_subnet" "private" {
-  count             = var.use_private_subnets ? length(var.db_availability_zones) : 0
+  count             = var.use_private_subnets ? length(var.availability_zones) : 0
   vpc_id            = aws_vpc.default.id
   cidr_block        = cidrsubnet(aws_vpc.default.cidr_block, 8, 1 + 3 + count.index)
-  availability_zone = var.db_availability_zones[count.index]
+  availability_zone = var.availability_zones[count.index]
 }
 
 # VPC endpoints
@@ -64,13 +64,13 @@ resource "aws_vpc_endpoint" "kms_endpoint" {
   ]
 }
 
-resource "aws_db_subnet_group" "aurora_subnet_group" {
-  name       = "${var.app_name}-rds-aurora-cluster-subnet-group"
+resource "aws_db_subnet_group" "rds_subnet_group" {
+  name       = "${var.app_name}-rds-subnet-group"
   subnet_ids = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
 }
 
-resource "aws_security_group" "aurora_cluster" {
-  name        = "${var.app_name}-rds-aurora-cluster-sg"
+resource "aws_security_group" "rds" {
+  name        = "${var.app_name}-rds-sg"
   description = "Allow inbound traffic to Aurora Cluster"
   vpc_id      = aws_vpc.default.id
 

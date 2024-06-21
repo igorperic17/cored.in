@@ -3,13 +3,14 @@ is_app_https                       = true
 use_private_subnets                = true
 use_vpc_endpoints                  = false
 backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
-db_instance_class                  = "db.serverless"
+availability_zones                 = ["eu-west-1a", "eu-west-1b"]
+
+db_instance_class                  = "db.t3.micro"
 db_availability_zones = [
-  "eu-west-1a",
-  "eu-west-1b"
+  "eu-west-1a"
 ]
 db_name                  = "coredinprod"
-db_user                  = "coredin_aurora_admin"
+db_user                  = "coredin_rds_admin"
 db_engine_version        = "16.1"
 db_retention_window_days = 0
 

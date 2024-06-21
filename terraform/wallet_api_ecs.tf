@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "wallet_api" {
       environment = [
         {
           name  = "DB_URL",
-          value = "${aws_rds_cluster_instance.aurora_instance.endpoint}:${aws_rds_cluster_instance.aurora_instance.port}/${var.db_name}"
+          value = "${aws_db_instance.rds_instance.endpoint}/${var.db_name}"
         },
         {
           name  = "DB_USER",
@@ -125,7 +125,7 @@ resource "aws_ecs_task_definition" "wallet_api" {
         },
         {
           name      = "DB_PASS",
-          valueFrom = aws_secretsmanager_secret.aurora_password_asm_secret.arn
+          valueFrom = aws_secretsmanager_secret.rds_password_asm_secret.arn
         }
       ]
       healthCheck = {
