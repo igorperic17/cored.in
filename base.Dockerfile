@@ -5,6 +5,8 @@ WORKDIR /coredin
 
 COPY . .
 
-RUN yarn set version stable
 RUN yarn install
-RUN yarn build
+RUN yarn workspace @coredin/shared build
+RUN yarn workspace @coredin/frontend build
+RUN yarn workspace @coredin/backend prepare
+RUN yarn workspace @coredin/backend build
