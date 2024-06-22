@@ -14,30 +14,27 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
 }) => {
   return (
     <VStack align="start" p="1em" spacing="3em" layerStyle="cardBox">
-      {sections.length !== 0 ? (
-        sections.map((section, index) => {
-          return (
-            <CredentialSection
-              key={`credential-section-${index}`}
-              section={section.section}
-              credentials={section.credentials}
-              tree={section.tree}
-            />
-          );
-        })
-      ) : (
-        <Button
-          as={ReactRouterLink}
-          to={ROUTES.CREDENTIALS.REQUEST.path}
-          variant="empty"
-          color="brand.500"
-          rightIcon={<FaPlus fontSize="1rem" />}
-          iconSpacing="1em"
-          mx="auto"
-        >
-          Add a credential
-        </Button>
-      )}
+      <Button
+        as={ReactRouterLink}
+        to={ROUTES.CREDENTIALS.REQUEST.path}
+        variant="empty"
+        color="brand.500"
+        rightIcon={<FaPlus fontSize="1rem" />}
+        iconSpacing="1em"
+        mx="auto"
+      >
+        Request credential
+      </Button>
+      {sections.map((section, index) => {
+        return (
+          <CredentialSection
+            key={`credential-section-${index}`}
+            section={section.section}
+            credentials={section.credentials}
+            tree={section.tree}
+          />
+        );
+      })}
     </VStack>
   );
 };
