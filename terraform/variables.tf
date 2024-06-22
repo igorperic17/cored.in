@@ -23,6 +23,10 @@ variable "use_elbs" {
   type = bool
 }
 
+variable "use_lambda_backend" {
+  type = bool
+}
+
 variable "backend_cloudfront_distribution_id" {
   type = string
 }
@@ -161,6 +165,30 @@ variable "vault_port" {
 }
 
 variable "vault_logs_retention" {
+  type    = number
+  default = 1
+}
+
+# Backend
+variable "backend_image" {
+  type = string
+}
+
+variable "backend_cpu" {
+  type        = number
+  description = "Fargate instance CPU units to provision (1 vCPU = 1024 CPU units) for NestJS Backend"
+}
+
+variable "backend_memory" {
+  type        = number
+  description = "Fargate instance memory to provision (in MiB) for NestJS Backend"
+}
+
+variable "backend_port" {
+  type = number
+}
+
+variable "backend_logs_retention" {
   type    = number
   default = 1
 }

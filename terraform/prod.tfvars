@@ -3,10 +3,11 @@ is_app_https                       = true
 use_private_subnets                = true
 use_vpc_endpoints                  = false
 use_elbs                           = false
+use_lambda_backend                 = false
 backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
 availability_zones                 = ["eu-west-1a", "eu-west-1b"]
 
-db_instance_class                  = "db.t3.micro"
+db_instance_class = "db.t3.micro"
 db_availability_zones = [
   "eu-west-1a"
 ]
@@ -35,3 +36,8 @@ vault_image  = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/vault:x86"
 vault_cpu    = 512
 vault_memory = 1024
 vault_port   = 8200
+
+backend_image  = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/backend:x86"
+backend_cpu    = 512
+backend_memory = 1024
+backend_port   = 3000
