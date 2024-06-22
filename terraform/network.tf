@@ -1,3 +1,8 @@
+// https://aws.amazon.com/blogs/networking-and-content-delivery/limit-access-to-your-origins-using-the-aws-managed-prefix-list-for-amazon-cloudfront/
+data "aws_prefix_list" "cloudfront" {
+  // com.amazonaws.global.cloudfront.origin-facing
+  prefix_list_id = "pl-4fa04526"
+}
 
 resource "aws_vpc" "default" {
   cidr_block           = "10.0.0.0/16"
@@ -82,13 +87,14 @@ resource "aws_security_group" "rds" {
   }
 }
 
-// TODO: Reconsider if NAT GW is really needed here.
 resource "aws_eip" "nat_eip" {
-  domain   = "vpc"
+  count  = var.use_lambda_backend ? 1 : 0
+  domain = "vpc"
 }
 
 resource "aws_nat_gateway" "nat_gw" {
-  allocation_id = aws_eip.nat_eip.id
+  count         = var.use_lambda_backend ? 1 : 0
+  allocation_id = aws_eip.nat_eip[0].id
   subnet_id     = aws_subnet.public[0].id
 
   tags = {
@@ -97,18 +103,19 @@ resource "aws_nat_gateway" "nat_gw" {
 }
 
 resource "aws_route_table" "private_rt" {
+  count  = var.use_lambda_backend ? 1 : 0
   vpc_id = aws_vpc.default.id
 
   route {
     cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.nat_gw.id
+    nat_gateway_id = aws_nat_gateway.nat_gw[0].id
   }
 }
 
 resource "aws_route_table_association" "private_rt_assoc" {
-  count          = length(aws_subnet.private)
+  count          = var.use_lambda_backend ? length(aws_subnet.private) : 0
   subnet_id      = element(aws_subnet.private[*].id, count.index)
-  route_table_id = aws_route_table.private_rt.id
+  route_table_id = aws_route_table.private_rt[0].id
 }
 
 # Wallet API
@@ -122,7 +129,7 @@ resource "aws_security_group" "wallet_api_elb" {
     from_port       = var.wallet_api_port
     to_port         = var.wallet_api_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.lambda_backend.id]
+    security_groups = [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -142,7 +149,7 @@ resource "aws_security_group" "wallet_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.wallet_api_port
-    security_groups = [var.use_elbs ? aws_security_group.wallet_api_elb[0].id : aws_security_group.lambda_backend.id]
+    security_groups = var.use_elbs ? [aws_security_group.wallet_api_elb[0].id] : [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -164,7 +171,7 @@ resource "aws_security_group" "verifier_api_elb" {
     from_port       = var.verifier_api_port
     to_port         = var.verifier_api_port
     protocol        = "tcp"
-    security_groups = [aws_security_group.lambda_backend.id]
+    security_groups = [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -184,7 +191,7 @@ resource "aws_security_group" "verifier_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.verifier_api_port
-    security_groups = [var.use_elbs ? aws_security_group.verifier_api_elb[0].id : aws_security_group.lambda_backend.id]
+    security_groups = var.use_elbs ? [aws_security_group.verifier_api_elb[0].id] : [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -206,7 +213,7 @@ resource "aws_security_group" "issuer_api_elb" {
     protocol        = "tcp"
     from_port       = var.issuer_api_port
     to_port         = var.issuer_api_port
-    security_groups = [aws_security_group.lambda_backend.id]
+    security_groups = [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -226,7 +233,7 @@ resource "aws_security_group" "issuer_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.issuer_api_port
-    security_groups = [var.use_elbs ? aws_security_group.issuer_api_elb[0].id : aws_security_group.lambda_backend.id]
+    security_groups = var.use_elbs ? [aws_security_group.issuer_api_elb[0].id] : [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
   }
 
   egress {
@@ -280,6 +287,48 @@ resource "aws_security_group" "vault" {
 }
 
 # Backend
+resource "aws_security_group" "backend_elb" {
+  count       = var.use_lambda_backend ? 0 : 1
+  name        = "${var.app_name}-backend-elb-sg"
+  description = "Allow inbound traffic to backend ELB"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = data.aws_prefix_list.cloudfront.cidr_blocks
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_security_group" "backend" {
+  name        = "${var.app_name}-backend-sg"
+  description = "Allow inbound access to backend"
+  vpc_id      = aws_vpc.default.id
+
+  ingress {
+    protocol        = "-1"
+    from_port       = 0
+    to_port         = 0
+    security_groups = [aws_security_group.backend_elb[0].id]
+  }
+
+  egress {
+    protocol    = "-1"
+    from_port   = 0
+    to_port     = 0
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+# Lambda Backend 
 resource "aws_security_group" "lambda_backend" {
   name        = "${var.app_name}-lambda-backend-sg"
   description = "Allow outbound access for Lambda backend SG"

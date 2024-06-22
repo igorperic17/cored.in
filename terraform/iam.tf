@@ -138,6 +138,41 @@ resource "aws_iam_role" "vault_ecs_execution_role" {
   })
 }
 
+# Backend
+resource "aws_iam_role" "backend_ecs_service_role" {
+  name = "${var.app_name}-backend-ecs-service-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      }
+    ],
+  })
+}
+
+resource "aws_iam_role" "backend_ecs_execution_role" {
+  name = "${var.app_name}-backend-ecs-execution-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "sts:AssumeRole",
+        Principal = {
+          Service = ["ecs-tasks.amazonaws.com"]
+        }
+      },
+    ],
+  })
+}
+
 resource "aws_iam_policy" "allow_logs" {
   name        = "${var.app_name}-logs-policy"
   path        = "/"
@@ -261,6 +296,28 @@ resource "aws_iam_policy" "allow_vault_key_usage" {
   })
 }
 
+resource "aws_iam_policy" "backend_secrets_read_policy" {
+  name        = "${var.app_name}-backend-secrets-read-policy"
+  description = "IAM policy to allow access to secrets in Secrets Manager required by the backend"
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [
+      {
+        Effect = "Allow",
+        Action = "secretsmanager:GetSecretValue",
+        Resource = [
+          aws_secretsmanager_secret.jwt_secret_asm_secret.arn,
+          aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn,
+          aws_secretsmanager_secret.rds_password_asm_secret.arn,
+          data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn,
+          data.aws_secretsmanager_secret.vault_root_token.arn
+        ]
+      },
+    ],
+  })
+}
+
 # Wallet API
 resource "aws_iam_role_policy_attachment" "wallet_api_ecs_execution_role_policy_attachments_allow_ecr" {
   role       = aws_iam_role.wallet_api_ecs_execution_role.name
@@ -343,6 +400,27 @@ resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachm
 resource "aws_iam_role_policy_attachment" "vault_ecs_service_role_policy_attachments_vault_secrets_management" {
   role       = aws_iam_role.vault_ecs_service_role.name
   policy_arn = aws_iam_policy.allow_vault_secrets_management.arn
+}
+
+# Backend
+resource "aws_iam_role_policy_attachment" "backend_ecs_execution_role_policy_attachments_allow_ecr" {
+  role       = aws_iam_role.backend_ecs_execution_role.name
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSAppRunnerServicePolicyForECRAccess"
+}
+
+resource "aws_iam_role_policy_attachment" "backend_ecs_execution_role_policy_attachments_allow_logs" {
+  role       = aws_iam_role.backend_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_logs.arn
+}
+
+resource "aws_iam_role_policy_attachment" "backend_ecs_execution_role_policy_attachments_read_ecr" {
+  role       = aws_iam_role.backend_ecs_execution_role.name
+  policy_arn = aws_iam_policy.allow_read_ecr.arn
+}
+
+resource "aws_iam_role_policy_attachment" "backend_ecs_execution_role_policy_attachments_backend_secrets_read" {
+  role       = aws_iam_role.backend_ecs_execution_role.name
+  policy_arn = aws_iam_policy.backend_secrets_read_policy.arn
 }
 
 # TODO: Should not be necessary.

@@ -16,5 +16,8 @@ COPY --from=builder coredin/.yarnrc.yml app/
 COPY --from=builder coredin/.yarn app/.yarn
 RUN cd app && yarn workspaces focus @coredin/backend --production
 
+# Step 4: Install curl required for health check
+RUN apk add --no-cache curl
+
 EXPOSE 3000
 CMD [ "node", "app/packages/backend/dist/main.js" ]

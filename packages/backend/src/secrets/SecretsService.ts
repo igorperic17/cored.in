@@ -6,6 +6,8 @@ const SECRETS_MANAGER_PREFIX = "sm://";
 const AWS_SECRETS_EXTENTION_HTTP_PORT = 2773;
 const AWS_SECRETS_EXTENTION_SERVER_ENDPOINT = `http://localhost:${AWS_SECRETS_EXTENTION_HTTP_PORT}/secretsmanager/get?secretId=`;
 
+const ENV_SECRET_PREFIX = "ENV_SECRET_";
+
 export class FileReadError extends Error {
   constructor(path: string) {
     super(`FileReadError: ${path}`);
@@ -120,7 +122,11 @@ export class SecretsService {
       if (typeof value !== "string") {
         return;
       }
-
+      
+      if (value.startsWith(ENV_SECRET_PREFIX)) {
+        value = process.env[key];
+      }
+      
       secrets.set(key, value as string);
     });
 
