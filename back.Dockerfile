@@ -2,7 +2,7 @@
 FROM coredin/base:latest AS builder
 
 # Step 2: Set up the production environment
-FROM node:20-alpine
+FROM node:20.14-alpine3.19
 
 # Step 3: Copy 
 COPY --from=builder coredin/packages/backend/dist app/packages/backend/dist
