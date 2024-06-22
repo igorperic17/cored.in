@@ -59,7 +59,7 @@ export const Content: React.FC<PostContentProps> = ({
             >
               {/* recommended username width 12 characters */}
               <Text as="span" color="text.100" textStyle="md">
-                @username
+                @{post.creatorUsername}
               </Text>
             </Box>
             <Menu offset={[-105, -10]}>
