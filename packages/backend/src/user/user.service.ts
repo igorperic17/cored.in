@@ -6,7 +6,8 @@ import {
   NotFoundError,
   UserProfile,
   UpdateProfileDTO,
-  CredentialDTO
+  CredentialDTO,
+  PublicUserProfile
 } from "@coredin/shared";
 import { Effect } from "effect";
 import { WaltIdIssuerService, WaltIdWalletService } from "../ssi/core/services";
@@ -27,6 +28,26 @@ export class UserService {
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
   ) {}
+
+  async getPublic(
+    wallet: string
+  ): Promise<Effect.Effect<PublicUserProfile, NotFoundError>> {
+    const user = await this.userRepository.findOne({
+      where: { wallet }
+    });
+    if (user) {
+      return Effect.succeed({
+        username: user.username || "no_username",
+        avatarUrl: user.avatarUrl,
+        avatarFallbackColor: user.avatarFallbackColor,
+        backgroundColor: user.backgroundColor,
+        bio: user.bio,
+        issuerDid: user.issuerDid
+      });
+    }
+
+    return Effect.fail(new NotFoundError());
+  }
 
   async getPrivate(
     wallet: string

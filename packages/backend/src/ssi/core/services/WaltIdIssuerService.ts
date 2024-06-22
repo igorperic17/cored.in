@@ -38,12 +38,14 @@ export class WaltIdIssuerService {
   async getCredentialOfferUrl(
     subjectDid: string,
     data: CredentialDTO,
-    issuerInfo: IssuerInfo
+    issuerInfo: IssuerInfo,
+    daysValid: number
   ) {
     const payload = this.generateCredentialPayload(
       subjectDid,
       data,
-      issuerInfo
+      issuerInfo,
+      daysValid
     );
     const createCredentialOfferResult = await axios.post(
       `${this.issuerApiUrl}/openid4vc/jwt/issue`,
@@ -62,7 +64,8 @@ export class WaltIdIssuerService {
   private generateCredentialPayload(
     subjectDid: string,
     data: CredentialDTO,
-    issuerInfo: IssuerInfo
+    issuerInfo: IssuerInfo,
+    daysValid: number
   ): string {
     return JSON.stringify({
       issuerKey: {
@@ -100,7 +103,7 @@ export class WaltIdIssuerService {
           id: "<subjectDid>"
         },
         issuanceDate: "<timestamp>",
-        expirationDate: "<timestamp-in:365d>"
+        expirationDate: `<timestamp-in:${daysValid}d>`
       }
     });
   }

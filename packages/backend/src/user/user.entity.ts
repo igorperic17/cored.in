@@ -1,9 +1,4 @@
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  Index
-} from "typeorm";
+import { Entity, Column, PrimaryGeneratedColumn, Index } from "typeorm";
 
 @Entity("users")
 export class User {
@@ -19,7 +14,7 @@ export class User {
     avatarUrl: string,
     backgroundColor: string,
     avatarFallbackColor: string,
-    bio: string,
+    bio: string
   ) {
     this.id = id;
     this.wallet = wallet;
@@ -54,6 +49,7 @@ export class User {
   })
   didKeyId: string;
 
+  @Index({ unique: true, where: "issuerDid IS NOT NULL" })
   @Column({
     nullable: true
   })
