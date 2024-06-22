@@ -49,8 +49,9 @@ export class User {
   })
   didKeyId: string;
 
-  @Index({ unique: true, where: "issuerDid IS NOT NULL" })
+  @Index({ unique: true })
   @Column({
+    unique: true,
     nullable: true
   })
   issuerDid: string;
