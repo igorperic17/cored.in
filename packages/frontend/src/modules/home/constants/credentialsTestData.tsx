@@ -24,7 +24,9 @@ export const credentialsTestData: {
       startDate: "September 2018",
       endDate: "June 2022",
       verified: false,
-      issuer: ""
+      issuer: "",
+      subjectDid: "",
+      type: "EducationCredential"
     }
   ],
   experience: [
@@ -35,7 +37,9 @@ export const credentialsTestData: {
       startDate: "May 2020",
       endDate: "January 2021",
       verified: false,
-      issuer: ""
+      issuer: "",
+      subjectDid: "",
+      type: "ProfessionalExperience"
     },
     {
       id: "3",
@@ -44,7 +48,9 @@ export const credentialsTestData: {
       startDate: "November 2023",
       endDate: "", // === currently working there
       verified: true,
-      issuer: "John Doe"
+      issuer: "John Doe",
+      subjectDid: "",
+      type: "ProfessionalExperience"
     }
   ],
   activities: []
