@@ -53,10 +53,10 @@ data "aws_network_interface" "verifier_api" {
 }
 
 locals {
-  vault_address = var.use_elbs ? aws_alb.vault[0].dns_name : data.aws_network_interface.vault[0].association[0].public_ip
-  wallet_api_address = var.use_elbs ? aws_alb.wallet_api[0].dns_name : data.aws_network_interface.wallet_api[0].association[0].public_ip
-  issuer_api_address = var.use_elbs ? aws_alb.issuer_api[0].dns_name : data.aws_network_interface.issuer_api[0].association[0].public_ip
-  verifier_api_address = var.use_elbs ? aws_alb.verifier_api[0].dns_name : data.aws_network_interface.verifier_api[0].association[0].public_ip
+  vault_address = var.use_elbs ? aws_alb.vault[0].dns_name : data.aws_network_interface.vault[0].private_ip
+  wallet_api_address = var.use_elbs ? aws_alb.wallet_api[0].dns_name : data.aws_network_interface.wallet_api[0].private_ip
+  issuer_api_address = var.use_elbs ? aws_alb.issuer_api[0].dns_name : data.aws_network_interface.issuer_api[0].private_ip
+  verifier_api_address = var.use_elbs ? aws_alb.verifier_api[0].dns_name : data.aws_network_interface.verifier_api[0].private_ip
 }
 
 # Generated ASM secret values
