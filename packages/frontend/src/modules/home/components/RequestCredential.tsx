@@ -8,11 +8,19 @@ import {
   Select,
   VStack
 } from "@chakra-ui/react";
-import { CredentialDTO, CredentialType } from "@coredin/shared";
+import {
+  CredentialDTO,
+  CredentialRequestStatus,
+  CredentialType
+} from "@coredin/shared";
 import { useState } from "react";
 import { credentialLabels } from "../constants/credentialLabels";
 import { handleMonthChange, handleYearChange } from "../helpers/dates";
 import { months } from "../constants/months";
+import { useLoggedInServerState, useMutableServerState } from "@/hooks";
+import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
+import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
+import { IssuanceRequest } from ".";
 
 const defaultDate = "01-00-0000";
 const getSelectedMonth = (month: string) => {
@@ -21,13 +29,41 @@ const getSelectedMonth = (month: string) => {
 };
 
 export const RequestCredential = () => {
-  const [state, setState] = useState<Partial<CredentialDTO>>({});
+  const { data: issuers } = useLoggedInServerState(ISSUER_QUERIES.getIssuers());
+  console.log(CredentialRequestStatus);
+  const { data: pendingRequests } = useLoggedInServerState(
+    ISSUER_QUERIES.getRequests(CredentialRequestStatus?.PENDING || "PENDING")
+  );
+
+  const { mutateAsync } = useMutableServerState(
+    ISSUER_MUTATIONS.requestCredential()
+  );
+  const [state, setState] = useState<CredentialDTO>({
+    id: "",
+    subjectDid: "",
+    type: "EducationCredential",
+    title: "",
+    establishment: "",
+    startDate: defaultDate,
+    issuer: "",
+    verified: false
+  });
 
   const currentYear = new Date().getFullYear();
   const years: number[] = [];
   for (let i = currentYear; i > currentYear - 70; i--) {
     years.push(i);
   }
+
+  const handleSubmit = async () => {
+    mutateAsync({ request: state, issuerDid: state.issuer })
+      .then((response) => {
+        console.log(response);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   console.log("start: ", state.startDate);
   console.log("end: ", state.endDate);
@@ -217,24 +253,50 @@ export const RequestCredential = () => {
               border="1px solid #828178"
               focusBorderColor="brand.500"
               value={state.issuer}
-              onChange={(e) => setState({ ...state, issuer: e.target.value })}
+              onChange={(e) => {
+                setState({ ...state, issuer: e.target.value });
+              }}
             >
               {/* double check the values */}
               {/* should we have an empty option or use one of the three options as a default? */}
               {/* !!! TODO !!! */}
-              <option></option>
-              <option>Issuer name 1</option>
-              <option>Issuer name 2</option>
-              <option>Issuer name 3</option>
-              <option>Issuer name 4</option>
-              <option>Issuer name 5</option>
+              <option value="">Select an issuer</option>
+              {issuers?.map((issuer) => (
+                <option key={issuer.issuerDid} value={issuer.issuerDid}>
+                  {issuer.username}
+                </option>
+              ))}
             </Select>
           </FormControl>
 
-          <Button variant="primary" size="md" w="100%">
+          <Button
+            variant="primary"
+            size="md"
+            w="100%"
+            onClick={handleSubmit}
+            isDisabled={state.title.length < 2 || state.issuer.length < 2}
+          >
             Send a request
           </Button>
         </>
+      )}
+      {pendingRequests && (
+        <VStack
+          spacing="1em"
+          layerStyle="cardBox"
+          p="1em"
+          pb="1.5em"
+          align="start"
+          mb="4em"
+        >
+          <Heading as="h1" fontFamily="body">
+            Requested issuances
+          </Heading>
+          {pendingRequests &&
+            pendingRequests.map((request, i) => (
+              <IssuanceRequest key={i} request={request} />
+            ))}
+        </VStack>
       )}
     </VStack>
   );

@@ -83,9 +83,7 @@ export class IssuersService {
 
     const updateResult = await this.requestsRepo.update(
       {
-        id: requestId,
-        issuer: { wallet: issuerWallet },
-        status: CredentialRequestStatus.PENDING
+        id: requestId
       },
       {
         status: CredentialRequestStatus.ACCEPTED,

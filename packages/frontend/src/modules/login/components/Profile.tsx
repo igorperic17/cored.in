@@ -58,6 +58,7 @@ export const Profile = () => {
         .then((result) => {
           console.log(result);
           updateOnchainProfile();
+          // TODO - update backend user profile with username
         })
         .catch((error) => {
           console.log("error while registering");
@@ -77,7 +78,7 @@ export const Profile = () => {
 
   return (
     <Box>
-      {!onchainProfile && isLoading && (
+      {(!onchainProfile || isLoading) && (
         <Center mt="32px">
           <Spinner size="xl" color="brand.500" />
         </Center>
@@ -91,12 +92,16 @@ export const Profile = () => {
           registerProfile={registerProfile}
         />
       )}
-      {onchainProfile && chainContext.isWalletConnected && (
-        <Navigate to={queryParams.get("redirect") ?? ROUTES.HOME.path} />
+      {onchainProfile && chainContext.isWalletConnected && userProfile && (
+        <Navigate
+          to={
+            queryParams.get("redirect") ??
+            (userProfile.username === "no_username"
+              ? ROUTES.SETTINGS.path
+              : ROUTES.HOME.path)
+          }
+        />
       )}
     </Box>
   );
 };
-
-//   did={onchainProfile.did}
-//   username={onchainProfile.username}

@@ -8,5 +8,10 @@ export enum BaseServerStateKeys {
   LIKE_POST = "like_post",
   DELETE_POST = "delete_post",
   DELETE_CREDENTIAL = "delete_credential",
-  ISSUERS = "issuers"
+  ISSUERS = "issuers",
+  REQUEST_CREDENTIAL = "request_credential",
+  CREDENTIAL_REQUESTS = "credential_requests",
+  ACCEPT_CREDENTIAL = "accept_credential",
+  REJECT_CREDENTIAL = "reject_credential",
+  REVOKE_CREDENTIAL = "revoke_credential"
 }

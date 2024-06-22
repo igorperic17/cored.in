@@ -37,27 +37,31 @@ export class IssuersController {
   async acceptRequest(
     @Req() req: AuthenticatedRequest,
     @TypedBody()
-    { requestId, daysValid }: { requestId: number; daysValid: number }
+    { requestId, daysValid }: { requestId: string; daysValid: number }
   ) {
-    return this.issuersService.accept(req.wallet, requestId, daysValid);
+    return this.issuersService.accept(
+      req.wallet,
+      parseInt(requestId),
+      daysValid
+    );
   }
 
   @Post("request/reject")
   async rejectRequest(
     @Req() req: AuthenticatedRequest,
     @TypedBody()
-    { requestId }: { requestId: number }
+    { requestId }: { requestId: string }
   ) {
-    return this.issuersService.reject(req.wallet, requestId);
+    return this.issuersService.reject(req.wallet, parseInt(requestId));
   }
 
   @Post("request/revoke")
   async revokeRequest(
     @Req() req: AuthenticatedRequest,
     @TypedBody()
-    { requestId }: { requestId: number }
+    { requestId }: { requestId: string }
   ) {
-    return this.issuersService.revoke(req.wallet, requestId);
+    return this.issuersService.revoke(req.wallet, parseInt(requestId));
   }
 
   @Get("requests")
@@ -72,7 +76,8 @@ export class IssuersController {
 
   private getCredentialRequestDTO(req: IssuanceRequest): CredentialRequestDTO {
     return {
-      request: req.request,
+      id: req.id.toString(),
+      credential: req.request,
       status: req.status,
       createdAt: req.createdAt.toISOString(),
       requester: {

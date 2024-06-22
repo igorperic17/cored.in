@@ -14,7 +14,7 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
 }) => {
   return (
     <VStack align="start" p="1em" spacing="3em" layerStyle="cardBox">
-      {sections.length === 0 ? (
+      {sections.length !== 0 ? (
         sections.map((section, index) => {
           return (
             <CredentialSection

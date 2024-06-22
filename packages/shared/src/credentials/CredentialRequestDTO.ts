@@ -3,7 +3,8 @@ import { CredentialDTO } from "./CredentialDTO";
 import { CredentialRequestStatus } from "./CredentialRequestStatus";
 
 export type CredentialRequestDTO = {
-  request: CredentialDTO;
+  id: string;
+  credential: CredentialDTO;
   requester: PublicUserProfile;
   createdAt: string;
   status: CredentialRequestStatus;

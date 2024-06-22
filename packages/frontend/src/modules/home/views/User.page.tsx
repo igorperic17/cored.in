@@ -40,7 +40,7 @@ const UserPage = () => {
   };
 
   const updateIsUpdateRootDisabled = () => {
-    if (userProfile && tree) {
+    if (userProfile?.did && tree && userProfile.credentials.length > 0) {
       const root = tree.getHexRoot().substring(2);
       console.log("getting onchain root.. profile root:", root);
       coredinClient
@@ -74,7 +74,7 @@ const UserPage = () => {
 
   const updateMerkleRoot = () => {
     console.log("updating merkle root...", coredinClient);
-    if (userProfile && tree) {
+    if (userProfile?.did && tree) {
       const root = tree.getHexRoot().substring(2);
 
       console.log("Registering root onchain...", root);
