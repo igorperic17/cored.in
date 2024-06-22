@@ -6,6 +6,7 @@ import { IssuersController } from "./issuers.controller";
 import { IssuanceRequest } from "./issuance_request.entity";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { CoreumModule } from "@/coreum/app/coreum.module";
+import { IssuersService } from "./issuers.service";
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { CoreumModule } from "@/coreum/app/coreum.module";
     CoreumModule,
     TypeOrmModule.forFeature([IssuanceRequest])
   ],
-  providers: [],
+  providers: [IssuersService],
   controllers: [IssuersController],
   exports: []
 })

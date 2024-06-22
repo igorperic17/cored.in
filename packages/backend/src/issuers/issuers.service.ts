@@ -11,9 +11,12 @@ export class IssuersService {
   constructor(
     @InjectRepository(IssuanceRequest)
     private readonly requestsRepo: Repository<IssuanceRequest>,
-    @Inject() private readonly coredinContract: CoredinContractService,
-    @Inject() private readonly waltIdWalletService: WaltIdWalletService,
-    @Inject() private readonly waltIdIssuerService: WaltIdIssuerService
+    @Inject(CoredinContractService)
+    private readonly coredinContract: CoredinContractService,
+    @Inject(WaltIdWalletService)
+    private readonly waltIdWalletService: WaltIdWalletService,
+    @Inject(WaltIdIssuerService)
+    private readonly waltIdIssuerService: WaltIdIssuerService
   ) {}
 
   async createRequest(
