@@ -55,8 +55,13 @@ resource "aws_ecs_task_definition" "issuer_api" {
           hostPort      = var.issuer_api_port
         }
       ]
-      environment = []
-      secrets     = []
+      environment = var.use_elbs ? [
+        {
+          name  = "ELB_ADDRESS"
+          value = "" # TODO - add the actual load balancer address
+        }
+      ] : []
+      secrets = []
       healthCheck = {
         command     = ["CMD-SHELL", "curl -f http://localhost:${var.issuer_api_port}/.well-known/openid-configuration || exit 1"],
         interval    = 30,
