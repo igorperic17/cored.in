@@ -125,13 +125,6 @@ resource "aws_security_group" "wallet_api_elb" {
   description = "Allow inbound traffic to Wallet API ELB"
   vpc_id      = aws_vpc.default.id
 
-  ingress {
-    from_port       = var.wallet_api_port
-    to_port         = var.wallet_api_port
-    protocol        = "tcp"
-    security_groups = [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
-  }
-
   egress {
     protocol    = "-1"
     from_port   = 0
@@ -145,13 +138,6 @@ resource "aws_security_group" "wallet_api" {
   description = "Allow inbound access for Wallet API"
   vpc_id      = aws_vpc.default.id
 
-  ingress {
-    protocol        = "tcp"
-    from_port       = 0
-    to_port         = var.wallet_api_port
-    security_groups = var.use_elbs ? [aws_security_group.wallet_api_elb[0].id] : [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
-  }
-
   egress {
     protocol    = "-1"
     from_port   = 0
@@ -159,6 +145,27 @@ resource "aws_security_group" "wallet_api" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
+
+resource "aws_security_group_rule" "allow_inbound_for_wallet_api" {
+  for_each                 = var.use_elbs ? toset([aws_security_group.wallet_api_elb[0].id]) : toset([aws_security_group.backend.id, aws_security_group.lambda_backend.id, aws_security_group.issuer_api.id])
+  type                     = "ingress"
+  from_port                = 0
+  to_port                  = var.wallet_api_port
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.wallet_api.id
+  source_security_group_id = each.key
+}
+
+resource "aws_security_group_rule" "allow_inbound_for_wallet_api_elb" {
+  for_each                 = var.use_elbs ? toset([aws_security_group.backend.id, aws_security_group.lambda_backend.id, aws_security_group.issuer_api.id]) : toset([])
+  type                     = "ingress"
+  from_port                = var.wallet_api_port
+  to_port                  = var.wallet_api_port
+  protocol                 = "tcp"
+  security_group_id        = aws_security_group.wallet_api_elb[0].id
+  source_security_group_id = each.key
+}
+
 
 # Verifier API
 resource "aws_security_group" "verifier_api_elb" {
@@ -213,7 +220,7 @@ resource "aws_security_group" "issuer_api_elb" {
     protocol        = "tcp"
     from_port       = var.issuer_api_port
     to_port         = var.issuer_api_port
-    security_groups = [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
+    security_groups = [aws_security_group.backend.id, aws_security_group.lambda_backend.id, aws_security_group.wallet_api.id]
   }
 
   egress {
@@ -233,7 +240,7 @@ resource "aws_security_group" "issuer_api" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.issuer_api_port
-    security_groups = var.use_elbs ? [aws_security_group.issuer_api_elb[0].id] : [aws_security_group.backend.id, aws_security_group.lambda_backend.id]
+    security_groups = var.use_elbs ? [aws_security_group.issuer_api_elb[0].id] : [aws_security_group.backend.id, aws_security_group.lambda_backend.id, aws_security_group.wallet_api.id]
   }
 
   egress {
