@@ -171,5 +171,5 @@ resource "aws_ecs_service" "backend" {
     }
   }
 
-  depends_on = [aws_ecs_task_definition.backend]
+  depends_on = [aws_ecs_task_definition.backend, aws_ecs_task_definition.wallet_api, aws_ecs_task_definition.issuer_api, aws_ecs_task_definition.verifier_api]
 }

@@ -34,7 +34,7 @@ resource "aws_ecs_task_definition" "issuer_api" {
       memory      = var.issuer_api_memory
       name        = "${var.app_name}-issuer-api-container"
       networkMode = "awsvpc"
-      logConfiguration = var.use_private_subnets ? null : {
+      logConfiguration = {
         logDriver = "awslogs",
         options = {
           "awslogs-group" : "${aws_cloudwatch_log_group.ecs_log_group.name}",
@@ -77,6 +77,7 @@ resource "aws_ecs_service" "issuer_api" {
   propagate_tags   = "SERVICE"
 
   enable_ecs_managed_tags = true
+  wait_for_steady_state   = true
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"

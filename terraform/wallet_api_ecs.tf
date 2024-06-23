@@ -148,6 +148,7 @@ resource "aws_ecs_service" "wallet_api" {
   propagate_tags   = "SERVICE"
 
   enable_ecs_managed_tags = true
+  wait_for_steady_state   = true
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
