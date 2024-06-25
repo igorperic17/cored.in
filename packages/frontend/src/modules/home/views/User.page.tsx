@@ -123,7 +123,11 @@ const UserPage = () => {
 
       <TabsContainer
         posts={posts || []}
-        sections={tree ? getSections(userProfile?.credentials || [], tree) : []}
+        sections={
+          tree
+            ? getSections(userProfile?.credentials || [], tree, isOwnProfile)
+            : []
+        }
         showRequestButton={isOwnProfile}
       />
       {/* {!isLargerThanLg && <SubscribeToProfile />} */}
