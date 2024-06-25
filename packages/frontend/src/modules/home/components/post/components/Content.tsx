@@ -42,7 +42,7 @@ export const Content: React.FC<PostContentProps> = ({
         // border="1px solid red"
       >
         <Avatar
-          name="U N"
+          name={post.creatorUsername}
           src={post.creatorAvatar}
           bg="background.600"
           color="brand.500"
