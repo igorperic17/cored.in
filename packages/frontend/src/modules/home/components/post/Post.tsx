@@ -99,6 +99,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       )}
       <Content
         post={post}
+        showOptions={post.creatorWallet === chainContext.address}
         isDeleting={isDeleting}
         handleDelete={handleDelete}
         opened={opened}

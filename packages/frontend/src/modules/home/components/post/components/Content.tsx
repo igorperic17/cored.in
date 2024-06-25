@@ -16,6 +16,7 @@ export type PostContentProps = {
   isLiked: boolean;
   isLiking: boolean;
   isDetailLoading: boolean;
+  showOptions: boolean;
   handleComment: () => void;
   handleLike: () => void;
 };
@@ -28,6 +29,7 @@ export const Content: React.FC<PostContentProps> = ({
   isLiked,
   isLiking,
   isDetailLoading,
+  showOptions,
   handleComment,
   handleLike
 }) => {
@@ -69,30 +71,32 @@ export const Content: React.FC<PostContentProps> = ({
                 </Text>
               </Box>
             </Link>
-            <Menu offset={[-105, -10]}>
-              <MenuButton
-                as={IconButton}
-                variant="empty"
-                color="text.400"
-                aria-label="See menu."
-                icon={<FaEllipsis fontSize="1.5rem" />}
-                size="lg"
-                isLoading={isDeleting}
-                ml="auto"
-                mt="-0.5em"
-              />
-              <MenuList>
-                <MenuItem
-                  onClick={handleDelete}
-                  // border="1px solid red"
-                  icon={<FaTrash color="red" />}
-                >
-                  <Text as="span" color="red">
-                    Delete
-                  </Text>
-                </MenuItem>
-              </MenuList>
-            </Menu>
+            {showOptions && (
+              <Menu offset={[-105, -10]}>
+                <MenuButton
+                  as={IconButton}
+                  variant="empty"
+                  color="text.400"
+                  aria-label="See menu."
+                  icon={<FaEllipsis fontSize="1.5rem" />}
+                  size="lg"
+                  isLoading={isDeleting}
+                  ml="auto"
+                  mt="-0.5em"
+                />
+                <MenuList>
+                  <MenuItem
+                    onClick={handleDelete}
+                    // border="1px solid red"
+                    icon={<FaTrash color="red" />}
+                  >
+                    <Text as="span" color="red">
+                      Delete
+                    </Text>
+                  </MenuItem>
+                </MenuList>
+              </Menu>
+            )}
           </Flex>
           <Text color="text.100" textStyle="sm" wordBreak="break-word">
             {post.text}
