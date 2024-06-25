@@ -1,4 +1,4 @@
-import { Button, Icon, VStack } from "@chakra-ui/react";
+import { Button, VStack } from "@chakra-ui/react";
 import { CredentialSection, CredentialSectionProps } from "./CredentialSection";
 import { FC } from "react";
 import { FaPlus } from "react-icons/fa6";

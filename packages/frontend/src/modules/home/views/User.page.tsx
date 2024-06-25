@@ -102,9 +102,13 @@ const UserPage = () => {
     return "This user does not exist.";
   }
 
+  const isOwnProfile = chainContext.address === wallet;
+
   return (
     <VStack spacing={{ base: "0.5em", lg: "1.5em" }} mb="4em">
-      {userProfile && <UserHeader userProfile={userProfile} />}
+      {userProfile && (
+        <UserHeader userProfile={userProfile} showEdit={isOwnProfile} />
+      )}
       {wallet === chainContext.address && !isUpdateRootDisabled && (
         <Center>
           <Button
@@ -120,7 +124,7 @@ const UserPage = () => {
       <TabsContainer
         posts={posts || []}
         sections={tree ? getSections(userProfile?.credentials || [], tree) : []}
-        showRequestButton={wallet === chainContext.address}
+        showRequestButton={isOwnProfile}
       />
       {/* {!isLargerThanLg && <SubscribeToProfile />} */}
       {/* <NewPost /> */}

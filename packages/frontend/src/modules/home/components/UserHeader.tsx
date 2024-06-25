@@ -17,9 +17,13 @@ import React from "react";
 
 type UserHeaderProps = {
   userProfile: UserProfile;
+  showEdit: boolean;
 };
 
-export const UserHeader: React.FC<UserHeaderProps> = ({ userProfile }) => {
+export const UserHeader: React.FC<UserHeaderProps> = ({
+  userProfile,
+  showEdit
+}) => {
   return (
     <Box layerStyle="cardBox" w="100%">
       <Box
@@ -44,25 +48,27 @@ export const UserHeader: React.FC<UserHeaderProps> = ({ userProfile }) => {
           // ml="0.5em"
           border="4px solid #1C1C1A"
         />
-        <Link
-          as={ReactRouterLink}
-          to={ROUTES.SETTINGS.path}
-          aria-label="Edit profile."
-          variant="empty"
-          size="sm"
-          color="text.400"
-          mt="3.5em"
-          // mt={{ base: "-3rem", md: "-4.5rem" }}
-          _hover={{
-            textDecoration: "none",
-            color: "text.100"
-          }}
-        >
-          <Icon as={FaPen} size="0.875rem" />
-          <Text as="span" ml="0.375em">
-            Edit
-          </Text>
-        </Link>
+        {showEdit && (
+          <Link
+            as={ReactRouterLink}
+            to={ROUTES.SETTINGS.path}
+            aria-label="Edit profile."
+            variant="empty"
+            size="sm"
+            color="text.400"
+            mt="3.5em"
+            // mt={{ base: "-3rem", md: "-4.5rem" }}
+            _hover={{
+              textDecoration: "none",
+              color: "text.100"
+            }}
+          >
+            <Icon as={FaPen} size="0.875rem" />
+            <Text as="span" ml="0.375em">
+              Edit
+            </Text>
+          </Link>
+        )}
       </Flex>
       <Flex direction="column" gap="1.5em" px="1.125em" pt="1.75em" pb="2.5em">
         <HStack justify="space-between">
