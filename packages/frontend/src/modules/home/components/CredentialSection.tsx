@@ -10,12 +10,14 @@ export type CredentialSectionProps = {
   section: string;
   credentials: CredentialDTO[];
   tree: MerkleTree;
+  showEdit: boolean;
 };
 
 export const CredentialSection: FC<CredentialSectionProps> = ({
   section,
   credentials,
-  tree
+  tree,
+  showEdit
 }) => {
   if (credentials.length === 0) {
     return;
@@ -31,12 +33,23 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
         >
           {section.toUpperCase()}
         </Heading>
-        <Button variant="empty" color="text.400" aria-label={`Add ${section}.`}>
-          <Icon as={FaPlus} fontSize="1.5rem" />
-        </Button>
+        {showEdit && (
+          <Button
+            variant="empty"
+            color="text.400"
+            aria-label={`Add ${section}.`}
+          >
+            <Icon as={FaPlus} fontSize="1.5rem" />
+          </Button>
+        )}
       </Flex>
       {credentials.map((cred, index) => (
-        <Credential key={`credential-${index}`} credential={cred} tree={tree} />
+        <Credential
+          showDelete={showEdit}
+          key={`credential-${index}`}
+          credential={cred}
+          tree={tree}
+        />
       ))}
     </Box>
   );

@@ -26,9 +26,14 @@ import { generateProof } from "../helpers/generateProof";
 type CredentialProps = {
   credential: CredentialDTO;
   tree: MerkleTree;
+  showDelete: boolean;
 };
 
-export const Credential: FC<CredentialProps> = ({ credential, tree }) => {
+export const Credential: FC<CredentialProps> = ({
+  credential,
+  tree,
+  showDelete
+}) => {
   const {
     id,
     title,
@@ -131,14 +136,16 @@ export const Credential: FC<CredentialProps> = ({ credential, tree }) => {
           >
             {title}
           </Heading>
-          <Button
-            variant="empty"
-            color="text.400"
-            aria-label={`Remove credential.`}
-            onClick={handleDelete}
-          >
-            <Icon as={FaTrash} fontSize="1.5rem" />
-          </Button>
+          {showDelete && (
+            <Button
+              variant="empty"
+              color="text.400"
+              aria-label={`Remove credential.`}
+              onClick={handleDelete}
+            >
+              <Icon as={FaTrash} fontSize="1.5rem" />
+            </Button>
+          )}
         </HStack>
 
         <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>{establishment}</Text>

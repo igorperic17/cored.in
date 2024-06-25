@@ -32,6 +32,7 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
       {sections.map((section, index) => {
         return (
           <CredentialSection
+            showEdit={showRequestButton}
             key={`credential-section-${index}`}
             section={section.section}
             credentials={section.credentials}
