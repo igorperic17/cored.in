@@ -36,8 +36,8 @@ export class UserService {
     if (requesterWallet === wallet) {
       return this.getPrivate(wallet);
     }
-
-    return this.getPublic(wallet);
+    // TODO - check if requester is allowed to see private profile with onchain subscription!!!
+    return this.getPrivate(wallet);
   }
 
   async getPublic(
