@@ -9,6 +9,6 @@ export const USER_QUERIES = {
       user,
       needsAuth?.toString() || "false"
     ],
-    queryFn: () => userService.getUser()
+    queryFn: () => userService.getUser(user)
   })
 };

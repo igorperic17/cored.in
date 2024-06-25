@@ -29,9 +29,20 @@ export class UserService {
     private readonly coredinContractService: CoredinContractService
   ) {}
 
+  async getPublicOrPrivate(
+    requesterWallet: string,
+    wallet: string
+  ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
+    if (requesterWallet === wallet) {
+      return this.getPrivate(wallet);
+    }
+
+    return this.getPublic(wallet);
+  }
+
   async getPublic(
     wallet: string
-  ): Promise<Effect.Effect<PublicUserProfile, NotFoundError>> {
+  ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
     const user = await this.userRepository.findOne({
       where: { wallet }
     });
@@ -42,7 +53,10 @@ export class UserService {
         avatarFallbackColor: user.avatarFallbackColor,
         backgroundColor: user.backgroundColor,
         bio: user.bio,
-        issuerDid: user.issuerDid
+        issuerDid: user.issuerDid,
+        did: "",
+        likedPosts: [],
+        credentials: []
       });
     }
 

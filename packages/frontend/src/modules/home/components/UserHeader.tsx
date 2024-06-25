@@ -9,31 +9,23 @@ import {
   Text,
   Tooltip
 } from "@chakra-ui/react";
-import { useChain } from "@cosmos-kit/react";
-import { TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { UserProfile } from "@coredin/shared";
 import { FaPen } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
-import { useLoggedInServerState } from "@/hooks";
-import { USER_QUERIES } from "@/queries";
+import React from "react";
 
-export const UserHeader = () => {
-  const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const isUserConnected = chainContext.isWalletConnected;
-  // chainContext.isWalletConnected; // this shows if the user is connected
-  const { data: userProfile, isLoading } = useLoggedInServerState(
-    USER_QUERIES.getUser(chainContext.address || ""),
-    {
-      enabled: !!chainContext.address
-    }
-  );
+type UserHeaderProps = {
+  userProfile: UserProfile;
+};
 
+export const UserHeader: React.FC<UserHeaderProps> = ({ userProfile }) => {
   return (
     <Box layerStyle="cardBox" w="100%">
       <Box
         h={{ base: "75px", sm: "90px", lg: "125px" }}
         w="100%"
-        bg={userProfile?.backgroundColor || "brand.500"}
+        bg={userProfile.backgroundColor || "brand.500"}
         borderTopRadius="inherit"
       ></Box>
       <Flex
@@ -44,10 +36,10 @@ export const UserHeader = () => {
         mt={{ base: "-2.5em", sm: "-3em", lg: "-4em" }}
       >
         <Avatar
-          name={userProfile?.username}
-          src={userProfile?.avatarUrl}
+          name={userProfile.username}
+          src={userProfile.avatarUrl}
           bg="background.600"
-          color={userProfile?.avatarFallbackColor || "brand.500"}
+          color={userProfile.avatarFallbackColor || "brand.500"}
           size={{ base: "lg", sm: "xl", lg: "2xl" }}
           // ml="0.5em"
           border="4px solid #1C1C1A"
@@ -75,10 +67,10 @@ export const UserHeader = () => {
       <Flex direction="column" gap="1.5em" px="1.125em" pt="1.75em" pb="2.5em">
         <HStack justify="space-between">
           <Text as="span" color="text.100" textStyle="md">
-            {`@${userProfile?.username}`}
+            {`@${userProfile.username}`}
             {/* {post.creatorWallet} */}
           </Text>
-          {userProfile?.issuerDid && (
+          {userProfile.issuerDid && (
             <Tooltip hasArrow label={`${userProfile.issuerDid}`} maxW="500px">
               <Badge colorScheme="brand" variant="outline">
                 Issuer
@@ -88,7 +80,7 @@ export const UserHeader = () => {
         </HStack>
 
         <Text textStyle="sm" wordBreak="break-word">
-          {userProfile?.bio}
+          {userProfile.bio}
         </Text>
       </Flex>
     </Box>

@@ -8,7 +8,7 @@ import {
 
 export const TabsContainer: FC<FeedProps & CredentialsContainerProps> = ({
   posts,
-  sections
+  ...props
 }) => {
   return (
     <Box w="100%">
@@ -22,7 +22,7 @@ export const TabsContainer: FC<FeedProps & CredentialsContainerProps> = ({
             <Feed posts={posts} />
           </TabPanel>
           <TabPanel>
-            <CredentialsContainer sections={sections} />
+            <CredentialsContainer {...props} />
           </TabPanel>
         </TabPanels>
       </Tabs>

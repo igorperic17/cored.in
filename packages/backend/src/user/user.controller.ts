@@ -16,14 +16,16 @@ export class UserController {
     private readonly walletService: WaltIdWalletService
   ) {}
 
-  @Get()
+  @Get(":wallet")
   @UseGuards(LoggedIn)
-  async getProfile(@Req() req: AuthenticatedRequest) {
+  async getProfile(
+    @Req() req: AuthenticatedRequest,
+    @TypedParam("wallet") wallet: string
+  ) {
     console.log("User requested: ", req.wallet);
     await this.userService.updateLastSeen(req.wallet);
     const user = await Effect.runPromise(
-      // TODO - handle private / public info depending on subscriptions
-      await this.userService.getPrivate(req.wallet)
+      await this.userService.getPublicOrPrivate(req.wallet, wallet)
     );
 
     return user;

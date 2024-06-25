@@ -1,10 +1,12 @@
-import { Flex, Box, Text, VStack } from "@chakra-ui/layout";
+import { Flex, Box, Text, VStack, Link } from "@chakra-ui/layout";
 import React from "react";
 import { PostDTO } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
 import { Avatar, IconButton } from "@chakra-ui/react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { ROUTES } from "@/router/routes";
 
 export type PostContentProps = {
   post: PostDTO;
@@ -51,17 +53,22 @@ export const Content: React.FC<PostContentProps> = ({
           // border="1px solid yellow"
         >
           <Flex justify="space-between" w="100%">
-            <Box
-              maxW={{ base: "190px" }}
-              textOverflow={"ellipsis"}
-              whiteSpace="nowrap"
-              overflow="hidden"
+            <Link
+              as={ReactRouterLink}
+              to={ROUTES.USER.buildPath(post.creatorWallet)}
             >
-              {/* recommended username width 12 characters */}
-              <Text as="span" color="text.100" textStyle="md">
-                @{post.creatorUsername}
-              </Text>
-            </Box>
+              <Box
+                maxW={{ base: "190px" }}
+                textOverflow={"ellipsis"}
+                whiteSpace="nowrap"
+                overflow="hidden"
+              >
+                {/* recommended username width 12 characters */}
+                <Text as="span" color="text.100" textStyle="md">
+                  @{post.creatorUsername}
+                </Text>
+              </Box>
+            </Link>
             <Menu offset={[-105, -10]}>
               <MenuButton
                 as={IconButton}

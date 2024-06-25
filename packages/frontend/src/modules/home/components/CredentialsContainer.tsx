@@ -7,24 +7,28 @@ import { ROUTES } from "@/router/routes";
 
 export type CredentialsContainerProps = {
   sections: CredentialSectionProps[];
+  showRequestButton: boolean;
 };
 
 export const CredentialsContainer: FC<CredentialsContainerProps> = ({
-  sections
+  sections,
+  showRequestButton
 }) => {
   return (
     <VStack align="start" p="1em" spacing="3em" layerStyle="cardBox">
-      <Button
-        as={ReactRouterLink}
-        to={ROUTES.CREDENTIALS.REQUEST.path}
-        variant="empty"
-        color="brand.500"
-        rightIcon={<FaPlus fontSize="1rem" />}
-        iconSpacing="1em"
-        mx="auto"
-      >
-        Request credential
-      </Button>
+      {showRequestButton && (
+        <Button
+          as={ReactRouterLink}
+          to={ROUTES.CREDENTIALS.REQUEST.path}
+          variant="empty"
+          color="brand.500"
+          rightIcon={<FaPlus fontSize="1rem" />}
+          iconSpacing="1em"
+          mx="auto"
+        >
+          Request credential
+        </Button>
+      )}
       {sections.map((section, index) => {
         return (
           <CredentialSection

@@ -104,8 +104,8 @@ const UserPage = () => {
 
   return (
     <VStack spacing={{ base: "0.5em", lg: "1.5em" }} mb="4em">
-      <UserHeader />
-      {!isUpdateRootDisabled && (
+      {userProfile && <UserHeader userProfile={userProfile} />}
+      {wallet === chainContext.address && !isUpdateRootDisabled && (
         <Center>
           <Button
             variant="primary"
@@ -120,6 +120,7 @@ const UserPage = () => {
       <TabsContainer
         posts={posts || []}
         sections={tree ? getSections(userProfile?.credentials || [], tree) : []}
+        showRequestButton={wallet === chainContext.address}
       />
       {/* {!isLargerThanLg && <SubscribeToProfile />} */}
       {/* <NewPost /> */}

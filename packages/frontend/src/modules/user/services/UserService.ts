@@ -4,8 +4,8 @@ import { UpdateProfileDTO, UserProfile } from "@coredin/shared";
 export class UserService {
   constructor(private readonly http: HttpService) {}
 
-  async getUser(): Promise<UserProfile> {
-    return this.http.get("user");
+  async getUser(wallet: string): Promise<UserProfile> {
+    return this.http.get("user/" + wallet);
   }
 
   async updateProfile(profile: UpdateProfileDTO): Promise<void> {
