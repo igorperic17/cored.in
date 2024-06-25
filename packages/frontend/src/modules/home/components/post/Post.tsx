@@ -79,6 +79,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       {postDetail?.parent && !isReply && (
         <Content
           post={postDetail.parent}
+          showOptions={postDetail.parent.creatorWallet === chainContext.address}
           key={postDetail.parent.id}
           isDeleting={isDeleting}
           handleDelete={handleDelete}
