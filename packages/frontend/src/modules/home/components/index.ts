@@ -15,3 +15,4 @@ export * from "./CredentialSection";
 export * from "./Credential";
 export * from "./RequestCredential";
 export * from "./IssuanceRequest";
+export * from "./ProofUpdate";

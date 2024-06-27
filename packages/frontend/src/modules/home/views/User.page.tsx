@@ -1,5 +1,5 @@
 import { Button, Center, VStack } from "@chakra-ui/react";
-import { TabsContainer, UserHeader } from "../components";
+import { ProofUpdate, TabsContainer, UserHeader } from "../components";
 import { useParams } from "react-router-dom";
 import { useLoggedInServerState } from "@/hooks";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
@@ -110,15 +110,10 @@ const UserPage = () => {
         <UserHeader userProfile={userProfile} showEdit={isOwnProfile} />
       )}
       {wallet === chainContext.address && !isUpdateRootDisabled && (
-        <Center>
-          <Button
-            variant="primary"
-            onClick={updateMerkleRoot}
-            isDisabled={isUpdateRootDisabled}
-          >
-            Update credentials ZK proof
-          </Button>
-        </Center>
+        <ProofUpdate
+          updateMerkleRoot={updateMerkleRoot}
+          isUpdateRootDisabled={isUpdateRootDisabled}
+        />
       )}
 
       <TabsContainer
