@@ -35,7 +35,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
 
   const handleShare = () => {
-    navigator.clipboard.writeText(postUrl);
+    navigator.clipboard.writeText(window.location.origin + postUrl);
     toast({
       title: `Copied to clipboard`,
       duration: 3000,
