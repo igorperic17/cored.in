@@ -16,13 +16,15 @@ interface ProfileRegistrationProps {
   handleChangeUserName: (e: ChangeEvent<HTMLInputElement>) => void;
   usernameInput: string;
   registerProfile: () => void;
+  isRegistering: boolean;
 }
 
 export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
   did,
   handleChangeUserName,
   usernameInput,
-  registerProfile
+  registerProfile,
+  isRegistering
 }) => {
   return (
     <HStack
@@ -83,6 +85,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
               cursor: "not-allowed",
               backgroundColor: "background.600"
             }}
+            isLoading={isRegistering}
           >
             REGISTER
           </Button>
