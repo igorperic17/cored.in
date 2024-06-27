@@ -82,6 +82,10 @@ export class UserService {
         didKeyId = generateDidKeyResult;
         await this.userRepository.update({ wallet }, { didKeyId });
       }
+      // TEMPORARY: onboard all users as issuers for easier testing
+      if (!user.issuerDid) {
+        await this.grantIssuerDid(wallet);
+      }
       // Get DID
       const did = await this.walletService.getOrCreateDid(wallet, didKeyId);
       const credentials = this.adaptCredentials(
