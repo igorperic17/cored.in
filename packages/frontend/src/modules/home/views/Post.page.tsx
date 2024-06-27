@@ -14,7 +14,7 @@ export const PostPage = () => {
   console.log(postDetail);
 
   return (
-    <Box>
+    <Box layerStyle="cardBox">
       {postDetail && <Post post={postDetail} />}
       {!postDetail && <Text>Post not found...</Text>}
     </Box>
