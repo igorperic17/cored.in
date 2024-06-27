@@ -22,7 +22,6 @@ import React, { useEffect } from "react";
 import { FC } from "react";
 import { persistentStorageService } from "@/dependencies";
 import { ConnectedWalletKey } from "@/constants";
-import { chain } from "chain-registry/testnet/coreumtestnet";
 
 interface LoginProps {
   variant: "primary" | "empty";
@@ -51,6 +50,8 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
   }, [chainContext]);
 
   const wallets = [...keplrWallets, ...leapWallets, ...cosmostationWallets];
+
+  console.log("username", username);
 
   if (chainContext.isWalletConnected) {
     return (

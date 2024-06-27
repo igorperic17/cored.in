@@ -8,19 +8,27 @@ import {
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
-import { useFeatureFlagContext } from "@/contexts/featureFlag";
-import { FEATURE_FLAG } from "@coredin/shared";
+import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { navSections } from "@/constants";
-import { useSectionInView } from "@/hooks";
+import { useAuth, useLoggedInServerState, useSectionInView } from "@/hooks";
 import { Login, Logo } from "@/components";
+import { USER_QUERIES } from "@/queries";
+import { useChain } from "@cosmos-kit/react";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav = () => {
-  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   const currentSection = useSectionInView();
   const theme = useTheme();
   const [isLargerThanMd] = useMediaQuery(
     `(min-width: ${theme.breakpoints.md})`
+  );
+  const { needsAuth } = useAuth();
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const { data: userProfile } = useLoggedInServerState(
+    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
+    {
+      enabled: !!chainContext.address
+    }
   );
 
   return (
@@ -79,17 +87,12 @@ export const Nav = () => {
         to={ROUTES.LOGIN.path}
         _hover={{ textDecoration: "none" }}
       >
-        <Login variant="primary" signInText="Sign in" />
+        <Login
+          variant="primary"
+          signInText="Sign in"
+          username={userProfile?.username}
+        />
       </Link>
-      {/* {isInitialised && !isFeatureEnabled(FEATURE_FLAG.HOME) && (
-        <Link as={ReactRouterLink} to={"#benefits"}>
-          <Button variant="primary" size="md">
-            Learn more
-          </Button>
-        </Link>
-      )} */}
-      {/* Placeholder while not initalized to avoid section links going to right */}
-      {!isInitialised && <Link as={ReactRouterLink} to={"#"}></Link>}
     </Flex>
   );
 };
