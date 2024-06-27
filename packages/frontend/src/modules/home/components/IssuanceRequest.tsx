@@ -51,6 +51,7 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
             as="h3"
             fontFamily="body"
             fontSize={{ base: "1rem", lg: "1.25rem" }}
+            wordBreak="break-all"
           >
             <Link as={ReactRouterLink}>@{request.requester.username}</Link>
           </Heading>
