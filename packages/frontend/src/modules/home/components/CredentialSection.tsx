@@ -2,7 +2,6 @@ import { Box, Button, Flex, HStack, Heading, Icon } from "@chakra-ui/react";
 import { CredentialDTO } from "@coredin/shared";
 import { FC } from "react";
 import { Credential } from "./Credential";
-import { IconButton } from "@interchain-ui/react";
 import { FaPlus } from "react-icons/fa6";
 import MerkleTree from "merkletreejs";
 
@@ -45,10 +44,10 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
       </Flex>
       {credentials.map((cred, index) => (
         <Credential
-          showDelete={showEdit}
           key={`credential-${index}`}
           credential={cred}
           tree={tree}
+          showOptions={showEdit}
         />
       ))}
     </Box>

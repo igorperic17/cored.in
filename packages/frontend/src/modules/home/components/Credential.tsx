@@ -5,11 +5,14 @@ import { USER_MUTATIONS } from "@/queries";
 import {
   Badge,
   Box,
-  Button,
   Heading,
   HStack,
-  Icon,
+  IconButton,
   Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Text,
   useToast,
   VStack
@@ -19,7 +22,7 @@ import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import MerkleTree from "merkletreejs";
 import { FC, useContext } from "react";
-import { FaTrash } from "react-icons/fa6";
+import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { generateProof } from "../helpers/generateProof";
 import { ROUTES } from "@/router/routes";
@@ -27,13 +30,13 @@ import { ROUTES } from "@/router/routes";
 type CredentialProps = {
   credential: CredentialDTO;
   tree: MerkleTree;
-  showDelete: boolean;
+  showOptions: boolean;
 };
 
 export const Credential: FC<CredentialProps> = ({
   credential,
   tree,
-  showDelete
+  showOptions
 }) => {
   const {
     id,
@@ -47,7 +50,7 @@ export const Credential: FC<CredentialProps> = ({
   } = credential;
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const coredinClient = useContext(CoredinClientContext);
-  const { mutateAsync } = useMutableServerState(
+  const { mutateAsync, isPending: isDeleting } = useMutableServerState(
     USER_MUTATIONS.deleteCredential(id)
   );
   const toast = useToast();
@@ -101,7 +104,7 @@ export const Credential: FC<CredentialProps> = ({
             bg="brand.500"
             borderRadius="0.5em"
           >
-            Credential deleted successfully.
+            Credential deleted successfully
           </Box>
         ),
         isClosable: true
@@ -113,60 +116,81 @@ export const Credential: FC<CredentialProps> = ({
   };
 
   return (
-    <VStack
+    <HStack
       align="start"
-      spacing="1em"
       borderBottom="2px solid #3E3D3A"
       _last={{ borderBottom: "none" }}
       py="1.5em"
-      color={verified ? "text.100" : "text.800"}
     >
-      {verified && issuer && (
-        <>
-          <Badge cursor="pointer" onClick={verifyLeaf} variant="verified">
-            Verified
-          </Badge>
-        </>
-      )}
-      <VStack align="start" spacing="0.25em" w="100%">
-        <HStack justify="space-between" w="100%">
-          <Heading
-            as="h3"
-            fontFamily="body"
-            fontSize={{ base: "1rem", lg: "1.25rem" }}
-          >
-            {title}
-          </Heading>
-          {showDelete && (
-            <Button
-              variant="empty"
-              color="text.400"
-              aria-label={`Remove credential.`}
-              onClick={handleDelete}
+      <VStack
+        align="start"
+        spacing="1em"
+        color={verified ? "text.100" : "text.800"}
+      >
+        {verified && issuer && (
+          <>
+            <Badge cursor="pointer" onClick={verifyLeaf} variant="verified">
+              Verified
+            </Badge>
+          </>
+        )}
+        <VStack align="start" spacing="0.25em" w="100%">
+          <HStack justify="space-between" w="100%">
+            <Heading
+              as="h3"
+              fontFamily="body"
+              fontSize={{ base: "1rem", lg: "1.25rem" }}
             >
-              <Icon as={FaTrash} fontSize="1.5rem" />
-            </Button>
-          )}
-        </HStack>
+              {title}
+            </Heading>
+          </HStack>
 
-        <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>{establishment}</Text>
-        <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
-          {startDate} — {endDate || "Present"}
-        </Text>
+          <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
+            {establishment}
+          </Text>
+          <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
+            {startDate} — {endDate || "Present"}
+          </Text>
+        </VStack>
+
+        {verified && issuer && (
+          <Text fontSize={{ base: "0.875rem", lg: "1rem" }} lineHeight="1.5">
+            {`Verified by `}
+            <Link
+              to={ROUTES.USER.buildPath(credential.issuerWallet)}
+              as={ReactRouterLink}
+              _hover={{ color: "brand.500" }}
+            >
+              {issuer}
+            </Link>
+          </Text>
+        )}
       </VStack>
-
-      {verified && issuer && (
-        <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
-          {`Verified by `}
-          <Link
-            to={ROUTES.USER.buildPath(credential.issuerWallet)}
-            as={ReactRouterLink}
-            _hover={{ color: "brand.500" }}
-          >
-            {issuer}
-          </Link>
-        </Text>
+      {showOptions && (
+        <Menu offset={[-105, -10]}>
+          <MenuButton
+            as={IconButton}
+            variant="empty"
+            color="text.400"
+            aria-label="See menu."
+            icon={<FaEllipsis fontSize="1.5rem" />}
+            size="lg"
+            isLoading={isDeleting}
+            mt="-0.675em"
+          />
+          <MenuList>
+            <MenuItem
+              onClick={handleDelete}
+              // border="1px solid red"
+              icon={<FaTrash color="red" />}
+            >
+              <Text as="span" color="red">
+                Delete
+              </Text>
+            </MenuItem>
+          </MenuList>
+        </Menu>
       )}
-    </VStack>
+    </HStack>
   );
 };
