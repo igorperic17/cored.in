@@ -1,12 +1,18 @@
 import {
+  Box,
   Button,
   Flex,
   FormControl,
   FormLabel,
   Heading,
   Input,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Select,
-  VStack
+  VStack,
+  useToast
 } from "@chakra-ui/react";
 import {
   CredentialDTO,
@@ -20,7 +26,6 @@ import { months } from "../constants/months";
 import { useLoggedInServerState, useMutableServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
-import { IssuanceRequest } from ".";
 
 const defaultDate = "01-00-0000";
 const getSelectedMonth = (month: string) => {
@@ -31,10 +36,6 @@ const getSelectedMonth = (month: string) => {
 export const RequestCredential = () => {
   const { data: issuers } = useLoggedInServerState(ISSUER_QUERIES.getIssuers());
   console.log(CredentialRequestStatus);
-  const { data: pendingRequests } = useLoggedInServerState(
-    ISSUER_QUERIES.getRequests(CredentialRequestStatus?.PENDING || "PENDING")
-  );
-
   const { mutateAsync } = useMutableServerState(
     ISSUER_MUTATIONS.requestCredential()
   );
@@ -49,6 +50,8 @@ export const RequestCredential = () => {
     issuerWallet: "",
     verified: false
   });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const toast = useToast();
 
   const currentYear = new Date().getFullYear();
   const years: number[] = [];
@@ -57,17 +60,49 @@ export const RequestCredential = () => {
   }
 
   const handleSubmit = async () => {
+    setIsSubmitting(true);
     mutateAsync({ request: state, issuerDid: state.issuer })
       .then((response) => {
         console.log(response);
+        if (response) {
+          toast({
+            position: "top-right",
+            status: "success",
+            duration: 1000,
+            render: () => (
+              <Box
+                color="text.900"
+                p="1em 1.5em"
+                bg="brand.500"
+                borderRadius="0.5em"
+              >
+                Credential submitted successfully
+              </Box>
+            )
+          });
+        }
+        setIsSubmitting(false);
       })
       .catch((error) => {
         console.error(error);
+        setIsSubmitting(false);
       });
+
+    setState({
+      id: "",
+      subjectDid: "",
+      type: "EducationCredential",
+      title: "",
+      establishment: "",
+      startDate: defaultDate,
+      issuer: "",
+      issuerWallet: "",
+      verified: false
+    });
   };
 
-  console.log("start: ", state.startDate);
-  console.log("end: ", state.endDate);
+  // console.log("start: ", state.startDate);
+  // console.log("end: ", state.endDate);
 
   return (
     <VStack
@@ -268,6 +303,33 @@ export const RequestCredential = () => {
                 </option>
               ))}
             </Select>
+            {/* <Menu isLazy>
+              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
+                Your Cats
+              </MenuButton>
+              <MenuList>
+                <MenuItem minH="48px">
+                  {/* <Image
+                    boxSize="2rem"
+                    borderRadius="full"
+                    src="https://placekitten.com/100/100"
+                    alt="Fluffybuns the destroyer"
+                    mr="12px"
+                  /> */}
+            {/* <span>Fluffybuns the Destroyer</span>
+                </MenuItem>
+                <MenuItem minH="40px"> */}
+            {/* <Image
+                    boxSize="2rem"
+                    borderRadius="full"
+                    src="https://placekitten.com/120/120"
+                    alt="Simon the pensive"
+                    mr="12px"
+                  /> */}
+            {/* <span>Simon the pensive</span>
+                </MenuItem>
+              </MenuList>
+            </Menu> */}
           </FormControl>
 
           <Button
@@ -276,28 +338,11 @@ export const RequestCredential = () => {
             w="100%"
             onClick={handleSubmit}
             isDisabled={state.title.length < 2 || state.issuer.length < 2}
+            isLoading={isSubmitting}
           >
             Send a request
           </Button>
         </>
-      )}
-      {pendingRequests && (
-        <VStack
-          spacing="1em"
-          layerStyle="cardBox"
-          p="1em"
-          pb="1.5em"
-          align="start"
-          mb="4em"
-        >
-          <Heading as="h1" fontFamily="body">
-            Requested issuances
-          </Heading>
-          {pendingRequests &&
-            pendingRequests.map((request, i) => (
-              <IssuanceRequest key={i} request={request} />
-            ))}
-        </VStack>
       )}
     </VStack>
   );
