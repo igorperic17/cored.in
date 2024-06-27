@@ -55,7 +55,7 @@ export const Settings = () => {
   const handleSubmit = () => {
     mutateAsync({ profile: settings }).then(() => {
       toast({
-        position: isLargerThanLg ? "top-right" : "top-right",
+        position: "top-right",
         status: "success",
         duration: 1000,
         render: () => (
@@ -65,7 +65,7 @@ export const Settings = () => {
             bg="brand.500"
             borderRadius="0.5em"
           >
-            Saved successfully!
+            Saved successfully
           </Box>
         ),
         isClosable: true
