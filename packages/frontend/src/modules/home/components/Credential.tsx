@@ -46,7 +46,8 @@ export const Credential: FC<CredentialProps> = ({
     startDate,
     endDate,
     verified,
-    issuer
+    issuer,
+    issuerWallet
   } = credential;
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const coredinClient = useContext(CoredinClientContext);
@@ -128,13 +129,12 @@ export const Credential: FC<CredentialProps> = ({
         align="start"
         spacing="1em"
         color={verified ? "text.100" : "text.800"}
+        w="100%"
       >
-        {verified && issuer && (
-          <>
-            <Badge cursor="pointer" onClick={verifyLeaf} variant="verified">
-              Verified
-            </Badge>
-          </>
+        {verified && issuer && issuerWallet !== chainContext.address && (
+          <Badge cursor="pointer" onClick={verifyLeaf} variant="verified">
+            Verified
+          </Badge>
         )}
         <VStack align="start" spacing="0.25em" w="100%">
           <HStack justify="space-between" w="100%">
@@ -142,6 +142,7 @@ export const Credential: FC<CredentialProps> = ({
               as="h3"
               fontFamily="body"
               fontSize={{ base: "1rem", lg: "1.25rem" }}
+              wordBreak="break-all"
             >
               {title}
             </Heading>
@@ -155,19 +156,25 @@ export const Credential: FC<CredentialProps> = ({
           </Text>
         </VStack>
 
-        {verified && issuer && (
-          <Text fontSize={{ base: "0.875rem", lg: "1rem" }} lineHeight="1.5">
-            {`Verified by `}
-            <Link
-              to={ROUTES.USER.buildPath(credential.issuerWallet)}
-              as={ReactRouterLink}
-              _hover={{ color: "brand.500" }}
-              wordBreak="break-word"
-            >
-              {issuer}
-            </Link>
-          </Text>
-        )}
+        {verified &&
+          issuer &&
+          (issuerWallet === chainContext.address ? (
+            <Text fontSize={{ base: "0.875rem", lg: "1rem" }} lineHeight="1.5">
+              The credential is issued by this user
+            </Text>
+          ) : (
+            <Text fontSize={{ base: "0.875rem", lg: "1rem" }} lineHeight="1.5">
+              {`Verified by `}
+              <Link
+                to={ROUTES.USER.buildPath(credential.issuerWallet)}
+                as={ReactRouterLink}
+                _hover={{ color: "brand.500" }}
+                wordBreak="break-word"
+              >
+                {issuer}
+              </Link>
+            </Text>
+          ))}
       </VStack>
       {showOptions && (
         <Menu offset={[-105, -10]}>
