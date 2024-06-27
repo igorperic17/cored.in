@@ -1,13 +1,12 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { IsNull, Not, Repository } from "typeorm";
+import { In, IsNull, Not, Repository } from "typeorm";
 import { User } from "./user.entity";
 import {
   NotFoundError,
   UserProfile,
   UpdateProfileDTO,
-  CredentialDTO,
-  PublicUserProfile
+  CredentialDTO
 } from "@coredin/shared";
 import { Effect } from "effect";
 import { WaltIdIssuerService, WaltIdWalletService } from "../ssi/core/services";
@@ -88,7 +87,7 @@ export class UserService {
       }
       // Get DID
       const did = await this.walletService.getOrCreateDid(wallet, didKeyId);
-      const credentials = this.adaptCredentials(
+      const credentials = await this.adaptCredentials(
         await this.walletService.getVCs(wallet)
       );
       return Effect.succeed({
@@ -155,12 +154,21 @@ export class UserService {
     return issuers.map((issuer) => this.adaptPrivateProfile(issuer));
   }
 
-  private adaptCredentials(rawVCs: VerifiableCredential[]): CredentialDTO[] {
+  private async adaptCredentials(
+    rawVCs: VerifiableCredential[]
+  ): Promise<CredentialDTO[]> {
+    const issuerDids = rawVCs.map((vc) => vc.parsedDocument.issuer.id);
+    const issuers = await this.userRepository.find({
+      where: { issuerDid: In(issuerDids) }
+    });
     return rawVCs.map((vc) => ({
       id: vc.id,
       subjectDid: vc.parsedDocument.credentialSubject.id,
       type: vc.parsedDocument.type[1],
       issuer: vc.parsedDocument.issuer.id,
+      issuerWallet:
+        issuers.find((user) => user.issuerDid === vc.parsedDocument.issuer.id)
+          ?.wallet || "",
       title: vc.parsedDocument.credentialSubject.title,
       establishment: vc.parsedDocument.credentialSubject.establishment,
       startDate: vc.parsedDocument.credentialSubject.startDate,

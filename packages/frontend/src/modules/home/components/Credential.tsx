@@ -22,6 +22,7 @@ import { FC, useContext } from "react";
 import { FaTrash } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { generateProof } from "../helpers/generateProof";
+import { ROUTES } from "@/router/routes";
 
 type CredentialProps = {
   credential: CredentialDTO;
@@ -157,7 +158,11 @@ export const Credential: FC<CredentialProps> = ({
       {verified && issuer && (
         <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
           {`Verified by `}
-          <Link as={ReactRouterLink} _hover={{ color: "brand.500" }}>
+          <Link
+            to={ROUTES.USER.buildPath(credential.issuerWallet)}
+            as={ReactRouterLink}
+            _hover={{ color: "brand.500" }}
+          >
             {issuer}
           </Link>
         </Text>

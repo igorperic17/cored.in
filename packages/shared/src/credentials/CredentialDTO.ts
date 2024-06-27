@@ -10,4 +10,5 @@ export type CredentialDTO = {
   endDate?: string;
   verified: boolean;
   issuer: string;
+  issuerWallet: string;
 };

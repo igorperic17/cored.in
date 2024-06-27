@@ -46,6 +46,7 @@ export const RequestCredential = () => {
     establishment: "",
     startDate: defaultDate,
     issuer: "",
+    issuerWallet: "",
     verified: false
   });
 
