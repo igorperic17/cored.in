@@ -81,7 +81,7 @@ export const Credential: FC<CredentialProps> = ({
                   bg="brand.500"
                   borderRadius="0.5em"
                 >
-                  Credential successfully verified onchain.
+                  Credential successfully verified onchain
                 </Box>
               ),
               isClosable: true
