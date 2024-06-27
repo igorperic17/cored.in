@@ -15,6 +15,7 @@ import UserPage from "@/modules/home/views/User.page";
 import SettingsPage from "@/modules/home/views/Settings.page";
 import { RequestCredentialPage } from "@/modules/home/views/RequestCredential.page";
 import CredentialsPage from "@/modules/home/views/Credentials.page";
+import { IncomingRequestsPage } from "@/modules/home/views/IncomingRequests.page";
 
 export const router = createBrowserRouter([
   {
@@ -89,6 +90,10 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.CREDENTIALS.REQUEST.path,
         element: <RequestCredentialPage />
+      },
+      {
+        path: ROUTES.CREDENTIALS.INCOMING_REQUESTS.path,
+        element: <IncomingRequestsPage />
       }
     ]
   },

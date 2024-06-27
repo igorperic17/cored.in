@@ -117,10 +117,12 @@ export const Credential: FC<CredentialProps> = ({
 
   return (
     <HStack
+      as="article"
       align="start"
       borderBottom="2px solid #3E3D3A"
       _last={{ borderBottom: "none" }}
       py="1.5em"
+      // border="1px solid red"
     >
       <VStack
         align="start"

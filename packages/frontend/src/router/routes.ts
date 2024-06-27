@@ -24,6 +24,9 @@ export const ROUTES = {
     path: "/credentials",
     REQUEST: {
       path: "/credentials/request"
+    },
+    INCOMING_REQUESTS: {
+      path: "/credentials/incoming-requests"
     }
   },
   SETTINGS: {
