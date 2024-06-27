@@ -52,15 +52,24 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
             fontFamily="body"
             fontSize={{ base: "1rem", lg: "1.25rem" }}
             wordBreak="break-all"
+            lineHeight="1.5"
           >
             <Link as={ReactRouterLink}>@{request.requester.username}</Link>
           </Heading>
         </HStack>
 
-        <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
+        <Text
+          fontSize={{ base: "0.875rem", lg: "1rem" }}
+          wordBreak="break-all"
+          lineHeight="1.5"
+        >
           {request.credential.title}
         </Text>
-        <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
+        <Text
+          fontSize={{ base: "0.875rem", lg: "1rem" }}
+          wordBreak="break-all"
+          lineHeight="1.5"
+        >
           {request.credential.establishment}
         </Text>
         <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>

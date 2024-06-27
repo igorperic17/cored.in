@@ -136,22 +136,30 @@ export const Credential: FC<CredentialProps> = ({
             Verified
           </Badge>
         )}
-        <VStack align="start" spacing="0.25em" w="100%">
+        <VStack align="start" spacing="0.375em" w="100%">
           <HStack justify="space-between" w="100%">
             <Heading
               as="h3"
               fontFamily="body"
               fontSize={{ base: "1rem", lg: "1.25rem" }}
+              lineHeight="1.5"
               wordBreak="break-all"
             >
               {title}
             </Heading>
           </HStack>
 
-          <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
+          <Text
+            fontSize={{ base: "0.875rem", lg: "1rem" }}
+            wordBreak="break-all"
+            lineHeight="1.5"
+          >
             {establishment}
           </Text>
-          <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
+          <Text
+            fontSize={{ base: "0.875rem", lg: "1rem" }}
+            wordBreak="break-all"
+          >
             {startDate} — {endDate || "Present"}
           </Text>
         </VStack>

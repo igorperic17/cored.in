@@ -44,10 +44,7 @@ const styles = {
     a: {
       textUnderlineOffset: "0.5em"
     },
-    p: {
-      ...textStyles.md,
-      wordBreak: "break-all"
-    }
+    p: textStyles.md
   }
 };
 
