@@ -24,6 +24,7 @@ export const Profile = () => {
   );
   const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
   const [usernameInput, setUsernameInput] = useState<string>("");
+  const [isRegistering, setIsRegistering] = useState(false);
 
   const updateOnchainProfile = () => {
     if (chainContext.address) {
@@ -49,6 +50,7 @@ export const Profile = () => {
 
   const registerProfile = () => {
     if (onchainProfile === null && userProfile && usernameInput.length > 2) {
+      setIsRegistering(true);
       console.log("Registering profile onchain...", userProfile.did);
       coredinClient
         ?.register({
@@ -58,12 +60,14 @@ export const Profile = () => {
         .then((result) => {
           console.log(result);
           updateOnchainProfile();
+          setIsRegistering(false);
           // TODO - update backend user profile with username
         })
         .catch((error) => {
           console.log("error while registering");
           console.error(error);
           updateOnchainProfile();
+          setIsRegistering(false);
         });
     }
   };
@@ -75,10 +79,11 @@ export const Profile = () => {
       setUsernameInput(value);
     }
   };
-
+  console.log("loading", isLoading);
+  console.log("onchainProfile", onchainProfile);
   return (
     <Box>
-      {(!onchainProfile || isLoading) && (
+      {!onchainProfile && isLoading && (
         <Center mt="32px">
           <Spinner size="xl" color="brand.500" />
         </Center>
@@ -90,6 +95,7 @@ export const Profile = () => {
           handleChangeUserName={handleChangeUserName}
           usernameInput={usernameInput}
           registerProfile={registerProfile}
+          isRegistering={isRegistering}
         />
       )}
       {onchainProfile && chainContext.isWalletConnected && userProfile && (
