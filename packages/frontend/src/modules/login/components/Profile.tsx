@@ -1,5 +1,9 @@
-import { useAuth, useLoggedInServerState } from "@/hooks";
-import { USER_QUERIES } from "@/queries";
+import {
+  useAuth,
+  useLoggedInServerState,
+  useMutableServerState
+} from "@/hooks";
+import { USER_MUTATIONS, USER_QUERIES } from "@/queries";
 import { Box, Center } from "@chakra-ui/layout";
 import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useContext, useEffect, useState } from "react";
@@ -21,6 +25,9 @@ export const Profile = () => {
     {
       enabled: !!chainContext.address
     }
+  );
+  const { mutateAsync: updateProfile } = useMutableServerState(
+    USER_MUTATIONS.updateProfile()
   );
   const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
   const [usernameInput, setUsernameInput] = useState<string>("");
@@ -60,8 +67,11 @@ export const Profile = () => {
         .then((result) => {
           console.log(result);
           updateOnchainProfile();
+          // This forces the backend to retrieve the new username from the blockchain
+          updateProfile({
+            profile: {}
+          });
           setIsRegistering(false);
-          // TODO - update backend user profile with username
         })
         .catch((error) => {
           console.log("error while registering");
