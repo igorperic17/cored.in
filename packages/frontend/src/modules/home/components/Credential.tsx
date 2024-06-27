@@ -160,6 +160,7 @@ export const Credential: FC<CredentialProps> = ({
               to={ROUTES.USER.buildPath(credential.issuerWallet)}
               as={ReactRouterLink}
               _hover={{ color: "brand.500" }}
+              wordBreak="break-word"
             >
               {issuer}
             </Link>
