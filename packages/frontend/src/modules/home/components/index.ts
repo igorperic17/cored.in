@@ -9,6 +9,7 @@ export * from "./UserHeader";
 export * from "./SubscribeToProfile";
 export * from "./TabsContainer";
 export * from "./Settings";
+export * from "./CredentialsMain";
 export * from "./CredentialsContainer";
 export * from "./CredentialSection";
 export * from "./Credential";

@@ -1,5 +1,11 @@
 import { ROUTES } from "@/router/routes";
-import { FaGear, FaHouse, FaPaperPlane, FaUser } from "react-icons/fa6";
+import {
+  FaGear,
+  FaHouse,
+  FaPaperPlane,
+  FaUser,
+  FaCertificate
+} from "react-icons/fa6";
 
 export const navigationData = (wallet: string) => [
   {
@@ -11,6 +17,11 @@ export const navigationData = (wallet: string) => [
     title: "messages",
     icon: FaPaperPlane,
     link: "#"
+  },
+  {
+    title: "credentials",
+    icon: FaCertificate,
+    link: ROUTES.CREDENTIALS.path
   },
   {
     title: "profile",

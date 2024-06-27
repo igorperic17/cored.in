@@ -47,7 +47,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
     >
       <Grid
         as="ul"
-        templateColumns={{ base: "repeat(5, 1fr)", lg: "repeat(1, 1fr)" }}
+        templateColumns={{ base: "repeat(6, 1fr)", lg: "repeat(1, 1fr)" }}
         gap="0.5em"
         listStyleType="none"
         w="100%"
