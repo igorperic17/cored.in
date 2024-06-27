@@ -1,5 +1,5 @@
 import { ROUTES } from "@/router/routes";
-import { Button, Flex, IconButton } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton, useToast } from "@chakra-ui/react";
 import { FC } from "react";
 import {
   FaHeart,
@@ -30,6 +30,31 @@ export const ActionBar: FC<PostActionBarProps> = ({
   handleLike,
   isLiking
 }) => {
+  const toast = useToast();
+
+  const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
+
+  const handleShare = () => {
+    navigator.clipboard.writeText(postUrl);
+    toast({
+      title: `Copied to clipboard`,
+      duration: 3000,
+      isClosable: true,
+      render: () => (
+        <Box
+          mx="auto"
+          color="text.100"
+          p="1em 1.5em"
+          bg="background.600"
+          textAlign="center"
+          borderRadius="4px"
+        >
+          Post URL copied to clipboard
+        </Box>
+      )
+    });
+  };
+
   return (
     <Flex
       w="100%"
@@ -67,15 +92,16 @@ export const ActionBar: FC<PostActionBarProps> = ({
       <IconButton
         icon={<FaRetweet fontSize="1.5rem" />}
         variant="empty"
-        aria-label="Repost."
+        aria-label="Share."
         size="1rem"
         color="text.400"
+        onClick={handleShare}
       />
 
       <IconButton
         as={ReactRouterLink}
         icon={<FaRegEye fontSize="1.25rem" />}
-        to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
+        to={postUrl}
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
