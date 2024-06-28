@@ -21,12 +21,14 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
           as={ReactRouterLink}
           to={ROUTES.CREDENTIALS.REQUEST.path}
           variant="empty"
-          color="brand.500"
-          rightIcon={<FaPlus fontSize="1rem" />}
+          size="sm"
+          leftIcon={<FaPlus fontSize="1rem" />}
           iconSpacing="1em"
-          mx="auto"
+          mt="1em"
+          // ml="auto"
+          // mr="0.75em"
         >
-          Request credential
+          Request new credential
         </Button>
       )}
       {sections.map((section, index) => {
