@@ -4,10 +4,12 @@ import {
   Box,
   Flex,
   HStack,
+  Heading,
   Icon,
   Link,
   Text,
-  Tooltip
+  Tooltip,
+  VisuallyHidden
 } from "@chakra-ui/react";
 import { UserProfile } from "@coredin/shared";
 import { FaPen } from "react-icons/fa6";
@@ -72,6 +74,9 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
       </Flex>
       <Flex direction="column" gap="1.5em" px="1.125em" pt="1.75em" pb="2.5em">
         <HStack justify="space-between">
+          <VisuallyHidden>
+            <Heading as="h1">{userProfile.username}'s profile page</Heading>
+          </VisuallyHidden>
           <Text as="span" color="text.100" textStyle="md">
             {`@${userProfile.username}`}
             {/* {post.creatorWallet} */}
