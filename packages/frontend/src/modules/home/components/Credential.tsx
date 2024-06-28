@@ -26,6 +26,7 @@ import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { generateProof } from "../helpers/generateProof";
 import { ROUTES } from "@/router/routes";
+import { formatDate } from "../helpers/formatDate";
 
 type CredentialProps = {
   credential: CredentialDTO;
@@ -160,7 +161,7 @@ export const Credential: FC<CredentialProps> = ({
             fontSize={{ base: "0.875rem", lg: "1rem" }}
             wordBreak="break-all"
           >
-            {startDate} — {endDate || "Present"}
+            {`${formatDate(startDate)} — ${(endDate && formatDate(endDate)) || "Present"}`}
           </Text>
         </VStack>
 
