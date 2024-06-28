@@ -5,5 +5,6 @@ export { selectTheme } from "./selectTheme";
 export { menuTheme } from "./menuTheme";
 export { tabsTheme } from "./tabsTheme";
 export { badgeTheme } from "./badgeTheme";
+export { checkboxTheme } from "./checkboxTheme";
 export { layerStyles } from "./layerStyles";
 export { textStyles } from "./textStyles";

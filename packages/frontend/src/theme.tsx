@@ -4,6 +4,7 @@ import "@fontsource/noto-sans";
 import {
   badgeTheme,
   buttonTheme,
+  checkboxTheme,
   inputTheme,
   layerStyles,
   menuTheme,
@@ -81,7 +82,8 @@ const components = {
   Select: selectTheme,
   Menu: menuTheme,
   Tabs: tabsTheme,
-  Badge: badgeTheme
+  Badge: badgeTheme,
+  Checkbox: checkboxTheme
 };
 
 const breakpoints = {
