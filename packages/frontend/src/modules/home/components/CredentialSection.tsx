@@ -1,9 +1,11 @@
-import { Box, Button, Flex, HStack, Heading, Icon } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Icon } from "@chakra-ui/react";
 import { CredentialDTO } from "@coredin/shared";
 import { FC } from "react";
 import { Credential } from "./Credential";
 import { FaPlus } from "react-icons/fa6";
 import MerkleTree from "merkletreejs";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { ROUTES } from "@/router/routes";
 
 export type CredentialSectionProps = {
   section: string;
@@ -34,6 +36,8 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
         </Heading>
         {showEdit && (
           <Button
+            as={ReactRouterLink}
+            to={ROUTES.CREDENTIALS.REQUEST.path}
             variant="empty"
             color="text.400"
             aria-label={`Add ${section}.`}
