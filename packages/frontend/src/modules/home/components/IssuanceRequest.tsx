@@ -13,6 +13,7 @@ import {
 } from "@chakra-ui/react";
 import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { formatDate } from "../helpers/formatDate";
 
 export type IssuanceRequestProps = {
   request: CredentialRequestDTO;
@@ -73,8 +74,7 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
           {request.credential.establishment}
         </Text>
         <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
-          {request.credential.startDate} —{" "}
-          {request.credential.endDate || "Present"}
+          {`${formatDate(request.credential.startDate)} — ${request.credential.endDate ? formatDate(request.credential.endDate) : "Present"}`}
         </Text>
       </VStack>
       <ButtonGroup size="sm" alignSelf="end" spacing="1.5em">

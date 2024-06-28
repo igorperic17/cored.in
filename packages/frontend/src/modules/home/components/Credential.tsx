@@ -161,7 +161,7 @@ export const Credential: FC<CredentialProps> = ({
             fontSize={{ base: "0.875rem", lg: "1rem" }}
             wordBreak="break-all"
           >
-            {`${formatDate(startDate)} — ${(endDate && formatDate(endDate)) || "Present"}`}
+            {`${formatDate(startDate)} — ${endDate ? formatDate(endDate) : "Present"}`}
           </Text>
         </VStack>
 
