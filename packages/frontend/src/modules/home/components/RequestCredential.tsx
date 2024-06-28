@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Checkbox,
   Flex,
   FormControl,
   FormLabel,
@@ -50,6 +51,7 @@ export const RequestCredential = () => {
     issuerWallet: "",
     verified: false
   });
+  const [hasEndDate, setHasEndDate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
@@ -59,11 +61,16 @@ export const RequestCredential = () => {
     years.push(i);
   }
 
+  const handleEndDateCheckbox = () => {
+    setHasEndDate((prevHasEndDate) => !prevHasEndDate);
+    setState((prevState) => ({ ...prevState, endDate: undefined }));
+  };
+
   const handleSubmit = async () => {
     setIsSubmitting(true);
     mutateAsync({ request: state, issuerDid: state.issuer })
       .then((response) => {
-        console.log(response);
+        // console.log(response);
         if (response) {
           toast({
             position: "top-right",
@@ -101,8 +108,8 @@ export const RequestCredential = () => {
     });
   };
 
-  // console.log("start: ", state.startDate);
-  // console.log("end: ", state.endDate);
+  console.log("start: ", state.startDate);
+  console.log("end: ", state.endDate);
 
   return (
     <VStack
@@ -228,58 +235,63 @@ export const RequestCredential = () => {
           </FormControl>
 
           {/* !!!!!! HANDLE THE CASE WHEN THE USER INTRODUCES AN END DATE THAT WAS BEFORE THE START DATE */}
-          <FormControl>
-            <FormLabel>End date</FormLabel>
-            <Flex direction="row" gap="1em">
-              <Select
-                // isRequired
-                border="1px solid #828178"
-                focusBorderColor="brand.500"
-                onChange={(e) =>
-                  setState({
-                    ...state,
-                    endDate: handleMonthChange(
-                      getSelectedMonth(e.target.value),
-                      state.endDate || defaultDate
-                    )
-                  })
-                }
-              >
-                <option value="0">Month</option>
-                {months.map((month, index) => {
-                  return (
-                    <option key={`end-date-month-${index}`} value={month}>
-                      {month}
-                    </option>
-                  );
-                })}
-              </Select>
+          <Checkbox isChecked={!hasEndDate} onChange={handleEndDateCheckbox}>
+            {credentialLabels[state.type].hasEndDateLabel}
+          </Checkbox>
+          {hasEndDate && (
+            <FormControl>
+              <FormLabel>End date</FormLabel>
+              <Flex direction="row" gap="1em">
+                <Select
+                  isRequired
+                  border="1px solid #828178"
+                  focusBorderColor="brand.500"
+                  onChange={(e) =>
+                    setState({
+                      ...state,
+                      endDate: handleMonthChange(
+                        getSelectedMonth(e.target.value),
+                        state.endDate || defaultDate
+                      )
+                    })
+                  }
+                >
+                  <option value="0">Month</option>
+                  {months.map((month, index) => {
+                    return (
+                      <option key={`end-date-month-${index}`} value={month}>
+                        {month}
+                      </option>
+                    );
+                  })}
+                </Select>
 
-              <Select
-                // isRequired
-                border="1px solid #828178"
-                focusBorderColor="brand.500"
-                onChange={(e) =>
-                  setState({
-                    ...state,
-                    endDate: handleYearChange(
-                      e.target.value,
-                      state.endDate || defaultDate
-                    )
-                  })
-                }
-              >
-                <option value="0000">Year</option>
-                {years.map((year, index) => {
-                  return (
-                    <option key={`end-date-year-${index}`} value={year}>
-                      {year}
-                    </option>
-                  );
-                })}
-              </Select>
-            </Flex>
-          </FormControl>
+                <Select
+                  isRequired
+                  border="1px solid #828178"
+                  focusBorderColor="brand.500"
+                  onChange={(e) =>
+                    setState({
+                      ...state,
+                      endDate: handleYearChange(
+                        e.target.value,
+                        state.endDate || defaultDate
+                      )
+                    })
+                  }
+                >
+                  <option value="0000">Year</option>
+                  {years.map((year, index) => {
+                    return (
+                      <option key={`end-date-year-${index}`} value={year}>
+                        {year}
+                      </option>
+                    );
+                  })}
+                </Select>
+              </Flex>
+            </FormControl>
+          )}
 
           {/* LAST */}
           <FormControl>
