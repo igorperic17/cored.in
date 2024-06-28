@@ -27,6 +27,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { generateProof } from "../helpers/generateProof";
 import { ROUTES } from "@/router/routes";
 import { formatDate } from "../helpers/formatDate";
+import { CredentialContent } from "./credentials";
 
 type CredentialProps = {
   credential: CredentialDTO;
@@ -137,33 +138,12 @@ export const Credential: FC<CredentialProps> = ({
             Verified
           </Badge>
         )}
-        <VStack align="start" spacing="0.375em" w="100%">
-          <HStack justify="space-between" w="100%">
-            <Heading
-              as="h3"
-              fontFamily="body"
-              fontSize={{ base: "1rem", lg: "1.25rem" }}
-              lineHeight="1.5"
-              wordBreak="break-all"
-            >
-              {title}
-            </Heading>
-          </HStack>
-
-          <Text
-            fontSize={{ base: "0.875rem", lg: "1rem" }}
-            wordBreak="break-all"
-            lineHeight="1.5"
-          >
-            {establishment}
-          </Text>
-          <Text
-            fontSize={{ base: "0.875rem", lg: "1rem" }}
-            wordBreak="break-all"
-          >
-            {`${formatDate(startDate)} — ${endDate ? formatDate(endDate) : "Present"}`}
-          </Text>
-        </VStack>
+        <CredentialContent
+          title={title}
+          establishment={establishment}
+          startDate={startDate}
+          endDate={endDate}
+        />
 
         {verified &&
           issuer &&

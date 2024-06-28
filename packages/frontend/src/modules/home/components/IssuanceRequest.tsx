@@ -14,6 +14,7 @@ import {
 import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { formatDate } from "../helpers/formatDate";
+import { CredentialContent } from "./credentials";
 
 export type IssuanceRequestProps = {
   request: CredentialRequestDTO;
@@ -46,7 +47,7 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
       borderBottom="2px solid #3E3D3A"
       _last={{ borderBottom: "none" }}
     >
-      <VStack align="start" spacing="0.25em" w="100%">
+      <VStack align="start" spacing="0.75em" w="100%">
         <HStack justify="space-between" w="100%">
           <Heading
             as="h3"
@@ -58,24 +59,12 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
             <Link as={ReactRouterLink}>@{request.requester.username}</Link>
           </Heading>
         </HStack>
-
-        <Text
-          fontSize={{ base: "0.875rem", lg: "1rem" }}
-          wordBreak="break-all"
-          lineHeight="1.5"
-        >
-          {request.credential.title}
-        </Text>
-        <Text
-          fontSize={{ base: "0.875rem", lg: "1rem" }}
-          wordBreak="break-all"
-          lineHeight="1.5"
-        >
-          {request.credential.establishment}
-        </Text>
-        <Text fontSize={{ base: "0.875rem", lg: "1rem" }}>
-          {`${formatDate(request.credential.startDate)} — ${request.credential.endDate ? formatDate(request.credential.endDate) : "Present"}`}
-        </Text>
+        <CredentialContent
+          title={request.credential.title}
+          establishment={request.credential.establishment}
+          startDate={request.credential.startDate}
+          endDate={request.credential.endDate}
+        />
       </VStack>
       <ButtonGroup size="sm" alignSelf="end" spacing="1.5em">
         <Button variant="empty" color="text.400">
