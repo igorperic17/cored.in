@@ -30,7 +30,9 @@ export const Profile = () => {
     USER_MUTATIONS.updateProfile()
   );
   const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
-  const [usernameInput, setUsernameInput] = useState<string>("");
+  const [usernameInput, setUsernameInput] = useState<string>(
+    userProfile?.username || ""
+  );
   const [isRegistering, setIsRegistering] = useState(false);
 
   const updateOnchainProfile = () => {
@@ -99,25 +101,29 @@ export const Profile = () => {
         </Center>
       )}
       {!chainContext.address && <RequireWalletConnection />}
-      {!onchainProfile && userProfile && (
-        <NotRegisteredProfile
-          did={userProfile.did}
-          handleChangeUserName={handleChangeUserName}
-          usernameInput={usernameInput}
-          registerProfile={registerProfile}
-          isRegistering={isRegistering}
-        />
-      )}
-      {onchainProfile && chainContext.isWalletConnected && userProfile && (
-        <Navigate
-          to={
-            queryParams.get("redirect") ??
-            (userProfile.username === "no_username"
-              ? ROUTES.SETTINGS.path
-              : ROUTES.HOME.path)
-          }
-        />
-      )}
+      {userProfile &&
+        (!onchainProfile || onchainProfile?.did !== userProfile.did) && (
+          <NotRegisteredProfile
+            did={userProfile.did}
+            handleChangeUserName={handleChangeUserName}
+            usernameInput={usernameInput}
+            registerProfile={registerProfile}
+            isRegistering={isRegistering}
+          />
+        )}
+      {onchainProfile &&
+        chainContext.isWalletConnected &&
+        userProfile &&
+        onchainProfile.did === userProfile.did && (
+          <Navigate
+            to={
+              queryParams.get("redirect") ??
+              (userProfile.username === "no_username"
+                ? ROUTES.SETTINGS.path
+                : ROUTES.HOME.path)
+            }
+          />
+        )}
     </Box>
   );
 };
