@@ -8,6 +8,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 
 export type CredentialSectionProps = {
+  profileWallet: string;
   section: string;
   credentials: CredentialDTO[];
   tree: MerkleTree;
@@ -15,6 +16,7 @@ export type CredentialSectionProps = {
 };
 
 export const CredentialSection: FC<CredentialSectionProps> = ({
+  profileWallet,
   section,
   credentials,
   tree,
@@ -49,6 +51,7 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
       {credentials.map((cred, index) => (
         <Credential
           key={`credential-${index}`}
+          profileWallet={profileWallet}
           credential={cred}
           tree={tree}
           showOptions={showEdit}

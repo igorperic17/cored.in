@@ -6,11 +6,13 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 
 export type CredentialsContainerProps = {
+  profileWallet: string;
   sections: CredentialSectionProps[];
   showRequestButton: boolean;
 };
 
 export const CredentialsContainer: FC<CredentialsContainerProps> = ({
+  profileWallet,
   sections,
   showRequestButton
 }) => {
@@ -34,6 +36,7 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
       {sections.map((section, index) => {
         return (
           <CredentialSection
+            profileWallet={profileWallet}
             showEdit={showRequestButton}
             key={`credential-section-${index}`}
             section={section.section}

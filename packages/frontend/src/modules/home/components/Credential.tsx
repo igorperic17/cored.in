@@ -30,12 +30,14 @@ import { formatDate } from "../helpers/formatDate";
 import { CredentialContent } from "./credentials";
 
 type CredentialProps = {
+  profileWallet: string;
   credential: CredentialDTO;
   tree: MerkleTree;
   showOptions: boolean;
 };
 
 export const Credential: FC<CredentialProps> = ({
+  profileWallet,
   credential,
   tree,
   showOptions
@@ -133,7 +135,7 @@ export const Credential: FC<CredentialProps> = ({
         color={verified ? "text.100" : "text.800"}
         w="100%"
       >
-        {verified && issuer && issuerWallet !== chainContext.address && (
+        {verified && issuer && issuerWallet !== profileWallet && (
           <Badge cursor="pointer" onClick={verifyLeaf} variant="verified">
             Verified
           </Badge>
@@ -147,9 +149,9 @@ export const Credential: FC<CredentialProps> = ({
 
         {verified &&
           issuer &&
-          (issuerWallet === chainContext.address ? (
+          (issuerWallet === profileWallet ? (
             <Text fontSize={{ base: "0.875rem", lg: "1rem" }} lineHeight="1.5">
-              The credential is issued by this user
+              The credential is self-issued
             </Text>
           ) : (
             <Text fontSize={{ base: "0.875rem", lg: "1rem" }} lineHeight="1.5">

@@ -120,9 +120,15 @@ const UserPage = () => {
         posts={posts || []}
         sections={
           tree
-            ? getSections(userProfile?.credentials || [], tree, isOwnProfile)
+            ? getSections(userProfile?.credentials || []).map((section) => ({
+                ...section,
+                profileWallet: wallet,
+                tree,
+                showEdit: isOwnProfile
+              }))
             : []
         }
+        profileWallet={wallet}
         showRequestButton={isOwnProfile}
       />
       {/* {!isLargerThanLg && <SubscribeToProfile />} */}
