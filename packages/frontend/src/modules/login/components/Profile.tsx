@@ -58,7 +58,11 @@ export const Profile = () => {
   ]);
 
   const registerProfile = () => {
-    if (onchainProfile === null && userProfile && usernameInput.length > 2) {
+    if (
+      userProfile &&
+      (onchainProfile === null || onchainProfile?.did !== userProfile.did) &&
+      usernameInput.length > 2
+    ) {
       setIsRegistering(true);
       console.log("Registering profile onchain...", userProfile.did);
       coredinClient
