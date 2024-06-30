@@ -56,9 +56,11 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
   if (chainContext.isWalletConnected) {
     return (
       <HStack spacing="0.75em" align="end">
-        <Text color="text.100" fontSize={{ base: "0.85rem", md: "1rem" }}>
-          @{username}
-        </Text>
+        {username && (
+          <Text color="text.100" fontSize={{ base: "0.85rem", md: "1rem" }}>
+            @{username}
+          </Text>
+        )}
         <Button
           borderStartStartRadius="0"
           borderEndStartRadius="0"
