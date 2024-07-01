@@ -148,8 +148,8 @@ resource "aws_api_gateway_deployment" "lambda_backend_api_deployment" {
 }
 
 resource "null_resource" "trigger_lambda_permission" {
-  count       = var.use_lambda_backend ? 1 : 0
-  triggers    = {
+  count = var.use_lambda_backend ? 1 : 0
+  triggers = {
     lambda_version = aws_lambda_function.lambda_backend[0].version
   }
 }
