@@ -349,7 +349,15 @@ export const RequestCredential = () => {
             size="md"
             w="100%"
             onClick={handleSubmit}
-            isDisabled={state.title.length < 2 || state.issuer.length < 2}
+            isDisabled={
+              state.title.length < 2 ||
+              state.issuer.length < 2 ||
+              !state.establishment ||
+              state.startDate.slice(3, 5) === "00" ||
+              state.startDate.slice(6) === "0000" ||
+              state.endDate?.slice(3, 5) === "00" ||
+              state.endDate?.slice(6) === "0000"
+            }
             isLoading={isSubmitting}
           >
             Send a request
