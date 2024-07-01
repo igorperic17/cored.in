@@ -12,7 +12,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   ModalOverlay,
   Select,
@@ -271,7 +270,7 @@ export const RequestCredential = () => {
 
           {/* LAST */}
           <FormControl>
-            {/* todo: label */}
+            {/* todo: connect the label */}
             <FormLabel>Select an issuer</FormLabel>
             <Button
               id="issuer"
@@ -280,7 +279,7 @@ export const RequestCredential = () => {
               role="combobox"
               aria-controls="issuers-listbox"
               aria-haspopup="listbox"
-              aria-label="Select an issuer."
+              aria-label="Show the list of issuers."
               tabIndex={0}
               aria-expanded="false"
               bg="transparent"
@@ -309,13 +308,13 @@ export const RequestCredential = () => {
                 whiteSpace="nowrap"
                 overflow="hidden"
               >
-                {state.issuer || "Select an issuer"}
+                {state.issuer ? `@${state.issuer}` : "Select an issuer"}
               </Text>
             </Button>
 
             <Modal onClose={onClose} isOpen={isOpen}>
               <ModalOverlay />
-              <ModalContent>
+              <ModalContent w="96vw" maxW="450px">
                 <ModalHeader>List of available issuers</ModalHeader>
                 <ModalCloseButton />
                 <ModalBody>
@@ -324,15 +323,8 @@ export const RequestCredential = () => {
                     display="block"
                     role="listbox"
                     id="issuers-listbox"
-                    // border="1px solid red"
-                    // w="100%"
-                    // w="80%"
                     listStyleType="none"
                     align="start"
-                    // textOverflow="ellipsis"
-                    // py="0em"
-                    // px="1em"
-                    // bg="background.900"
                     borderRadius="1em"
                   >
                     {issuers?.map((issuer) => (
@@ -359,7 +351,7 @@ export const RequestCredential = () => {
                         }}
                         onClick={() => {
                           onClose();
-                          setState({ ...state, issuer: issuer.issuerDid! }); // is this ok?
+                          setState({ ...state, issuer: issuer.username! }); // is this ok?
                         }}
                       >
                         <Avatar
@@ -369,13 +361,7 @@ export const RequestCredential = () => {
                           color={issuer.avatarFallbackColor || "brand.500"}
                           size={{ base: "sm", sm: "md", lg: "md" }}
                         />
-                        <VStack
-                          align="start"
-                          // overflow="hidden"
-                          // border="1px solid white"
-                          // w="100%"
-                          spacing="0em"
-                        >
+                        <VStack align="start" spacing="0em">
                           <Text as="span">{issuer.username}</Text>
                           <Box
                             color="text.400"
@@ -383,19 +369,15 @@ export const RequestCredential = () => {
                             display="inline"
                             whiteSpace="nowrap"
                             overflow="hidden"
-                            // w="calc(80%)"
-
-                            maxW="300px"
+                            maxW={{ base: "200px", sm: "300px" }}
                             // border="1px solid red"
                           >
                             <Text
                               as="span"
-                              display="inline"
-                              // textOverflow="ellipsis"
-                              // display="inline-block"
-                              // whiteSpace="nowrap"
-                              // overflow="hidden"
-                              //
+                              display="block"
+                              textOverflow="ellipsis"
+                              whiteSpace="nowrap"
+                              overflow="hidden"
                             >
                               {issuer.issuerDid}
                             </Text>

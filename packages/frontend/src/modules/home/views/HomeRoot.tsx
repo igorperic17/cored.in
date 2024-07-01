@@ -52,7 +52,7 @@ export const HomeRoot = () => {
         minH="100dvh"
       >
         {isLargerThanLg ? (
-          <VStack spacing="1.25em" w="23%" position="sticky" top="1em">
+          <VStack spacing="1.25em" w="24%" position="sticky" top="1em">
             <Box layerStyle="cardBox" p="2em" w="100%">
               <Link
                 as={ReactRouterLink}
@@ -73,7 +73,7 @@ export const HomeRoot = () => {
         <Box
           as="main"
           flex="1"
-          // w="52%"
+          w="52%"
           maxW={{ base: "600px", lg: "none" }}
           mx="auto"
         >
@@ -83,7 +83,7 @@ export const HomeRoot = () => {
         {isLargerThanLg && (
           <VStack
             spacing="1.25em"
-            w="25%"
+            w="24%"
             as="aside"
             position="sticky"
             top="1em"
