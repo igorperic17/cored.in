@@ -138,27 +138,6 @@ resource "aws_iam_role" "vault_ecs_execution_role" {
   })
 }
 
-resource "aws_iam_role" "vault_ecs_volume_role" {
-  name = "${var.app_name}-vault-ecs-volume-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = "sts:AssumeRole",
-        Principal = {
-          Service = ["ecs-tasks.amazonaws.com"]
-        }
-      }
-    ],
-  })
-}
-resource "aws_iam_role_policy_attachment" "vault_ecs_volume_role_policy_attachments_allow_ecs_volume" {
-  role       = aws_iam_role.vault_ecs_volume_role.name
-  policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSInfrastructureRolePolicyForVolumes"
-}
-
 # Backend
 resource "aws_iam_role" "backend_ecs_service_role" {
   name = "${var.app_name}-backend-ecs-service-role"

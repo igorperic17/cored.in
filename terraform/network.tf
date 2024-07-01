@@ -282,7 +282,7 @@ resource "aws_security_group" "vault" {
     protocol        = "tcp"
     from_port       = 0
     to_port         = var.vault_port
-    self            = true # Seems to be required for EFS mount
+    self            = var.use_vault_efs # Seems to be required for EFS mount
     security_groups = var.use_elbs ? [aws_security_group.vault_elb[0].id] : [aws_security_group.wallet_api.id, aws_security_group.issuer_api.id]
   }
 
