@@ -12,6 +12,7 @@ import {
   MenuItem,
   MenuList,
   Select,
+  Text,
   VStack,
   useToast
 } from "@chakra-ui/react";
@@ -36,7 +37,7 @@ const getSelectedMonth = (month: string) => {
 
 export const RequestCredential = () => {
   const { data: issuers } = useLoggedInServerState(ISSUER_QUERIES.getIssuers());
-  console.log(CredentialRequestStatus);
+  // console.log(CredentialRequestStatus);
   const { mutateAsync } = useMutableServerState(
     ISSUER_MUTATIONS.requestCredential()
   );
@@ -52,6 +53,7 @@ export const RequestCredential = () => {
     verified: false
   });
   const [hasEndDate, setHasEndDate] = useState(false);
+  // const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
 
@@ -108,8 +110,21 @@ export const RequestCredential = () => {
     });
   };
 
-  console.log("start: ", state.startDate);
-  console.log("end: ", state.endDate);
+  const isEndDateValid = () => {
+    if (state.endDate) {
+      const startDateArr = state.startDate.split("-");
+      const [startDay, startMonth, startYear] = startDateArr;
+      const endDateArr = state.endDate.split("-");
+      const [endDay, endMonth, endYear] = endDateArr;
+      if (endYear === startYear && endMonth < startMonth) {
+        return false;
+      } else if (endYear < startYear) {
+        return false;
+      }
+      return true;
+    }
+    return true;
+  };
 
   return (
     <VStack
@@ -127,7 +142,6 @@ export const RequestCredential = () => {
       <FormControl>
         <FormLabel>Select the type of a credential</FormLabel>
         <Select
-          isRequired
           border="1px solid #828178"
           focusBorderColor="brand.500"
           value={state.type}
@@ -152,7 +166,6 @@ export const RequestCredential = () => {
           <FormControl>
             <FormLabel>{credentialLabels[state.type].titleLabel}</FormLabel>
             <Input
-              isRequired
               type="text"
               border="1px solid #828178"
               focusBorderColor="brand.500"
@@ -167,7 +180,6 @@ export const RequestCredential = () => {
               {credentialLabels[state.type].establishmentLabel}
             </FormLabel>
             <Input
-              isRequired
               type="text"
               border="1px solid #828178"
               focusBorderColor="brand.500"
@@ -185,7 +197,6 @@ export const RequestCredential = () => {
             <FormLabel>Start date</FormLabel>
             <Flex direction="row" gap="1em">
               <Select
-                isRequired
                 border="1px solid #828178"
                 focusBorderColor="brand.500"
                 onChange={(e) =>
@@ -209,7 +220,6 @@ export const RequestCredential = () => {
               </Select>
 
               <Select
-                isRequired
                 border="1px solid #828178"
                 focusBorderColor="brand.500"
                 onChange={(e) =>
@@ -234,7 +244,6 @@ export const RequestCredential = () => {
             </Flex>
           </FormControl>
 
-          {/* !!!!!! HANDLE THE CASE WHEN THE USER INTRODUCES AN END DATE THAT WAS BEFORE THE START DATE */}
           <Checkbox isChecked={!hasEndDate} onChange={handleEndDateCheckbox}>
             {credentialLabels[state.type].hasEndDateLabel}
           </Checkbox>
@@ -243,7 +252,6 @@ export const RequestCredential = () => {
               <FormLabel>End date</FormLabel>
               <Flex direction="row" gap="1em">
                 <Select
-                  isRequired
                   border="1px solid #828178"
                   focusBorderColor="brand.500"
                   onChange={(e) =>
@@ -267,7 +275,6 @@ export const RequestCredential = () => {
                 </Select>
 
                 <Select
-                  isRequired
                   border="1px solid #828178"
                   focusBorderColor="brand.500"
                   onChange={(e) =>
@@ -290,6 +297,11 @@ export const RequestCredential = () => {
                   })}
                 </Select>
               </Flex>
+              {!isEndDateValid() && (
+                <Text mt="0.5em" color="brand.500" textStyle="sm">
+                  Please enter valid end date
+                </Text>
+              )}
             </FormControl>
           )}
 
@@ -297,7 +309,6 @@ export const RequestCredential = () => {
           <FormControl>
             <FormLabel>Select an issuer</FormLabel>
             <Select
-              isRequired
               border="1px solid #828178"
               focusBorderColor="brand.500"
               value={state.issuer}
@@ -306,7 +317,6 @@ export const RequestCredential = () => {
               }}
             >
               {/* double check the values */}
-              {/* should we have an empty option or use one of the three options as a default? */}
               {/* !!! TODO !!! */}
               <option value="">Select an issuer</option>
               {issuers?.map((issuer) => (
@@ -355,8 +365,10 @@ export const RequestCredential = () => {
               !state.establishment ||
               state.startDate.slice(3, 5) === "00" ||
               state.startDate.slice(6) === "0000" ||
+              state.endDate === undefined ||
               state.endDate?.slice(3, 5) === "00" ||
-              state.endDate?.slice(6) === "0000"
+              state.endDate?.slice(6) === "0000" ||
+              !isEndDateValid()
             }
             isLoading={isSubmitting}
           >
