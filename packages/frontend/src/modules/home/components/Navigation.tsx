@@ -85,7 +85,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               }
               borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
-                div: {
+                "& > div": {
                   background: "background.600",
                   borderRadius: "inherit"
                 }
