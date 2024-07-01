@@ -28,12 +28,13 @@ import { months } from "../constants/months";
 import { useLoggedInServerState, useMutableServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
-
-const defaultDate = "01-00-0000";
-const getSelectedMonth = (month: string) => {
-  const monthIndex = months.indexOf(month);
-  return monthIndex + 1 > 9 ? `${monthIndex + 1}` : `0${monthIndex + 1}`;
-};
+import { defaultDate, defaultState } from "./credentials/constants";
+import {
+  getSelectedMonth,
+  hasInvalidInput,
+  isEndDateAfterStart
+} from "./credentials/helpers";
+import { years } from "../constants/years";
 
 export const RequestCredential = () => {
   const { data: issuers } = useLoggedInServerState(ISSUER_QUERIES.getIssuers());
@@ -41,27 +42,10 @@ export const RequestCredential = () => {
   const { mutateAsync } = useMutableServerState(
     ISSUER_MUTATIONS.requestCredential()
   );
-  const [state, setState] = useState<CredentialDTO>({
-    id: "",
-    subjectDid: "",
-    type: "EducationCredential",
-    title: "",
-    establishment: "",
-    startDate: defaultDate,
-    issuer: "",
-    issuerWallet: "",
-    verified: false
-  });
+  const [state, setState] = useState<CredentialDTO>({ ...defaultState });
   const [hasEndDate, setHasEndDate] = useState(false);
-  // const [hasInvalidEndDate, setHasInvalidEndDate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
-
-  const currentYear = new Date().getFullYear();
-  const years: number[] = [];
-  for (let i = currentYear; i > currentYear - 70; i--) {
-    years.push(i);
-  }
 
   const handleEndDateCheckbox = () => {
     setHasEndDate((prevHasEndDate) => !prevHasEndDate);
@@ -97,33 +81,7 @@ export const RequestCredential = () => {
         setIsSubmitting(false);
       });
 
-    setState({
-      id: "",
-      subjectDid: "",
-      type: "EducationCredential",
-      title: "",
-      establishment: "",
-      startDate: defaultDate,
-      issuer: "",
-      issuerWallet: "",
-      verified: false
-    });
-  };
-
-  const isEndDateValid = () => {
-    if (state.endDate) {
-      const startDateArr = state.startDate.split("-");
-      const [startDay, startMonth, startYear] = startDateArr;
-      const endDateArr = state.endDate.split("-");
-      const [endDay, endMonth, endYear] = endDateArr;
-      if (endYear === startYear && endMonth < startMonth) {
-        return false;
-      } else if (endYear < startYear) {
-        return false;
-      }
-      return true;
-    }
-    return true;
+    setState({ ...defaultState });
   };
 
   return (
@@ -297,7 +255,7 @@ export const RequestCredential = () => {
                   })}
                 </Select>
               </Flex>
-              {!isEndDateValid() && (
+              {!isEndDateAfterStart(state.startDate, state.endDate) && (
                 <Text mt="0.5em" color="brand.500" textStyle="sm">
                   Please enter valid end date
                 </Text>
@@ -359,17 +317,7 @@ export const RequestCredential = () => {
             size="md"
             w="100%"
             onClick={handleSubmit}
-            isDisabled={
-              state.title.length < 2 ||
-              state.issuer.length < 2 ||
-              !state.establishment ||
-              state.startDate.slice(3, 5) === "00" ||
-              state.startDate.slice(6) === "0000" ||
-              state.endDate === undefined ||
-              state.endDate?.slice(3, 5) === "00" ||
-              state.endDate?.slice(6) === "0000" ||
-              !isEndDateValid()
-            }
+            isDisabled={hasInvalidInput(state, hasEndDate)}
             isLoading={isSubmitting}
           >
             Send a request
