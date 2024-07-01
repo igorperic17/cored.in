@@ -1,8 +1,9 @@
 import { useLoggedInServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { ROUTES } from "@/router/routes";
-import { Box, Heading, Link, VStack } from "@chakra-ui/react";
+import { Box, Button, Heading, Link, VStack } from "@chakra-ui/react";
 import { CredentialRequestStatus } from "@coredin/shared";
+import { FaPlus } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 export const CredentialsMain = () => {
@@ -83,6 +84,19 @@ export const CredentialsMain = () => {
             </Heading>
           </Link>
         </Box>
+
+        <Button
+          as={ReactRouterLink}
+          to={ROUTES.CREDENTIALS.REQUEST.path}
+          variant="primary"
+          size="md"
+          leftIcon={<FaPlus fontSize="1rem" />}
+          iconSpacing="1em"
+          mt="4em"
+          w="100%"
+        >
+          Request new credential
+        </Button>
       </VStack>
     </Box>
   );
