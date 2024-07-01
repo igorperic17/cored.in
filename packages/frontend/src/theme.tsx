@@ -8,6 +8,7 @@ import {
   inputTheme,
   layerStyles,
   menuTheme,
+  modalTheme,
   selectTheme,
   stepperTheme,
   tabsTheme,
@@ -76,14 +77,15 @@ const colors = {
 };
 
 const components = {
-  Button: buttonTheme,
-  Stepper: stepperTheme,
-  Input: inputTheme,
-  Select: selectTheme,
-  Menu: menuTheme,
-  Tabs: tabsTheme,
   Badge: badgeTheme,
-  Checkbox: checkboxTheme
+  Button: buttonTheme,
+  Checkbox: checkboxTheme,
+  Input: inputTheme,
+  Menu: menuTheme,
+  Modal: modalTheme,
+  Select: selectTheme,
+  Stepper: stepperTheme,
+  Tabs: tabsTheme
 };
 
 const breakpoints = {

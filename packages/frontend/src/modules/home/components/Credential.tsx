@@ -3,9 +3,15 @@ import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useMutableServerState } from "@/hooks";
 import { USER_MUTATIONS } from "@/queries";
 import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
   Badge,
   Box,
-  Heading,
+  Button,
   HStack,
   IconButton,
   Link,
@@ -14,6 +20,7 @@ import {
   MenuItem,
   MenuList,
   Text,
+  useDisclosure,
   useToast,
   VStack
 } from "@chakra-ui/react";
@@ -21,12 +28,11 @@ import { CredentialDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import MerkleTree from "merkletreejs";
-import { FC, useContext } from "react";
+import { FC, useContext, useRef } from "react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { generateProof } from "../helpers/generateProof";
 import { ROUTES } from "@/router/routes";
-import { formatDate } from "../helpers/formatDate";
 import { CredentialContent } from "./credentials";
 
 type CredentialProps = {
@@ -60,6 +66,8 @@ export const Credential: FC<CredentialProps> = ({
   );
   const toast = useToast();
   const queryClient = useQueryClient();
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef(null);
 
   const verifyLeaf = () => {
     if (chainContext.address) {
@@ -118,6 +126,7 @@ export const Credential: FC<CredentialProps> = ({
         queryKey: [BaseServerStateKeys.USER]
       });
     });
+    onClose();
   };
 
   return (
@@ -181,7 +190,7 @@ export const Credential: FC<CredentialProps> = ({
           />
           <MenuList>
             <MenuItem
-              onClick={handleDelete}
+              onClick={onOpen}
               // border="1px solid red"
               icon={<FaTrash color="red" />}
             >
@@ -192,6 +201,42 @@ export const Credential: FC<CredentialProps> = ({
           </MenuList>
         </Menu>
       )}
+      <AlertDialog
+        isOpen={isOpen}
+        leastDestructiveRef={cancelRef}
+        onClose={onClose}
+        motionPreset="slideInBottom"
+        isCentered
+        closeOnEsc
+        closeOnOverlayClick
+      >
+        <AlertDialogOverlay>
+          <AlertDialogContent>
+            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+              Delete Credential
+            </AlertDialogHeader>
+
+            <AlertDialogBody>
+              Are you sure? You can't undo this action afterwards.
+            </AlertDialogBody>
+
+            <AlertDialogFooter>
+              <Button
+                ref={cancelRef}
+                onClick={onClose}
+                bg="transparent"
+                color="inherit"
+                _hover={{ bg: "background.400" }}
+              >
+                Cancel
+              </Button>
+              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+                Delete
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialogOverlay>
+      </AlertDialog>
     </HStack>
   );
 };
