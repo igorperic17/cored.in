@@ -23,6 +23,10 @@ variable "use_elbs" {
   type = bool
 }
 
+variable "use_vault_efs" {
+  type = bool
+}
+
 variable "use_lambda_backend" {
   type = bool
 }

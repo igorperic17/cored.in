@@ -30,8 +30,15 @@ resource "aws_ecs_task_definition" "vault" {
   task_role_arn            = aws_iam_role.vault_ecs_service_role.arn
   execution_role_arn       = aws_iam_role.vault_ecs_execution_role.arn
 
-  volume {
-    name = "tmp-volume"
+  dynamic "volume" {
+    for_each = var.use_vault_efs ? [1] : []
+    content {
+      name = "efs_temp"
+      efs_volume_configuration {
+        file_system_id = aws_efs_file_system.vault_efs_volume[0].id
+        root_directory = "/"
+      }
+    }
   }
 
   container_definitions = jsonencode([
@@ -52,8 +59,8 @@ resource "aws_ecs_task_definition" "vault" {
       mountPoints = [
         {
           readOnly      = false
-          sourceVolume  = "tmp-volume"
-          containerPath = "/tmp"
+          sourceVolume  = "efs_temp"
+          containerPath = "/vault/data"
         }
       ]
       portMappings = [
@@ -66,6 +73,10 @@ resource "aws_ecs_task_definition" "vault" {
         {
           name  = "AWS_REGION",
           value = var.region
+        },
+        {
+          name  = "VAULT_SEAL_TYPE",
+          value = "awskms"
         },
         {
           name  = "VAULT_AWSKMS_SEAL_KEY_ID",
@@ -93,10 +104,11 @@ resource "aws_ecs_service" "vault" {
   cluster          = aws_ecs_cluster.vault.id
   task_definition  = aws_ecs_task_definition.vault.arn
   desired_count    = 1
-  platform_version = "1.3.0"
+  platform_version = "1.4.0"
   propagate_tags   = "SERVICE"
 
   enable_ecs_managed_tags = true
+  wait_for_steady_state   = true
 
   capacity_provider_strategy {
     capacity_provider = "FARGATE_SPOT"
