@@ -1,4 +1,5 @@
 import {
+  Avatar,
   Box,
   Button,
   Checkbox,
@@ -7,13 +8,17 @@ import {
   FormLabel,
   Heading,
   Input,
-  Menu,
-  MenuButton,
-  MenuItem,
-  MenuList,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Select,
   Text,
   VStack,
+  useDisclosure,
   useToast
 } from "@chakra-ui/react";
 import {
@@ -46,6 +51,7 @@ export const RequestCredential = () => {
   const [hasEndDate, setHasEndDate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const toast = useToast();
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleEndDateCheckbox = () => {
     setHasEndDate((prevHasEndDate) => !prevHasEndDate);
@@ -257,7 +263,7 @@ export const RequestCredential = () => {
               </Flex>
               {!isEndDateAfterStart(state.startDate, state.endDate) && (
                 <Text mt="0.5em" color="brand.500" textStyle="sm">
-                  Please enter valid end date
+                  Please enter a valid end date
                 </Text>
               )}
             </FormControl>
@@ -265,51 +271,142 @@ export const RequestCredential = () => {
 
           {/* LAST */}
           <FormControl>
+            {/* todo: label */}
             <FormLabel>Select an issuer</FormLabel>
-            <Select
+            <Button
+              id="issuer"
+              w="100%"
+              wordBreak="break-word"
+              role="combobox"
+              aria-controls="issuers-listbox"
+              aria-haspopup="listbox"
+              aria-label="Select an issuer."
+              tabIndex={0}
+              aria-expanded="false"
+              bg="transparent"
+              borderRadius="0.375rem"
+              color="text.100"
+              textTransform="none"
+              fontWeight="normal"
+              fontSize={{ base: "0.875rem", lg: "1rem" }}
               border="1px solid #828178"
-              focusBorderColor="brand.500"
-              value={state.issuer}
-              onChange={(e) => {
-                setState({ ...state, issuer: e.target.value });
+              _hover={{
+                bg: "transparent",
+                color: "inherit",
+                border: "1px solid",
+                borercolor: "background.100"
               }}
+              onClick={onOpen}
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+              overflow="hidden"
             >
-              {/* double check the values */}
-              {/* !!! TODO !!! */}
-              <option value="">Select an issuer</option>
-              {issuers?.map((issuer) => (
-                <option key={issuer.issuerDid} value={issuer.issuerDid}>
-                  {issuer.username}
-                </option>
-              ))}
-            </Select>
-            {/* <Menu isLazy>
-              <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
-                Your Cats
-              </MenuButton>
-              <MenuList>
-                <MenuItem minH="48px">
-                  {/* <Image
-                    boxSize="2rem"
-                    borderRadius="full"
-                    src="https://placekitten.com/100/100"
-                    alt="Fluffybuns the destroyer"
-                    mr="12px"
-                  /> */}
-            {/* <span>Fluffybuns the Destroyer</span>
-                </MenuItem>
-                <MenuItem minH="40px"> */}
-            {/* <Image
-                    boxSize="2rem"
-                    borderRadius="full"
-                    src="https://placekitten.com/120/120"
-                    alt="Simon the pensive"
-                    mr="12px"
-                  /> */}
-            {/* <span>Simon the pensive</span>
-                </MenuItem>
-              </MenuList>
-            </Menu> */}
+              <Text
+                as="span"
+                mr="auto"
+                ml="-0.625em"
+                textOverflow="ellipsis"
+                whiteSpace="nowrap"
+                overflow="hidden"
+              >
+                {state.issuer || "Select an issuer"}
+              </Text>
+            </Button>
+
+            <Modal onClose={onClose} isOpen={isOpen}>
+              <ModalOverlay />
+              <ModalContent>
+                <ModalHeader>List of available issuers</ModalHeader>
+                <ModalCloseButton />
+                <ModalBody>
+                  <VStack
+                    as="ul"
+                    display="block"
+                    role="listbox"
+                    id="issuers-listbox"
+                    // border="1px solid red"
+                    // w="100%"
+                    // w="80%"
+                    listStyleType="none"
+                    align="start"
+                    // textOverflow="ellipsis"
+                    // py="0em"
+                    // px="1em"
+                    // bg="background.900"
+                    borderRadius="1em"
+                  >
+                    {issuers?.map((issuer) => (
+                      <Flex
+                        as="li"
+                        role="option"
+                        key={`issuer-${issuer.issuerDid}`}
+                        value={issuer.issuerDid}
+                        // outline="1px solid yellow"
+                        direction="row"
+                        gap="0.5em"
+                        align="center"
+                        py="1em"
+                        px="1em"
+                        borderLeft="1px solid"
+                        borderLeftColor="transparent"
+                        borderBottom="2px solid #3E3D3A"
+                        _last={{ borderBottom: "none" }}
+                        cursor="pointer"
+                        _hover={{
+                          color: "brand.500",
+
+                          borderLeftColor: "brand.500"
+                        }}
+                        onClick={() => {
+                          onClose();
+                          setState({ ...state, issuer: issuer.issuerDid! }); // is this ok?
+                        }}
+                      >
+                        <Avatar
+                          name={issuer.username}
+                          src={issuer.avatarUrl}
+                          bg="background.600"
+                          color={issuer.avatarFallbackColor || "brand.500"}
+                          size={{ base: "sm", sm: "md", lg: "md" }}
+                        />
+                        <VStack
+                          align="start"
+                          // overflow="hidden"
+                          // border="1px solid white"
+                          // w="100%"
+                          spacing="0em"
+                        >
+                          <Text as="span">{issuer.username}</Text>
+                          <Box
+                            color="text.400"
+                            textOverflow="ellipsis"
+                            display="inline"
+                            whiteSpace="nowrap"
+                            overflow="hidden"
+                            // w="calc(80%)"
+
+                            maxW="300px"
+                            // border="1px solid red"
+                          >
+                            <Text
+                              as="span"
+                              display="inline"
+                              // textOverflow="ellipsis"
+                              // display="inline-block"
+                              // whiteSpace="nowrap"
+                              // overflow="hidden"
+                              //
+                            >
+                              {issuer.issuerDid}
+                            </Text>
+                          </Box>
+                        </VStack>
+                      </Flex>
+                    ))}
+                  </VStack>
+                </ModalBody>
+              </ModalContent>
+            </Modal>
           </FormControl>
 
           <Button
