@@ -35,10 +35,11 @@ import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
 import { defaultDate, defaultState } from "./credentials/constants";
 import {
   getSelectedMonth,
-  hasInvalidInput,
+  hasValidInput,
   isEndDateAfterStart
 } from "./credentials/helpers";
 import { years } from "../constants/years";
+import { ChevronDownIcon } from "@chakra-ui/icons";
 
 export const RequestCredential = () => {
   const { data: issuers } = useLoggedInServerState(ISSUER_QUERIES.getIssuers());
@@ -78,6 +79,8 @@ export const RequestCredential = () => {
               </Box>
             )
           });
+          setState({ ...defaultState });
+          setHasEndDate(false);
         }
         setIsSubmitting(false);
       })
@@ -85,9 +88,8 @@ export const RequestCredential = () => {
         console.error(error);
         setIsSubmitting(false);
       });
-
-    setState({ ...defaultState });
   };
+  console.log("state", state);
 
   return (
     <VStack
@@ -166,16 +168,20 @@ export const RequestCredential = () => {
                   setState({
                     ...state,
                     startDate: handleMonthChange(
-                      getSelectedMonth(e.target.value),
-                      state.startDate || defaultDate
+                      e.target.value,
+                      state.startDate || "0"
                     )
                   })
                 }
+                value={state.startDate.slice(3, 5)}
               >
-                <option value="0">Month</option>
+                <option value="00">Month</option>
                 {months.map((month, index) => {
                   return (
-                    <option key={`start-date-month-${index}`} value={month}>
+                    <option
+                      key={`start-date-month-${index}`}
+                      value={getSelectedMonth(month)}
+                    >
                       {month}
                     </option>
                   );
@@ -194,6 +200,7 @@ export const RequestCredential = () => {
                     )
                   })
                 }
+                value={state.startDate.slice(6)}
               >
                 <option value="0000">Year</option>
                 {years.map((year, index) => {
@@ -293,12 +300,13 @@ export const RequestCredential = () => {
                 bg: "transparent",
                 color: "inherit",
                 border: "1px solid",
-                borercolor: "background.100"
+                bordercolor: "background.100"
               }}
               onClick={onOpen}
               textOverflow="ellipsis"
               whiteSpace="nowrap"
               overflow="hidden"
+              rightIcon={<ChevronDownIcon fontSize="1.25em" mr="-0.625em" />}
             >
               <Text
                 as="span"
@@ -308,7 +316,9 @@ export const RequestCredential = () => {
                 whiteSpace="nowrap"
                 overflow="hidden"
               >
-                {state.issuer ? `@${state.issuer}` : "Select an issuer"}
+                {state.issuer
+                  ? `@${issuers?.find((issuer) => state.issuer === issuer.issuerDid)?.username}`
+                  : "See all the issuers"}
               </Text>
             </Button>
 
@@ -351,7 +361,10 @@ export const RequestCredential = () => {
                         }}
                         onClick={() => {
                           onClose();
-                          setState({ ...state, issuer: issuer.username! }); // is this ok?
+                          setState({
+                            ...state,
+                            issuer: issuer.issuerDid || ""
+                          });
                         }}
                       >
                         <Avatar
@@ -396,7 +409,7 @@ export const RequestCredential = () => {
             size="md"
             w="100%"
             onClick={handleSubmit}
-            isDisabled={hasInvalidInput(state, hasEndDate)}
+            isDisabled={!hasValidInput(state, hasEndDate)}
             isLoading={isSubmitting}
           >
             Send a request

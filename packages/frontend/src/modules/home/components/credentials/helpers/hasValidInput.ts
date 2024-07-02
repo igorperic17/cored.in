@@ -1,7 +1,7 @@
 import { CredentialDTO } from "@coredin/shared";
 import { isEndDateAfterStart } from "./isEndDateAfterStart";
 
-export const hasInvalidInput = (
+export const hasValidInput = (
   stateData: CredentialDTO,
   hasEndDate: boolean
 ): boolean => {
@@ -18,8 +18,8 @@ export const hasInvalidInput = (
         endDate?.slice(6) === "0000" ||
         !isEndDateAfterStart(startDate, endDate)))
   ) {
-    return true;
-  } else {
     return false;
+  } else {
+    return true;
   }
 };
