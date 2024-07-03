@@ -41,7 +41,6 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
 
   useEffect(() => {
     setIsLiked(userProfile?.likedPosts.includes(post.id) || false);
-    console.log(userProfile?.likedPosts.includes(post.id), post.id);
   }, [userProfile?.likedPosts]);
 
   const handleLike = () => {

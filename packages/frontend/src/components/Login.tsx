@@ -51,8 +51,6 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
 
   const wallets = [...keplrWallets, ...leapWallets, ...cosmostationWallets];
 
-  console.log("username", username);
-
   if (chainContext.isWalletConnected) {
     return (
       <HStack spacing="0.75em" align="end">
