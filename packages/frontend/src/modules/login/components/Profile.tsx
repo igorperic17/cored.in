@@ -104,7 +104,7 @@ export const Profile = () => {
 
   return (
     <Box>
-      {(isLoadingContract || isLoading) && (
+      {(isLoadingContract || isLoading) && chainContext.address && (
         <Center mt="32px">
           <Spinner size="xl" color="brand.500" />
         </Center>
