@@ -1,5 +1,12 @@
 import { ROUTES } from "@/router/routes";
-import { Box, Button, Flex, IconButton, useToast } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Spinner,
+  useToast
+} from "@chakra-ui/react";
 import { FC } from "react";
 import {
   FaHeart,
@@ -75,7 +82,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
           )
         }
         onClick={handleLike}
-        isLoading={isLiking}
+        // isLoading={isLiking}
       >
         {post.likes}
       </Button>

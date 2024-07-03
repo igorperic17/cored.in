@@ -44,10 +44,11 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     console.log(userProfile?.likedPosts.includes(post.id), post.id);
   }, [userProfile?.likedPosts]);
 
-  const handleLike = async () => {
-    await like({ postId: post.id, liked: !isLiked }).then(() => {
+  const handleLike = () => {
+    like({ postId: post.id, liked: !isLiked }).then(() => {
       queryClient.invalidateQueries();
     });
+    setIsLiked((prev) => !prev);
   };
 
   const handleComment = async () => {
