@@ -44,7 +44,7 @@ const steps = [
 
 export const OurProgress = () => {
   const { activeStep } = useSteps({
-    index: 1,
+    index: 2,
     count: steps.length
   });
 
