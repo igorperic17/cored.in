@@ -1,7 +1,18 @@
 import { Did, VerifiableCredential, Wallet } from "../data-classes";
 import axios from "axios";
 
+type AuthenticatedSsiWallet = {
+  token: string;
+  ssiWallet: string;
+  expiration: Date;
+};
+
+const ONE_MIN_MILLIS = 60 * 1000;
+const AUTH_EXPIRATION = 5 * ONE_MIN_MILLIS;
+
 export class WaltIdWalletService {
+  private readonly ssiWallets: Map<string, AuthenticatedSsiWallet> = new Map();
+
   constructor(
     private readonly walletApiUrl: string,
     private readonly vaultUrl: string,
@@ -283,11 +294,23 @@ export class WaltIdWalletService {
       });
   }
 
-  private async getSsiWallet(wallet: string) {
+  private async getSsiWallet(wallet: string): Promise<AuthenticatedSsiWallet> {
+    const existingWallet = this.ssiWallets.get(wallet);
+    if (existingWallet && existingWallet.expiration > new Date()) {
+      return existingWallet;
+    }
+
     const token = await this.getAuthToken(wallet, wallet);
     const wallets = await this.getWallets(wallet, token);
     const ssiWallet = wallets.wallets[0].id;
+    const authenticatedWallet = {
+      token,
+      ssiWallet,
+      expiration: new Date(Date.now() + AUTH_EXPIRATION)
+    };
 
-    return { token, ssiWallet };
+    this.ssiWallets.set(wallet, authenticatedWallet);
+
+    return authenticatedWallet;
   }
 }
