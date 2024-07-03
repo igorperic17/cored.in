@@ -9,7 +9,10 @@ const baseStyle = definePartsStyle({
     color: "text.100",
     fontFamily: "body",
     fontSize: { base: "0.875rem", lg: "1rem" },
-    textAlign: "start"
+    textAlign: "start",
+    option: {
+      background: "background.700"
+    }
   }
 });
 
