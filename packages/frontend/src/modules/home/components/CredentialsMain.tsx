@@ -17,7 +17,7 @@ export const CredentialsMain = () => {
         Credentials
       </Heading>
       <VStack as="ul" spacing="1em" align="start">
-        <Box
+        {/* <Box
           as="li"
           _hover={{
             bg: "background.600"
@@ -57,7 +57,7 @@ export const CredentialsMain = () => {
               Issued credentials
             </Heading>
           </Link>
-        </Box>
+        </Box> */}
 
         <Box
           as="li"
