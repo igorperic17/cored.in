@@ -46,7 +46,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
           fontSize={{ base: "1rem", md: "1.25rem" }}
           color="text.700"
         >
-          Here is your new DID:
+          Here is your new Decentralised Identifier (DID):
           <Text
             as="span"
             display="block"
