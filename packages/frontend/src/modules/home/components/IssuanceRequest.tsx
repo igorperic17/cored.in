@@ -7,13 +7,11 @@ import {
   VStack,
   Heading,
   HStack,
-  Text,
   ButtonGroup,
   Link
 } from "@chakra-ui/react";
 import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { formatDate } from "../helpers/formatDate";
 import { CredentialContent } from "./credentials";
 
 export type IssuanceRequestProps = {
@@ -24,12 +22,23 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
   request
 }) => {
   const queryClient = useQueryClient();
-  const { mutateAsync, isPending } = useMutableServerState(
+  const { mutateAsync: accept, isPending: isAccepting } = useMutableServerState(
     ISSUER_MUTATIONS.acceptRequest(request.id)
   );
 
+  const { mutateAsync: reject, isPending: isRejecting } = useMutableServerState(
+    ISSUER_MUTATIONS.rejectRequest(request.id)
+  );
+
   const handleAccept = async () => {
-    await mutateAsync({ daysValid: 30 });
+    await accept({ daysValid: 30 });
+    await queryClient.invalidateQueries({
+      queryKey: [BaseServerStateKeys.CREDENTIAL_REQUESTS]
+    });
+  };
+
+  const handleReject = async () => {
+    await reject({});
     await queryClient.invalidateQueries({
       queryKey: [BaseServerStateKeys.CREDENTIAL_REQUESTS]
     });
@@ -67,10 +76,19 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
         />
       </VStack>
       <ButtonGroup size="sm" alignSelf="end" spacing="1.5em">
-        <Button variant="empty" color="text.400">
+        <Button
+          variant="empty"
+          onClick={handleReject}
+          color="text.400"
+          isLoading={isRejecting}
+        >
           Decline
         </Button>
-        <Button variant="primary" onClick={handleAccept}>
+        <Button
+          variant="primary"
+          onClick={handleAccept}
+          isLoading={isAccepting}
+        >
           Approve
         </Button>
       </ButtonGroup>

@@ -95,11 +95,27 @@ export class IssuersService {
   }
 
   async reject(issuerWallet: string, requestId: number) {
-    return this.requestsRepo.update(
-      {
+    const request = await this.requestsRepo.findOne({
+      relations: ["issuer"],
+      where: {
         id: requestId,
         issuer: { wallet: issuerWallet },
         status: CredentialRequestStatus.PENDING
+      }
+    });
+
+    if (!request) {
+      console.error(
+        "Request not found while rejecting.. ",
+        issuerWallet,
+        requestId
+      );
+      return false;
+    }
+
+    return this.requestsRepo.update(
+      {
+        id: requestId
       },
       { status: CredentialRequestStatus.REJECTED }
     );
