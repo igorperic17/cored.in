@@ -34,6 +34,7 @@ export const Profile = () => {
     userProfile?.username || ""
   );
   const [isRegistering, setIsRegistering] = useState(false);
+  const [isLoadingContract, setIsLoadingContract] = useState(true);
 
   const updateOnchainProfile = () => {
     if (chainContext.address) {
@@ -45,6 +46,11 @@ export const Profile = () => {
           if (registered_did.did_info) {
             setOnchainProfile(registered_did.did_info);
           }
+          setIsLoadingContract(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          setIsLoadingContract(false);
         });
     } else {
       setOnchainProfile(null);
@@ -95,17 +101,17 @@ export const Profile = () => {
       setUsernameInput(value);
     }
   };
-  console.log("loading", isLoading);
-  console.log("onchainProfile", onchainProfile);
+
   return (
     <Box>
-      {!onchainProfile && isLoading && (
+      {(isLoadingContract || isLoading) && (
         <Center mt="32px">
           <Spinner size="xl" color="brand.500" />
         </Center>
       )}
       {!chainContext.address && <RequireWalletConnection />}
-      {userProfile &&
+      {!isLoadingContract &&
+        userProfile &&
         (!onchainProfile || onchainProfile?.did !== userProfile.did) && (
           <NotRegisteredProfile
             did={userProfile.did}
