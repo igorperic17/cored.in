@@ -135,7 +135,7 @@ resource "aws_ecs_task_definition" "backend" {
         },
         {
           name      = "unleash_instance_id",
-          valueFrom = aws_secretsmanager_secret.unleash_instance_id_asm_secret.arn
+          valueFrom = data.aws_secretsmanager_secret.unleash_instance_id_asm_secret.arn
         }
       ]
       healthCheck = {
