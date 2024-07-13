@@ -1,15 +1,20 @@
-import { useFeatureFlagContext } from "@/contexts/featureFlag";
-import { PropsWithChildren, useMemo } from "react";
+import { useFlag } from "@/hooks";
+import { FEATURE_FLAG } from "@coredin/shared";
+import { PropsWithChildren } from "react";
 
 interface RenderIfFeatureFlagEnabledProps {
-  featureFlag: string;
+  featureFlag: FEATURE_FLAG;
   fallback: JSX.Element;
 }
 
-const RenderIfFeatureFlagEnabled = ({ children, featureFlag, fallback }: PropsWithChildren<RenderIfFeatureFlagEnabledProps>) => {
-  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext()
-  const shouldRender = useMemo(() => isInitialised && isFeatureEnabled(featureFlag), [isInitialised, isFeatureEnabled])
-  return shouldRender ? children : fallback
-}
+const RenderIfFeatureFlagEnabled = ({
+  children,
+  featureFlag,
+  fallback
+}: PropsWithChildren<RenderIfFeatureFlagEnabledProps>) => {
+  const isEnabled = useFlag(featureFlag);
 
-export default RenderIfFeatureFlagEnabled
+  return isEnabled ? children : fallback;
+};
+
+export default RenderIfFeatureFlagEnabled;

@@ -10,6 +10,10 @@ db:
   synchronize: true
   debug: true
 
+unleash:
+  url: https://gitlab.com/api/v4/feature_flags/unleash/56592491/
+  appName: dev
+
 vault:
   api:
     url: 'http://host.docker.internal:8200'

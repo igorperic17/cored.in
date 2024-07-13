@@ -1,15 +1,5 @@
 name: coredin
 services:
-  unleash-proxy: 
-    image: unleashorg/unleash-proxy
-    ports:
-      - '3001:3000'
-    environment:
-      UNLEASH_PROXY_SECRETS: coredin
-      UNLEASH_URL: https://gitlab.com/api/v4/feature_flags/unleash/56592491/
-      UNLEASH_INSTANCE_ID: glffct-zx8L6J9qMf_6vtsziR4y
-      UNLEASH_APP_NAME: development
-      UNLEASH_API_TOKEN: tokenNotUsedButRequired
   postgres:
     image: postgres:16
     container_name: coredin_db

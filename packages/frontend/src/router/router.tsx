@@ -51,9 +51,9 @@ export const router = createBrowserRouter([
   {
     path: ROUTES.HOME.path,
     element: (
-      // <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.HOME}>
-      <HomeRoot />
-      // </FeatureFlagProtectedPage>
+      <FeatureFlagProtectedPage featureFlag={FEATURE_FLAG.HOME}>
+        <HomeRoot />
+      </FeatureFlagProtectedPage>
     ),
     errorElement: <ResourceNotFoundPage />,
     children: [

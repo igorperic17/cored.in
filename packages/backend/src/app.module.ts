@@ -13,6 +13,7 @@ import { SsiModule } from "./ssi/app/ssi.module";
 import { PostsModule } from "./posts/posts.module";
 import { InternalModule } from "./internal/internal.module";
 import { IssuersModule } from "./issuers/issuers.module";
+import { FeatureFlagModule } from "./feature-flag/feature-flag.module";
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { IssuersModule } from "./issuers/issuers.module";
       isGlobal: true
     }),
     SecretsModule,
+    FeatureFlagModule,
     SsiModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule, SecretsModule],

@@ -1,9 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { Benefits, Hero, OurProgress, Tech } from "../components";
-import { useFeatureFlagContext } from "@/contexts/featureFlag";
 
 const LandingPage = () => {
-  const { isInitialised, isFeatureEnabled } = useFeatureFlagContext();
   return (
     <Flex
       flexDirection="column"
