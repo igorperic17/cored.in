@@ -29,6 +29,10 @@ data "aws_secretsmanager_secret" "vault_root_token" {
   name = "${var.app_name}-vault/root-token"
 }
 
+data "aws_secretsmanager_secret" "unleash_instance_id_asm_secret" {
+  name = "${var.app_name}-unleash-instance-id"
+}
+
 # ASM secret versions
 resource "aws_secretsmanager_secret_version" "jwt_secret_asm_secret_version" {
   secret_id     = aws_secretsmanager_secret.jwt_secret_asm_secret.id

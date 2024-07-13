@@ -93,6 +93,10 @@ resource "aws_ecs_task_definition" "backend" {
               api = {
                 url = "http://${local.verifier_api_address}:${var.verifier_api_port}"
               }
+            },
+            unleash = {
+              url     = "https://gitlab.com/api/v4/feature_flags/unleash/56592491/"
+              appName = "production"
             }
           })
         },
@@ -104,6 +108,7 @@ resource "aws_ecs_task_definition" "backend" {
             db_password               = "ENV_SECRET_3",
             signer_pkey               = "ENV_SECRET_4",
             vault_access_key          = "ENV_SECRET_5",
+            unleash_instance_id       = "ENV_SECRET_6"
           })
         }
       ]
@@ -127,6 +132,10 @@ resource "aws_ecs_task_definition" "backend" {
         {
           name      = "vault_access_key",
           valueFrom = data.aws_secretsmanager_secret.vault_root_token.arn
+        },
+        {
+          name      = "unleash_instance_id",
+          valueFrom = aws_secretsmanager_secret.unleash_instance_id_asm_secret.arn
         }
       ]
       healthCheck = {
