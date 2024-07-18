@@ -18,10 +18,30 @@ import { wallets as leapWallets } from "@cosmos-kit/leap";
 import { wallets as cosmostationWallets } from "@cosmos-kit/cosmostation";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FC } from "react";
 import { persistentStorageService } from "@/dependencies";
 import { ConnectedWalletKey } from "@/constants";
+// import { CustomCapsuleModalView } from "@leapwallet/cosmos-social-login-capsule-provider-ui";
+// import { CapsuleProvider } from "@leapwallet/cosmos-social-login-capsule-provider";
+
+// Configure options for the Capsule Provider
+// const options = {
+//   env: "BETA",
+//   apiKey: import.meta.env.VITE_CAPSULE_API_KEY,
+//   opts: {
+//     emailPrimaryColor: "#ff5733",
+//     homepageUrl: "https://cored.in",
+//     portalTheme: {
+//       backgroundColor: "#ffffff",
+//       foregroundColor: "#ff5733"
+//       // borderRadius: "lg"
+//     }
+//   }
+// };
+
+// // Create a new CapsuleProvider instance with the options
+// const capsuleProvider = new CapsuleProvider(options);
 
 interface LoginProps {
   variant: "primary" | "empty";
@@ -32,6 +52,16 @@ interface LoginProps {
 export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+
+  const [showModal, setShowModal] = useState(false);
+
+  const handleAfterLogin = () => {
+    // Handle successful login
+  };
+
+  const handleLoginFailure = () => {
+    // Handle login failure
+  };
 
   useEffect(() => {
     if (chainContext.address) {
@@ -48,8 +78,6 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
       chainContext.disconnect();
     }
   }, [chainContext]);
-
-  const wallets = [...keplrWallets, ...leapWallets, ...cosmostationWallets];
 
   if (chainContext.isWalletConnected) {
     return (
@@ -88,6 +116,40 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
           {signInText}
         </Button>
 
+        <Button
+          variant="empty"
+          size="md"
+          onClick={() => window.openCapsuleModal()}
+          key="capsule-wallet"
+        >
+          Social
+        </Button>
+        <VStack gap="16px">
+          {chainContext.walletRepo.wallets.map((wallet) => {
+            return (
+              <Button
+                variant="empty"
+                size="md"
+                onClick={() => wallet.connect(true)}
+                key={wallet.walletName}
+                rightIcon={
+                  <Img
+                    src={
+                      typeof wallet.walletInfo.logo === "string"
+                        ? wallet.walletInfo.logo
+                        : wallet.walletInfo.logo?.minor
+                    }
+                    maxW="32px"
+                    // maxH="32px"
+                  />
+                }
+              >
+                {wallet.walletInfo.prettyName}
+              </Button>
+            );
+          })}
+        </VStack>
+
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay backdropFilter="blur(10px)" />
           <ModalContent background="background.600">
@@ -95,7 +157,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
             <ModalCloseButton />
             <ModalBody>
               <VStack gap="16px">
-                {wallets.map((wallet) => {
+                {chainContext.walletRepo.wallets.map((wallet) => {
                   return (
                     <Button
                       variant="empty"
@@ -122,6 +184,17 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
             </ModalBody>
           </ModalContent>
         </Modal>
+
+        {/* <CustomCapsuleModalView
+          capsule={capsuleProvider.getClient()}
+          showCapsuleModal={showModal}
+          setShowCapsuleModal={setShowModal}
+          onAfterLoginSuccessful={handleAfterLogin}
+          onLoginFailure={handleLoginFailure}
+          appName="cored.in"
+          logoUrl="https://www.shutterstock.com/image-vector/lorem-ipsum-logo-design-consept-260nw-1456986776.jpg"
+          // theme="light" // Optional: Specify 'light' or 'dark' theme
+        /> */}
       </>
     );
   }
