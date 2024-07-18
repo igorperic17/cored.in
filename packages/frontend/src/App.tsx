@@ -106,9 +106,6 @@ function App() {
         <QueryClientProvider client={queryClient}>
           <CoredinClientContextProvider>
             <RouterProvider router={router} />
-            <Box className="leap-ui">
-              <CustomCapsuleModalViewX />
-            </Box>
           </CoredinClientContextProvider>
         </QueryClientProvider>
       </ChainProvider>
@@ -118,44 +115,66 @@ function App() {
 
 export default App;
 
-const LeapSocialLogin = lazy(() =>
-  import("@leapwallet/cosmos-social-login-capsule-provider-ui").then((m) => ({
-    default: m.CustomCapsuleModalView
-  }))
-);
+// const LeapSocialLogin = lazy(() =>
+//   import("@leapwallet/cosmos-social-login-capsule-provider-ui").then((m) => ({
+//     default: m.CustomCapsuleModalView
+//   }))
+// );
 
-export function CustomCapsuleModalViewX() {
-  const [showCapsuleModal, setShowCapsuleModal] = useState(false);
+// export function CustomCapsuleModalViewX() {
+//   const [showCapsuleModal, setShowCapsuleModal] = useState(false);
+//   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-  // useEffect(() => {
-  //   window.openCapsuleModal = () => {
-  //     setShowCapsuleModal(true);
-  //   };
-  // }, []);
-  console.log(import.meta.env.VITE_CAPSULE_API_KEY);
+//   useEffect(() => {
+//     const checkAuthStatus = async () => {
+//       try {
+//         await capsuleProvider.enable();
+//         setIsAuthenticated(true);
+//         console.log({
+//           title: "Authentication Status",
+//           description: "You are already authenticated."
+//         });
+//       } catch (error) {
+//         console.log("Not authenticated:", error);
+//         console.log({
+//           title: "Authentication Status",
+//           description: "You are not authenticated.",
+//           variant: "destructive"
+//         });
+//       }
+//     };
+//     checkAuthStatus();
+//   }, []);
 
-  return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <LeapSocialLogin
-        capsule={capsuleProvider.getClient()}
-        showCapsuleModal={showCapsuleModal}
-        setShowCapsuleModal={setShowCapsuleModal}
-        appName="cored.in"
-        logoUrl="https://www.shutterstock.com/image-vector/lorem-ipsum-logo-design-consept-260nw-1456986776.jpg"
-        oAuthMethods={[
-          OAuthMethod.APPLE,
-          OAuthMethod.DISCORD,
-          OAuthMethod.FACEBOOK,
-          OAuthMethod.GOOGLE,
-          OAuthMethod.TWITTER
-        ]}
-        onAfterLoginSuccessful={() => {
-          window.successFromCapsuleModal();
-        }}
-        onLoginFailure={() => {
-          window.failureFromCapsuleModal();
-        }}
-      />
-    </Suspense>
-  );
-}
+// useEffect(() => {
+//   window.openCapsuleModal = () => {
+//     setShowCapsuleModal(true);
+//   };
+// }, []);
+//   console.log(import.meta.env.VITE_CAPSULE_API_KEY);
+
+//   return (
+//     <Suspense fallback={<div>Loading...</div>}>
+//       <LeapSocialLogin
+//         capsule={capsuleProvider.getClient()}
+//         showCapsuleModal={showCapsuleModal}
+//         setShowCapsuleModal={setShowCapsuleModal}
+//         appName="cored.in"
+//         logoUrl="https://www.shutterstock.com/image-vector/lorem-ipsum-logo-design-consept-260nw-1456986776.jpg"
+//         oAuthMethods={[
+//           OAuthMethod.APPLE,
+//           OAuthMethod.DISCORD,
+//           OAuthMethod.FACEBOOK,
+//           OAuthMethod.GOOGLE,
+//           OAuthMethod.TWITTER
+//         ]}
+//         onAfterLoginSuccessful={() => {
+//           window.successFromCapsuleModal();
+//         }}
+//         onLoginFailure={() => {
+//           window.failureFromCapsuleModal();
+//         }}
+//       />
+//     </Suspense>
+//   );
+// }
