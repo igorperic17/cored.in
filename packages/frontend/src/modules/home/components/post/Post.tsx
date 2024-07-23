@@ -35,7 +35,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
 
   const [opened, setOpened] = React.useState(isParent ?? false);
   const { data: postDetail, isLoading: isDetailLoading } =
-    useLoggedInServerState(FEED_QUERIES.get(post.id), {
+    useLoggedInServerState(FEED_QUERIES.get(post.id, post.creatorWallet), {
       enabled: opened
     });
 

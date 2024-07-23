@@ -11,13 +11,17 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getPublic() {
-    return this.postsService.getPublic();
+  async getPublicFeed() {
+    return this.postsService.getPublicFeed();
   }
 
   @Get(":id")
-  async getPost(@TypedParam("id") id: number) {
-    return this.postsService.get(id);
+  async getPost(
+    @Req() req: AuthenticatedRequest,
+    @TypedParam("id") id: number,
+    @TypedParam("creator") creator: string
+  ) {
+    return this.postsService.get(id, creator, req.wallet);
   }
 
   @Get("user/:owner")
@@ -25,12 +29,7 @@ export class PostsController {
     @Param("owner") owner: string,
     @Req() req: AuthenticatedRequest
   ) {
-    // TODO - check for valid profile subscription
-    if (owner === req.wallet) {
-      return this.postsService.getAllUserPosts(req.wallet);
-    }
-
-    return this.postsService.getPublicUserPosts(owner);
+    return this.postsService.getUserPosts(owner, req.wallet);
   }
 
   @TypedRoute.Post()

@@ -4,8 +4,8 @@ import { CreatePostDTO, PostDTO, PostDetailDTO } from "@coredin/shared";
 export class FeedService {
   constructor(private readonly http: HttpService) {}
 
-  async get(id: number): Promise<PostDetailDTO> {
-    return this.http.get("posts/" + id);
+  async get(id: number, creator: string): Promise<PostDetailDTO> {
+    return this.http.get("posts/" + id + "?creator=" + creator);
   }
 
   async getFeed(): Promise<PostDTO[]> {

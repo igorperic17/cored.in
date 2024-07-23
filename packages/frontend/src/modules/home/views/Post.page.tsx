@@ -7,7 +7,9 @@ import { FEED_QUERIES } from "@/queries/FeedQueries";
 export const PostPage = () => {
   const { wallet, id } = useParams();
   const { data: postDetail, isLoading: isDetailLoading } =
-    useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0")));
+    useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0"), wallet!), {
+      enabled: !!id && !!wallet
+    });
   if (!id || !wallet) {
     return "This post does not exist.";
   }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ArrayContains, IsNull, Repository } from "typeorm";
 import { Post } from "./post.entity";
@@ -9,20 +9,43 @@ import {
   PostVisibility
 } from "@coredin/shared";
 import { User } from "@/user/user.entity";
+import { CoredinContractService } from "@/coreum/services";
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post)
-    private readonly postRepository: Repository<Post>
+    private readonly postRepository: Repository<Post>,
+    @Inject(CoredinContractService)
+    private readonly coredinContractService: CoredinContractService
   ) {}
 
-  async get(id: number): Promise<PostDetailDTO> {
-    const postWithReplies = await this.postRepository.findOne({
-      relations: ["user", "parent", "parent.user", "replies", "replies.user"],
-      where: { id, visibility: PostVisibility.PUBLIC },
-      order: { createdAt: "DESC" }
-    });
+  async get(
+    id: number,
+    creator: string,
+    requester: string
+  ): Promise<PostDetailDTO> {
+    let postWithReplies = await this.getWithRelations(
+      id,
+      PostVisibility.PUBLIC,
+      creator
+    );
+
+    // If public not found, look for private post if requester is subscriber
+    if (!postWithReplies) {
+      const isSubscribed = await this.coredinContractService.isWalletSubscribed(
+        creator,
+        requester
+      );
+      if (isSubscribed) {
+        postWithReplies = await this.getWithRelations(
+          id,
+          PostVisibility.PRIVATE,
+          creator
+        );
+      }
+    }
+
     if (!postWithReplies) {
       throw new NotFoundException("Post not found");
     }
@@ -36,7 +59,7 @@ export class PostsService {
     };
   }
 
-  async getPublic(): Promise<PostDTO[]> {
+  async getPublicFeed(): Promise<PostDTO[]> {
     return (
       await this.postRepository.find({
         relations: ["user"],
@@ -44,6 +67,24 @@ export class PostsService {
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));
+  }
+
+  async getUserPosts(
+    creatorWallet: string,
+    requesterWallet: string
+  ): Promise<PostDTO[]> {
+    if (creatorWallet === requesterWallet) {
+      return await this.getAllUserPosts(creatorWallet);
+    }
+    const isSubscribed = await this.coredinContractService.isWalletSubscribed(
+      creatorWallet,
+      requesterWallet
+    );
+    if (isSubscribed) {
+      return await this.getAllUserPosts(creatorWallet);
+    }
+
+    return await this.getPublicUserPosts(creatorWallet);
   }
 
   async getPublicUserPosts(creatorWallet: string): Promise<PostDTO[]> {
@@ -60,7 +101,7 @@ export class PostsService {
     ).map((post) => this.fromDb(post));
   }
 
-  async getAllUserPosts(creatorWallet: string): Promise<PostDTO[]> {
+  private async getAllUserPosts(creatorWallet: string): Promise<PostDTO[]> {
     return (
       await this.postRepository.find({
         relations: ["user"],
@@ -117,6 +158,18 @@ export class PostsService {
         );
       }
     );
+  }
+
+  private async getWithRelations(
+    id: number,
+    visibility: PostVisibility,
+    creatorWallet: string
+  ) {
+    return await this.postRepository.findOne({
+      relations: ["user", "parent", "parent.user", "replies", "replies.user"],
+      where: { id, visibility, creatorWallet },
+      order: { createdAt: "DESC" }
+    });
   }
 
   private fromDb(post: Post): PostDTO {
