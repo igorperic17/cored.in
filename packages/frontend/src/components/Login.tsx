@@ -200,15 +200,15 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
           {signInText}
         </Button>
 
-        <Button
+        {/* <Button
           variant="empty"
           size="md"
           onClick={() => window.openCapsuleModal()}
           key="capsule-wallet"
         >
-          Social
-        </Button>
-        <VStack gap="16px">
+          Log in
+        </Button> */}
+        {/* <VStack gap="16px">
           {chainContext.walletRepo.wallets.map((wallet) => {
             return (
               <Button
@@ -232,7 +232,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
               </Button>
             );
           })}
-        </VStack>
+        </VStack> */}
 
         <Modal isOpen={isOpen} onClose={onClose} isCentered>
           <ModalOverlay backdropFilter="blur(10px)" />
@@ -256,7 +256,6 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
                               : wallet.walletInfo.logo?.minor
                           }
                           maxW="32px"
-                          // maxH="32px"
                         />
                       }
                     >
@@ -269,8 +268,8 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
           </ModalContent>
         </Modal>
 
-        <Box className="leap-ui">
-          {/* Step 12: Render the CustomCapsuleModalView component */}
+        {/* Step 12: Render the CustomCapsuleModalView component */}
+        {/* <Box className="leap-ui" position="absolute">
           <CustomCapsuleModalView
             oAuthMethods={[
               OAuthMethod.APPLE,
@@ -286,7 +285,7 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
             onLoginFailure={handleLoginFailure}
             theme="light" // You can change this to "dark" if preferred
           />
-        </Box>
+        </Box> */}
       </>
     );
   }
