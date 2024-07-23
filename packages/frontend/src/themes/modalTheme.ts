@@ -8,6 +8,9 @@ const baseStyle = definePartsStyle({
   dialog: {
     bg: "background.700",
     color: "text.100"
+  },
+  overlay: {
+    bg: "#000000CC"
   }
 });
 
