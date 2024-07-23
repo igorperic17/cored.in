@@ -1,14 +1,12 @@
+import { PostVisibility } from "@coredin/shared";
+
 export const visibilityData = [
   {
     title: "Visible to everyone",
-    value: "everyone"
+    value: PostVisibility.PUBLIC
   },
   {
-    title: "Visible to selected list of users only",
-    value: "selectedList"
-  },
-  {
-    title: "Only me",
-    value: "onlyMe"
+    title: "Visible to your subscribers only",
+    value: PostVisibility.PRIVATE
   }
 ];
