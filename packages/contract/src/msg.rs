@@ -24,6 +24,8 @@ pub enum ExecuteMsg {
     // register DID and username with the sender's account
     UpdateCredentialMerkleRoot { did: String, root: String },
     // set subscription price for a DID
+    // this sets only the multiplierfor, final price = number of subscribers * multiplier
+    // defualt value = 1
     SetSubscriptionPrice { price: Coin },
     // subscribe to a DID
     Subscribe { did: String },
@@ -51,9 +53,14 @@ pub enum QueryMsg {
         credential_hash: String,
         merkle_proofs: LinkedList<String>,
     },
+
     // check if the user is a subscriber to the DID
     #[returns(bool)]
     IsSubscriber { did: String, subscriber: String },
+
+    // returns the subscription price for a profile
+    #[returns(bool)]
+    GetSubscriptionPrice { did: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

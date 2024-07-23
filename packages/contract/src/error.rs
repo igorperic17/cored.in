@@ -26,4 +26,7 @@ pub enum ContractError {
 
     #[error("Invalid character(char {c}")]
     InvalidCharacter { c: char },
+
+    #[error("Saving profile for DID {did} failed")]
+    ProfileSaveFailed { did: String },
 }

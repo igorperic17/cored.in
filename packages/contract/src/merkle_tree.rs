@@ -103,7 +103,6 @@ impl MerkleTree {
                 current_hash = Self::hash(&(sibling_hash + &current_hash));
             }
         }
-        println!("Computed root form proofs: {}", current_hash);
         current_hash == *root
     }
 

@@ -1,18 +1,18 @@
+use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
+use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
-    entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
-    StdResult, Storage,
+    coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage, Uint64
 };
+use std::cmp::min;
 use std::collections::LinkedList;
 
 use crate::coin_helpers::assert_sent_sufficient_coin;
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
 use crate::state::{
-    config_storage, config_storage_read, did_storage, did_storage_read, username_storage,
-    username_storage_read, vc_storage, vc_storage_read, wallet_storage, wallet_storage_read,
-    Config, DidInfo,
+    config_storage, config_storage_read, did_storage, did_storage_read, profile_storage, username_storage, username_storage_read, vc_storage, vc_storage_read, wallet_storage, wallet_storage_read, Config, DidInfo, ProfileInfo
 };
-use crate::subscription::{is_subscriber, set_subscription_price, subscribe};
+use crate::subscription::{get_subscription_price, is_subscriber, set_subscription_price, subscribe};
 use cosmwasm_storage::ReadonlyBucket;
 
 use crate::merkle_tree::MerkleTree;
@@ -22,7 +22,7 @@ const MAX_NAME_LENGTH: u64 = 64;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
     info: MessageInfo,
     msg: InstantiateMsg,
@@ -39,11 +39,11 @@ pub fn instantiate(
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     env: Env,
     info: MessageInfo,
     msg: ExecuteMsg,
-) -> Result<Response, ContractError> {
+) -> Result<Response<CoreumMsg>, ContractError> {
     match msg {
         ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did),
         ExecuteMsg::RemoveDID { did, username } => execute_remove(deps, env, info, username, did),
@@ -56,12 +56,12 @@ pub fn execute(
 }
 
 pub fn execute_register(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
     info: MessageInfo,
     username: String,
     did: String,
-) -> Result<Response, ContractError> {
+) -> Result<Response<CoreumMsg>, ContractError> {
     validate_name(&username)?;
 
     // TODO: agree how much will new DID registration cost
@@ -78,7 +78,7 @@ pub fn execute_register(
     let record = DidInfo {
         wallet: info.sender,
         username: username.clone(),
-        did: did,
+        did: did.clone(),
     };
 
     // store for querying in all three buckets
@@ -86,16 +86,40 @@ pub fn execute_register(
     username_storage(deps.storage).save(record.username.as_bytes(), &record)?;
     wallet_storage(deps.storage).save(record.wallet.as_bytes(), &record)?;
 
-    Ok(Response::default())
+    let user_profile = ProfileInfo {
+        subscription_price: Some(coin(0, "core")),
+        top_subscribers: LinkedList::new(),
+        subscriber_count: Uint64::zero(),
+    };
+    if profile_storage(deps.storage).save(record.did.as_bytes(), &user_profile).is_err() {
+        return  Err(ContractError::ProfileSaveFailed { did: did });
+    }
+
+    // create an NFT class for this DID
+    // so all of the subscription to this user is an NFT of this class
+    let clipped_did_length = min(26, record.did.len());
+    let symbol = record.did.to_string()[..clipped_did_length].to_string(); // TODO: Coreum regex workaround
+    let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
+        name: record.did.to_string(), // class = user's DID they just registered
+        symbol,                        // class = cropped DID
+        description: Some(format!("Subscribers of {} (DID: {})", record.username, record.did).to_string()),
+        uri: None,
+        uri_hash: None,
+        data: None, //
+        features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
+        royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
+    });
+
+    Ok(Response::default().add_message(issue_class_msg))
 }
 
 pub fn execute_remove(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
     info: MessageInfo,
     username: String,
     _did: String,
-) -> Result<Response, ContractError> {
+) -> Result<Response<CoreumMsg>, ContractError> {
     let key = username.as_bytes();
     let did_record = username_storage_read(deps.storage).may_load(key)?;
     if did_record.is_none() {
@@ -114,11 +138,11 @@ pub fn execute_remove(
     username_storage(deps.storage).remove(record.username.as_bytes());
     wallet_storage(deps.storage).remove(record.wallet.as_bytes());
 
-    Ok(Response::default())
+    Ok(Response::<CoreumMsg>::default())
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
+pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::Config {} => to_json_binary(&config_storage_read(deps.storage).load()?),
 
@@ -134,12 +158,13 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
             merkle_proofs,
         } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
         QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, did, subscriber),
+        QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did)
     }
 }
 
 type ResolverFnPointer = fn(&dyn Storage) -> ReadonlyBucket<DidInfo>;
 fn query_resolver(
-    deps: Deps,
+    deps: Deps<CoreumQueries>,
     _env: Env,
     query_key: String,
     storage_resolver: ResolverFnPointer,
@@ -157,7 +182,7 @@ fn query_resolver(
     to_json_binary(&did_response)
 }
 
-fn query_merkle_root(deps: Deps, _env: Env, did: String) -> StdResult<Binary> {
+fn query_merkle_root(deps: Deps<CoreumQueries>, _env: Env, did: String) -> StdResult<Binary> {
     let stored_root = vc_storage_read(deps.storage).may_load(did.as_bytes())?;
 
     if stored_root.is_none() {
@@ -170,7 +195,7 @@ fn query_merkle_root(deps: Deps, _env: Env, did: String) -> StdResult<Binary> {
 }
 
 fn query_verify_credential(
-    deps: Deps,
+    deps: Deps<CoreumQueries>,
     _env: Env,
     did: String,
     credential_hash: String,
@@ -182,13 +207,9 @@ fn query_verify_credential(
         return Err(StdError::not_found("Merkle root"));
     }
 
-    println!("Stored root: {:}", stored_root.clone().unwrap());
-
     let proof_slices: Vec<String> = merkle_proofs.iter().map(|x| x.to_string()).collect();
-    println!("Proofs: {:?}", proof_slices);
     let verification_result =
         MerkleTree::verify_proof_for_root(&stored_root.unwrap(), &credential_hash, proof_slices);
-    println!("Res: {:}", verification_result);
 
     Ok(to_json_binary(&verification_result)?)
 }
@@ -224,12 +245,12 @@ fn validate_name(name: &str) -> Result<(), ContractError> {
 }
 
 pub fn execute_update_vc_root(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     _env: Env,
     _info: MessageInfo,
     did: String,
     root: String,
-) -> Result<Response, ContractError> {
+) -> Result<Response<CoreumMsg>, ContractError> {
     // let config_state = config_storage(deps.storage).load()?;
     // assert_sent_sufficient_coin(&info.funds, config_state.did_register_price)?;
 
@@ -247,5 +268,5 @@ pub fn execute_update_vc_root(
 
     vc_storage(deps.storage).save(key, &root)?;
 
-    Ok(Response::default())
+    Ok(Response::<CoreumMsg>::default())
 }

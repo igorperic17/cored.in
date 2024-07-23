@@ -46,6 +46,11 @@ export interface CoredinReadOnlyInterface {
     did: string;
     subscriber: string;
   }) => Promise<Boolean>;
+  getSubscriptionPrice: ({
+    did
+  }: {
+    did: string;
+  }) => Promise<Boolean>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -60,6 +65,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getMerkleRoot = this.getMerkleRoot.bind(this);
     this.verifyCredential = this.verifyCredential.bind(this);
     this.isSubscriber = this.isSubscriber.bind(this);
+    this.getSubscriptionPrice = this.getSubscriptionPrice.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -138,6 +144,17 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
       is_subscriber: {
         did,
         subscriber
+      }
+    });
+  };
+  getSubscriptionPrice = async ({
+    did
+  }: {
+    did: string;
+  }): Promise<Boolean> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_subscription_price: {
+        did
       }
     });
   };

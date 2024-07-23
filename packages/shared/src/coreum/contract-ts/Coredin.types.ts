@@ -81,6 +81,11 @@ export type QueryMsg = {
     subscriber: string;
     [k: string]: unknown;
   };
+} | {
+  get_subscription_price: {
+    did: string;
+    [k: string]: unknown;
+  };
 };
 export type Addr = string;
 export interface Config {
