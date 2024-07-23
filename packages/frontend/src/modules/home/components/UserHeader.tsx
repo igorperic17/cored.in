@@ -2,6 +2,7 @@ import {
   Avatar,
   Badge,
   Box,
+  Button,
   Flex,
   HStack,
   Heading,
@@ -9,13 +10,23 @@ import {
   Link,
   Text,
   Tooltip,
-  VisuallyHidden
+  VisuallyHidden,
+  useToast
 } from "@chakra-ui/react";
-import { UserProfile } from "@coredin/shared";
+import {
+  DidInfo,
+  GetDIDResponse,
+  TESTNET_CHAIN_NAME,
+  UserProfile
+} from "@coredin/shared";
 import { FaPen } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { useChain } from "@cosmos-kit/react";
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { prettifyDid } from "../helpers/prettifyDid";
+import { CopyIcon } from "@chakra-ui/icons";
 
 type UserHeaderProps = {
   userProfile: UserProfile;
@@ -26,6 +37,60 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   userProfile,
   showEdit
 }) => {
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const coredinClient = useContext(CoredinClientContext);
+  const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
+  const toast = useToast();
+
+  const updateOnchainProfile = () => {
+    if (chainContext.address) {
+      console.log("getting onchain profile");
+      coredinClient
+        ?.getWalletDID({ wallet: chainContext.address })
+        .then((registered_did: GetDIDResponse) => {
+          console.log(registered_did);
+          if (registered_did.did_info) {
+            setOnchainProfile(registered_did.did_info);
+          }
+          // setIsLoadingContract(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          // setIsLoadingContract(false);
+        });
+    } else {
+      setOnchainProfile(null);
+    }
+  };
+
+  useEffect(updateOnchainProfile, [
+    chainContext.address,
+    chainContext.isWalletConnected,
+    coredinClient
+  ]);
+
+  const copyDid = () => {
+    if (onchainProfile?.did) {
+      navigator.clipboard.writeText(onchainProfile?.did);
+      toast({
+        position: "top-right",
+        status: "success",
+        duration: 1000,
+        render: () => (
+          <Box
+            color="text.900"
+            p="1em 1.5em"
+            bg="brand.500"
+            borderRadius="0.5em"
+          >
+            User DID copied to clipboard
+          </Box>
+        ),
+        isClosable: true
+      });
+    }
+  };
+
   return (
     <Box layerStyle="cardBox" w="100%">
       <Box
@@ -79,7 +144,6 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           </VisuallyHidden>
           <Text as="span" color="text.100" textStyle="md">
             {`@${userProfile.username}`}
-            {/* {post.creatorWallet} */}
           </Text>
           {userProfile.issuerDid && (
             <Tooltip hasArrow label={`${userProfile.issuerDid}`} maxW="500px">
@@ -89,6 +153,21 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             </Tooltip>
           )}
         </HStack>
+
+        {onchainProfile && (
+          <Button
+            variant="empty"
+            size="sm"
+            color="text.400"
+            alignSelf="start"
+            rightIcon={<CopyIcon ml="0.5em" />}
+            aria-label="Copy user DID."
+            mt="-1em"
+            onClick={copyDid}
+          >
+            {prettifyDid(onchainProfile.did)}
+          </Button>
+        )}
 
         <Text textStyle="sm" wordBreak="break-word">
           {userProfile.bio}
