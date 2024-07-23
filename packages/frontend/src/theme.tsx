@@ -9,6 +9,7 @@ import {
   layerStyles,
   menuTheme,
   modalTheme,
+  radioTheme,
   selectTheme,
   stepperTheme,
   tabsTheme,
@@ -83,6 +84,7 @@ const components = {
   Input: inputTheme,
   Menu: menuTheme,
   Modal: modalTheme,
+  Radio: radioTheme,
   Select: selectTheme,
   Stepper: stepperTheme,
   Tabs: tabsTheme
