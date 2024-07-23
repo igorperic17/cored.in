@@ -1,10 +1,21 @@
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useAuth, useLoggedInServerState } from "@/hooks";
 import { USER_QUERIES } from "@/queries";
-import { Button, HStack, Icon, Text, VStack } from "@chakra-ui/react";
-import { TESTNET_CHAIN_NAME } from "@coredin/shared";
+import {
+  Box,
+  Button,
+  HStack,
+  Icon,
+  Text,
+  useToast,
+  VStack
+} from "@chakra-ui/react";
+import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaArrowRightFromBracket, FaIdCard } from "react-icons/fa6";
+import { prettifyDid } from "../helpers/prettifyDid";
+import { CopyIcon } from "@chakra-ui/icons";
 
 export const UserSignOut = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -20,11 +31,61 @@ export const UserSignOut = () => {
       chainContext.disconnect();
     }
   }, [chainContext]);
-  const shortWalletAddress =
-    chainContext.address?.slice(0, 8) + "..." + chainContext.address?.slice(-8);
+  const coredinClient = useContext(CoredinClientContext);
+  const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
+  const toast = useToast();
+
+  const updateOnchainProfile = () => {
+    if (chainContext.address) {
+      console.log("getting onchain profile");
+      coredinClient
+        ?.getWalletDID({ wallet: chainContext.address })
+        .then((registered_did: GetDIDResponse) => {
+          console.log(registered_did);
+          if (registered_did.did_info) {
+            setOnchainProfile(registered_did.did_info);
+          }
+          // setIsLoadingContract(false);
+        })
+        .catch((error) => {
+          console.error(error);
+          // setIsLoadingContract(false);
+        });
+    } else {
+      setOnchainProfile(null);
+    }
+  };
+
+  useEffect(updateOnchainProfile, [
+    chainContext.address,
+    chainContext.isWalletConnected,
+    coredinClient
+  ]);
+
+  const copyDid = () => {
+    if (onchainProfile?.did) {
+      navigator.clipboard.writeText(onchainProfile?.did);
+      toast({
+        position: "top-right",
+        status: "success",
+        duration: 1000,
+        render: () => (
+          <Box
+            color="text.900"
+            p="1em 1.5em"
+            bg="brand.500"
+            borderRadius="0.5em"
+          >
+            DID copied to clipboard
+          </Box>
+        ),
+        isClosable: true
+      });
+    }
+  };
 
   // TODO - use a single Navigation "smart" component that handles the logic,
-  // and render dummmy NavigationDesktop or NavigationMobile that receive everything as props
+  // and render dummmy NavigationDesktop or NavigationMobile that receives everything as props
 
   return (
     <HStack spacing="1em" align="start" layerStyle="cardBox" p="2em" w="100%">
@@ -39,15 +100,16 @@ export const UserSignOut = () => {
         <Text as="span" color="text.100" fontSize="1rem">
           {`@${userProfile?.username || "No username"}`}
         </Text>
-        <Text
-          as="span"
-          color="text.400"
-          textTransform="uppercase"
-          mt="-1em"
+        <Button
+          variant="empty"
           fontSize="0.825rem"
+          mt="-1em"
+          color="text.400"
+          rightIcon={<CopyIcon ml="0.5em" />}
+          onClick={copyDid}
         >
-          {shortWalletAddress}
-        </Text>
+          {onchainProfile?.did && prettifyDid(onchainProfile.did)}
+        </Button>
         <Button
           variant="empty"
           size="xs"
