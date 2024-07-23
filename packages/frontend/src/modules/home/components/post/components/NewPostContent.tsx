@@ -1,6 +1,23 @@
 import { AutoResizeTextarea } from "@/components";
-import { Avatar, Button, Flex } from "@chakra-ui/react";
-import { ChangeEvent, Dispatch, FC, SetStateAction } from "react";
+import {
+  Avatar,
+  Button,
+  Flex,
+  HStack,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
+  Radio,
+  RadioGroup,
+  useDisclosure,
+  VStack
+} from "@chakra-ui/react";
+import { Dispatch, FC, SetStateAction, useState } from "react";
+import { visibilityData } from "../constants";
 
 export type NewContentProps = {
   postContent: string;
@@ -15,6 +32,9 @@ export const NewPostContent: FC<NewContentProps> = ({
   handlePost,
   isLoading
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [visibility, setVisibility] = useState(visibilityData[0].value);
+
   return (
     <Flex
       direction="column"
@@ -49,16 +69,53 @@ export const NewPostContent: FC<NewContentProps> = ({
           // borderBottomColor="background.400"
         />
       </Flex>
-      <Button
-        variant="primary"
-        size="sm"
-        alignSelf="end"
-        onClick={handlePost}
-        isLoading={isLoading}
-        isDisabled={!postContent}
-      >
-        Post
-      </Button>
+      <HStack alignSelf="end" spacing="1.5em">
+        <Button
+          variant="empty"
+          size="sm"
+          textTransform="none"
+          color="text.100"
+          fontWeight="normal"
+          onClick={onOpen}
+        >
+          {visibilityData.find((item) => item.value === visibility)?.title}
+        </Button>
+        <Modal isOpen={isOpen} onClose={onClose} isCentered>
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Choose who can see your post</ModalHeader>
+            <ModalCloseButton size="xl" top="1.5em" right="1.5em" />
+            <ModalBody>
+              <RadioGroup onChange={setVisibility} value={visibility}>
+                <VStack align="start">
+                  {visibilityData.map((visibility, index) => (
+                    <Radio key={`visibility-${index}`} value={visibility.value}>
+                      {visibility.title}
+                    </Radio>
+                  ))}
+                </VStack>
+              </RadioGroup>
+            </ModalBody>
+
+            <ModalFooter>
+              <Button variant="primary" size="sm" mt="1em" onClick={onClose}>
+                Close
+              </Button>
+            </ModalFooter>
+          </ModalContent>
+        </Modal>
+
+        <Button
+          variant="primary"
+          size="sm"
+          alignSelf="end"
+          onClick={handlePost}
+          isLoading={isLoading}
+          isDisabled={!postContent}
+        >
+          Post
+        </Button>
+      </HStack>
     </Flex>
   );
 };
