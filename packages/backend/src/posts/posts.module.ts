@@ -4,9 +4,14 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { PostsController } from "./posts.controller";
 import { Post } from "./post.entity";
 import { PostsService } from "./posts.service";
+import { CoreumModule } from "@/coreum/app/coreum.module";
 
 @Module({
-  imports: [AuthenticationModule, TypeOrmModule.forFeature([Post])],
+  imports: [
+    AuthenticationModule,
+    CoreumModule,
+    TypeOrmModule.forFeature([Post])
+  ],
   providers: [PostsService],
   controllers: [PostsController],
   exports: []
