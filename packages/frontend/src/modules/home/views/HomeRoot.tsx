@@ -92,10 +92,6 @@ export const HomeRoot = () => {
               <Disclaimer />
               <SocialMedia size="2rem" gap="2.25em" color="text.400" />
             </VStack>
-            {location.pathname ===
-              ROUTES.USER.buildPath(chainContext.address || "") && (
-              <SubscribeToProfile />
-            )}
           </VStack>
         )}
       </Flex>
