@@ -50,7 +50,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     CONTRACT_QUERIES.getWalletDid(coredinClient!, userWallet),
     { enabled: !!coredinClient }
   );
-  const { data: isSubscribed } = useContractRead(
+  const { data: isSubscribed, refetch } = useContractRead(
     CONTRACT_QUERIES.isSubscriber(
       coredinClient!,
       profileDid?.did_info?.did || "",
@@ -93,6 +93,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           ]
         )
         .then(() => {
+          refetch();
           toast({
             position: "top-right",
             status: "success",
