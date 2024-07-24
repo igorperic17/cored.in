@@ -8,7 +8,7 @@ export * from "./UserSignOut";
 export * from "./UserHeader";
 export * from "./SubscribeToProfile";
 export * from "./UserTabsContainer";
-export * from "./Settings";
+export * from "./ProfileSettings";
 export * from "./CredentialsMain";
 export * from "./CredentialsContainer";
 export * from "./CredentialSection";

@@ -19,7 +19,7 @@ import { TESTNET_CHAIN_NAME, UpdateProfileDTO } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useEffect, useState } from "react";
 
-export const Settings = () => {
+export const ProfileSettings = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { data: userProfile, isLoading } = useLoggedInServerState(
     USER_QUERIES.getUser(chainContext.address || ""),
