@@ -18,7 +18,7 @@ import {
 } from "@chakra-ui/react";
 import { Dispatch, FC, SetStateAction } from "react";
 import { visibilityData } from "../constants";
-import { PostVisibility } from "@coredin/shared";
+import { PostVisibility, UserProfile } from "@coredin/shared";
 
 export type NewContentProps = {
   postContent: string;
@@ -27,6 +27,7 @@ export type NewContentProps = {
   isLoading: boolean;
   visibility: PostVisibility;
   setVisibility: (visibility: PostVisibility) => void;
+  userProfile: UserProfile;
 };
 
 export const NewPostContent: FC<NewContentProps> = ({
@@ -35,7 +36,8 @@ export const NewPostContent: FC<NewContentProps> = ({
   handlePost,
   isLoading,
   visibility,
-  setVisibility
+  setVisibility,
+  userProfile
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -52,11 +54,11 @@ export const NewPostContent: FC<NewContentProps> = ({
     >
       <Flex align="start" gap="1.125em" w="100%">
         <Avatar
-          name="U N"
-          // src="https://bit.ly/sage-adebayo"
+          name={userProfile.username}
+          src={userProfile.avatarUrl}
           size="md"
           bg="background.600"
-          color="brand.500"
+          color={userProfile.avatarFallbackColor || "brand.500"}
         />
         <AutoResizeTextarea
           placeholder="Share your thoughts"

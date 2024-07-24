@@ -8,12 +8,13 @@ export const NewReplyContent: FC<NewContentProps> = ({
   postContent,
   setPostContent,
   handlePost,
-  isLoading
+  isLoading,
+  userProfile
 }) => {
   return (
     <Flex
       direction="row"
-      align="start"
+      align="center"
       gap="1.125em"
       w="100%"
       h="max-content"
@@ -22,11 +23,11 @@ export const NewReplyContent: FC<NewContentProps> = ({
       p="1.125em"
     >
       <Avatar
-        name="U N"
-        // src="https://bit.ly/sage-adebayo"
+        name={userProfile.username}
+        src={userProfile.avatarUrl}
         size="sm"
         bg="background.600"
-        color="brand.500"
+        color={userProfile.avatarFallbackColor || "brand.500"}
       />
       <AutoResizeTextarea
         value={postContent}
@@ -41,7 +42,6 @@ export const NewReplyContent: FC<NewContentProps> = ({
       <Button
         variant="primary"
         size="sm"
-        alignSelf="end"
         onClick={handlePost}
         isLoading={isLoading}
         isDisabled={!postContent}
