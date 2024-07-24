@@ -1,4 +1,4 @@
-import { Button, Center, VStack } from "@chakra-ui/react";
+import { VStack } from "@chakra-ui/react";
 import { ProofUpdate, TabsContainer, UserHeader } from "../components";
 import { useParams } from "react-router-dom";
 import { useLoggedInServerState } from "@/hooks";
@@ -107,7 +107,11 @@ const UserPage = () => {
   return (
     <VStack spacing={{ base: "0.5em", lg: "1.5em" }} mb="4em">
       {userProfile && (
-        <UserHeader userProfile={userProfile} showEdit={isOwnProfile} />
+        <UserHeader
+          userProfile={userProfile}
+          showEdit={isOwnProfile}
+          profileWallet={wallet}
+        />
       )}
       {wallet === chainContext.address && !isUpdateRootDisabled && (
         <ProofUpdate

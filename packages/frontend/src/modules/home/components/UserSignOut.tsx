@@ -1,6 +1,6 @@
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { useAuth, useLoggedInServerState } from "@/hooks";
-import { USER_QUERIES } from "@/queries";
+import { useAuth, useContractRead, useLoggedInServerState } from "@/hooks";
+import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import {
   Box,
   Button,
@@ -10,9 +10,9 @@ import {
   useToast,
   VStack
 } from "@chakra-ui/react";
-import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext } from "react";
 import { FaArrowRightFromBracket, FaIdCard } from "react-icons/fa6";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
@@ -32,39 +32,15 @@ export const UserSignOut = () => {
     }
   }, [chainContext]);
   const coredinClient = useContext(CoredinClientContext);
-  const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
   const toast = useToast();
-
-  const updateOnchainProfile = () => {
-    if (chainContext.address) {
-      console.log("getting onchain profile");
-      coredinClient
-        ?.getWalletDID({ wallet: chainContext.address })
-        .then((registered_did: GetDIDResponse) => {
-          console.log(registered_did);
-          if (registered_did.did_info) {
-            setOnchainProfile(registered_did.did_info);
-          }
-          // setIsLoadingContract(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          // setIsLoadingContract(false);
-        });
-    } else {
-      setOnchainProfile(null);
-    }
-  };
-
-  useEffect(updateOnchainProfile, [
-    chainContext.address,
-    chainContext.isWalletConnected,
-    coredinClient
-  ]);
+  const { data: walletDid } = useContractRead(
+    CONTRACT_QUERIES.getWalletDid(coredinClient!, chainContext.address || ""),
+    { enabled: !!coredinClient && !!chainContext.address }
+  );
 
   const copyDid = () => {
-    if (onchainProfile?.did) {
-      navigator.clipboard.writeText(onchainProfile?.did);
+    if (walletDid?.did_info) {
+      navigator.clipboard.writeText(walletDid.did_info.did);
       toast({
         position: "top-right",
         status: "success",
@@ -108,7 +84,7 @@ export const UserSignOut = () => {
           rightIcon={<CopyIcon ml="0.5em" />}
           onClick={copyDid}
         >
-          {onchainProfile?.did && prettifyDid(onchainProfile.did)}
+          {walletDid?.did_info && prettifyDid(walletDid.did_info.did)}
         </Button>
         <Button
           variant="empty"

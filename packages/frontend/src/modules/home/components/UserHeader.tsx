@@ -11,67 +11,43 @@ import {
   Text,
   Tooltip,
   VisuallyHidden,
+  useDisclosure,
   useToast
 } from "@chakra-ui/react";
-import {
-  DidInfo,
-  GetDIDResponse,
-  TESTNET_CHAIN_NAME,
-  UserProfile
-} from "@coredin/shared";
+import { UserProfile } from "@coredin/shared";
 import { FaPen } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
-import React, { useContext, useEffect, useState } from "react";
-import { useChain } from "@cosmos-kit/react";
+import React, { useContext } from "react";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
+import { SubscriptionModal } from ".";
+import { useContractRead } from "@/hooks";
+import { CONTRACT_QUERIES } from "@/queries";
 
 type UserHeaderProps = {
   userProfile: UserProfile;
   showEdit: boolean;
+  profileWallet: string;
 };
 
 export const UserHeader: React.FC<UserHeaderProps> = ({
   userProfile,
-  showEdit
+  showEdit,
+  profileWallet
 }) => {
-  const chainContext = useChain(TESTNET_CHAIN_NAME);
   const coredinClient = useContext(CoredinClientContext);
-  const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
   const toast = useToast();
-
-  const updateOnchainProfile = () => {
-    if (chainContext.address) {
-      console.log("getting onchain profile");
-      coredinClient
-        ?.getWalletDID({ wallet: chainContext.address })
-        .then((registered_did: GetDIDResponse) => {
-          console.log(registered_did);
-          if (registered_did.did_info) {
-            setOnchainProfile(registered_did.did_info);
-          }
-          // setIsLoadingContract(false);
-        })
-        .catch((error) => {
-          console.error(error);
-          // setIsLoadingContract(false);
-        });
-    } else {
-      setOnchainProfile(null);
-    }
-  };
-
-  useEffect(updateOnchainProfile, [
-    chainContext.address,
-    chainContext.isWalletConnected,
-    coredinClient
-  ]);
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const { data: walletDid } = useContractRead(
+    CONTRACT_QUERIES.getWalletDid(coredinClient!, profileWallet),
+    { enabled: !!coredinClient }
+  );
 
   const copyDid = () => {
-    if (onchainProfile?.did) {
-      navigator.clipboard.writeText(onchainProfile?.did);
+    if (walletDid?.did_info) {
+      navigator.clipboard.writeText(walletDid.did_info.did);
       toast({
         position: "top-right",
         status: "success",
@@ -154,7 +130,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           )}
         </HStack>
 
-        {onchainProfile && (
+        {walletDid?.did_info?.did && (
           <Button
             variant="empty"
             size="sm"
@@ -165,13 +141,26 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             mt="-1em"
             onClick={copyDid}
           >
-            {prettifyDid(onchainProfile.did)}
+            {prettifyDid(walletDid.did_info.did)}
           </Button>
         )}
 
         <Text textStyle="sm" wordBreak="break-word">
           {userProfile.bio}
         </Text>
+
+        <Button variant="primary" size="sm" onClick={onOpen}>
+          Subscribe for 4.45CORE
+        </Button>
+
+        <SubscriptionModal isOpen={isOpen} onClose={onClose} />
+
+        {/* <HStack>
+          <Icon as={FaCheckDouble} color="brand.500" />
+          <Text as="span" textStyle="sm" color="brand.500">
+            Subscribed
+          </Text>
+        </HStack> */}
       </Flex>
     </Box>
   );
