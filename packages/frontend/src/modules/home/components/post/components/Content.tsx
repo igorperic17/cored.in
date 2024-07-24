@@ -41,13 +41,18 @@ export const Content: React.FC<PostContentProps> = ({
         w="100%"
         // border="1px solid red"
       >
-        <Avatar
-          name={post.creatorUsername}
-          src={post.creatorAvatar}
-          bg="background.600"
-          color="brand.500"
-          size="md"
-        />
+        <Link
+          as={ReactRouterLink}
+          to={ROUTES.USER.buildPath(post.creatorWallet)}
+        >
+          <Avatar
+            name={post.creatorUsername}
+            src={post.creatorAvatar}
+            bg="background.600"
+            color="brand.500"
+            size="md"
+          />
+        </Link>
         <VStack
           align="start"
           spacing="0.5em"
