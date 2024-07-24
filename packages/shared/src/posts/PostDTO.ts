@@ -5,6 +5,7 @@ export type PostDTO = {
   creatorWallet: string;
   creatorUsername: string;
   creatorAvatar: string;
+  creatorAvatarFallbackColor: string;
   visibility: PostVisibility;
   text: string;
   createdAt: string;

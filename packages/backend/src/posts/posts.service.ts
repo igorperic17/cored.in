@@ -178,6 +178,7 @@ export class PostsService {
       creatorWallet: post.creatorWallet,
       creatorUsername: post.user.username,
       creatorAvatar: post.user.avatarUrl,
+      creatorAvatarFallbackColor: post.user.avatarFallbackColor,
       visibility: post.visibility,
       text: post.text,
       createdAt: post.createdAt.toISOString(),
