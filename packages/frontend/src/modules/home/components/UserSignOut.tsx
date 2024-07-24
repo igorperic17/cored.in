@@ -6,6 +6,7 @@ import {
   Button,
   HStack,
   Icon,
+  Link,
   Text,
   useToast,
   VStack
@@ -16,6 +17,8 @@ import React, { useContext } from "react";
 import { FaArrowRightFromBracket, FaIdCard } from "react-icons/fa6";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
+import { ROUTES } from "@/router/routes";
+import { Link as ReactRouterLink } from "react-router-dom";
 
 export const UserSignOut = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -73,9 +76,19 @@ export const UserSignOut = () => {
             color="brand.500"
           /> */}
       <VStack align="start" spacing="1.25em">
-        <Text as="span" color="text.100" fontSize="1rem">
-          {`@${userProfile?.username || "No username"}`}
-        </Text>
+        <Link
+          as={ReactRouterLink}
+          to={
+            userProfile?.username && chainContext.address
+              ? ROUTES.USER.buildPath(chainContext.address)
+              : "#"
+          }
+          _hover={{ textDecoration: "none" }}
+        >
+          <Text as="span" color="text.100" fontSize="1rem">
+            {`@${userProfile?.username || "No username"}`}
+          </Text>
+        </Link>
         <Button
           variant="empty"
           fontSize="0.825rem"
