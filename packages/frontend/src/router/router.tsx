@@ -16,6 +16,7 @@ import SettingsPage from "@/modules/home/views/Settings.page";
 import { RequestCredentialPage } from "@/modules/home/views/RequestCredential.page";
 import CredentialsPage from "@/modules/home/views/Credentials.page";
 import { IncomingRequestsPage } from "@/modules/home/views/IncomingRequests.page";
+import SubscriptionsPage from "@/modules/home/views/Subscriptions.page";
 
 export const router = createBrowserRouter([
   {
@@ -94,6 +95,17 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.CREDENTIALS.INCOMING_REQUESTS.path,
         element: <IncomingRequestsPage />
+      }
+    ]
+  },
+  {
+    path: ROUTES.SUBSCRIPTIONS.path,
+    element: <HomeRoot />,
+    errorElement: <ResourceNotFoundPage />,
+    children: [
+      {
+        index: true,
+        element: <SubscriptionsPage />
       }
     ]
   },

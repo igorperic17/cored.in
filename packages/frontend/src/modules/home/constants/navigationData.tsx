@@ -4,7 +4,8 @@ import {
   FaHouse,
   FaPaperPlane,
   FaUser,
-  FaCertificate
+  FaCertificate,
+  FaBinoculars
 } from "react-icons/fa6";
 
 export const navigationData = (wallet: string) => [
@@ -22,6 +23,11 @@ export const navigationData = (wallet: string) => [
     title: "credentials",
     icon: FaCertificate,
     link: ROUTES.CREDENTIALS.path
+  },
+  {
+    title: "subscriptions",
+    icon: FaBinoculars,
+    link: ROUTES.SUBSCRIPTIONS.path
   },
   {
     title: "profile",

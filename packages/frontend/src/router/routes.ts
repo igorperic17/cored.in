@@ -29,6 +29,9 @@ export const ROUTES = {
       path: "/credentials/incoming-requests"
     }
   },
+  SUBSCRIPTIONS: {
+    path: "/subscriptions"
+  },
   SETTINGS: {
     path: "/settings"
   },
