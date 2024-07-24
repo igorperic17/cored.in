@@ -57,7 +57,8 @@ export const Credential: FC<CredentialProps> = ({
     endDate,
     verified,
     issuer,
-    issuerWallet
+    issuerWallet,
+    issuerUsername
   } = credential;
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const coredinClient = useContext(CoredinClientContext);
@@ -171,7 +172,7 @@ export const Credential: FC<CredentialProps> = ({
                 _hover={{ color: "brand.500" }}
                 wordBreak="break-word"
               >
-                {issuer}
+                @{issuerUsername}
               </Link>
             </Text>
           ))}

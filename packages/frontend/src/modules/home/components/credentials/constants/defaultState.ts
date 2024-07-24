@@ -11,5 +11,6 @@ export const defaultState: CredentialDTO = {
   endDate: undefined,
   issuer: "",
   issuerWallet: "",
+  issuerUsername: "",
   verified: false
 };

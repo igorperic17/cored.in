@@ -176,6 +176,9 @@ export class UserService {
       issuerWallet:
         issuers.find((user) => user.issuerDid === vc.parsedDocument.issuer.id)
           ?.wallet || "",
+      issuerUsername:
+        issuers.find((user) => user.issuerDid === vc.parsedDocument.issuer.id)
+          ?.username || "no_username",
       title: vc.parsedDocument.credentialSubject.title,
       establishment: vc.parsedDocument.credentialSubject.establishment,
       startDate: vc.parsedDocument.credentialSubject.startDate,

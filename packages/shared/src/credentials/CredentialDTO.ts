@@ -11,4 +11,5 @@ export type CredentialDTO = {
   verified: boolean;
   issuer: string;
   issuerWallet: string;
+  issuerUsername: string;
 };
