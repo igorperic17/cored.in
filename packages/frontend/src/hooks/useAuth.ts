@@ -10,6 +10,8 @@ import {
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 
+const loginExpirationMarginMs = 5 * 60 * 1000; // 5 minutes
+
 export const useAuth = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const walletAddress = chainContext.address ?? "";
@@ -26,7 +28,8 @@ export const useAuth = () => {
       setIsAuthenticating(true);
 
       try {
-        const expiration = Date.now() + MaxLoginDurationMs;
+        const expiration =
+          Date.now() + MaxLoginDurationMs - loginExpirationMarginMs;
         const message = LoginMessage + expiration;
         const signedMessage = await chainContext.signArbitrary(
           walletAddress,
