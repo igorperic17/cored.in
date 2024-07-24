@@ -29,7 +29,8 @@ export default defineConfig(({ mode }) => {
         "@coredin/shared/credentials/*",
         "@coredin/shared/coreum/*",
         "@coredin/shared/coreum/contract-ts/*"
-      ]
+      ],
+      force: true
     },
     build: {
       commonjsOptions: {
