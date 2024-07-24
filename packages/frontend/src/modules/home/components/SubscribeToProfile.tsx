@@ -73,7 +73,7 @@ export const SubscribeToProfile: FC<SubscribeToProfileProps> = ({
       >
         Subscribe for 4.45 CORE
       </Button>
-      <SubscriptionModal isOpen={isOpen} onClose={onClose} />
+      {/* <SubscriptionModal isOpen={isOpen} onClose={onClose} /> */}
     </VStack>
   );
 };
