@@ -7,7 +7,7 @@ export * from "./Navigation";
 export * from "./UserSignOut";
 export * from "./UserHeader";
 export * from "./SubscribeToProfile";
-export * from "./TabsContainer";
+export * from "./UserTabsContainer";
 export * from "./Settings";
 export * from "./CredentialsMain";
 export * from "./CredentialsContainer";

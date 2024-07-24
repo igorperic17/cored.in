@@ -6,7 +6,7 @@ import {
   CredentialsContainerProps
 } from "./CredentialsContainer";
 
-export const TabsContainer: FC<FeedProps & CredentialsContainerProps> = ({
+export const UserTabsContainer: FC<FeedProps & CredentialsContainerProps> = ({
   posts,
   ...props
 }) => {

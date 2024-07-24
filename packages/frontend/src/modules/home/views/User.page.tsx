@@ -1,5 +1,5 @@
 import { VStack } from "@chakra-ui/react";
-import { ProofUpdate, TabsContainer, UserHeader } from "../components";
+import { ProofUpdate, UserTabsContainer, UserHeader } from "../components";
 import { useParams } from "react-router-dom";
 import { useLoggedInServerState } from "@/hooks";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
@@ -120,7 +120,7 @@ const UserPage = () => {
         />
       )}
 
-      <TabsContainer
+      <UserTabsContainer
         posts={posts || []}
         sections={
           tree
