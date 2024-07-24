@@ -14,8 +14,8 @@ import {
   useDisclosure,
   useToast
 } from "@chakra-ui/react";
-import { UserProfile } from "@coredin/shared";
-import { FaPen } from "react-icons/fa6";
+import { TESTNET_STAKING_DENOM, UserProfile } from "@coredin/shared";
+import { FaCheckDouble, FaPen } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import React, { useContext } from "react";
@@ -28,26 +28,118 @@ import { CONTRACT_QUERIES } from "@/queries";
 
 type UserHeaderProps = {
   userProfile: UserProfile;
-  showEdit: boolean;
+  isOwnProfile: boolean;
   profileWallet: string;
+  userWallet: string;
 };
 
 export const UserHeader: React.FC<UserHeaderProps> = ({
   userProfile,
-  showEdit,
-  profileWallet
+  isOwnProfile,
+  profileWallet,
+  userWallet
 }) => {
   const coredinClient = useContext(CoredinClientContext);
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const { data: walletDid } = useContractRead(
+  const { data: profileDid } = useContractRead(
     CONTRACT_QUERIES.getWalletDid(coredinClient!, profileWallet),
     { enabled: !!coredinClient }
   );
+  const { data: userDid } = useContractRead(
+    CONTRACT_QUERIES.getWalletDid(coredinClient!, userWallet),
+    { enabled: !!coredinClient }
+  );
+  const { data: isSubscribed } = useContractRead(
+    CONTRACT_QUERIES.isSubscriber(
+      coredinClient!,
+      profileDid?.did_info?.did || "",
+      userDid?.did_info?.did || ""
+    ),
+    {
+      enabled:
+        !!coredinClient &&
+        !!profileDid?.did_info?.did &&
+        !!userDid?.did_info?.did
+    }
+  );
+  const { data: subscriptionPrice } = useContractRead(
+    CONTRACT_QUERIES.getSubscriptionPrice(
+      coredinClient!,
+      profileDid?.did_info?.did || ""
+    ),
+    { enabled: !!coredinClient && !!profileDid?.did_info?.did }
+  );
+
+  // TODO - get actual values from contract!
+  // const subscriptionPrice = 4.45;
+  const subscriptionDurationDays = 7;
+
+  const handleSubscribe = () => {
+    console.log("Subscribing to", profileDid?.did_info?.did);
+    if (coredinClient && profileDid?.did_info) {
+      coredinClient
+        .subscribe(
+          {
+            did: profileDid?.did_info?.did || ""
+          },
+          "auto",
+          undefined,
+          [
+            {
+              amount: "10",
+              denom: TESTNET_STAKING_DENOM
+            }
+          ]
+        )
+        .then(() => {
+          toast({
+            position: "top-right",
+            status: "success",
+            duration: 3000,
+            render: () => (
+              <Box
+                color="text.900"
+                p="1em 1.5em"
+                bg="brand.500"
+                borderRadius="0.5em"
+              >
+                Subscribed to {userProfile.username}
+              </Box>
+            ),
+            isClosable: true
+          });
+        })
+        .catch((error) => {
+          console.error(
+            "Error subscribing to",
+            profileDid?.did_info?.did,
+            error
+          );
+          toast({
+            position: "top-right",
+            status: "error",
+            duration: 3000,
+            render: () => (
+              <Box
+                color="text.900"
+                p="1em 1.5em"
+                bg="red.500"
+                borderRadius="0.5em"
+              >
+                Error subscribing to {userProfile.username}
+              </Box>
+            ),
+            isClosable: true
+          });
+        });
+    }
+    onClose();
+  };
 
   const copyDid = () => {
-    if (walletDid?.did_info) {
-      navigator.clipboard.writeText(walletDid.did_info.did);
+    if (profileDid?.did_info) {
+      navigator.clipboard.writeText(profileDid.did_info.did);
       toast({
         position: "top-right",
         status: "success",
@@ -91,7 +183,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           // ml="0.5em"
           border="4px solid #1C1C1A"
         />
-        {showEdit && (
+        {isOwnProfile && (
           <Link
             as={ReactRouterLink}
             to={ROUTES.SETTINGS.path}
@@ -130,7 +222,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           )}
         </HStack>
 
-        {walletDid?.did_info?.did && (
+        {profileDid?.did_info?.did && (
           <Button
             variant="empty"
             size="sm"
@@ -141,7 +233,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             mt="-1em"
             onClick={copyDid}
           >
-            {prettifyDid(walletDid.did_info.did)}
+            {prettifyDid(profileDid.did_info.did)}
           </Button>
         )}
 
@@ -149,18 +241,31 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           {userProfile.bio}
         </Text>
 
-        <Button variant="primary" size="sm" onClick={onOpen}>
-          Subscribe for 4.45CORE
-        </Button>
+        {!isOwnProfile && !isSubscribed && subscriptionPrice && (
+          <>
+            <Button variant="primary" size="sm" onClick={onOpen}>
+              Subscribe for {subscriptionPrice.amount}{" "}
+              {subscriptionPrice?.denom}
+            </Button>
+            <SubscriptionModal
+              isOpen={isOpen}
+              onClose={onClose}
+              username={userProfile.username}
+              subscriptionPrice={subscriptionPrice.amount}
+              subscriptionDurationDays={subscriptionDurationDays}
+              handleSubscribe={handleSubscribe}
+            />
+          </>
+        )}
 
-        <SubscriptionModal isOpen={isOpen} onClose={onClose} />
-
-        {/* <HStack>
-          <Icon as={FaCheckDouble} color="brand.500" />
-          <Text as="span" textStyle="sm" color="brand.500">
-            Subscribed
-          </Text>
-        </HStack> */}
+        {isSubscribed && (
+          <HStack>
+            <Icon as={FaCheckDouble} color="brand.500" />
+            <Text as="span" textStyle="sm" color="brand.500">
+              Subscribed
+            </Text>
+          </HStack>
+        )}
       </Flex>
     </Box>
   );

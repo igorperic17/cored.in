@@ -17,9 +17,20 @@ import {
 } from "@chakra-ui/react";
 import { FC } from "react";
 
-export const SubscriptionModal: FC<Omit<ModalProps, "children">> = ({
+type SubscriptionModalProps = Omit<ModalProps, "children"> & {
+  username: string;
+  subscriptionPrice: string;
+  subscriptionDurationDays: number;
+  handleSubscribe: () => void;
+};
+
+export const SubscriptionModal: FC<SubscriptionModalProps> = ({
   isOpen,
-  onClose
+  onClose,
+  username,
+  subscriptionPrice,
+  subscriptionDurationDays,
+  handleSubscribe
 }) => {
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered>
@@ -41,7 +52,7 @@ export const SubscriptionModal: FC<Omit<ModalProps, "children">> = ({
                     Username:
                   </Td>
                   <Td px="0" pb="0">
-                    @someusername
+                    @{username}
                   </Td>
                 </Tr>
                 <Tr>
@@ -49,7 +60,7 @@ export const SubscriptionModal: FC<Omit<ModalProps, "children">> = ({
                     Price:
                   </Td>
                   <Td px="0" pb="0">
-                    4.45 CORE
+                    {subscriptionPrice} CORE
                   </Td>
                 </Tr>
                 <Tr>
@@ -57,7 +68,7 @@ export const SubscriptionModal: FC<Omit<ModalProps, "children">> = ({
                     Duration:
                   </Td>
                   <Td px="0" pb="0">
-                    1 week
+                    {subscriptionDurationDays} days
                   </Td>
                 </Tr>
               </Tbody>
@@ -69,7 +80,7 @@ export const SubscriptionModal: FC<Omit<ModalProps, "children">> = ({
           <Button variant="empty" size="sm" onClick={onClose} mr="1.5em">
             Close
           </Button>
-          <Button variant="primary" size="sm">
+          <Button variant="primary" size="sm" onClick={handleSubscribe}>
             Subscribe
           </Button>
         </ModalFooter>

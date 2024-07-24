@@ -106,11 +106,12 @@ const UserPage = () => {
 
   return (
     <VStack spacing={{ base: "0.5em", lg: "1.5em" }} mb="4em">
-      {userProfile && (
+      {userProfile && chainContext.address && (
         <UserHeader
           userProfile={userProfile}
-          showEdit={isOwnProfile}
+          isOwnProfile={isOwnProfile}
           profileWallet={wallet}
+          userWallet={chainContext.address}
         />
       )}
       {wallet === chainContext.address && !isUpdateRootDisabled && (
