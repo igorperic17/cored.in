@@ -3,6 +3,7 @@ import {
   Button,
   HStack,
   Img,
+  Link,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -30,6 +31,9 @@ import {
 import { CustomCapsuleModalView } from "@leapwallet/cosmos-social-login-capsule-provider-ui";
 // Note: Import the necessary styles for the Leap Capsule Provider UI
 import "@leapwallet/cosmos-social-login-capsule-provider-ui/styles.css";
+import { ROUTES } from "@/router/routes";
+import { Link as ReactRouterLink } from "react-router-dom";
+import { chain } from "chain-registry/testnet/coreumtestnet";
 
 const options = {
   env: "BETA",
@@ -167,9 +171,19 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
     return (
       <HStack spacing="0.75em" align="end">
         {username && (
-          <Text color="text.100" fontSize={{ base: "0.85rem", md: "1rem" }}>
-            @{username}
-          </Text>
+          <Link
+            as={ReactRouterLink}
+            to={
+              username && chainContext.address
+                ? ROUTES.USER.buildPath(chainContext.address)
+                : "#"
+            }
+            _hover={{ textDecoration: "none" }}
+          >
+            <Text color="text.100" fontSize={{ base: "0.85rem", md: "1rem" }}>
+              @{username}
+            </Text>
+          </Link>
         )}
         <Button
           borderStartStartRadius="0"
