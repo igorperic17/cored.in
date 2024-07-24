@@ -59,7 +59,7 @@ pub enum QueryMsg {
     IsSubscriber { did: String, subscriber: String },
 
     // returns the subscription price for a profile
-    #[returns(bool)]
+    #[returns(Coin)]
     GetSubscriptionPrice { did: String },
 }
 

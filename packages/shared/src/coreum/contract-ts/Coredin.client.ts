@@ -50,7 +50,7 @@ export interface CoredinReadOnlyInterface {
     did
   }: {
     did: string;
-  }) => Promise<Boolean>;
+  }) => Promise<Coin>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -151,7 +151,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     did
   }: {
     did: string;
-  }): Promise<Boolean> => {
+  }): Promise<Coin> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_subscription_price: {
         did
