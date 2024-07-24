@@ -16,3 +16,4 @@ export * from "./Credential";
 export * from "./RequestCredential";
 export * from "./IssuanceRequest";
 export * from "./ProofUpdate";
+export * from "./SubscriptionModal";
