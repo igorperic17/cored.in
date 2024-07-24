@@ -10,6 +10,7 @@
     "back-dev": "yarn workspace @coredin/backend start:debug",
     "dev": "yarn workspaces foreach -A -p -i run dev",
     "build": "yarn workspace @coredin/shared build && yarn workspaces foreach -A -p -i --exclude @coredin/shared run build",
+    "build-shared": "yarn workspace @coredin/shared build",
     "build-docker": "docker build --file base.Dockerfile --tag coredin/base:latest . && docker build --file front.Dockerfile --tag coredin/front:latest . && docker build --file back.Dockerfile --tag coredin/back:latest .",
     "serve": "yarn workspace @coredin/frontend serve",
     "chain": "yarn workspace @coredin/onchain chain",

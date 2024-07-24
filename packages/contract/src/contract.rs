@@ -106,7 +106,7 @@ pub fn execute_register(
     // create an NFT class for this DID
     // so all of the subscription to this user is an NFT of this class
     let clipped_did_length = min(26, record.did.len());
-    let symbol = record.did.to_string()[clipped_did_length..].to_string(); // TODO: Coreum regex workaround
+    let symbol = record.did.to_string()[record.did.len() - clipped_did_length..].to_string(); // TODO: Coreum regex workaround
     let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
         name: record.did.to_string(), // class = user's DID they just registered
         symbol,                       // class = cropped DID
