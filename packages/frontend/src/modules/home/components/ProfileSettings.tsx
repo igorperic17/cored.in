@@ -77,13 +77,13 @@ export const ProfileSettings = () => {
     <VStack
       spacing="2.5em"
       layerStyle="cardBox"
-      p="1em"
-      pb="1.5em"
+      px="1em"
+      py="1.5em"
       align="start"
       mb="4em"
     >
-      <Heading as="h1" fontFamily="body">
-        Edit your information
+      <Heading as="h2" fontFamily="body">
+        Your information
       </Heading>
       <VStack spacing="1.25em" align="start">
         <Text as="span" textStyle="lg">
