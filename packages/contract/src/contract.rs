@@ -1,7 +1,8 @@
 use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
-    coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Storage, Uint64
+    coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
+    StdResult, Storage, Uint64,
 };
 use std::cmp::min;
 use std::collections::LinkedList;
@@ -10,9 +11,13 @@ use crate::coin_helpers::assert_sent_sufficient_coin;
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
 use crate::state::{
-    config_storage, config_storage_read, did_storage, did_storage_read, profile_storage, username_storage, username_storage_read, vc_storage, vc_storage_read, wallet_storage, wallet_storage_read, Config, DidInfo, ProfileInfo
+    config_storage, config_storage_read, did_storage, did_storage_read, profile_storage,
+    username_storage, username_storage_read, vc_storage, vc_storage_read, wallet_storage,
+    wallet_storage_read, Config, DidInfo, ProfileInfo,
 };
-use crate::subscription::{get_subscription_price, is_subscriber, set_subscription_price, subscribe};
+use crate::subscription::{
+    get_subscription_price, is_subscriber, set_subscription_price, subscribe,
+};
 use cosmwasm_storage::ReadonlyBucket;
 
 use crate::merkle_tree::MerkleTree;
@@ -91,21 +96,26 @@ pub fn execute_register(
         top_subscribers: LinkedList::new(),
         subscriber_count: Uint64::zero(),
     };
-    if profile_storage(deps.storage).save(record.did.as_bytes(), &user_profile).is_err() {
-        return  Err(ContractError::ProfileSaveFailed { did: did });
+    if profile_storage(deps.storage)
+        .save(record.did.as_bytes(), &user_profile)
+        .is_err()
+    {
+        return Err(ContractError::ProfileSaveFailed { did: did });
     }
 
     // create an NFT class for this DID
     // so all of the subscription to this user is an NFT of this class
     let clipped_did_length = min(26, record.did.len());
-    let symbol = record.did.to_string()[..clipped_did_length].to_string(); // TODO: Coreum regex workaround
+    let symbol = record.did.to_string()[clipped_did_length..].to_string(); // TODO: Coreum regex workaround
     let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
         name: record.did.to_string(), // class = user's DID they just registered
-        symbol,                        // class = cropped DID
-        description: Some(format!("Subscribers of {} (DID: {})", record.username, record.did).to_string()),
+        symbol,                       // class = cropped DID
+        description: Some(
+            format!("Subscribers of {} (DID: {})", record.username, record.did).to_string(),
+        ),
         uri: None,
         uri_hash: None,
-        data: None, //
+        data: None,                            //
         features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
         royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
     });
@@ -158,7 +168,7 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
             merkle_proofs,
         } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
         QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, did, subscriber),
-        QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did)
+        QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did),
     }
 }
 
