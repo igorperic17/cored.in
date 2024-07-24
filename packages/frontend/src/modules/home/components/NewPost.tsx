@@ -16,11 +16,14 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
   const { mutateAsync, isPending } = useMutableServerState(
     FEED_MUTATIONS.publish()
   );
+  const [visibility, setVisibility] = useState<PostVisibility>(
+    PostVisibility.PUBLIC
+  );
 
   const handlePost = async () => {
     const post: CreatePostDTO = {
       text: postContent,
-      visibility: PostVisibility.PUBLIC,
+      visibility,
       replyToPostId
     };
     await mutateAsync({ post });
@@ -40,6 +43,8 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
           setPostContent={setPostContent}
           handlePost={handlePost}
           isLoading={isPending}
+          visibility={visibility}
+          setVisibility={setVisibility}
         />
       ) : (
         <NewPostContent
@@ -47,6 +52,8 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
           setPostContent={setPostContent}
           handlePost={handlePost}
           isLoading={isPending}
+          visibility={visibility}
+          setVisibility={setVisibility}
         />
       )}
     </>

@@ -16,24 +16,28 @@ import {
   useDisclosure,
   VStack
 } from "@chakra-ui/react";
-import { Dispatch, FC, SetStateAction, useState } from "react";
+import { Dispatch, FC, SetStateAction } from "react";
 import { visibilityData } from "../constants";
+import { PostVisibility } from "@coredin/shared";
 
 export type NewContentProps = {
   postContent: string;
   setPostContent: Dispatch<SetStateAction<string>>;
   handlePost: () => void;
   isLoading: boolean;
+  visibility: PostVisibility;
+  setVisibility: (visibility: PostVisibility) => void;
 };
 
 export const NewPostContent: FC<NewContentProps> = ({
   postContent,
   setPostContent,
   handlePost,
-  isLoading
+  isLoading,
+  visibility,
+  setVisibility
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const [visibility, setVisibility] = useState(visibilityData[0].value);
 
   return (
     <Flex
@@ -86,11 +90,14 @@ export const NewPostContent: FC<NewContentProps> = ({
             <ModalHeader>Choose who can see your post</ModalHeader>
             <ModalCloseButton size="xl" top="1.5em" right="1.5em" />
             <ModalBody>
-              <RadioGroup onChange={setVisibility} value={visibility}>
+              <RadioGroup
+                onChange={(e) => setVisibility(e as PostVisibility)}
+                value={visibility}
+              >
                 <VStack align="start">
-                  {visibilityData.map((visibility, index) => (
-                    <Radio key={`visibility-${index}`} value={visibility.value}>
-                      {visibility.title}
+                  {visibilityData.map((vis, index) => (
+                    <Radio key={`visibility-${index}`} value={vis.value}>
+                      {vis.title}
                     </Radio>
                   ))}
                 </VStack>
