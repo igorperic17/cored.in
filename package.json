@@ -29,9 +29,8 @@
   },
   "workspaces": {
     "packages": [
-      "packages/*",
-      "packages/unleash-proxy/*"
+      "packages/*"
     ]
   },
-  "packageManager": "yarn@4.3.0"
+  "packageManager": "yarn@4.3.1"
 }

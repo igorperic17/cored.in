@@ -11,9 +11,9 @@
 	},
 	"devDependencies": {
 		"@cosmwasm/ts-codegen": "^1.9.0",
-		"typescript": "^5.4.5"
+		"typescript": "^5.5.4"
 	},
 	"dependencies": {
-		"typia": "^6.0.3"
+		"typia": "^6.5.4"
 	}
 }
