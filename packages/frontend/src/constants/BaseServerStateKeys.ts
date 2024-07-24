@@ -15,5 +15,7 @@ export enum BaseServerStateKeys {
   ACCEPT_CREDENTIAL = "accept_credential",
   REJECT_CREDENTIAL = "reject_credential",
   REVOKE_CREDENTIAL = "revoke_credential",
-  CONTRACT_GET_WALLET_DID = "contract_get_wallet_did"
+  CONTRACT_GET_WALLET_DID = "contract_get_wallet_did",
+  CONTRACT_GET_SUBSCRIPTION_PRICE = "contract_get_subscription_price",
+  CONTRACT_IS_SUBSCRIBED = "contract_is_subscribed"
 }
