@@ -1,3 +1,6 @@
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { useContractRead } from "@/hooks";
+import { CONTRACT_QUERIES } from "@/queries";
 import {
   Button,
   FormControl,
@@ -9,17 +12,108 @@ import {
   InputRightAddon,
   Text,
   Select,
-  VStack
+  VStack,
+  Box,
+  useToast
 } from "@chakra-ui/react";
-import { useState } from "react";
+import { TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
+import { useChain } from "@cosmos-kit/react";
+import { useContext, useEffect, useState } from "react";
 
 export const SubscriptionSettings = () => {
+  const coredinClient = useContext(CoredinClientContext);
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const toast = useToast();
+  const { data: profileDid } = useContractRead(
+    CONTRACT_QUERIES.getWalletDid(coredinClient!, chainContext.address || ""),
+    { enabled: !!coredinClient && !!chainContext.address }
+  );
+  const { data: subscriptionPrice } = useContractRead(
+    CONTRACT_QUERIES.getSubscriptionPrice(
+      coredinClient!,
+      profileDid?.did_info?.did || ""
+    ),
+    { enabled: !!coredinClient && !!profileDid?.did_info?.did }
+  );
   const [subscriptionSettings, setSubscriptionSettings] = useState({
-    price: 10,
+    price: "10",
     durationDays: 7
   });
+  const [isUpdating, setIsUpdating] = useState(false);
 
-  console.log(subscriptionSettings);
+  useEffect(() => {
+    if (subscriptionPrice) {
+      console.log(
+        "Setting subscription price from chain value",
+        subscriptionPrice
+      );
+      setSubscriptionSettings((prev) => ({
+        price: subscriptionPrice?.amount,
+        durationDays: prev.durationDays
+      }));
+    }
+  }, [subscriptionPrice]);
+
+  const handleSubmit = () => {
+    console.log(
+      "Updating onchain subscription settings... to",
+      subscriptionSettings
+    );
+    if (coredinClient) {
+      setIsUpdating(true);
+      coredinClient
+        .setSubscriptionPrice({
+          price: {
+            amount: subscriptionSettings.price,
+            denom: TESTNET_STAKING_DENOM
+          }
+        })
+        .then(() => {
+          toast({
+            position: "top-right",
+            status: "success",
+            duration: 3000,
+            render: () => (
+              <Box
+                color="text.900"
+                p="1em 1.5em"
+                bg="brand.500"
+                borderRadius="0.5em"
+              >
+                Updated onchain subscription settings successfully
+              </Box>
+            ),
+            isClosable: true
+          });
+        })
+        .catch((error) => {
+          console.error(
+            "Error subscribing to",
+            profileDid?.did_info?.did,
+            error
+          );
+          toast({
+            position: "top-right",
+            status: "error",
+            duration: 3000,
+            render: () => (
+              <Box
+                color="text.900"
+                p="1em 1.5em"
+                bg="red.500"
+                borderRadius="0.5em"
+              >
+                Error updating onchain subscription settings
+              </Box>
+            ),
+            isClosable: true
+          });
+        })
+        .finally(() => {
+          setIsUpdating(false);
+        });
+    }
+  };
 
   return (
     <VStack
@@ -47,7 +141,7 @@ export const SubscriptionSettings = () => {
               onChange={(e) =>
                 setSubscriptionSettings({
                   ...subscriptionSettings,
-                  price: Number(e.target.value)
+                  price: e.target.value
                 })
               }
               value={subscriptionSettings.price}
@@ -105,8 +199,8 @@ export const SubscriptionSettings = () => {
         variant="primary"
         size="md"
         w="100%"
-        // onClick={handleSubmit}
-        // isLoading={isPending}
+        onClick={handleSubmit}
+        isLoading={isUpdating}
       >
         Save
       </Button>
