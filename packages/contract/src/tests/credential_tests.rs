@@ -3,11 +3,9 @@ mod tests {
     use crate::contract::{execute, query};
     use crate::msg::{ExecuteMsg, GetMerkleRootResponse, QueryMsg};
     use crate::tests::common::common::{get_deps, mock_alice_registers_name, mock_init_no_price};
-    use coreum_wasm_sdk::core::CoreumQueries;
-    use cosmwasm_std::{from_json, DepsMut, Empty, OwnedDeps, QuerierWrapper};
-    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info, MockApi, MockQuerier, MockStorage};
+    use cosmwasm_std::from_json;
+    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
     use hex;
-    use std::borrow::{Borrow, BorrowMut};
     use std::collections::LinkedList;
 
     use crate::merkle_tree::MerkleTree;

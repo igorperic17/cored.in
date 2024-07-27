@@ -1,22 +1,29 @@
-use std::borrow::BorrowMut;
-
 use crate::coin_helpers::assert_sent_sufficient_coin;
-use crate::contract::query;
 use crate::error::ContractError;
 use crate::state::{
-    did_storage_read, profile_storage, profile_storage_read, single_subscription_storage,
-    single_subscription_storage_read, wallet_storage, wallet_storage_read, SubscriptionInfo,
+    profile_storage, profile_storage_read, single_subscription_storage,
+    single_subscription_storage_read, wallet_storage_read, SubscriptionInfo,
 };
-use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
-use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries, CoreumResult};
-use coreum_wasm_sdk::nft::{self, NFTResponse, NFT};
+use coreum_wasm_sdk::assetnft;
+use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
+use coreum_wasm_sdk::nft;
 use cosmwasm_std::{
-    from_json, to_json_binary, Binary, Coin, Deps, DepsMut, Int64, MessageInfo, QueryRequest,
-    Response, StdError, StdResult, Uint128, Uint64,
+    coin, from_json, to_json_binary, BankMsg, Binary, Coin, Deps, DepsMut, Int64, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
-use cosmwasm_storage::{Bucket, ReadonlyBucket};
-use sha2::digest::typenum::UInt;
 use std::cmp::min;
+
+// hash function used to map an arbitrary length string (i.e. DID) into a string of a specific lenght
+// needed for using DID as part of the NFT id
+pub fn hash_did(s: &str, n: usize) -> String {
+    let mut result = vec![0u8; n];
+    
+    for (i, &byte) in s.as_bytes().iter().enumerate() {
+        result[i % n] = ((result[i % n] as u8 + byte) % 128) as u8; // Circular addition and keep within ASCII range
+    }
+
+    // Convert the result to a string
+    result.iter().map(|&c| (c as char)).collect()
+}
 
 pub fn subscribe(
     deps: DepsMut<CoreumQueries>,
@@ -81,25 +88,35 @@ pub fn subscribe(
     // mint the subscription NFT
 
     // TODO: change this to {contract_address}-{profile_did}
-    // issues NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    // let clipped_did_length = min(26, min(subscribe_to_did.len(), subscriber_did.did.len())); // max length of NFT id is 100 so we need to crop them, using last chars to avoid collisions
-    // let class_id = format!(
-    //     "{}-{}",
-    //     "coredin", // TODO - use contract address
-    //     subscribe_to_did.to_string()[subscribe_to_did.len() - clipped_did_length..].to_string(),
-    // );
-    // let nft_id = format!(
-    //     "{}-{}",
-    //     class_id,
-    //     subscriber_did.did.to_string()[subscriber_did.did.len() - clipped_did_length..].to_string()
-    // );
-    // let mint_res = mint_nft(info.clone(), class_id, nft_id, None).unwrap();
+    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
+    let clipped_did_length = min(26, min(subscribe_to_did.len(), subscriber_did.did.len())); // max length of NFT id is 100 so we need to crop them, using last chars to avoid collisions
+    let class_id = format!(
+        "{}-{}",
+        "coredin", // TODO - use contract address
+        subscribe_to_did.to_string()[subscribe_to_did.len() - clipped_did_length..].to_string(),
+    );
+    let nft_id = format!(
+        "{}-{}",
+        class_id,
+        subscriber_did.did.to_string()[subscriber_did.did.len() - clipped_did_length..].to_string()
+    );
+    let mint_res = mint_nft(info.clone(), class_id, nft_id, None).unwrap();
+
+
+    // payout
+    let cored_in_commission_fraction = (1u128, 20u128); // TODO: hardcoded to 5% = 1/20 for now, TBD and configurable
+    let cored_in_commission = price.amount.checked_mul_floor(cored_in_commission_fraction).unwrap();
+    let owner_payout = price.amount.checked_sub(cored_in_commission).unwrap();
+
+    let pay_owner_msg = BankMsg::Send { to_address: subscriber_did.wallet.to_string(), amount: vec![coin(owner_payout.u128(), "core")] };
+    
 
     Ok(Response::default()
         .add_attribute("action", "subscribe")
         .add_attribute("subscribed_to", subscribe_to_did)
         .add_attribute("subscriber", info.sender)
-        .add_attribute("refund", refund.to_string()))
+        .add_attribute("refund", refund.to_string())
+        .add_message(pay_owner_msg))
 }
 
 fn mint_nft(

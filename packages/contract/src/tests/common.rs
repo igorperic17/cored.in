@@ -2,11 +2,9 @@
 
 #[cfg(test)]
 pub mod common {
-    use std::borrow::{BorrowMut, Cow};
-
     use coreum_wasm_sdk::core::CoreumQueries;
-    use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info, MockApi, MockQuerier, MockStorage};
-    use cosmwasm_std::{coins, from_json, Addr, Api, Coin, CustomQuery, Deps, DepsMut, Empty, MemoryStorage, OwnedDeps, QuerierWrapper, Storage};
+    use cosmwasm_std::testing::{mock_env, mock_info, MockApi, MockQuerier, MockStorage};
+    use cosmwasm_std::{coins, from_json, Addr, Coin, Deps, DepsMut, Empty, OwnedDeps, QuerierWrapper};
 
     use crate::contract::{execute, instantiate, query};
     use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};

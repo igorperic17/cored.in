@@ -7,6 +7,7 @@ pub mod state;
 pub mod subscription;
 pub mod coin_helpers;
 pub mod merkle_tree;
+pub mod dao;
 
 #[cfg(test)]
 mod tests {

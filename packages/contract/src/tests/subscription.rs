@@ -1,10 +1,14 @@
 #[cfg(test)]
 mod tests {
-    use coreum_wasm_sdk::{assetnft, nft};
-    use coreum_wasm_sdk::core::CoreumQueries;
-    use coreum_wasm_sdk::types::cosmos::base::v1beta1::Coin;
+    use coreum_wasm_sdk::assetft::BalanceResponse;
+    use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
+    use coreum_wasm_sdk::types::coreum;
+    use coreum_wasm_sdk::types::coreum::asset::ft;
+    use coreum_wasm_sdk::types::coreum::asset::ft::v1::QueryBalanceResponse;
+    use coreum_wasm_sdk::types::cosmos::bank::v1beta1::QueryBalanceRequest;
+    use cosmwasm_schema::QueryResponses;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_json, QueryRequest, Querier};
+    use cosmwasm_std::{coin, coins, from_json, BankMsg, CosmosMsg, QueryRequest};
     use crate::contract::{execute, query};
     use crate::msg::{ExecuteMsg, QueryMsg};
     use crate::tests::common::common::{get_deps, mock_init_no_price, mock_register};
@@ -262,9 +266,53 @@ mod tests {
         // // }
 
         let deps = get_deps(&mut deps_empty);
+        let res = execute(deps, mock_env(), subscribe_info.clone(), subscribe_msg.clone());
+        assert!(res.is_ok(), "Expected subscribe call to suceed");
+
+        // repeated subscription should pass
+        let deps = get_deps(&mut deps_empty);
+        let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
+        assert!(res.is_ok(), "Expected subscribe call to suceed");
+
+    }
+
+
+    #[test]
+    fn subscribe_payout_owner() {
+        let mut deps_empty = mock_dependencies();
+
+        let deps = get_deps(&mut deps_empty);
+        mock_init_no_price(deps);
+        // register actors
+        let deps = get_deps(&mut deps_empty);
+        mock_register(deps, "alice", &[coin(10, "core")]);
+        let deps = get_deps(&mut deps_empty);
+        mock_register(deps, "bob", &[coin(10, "core")]);
+
+        let subscribe_info = mock_info("bob_key", &coins(10, "core"));
+        let subscribe_msg = ExecuteMsg::Subscribe {
+            did: "alice_did".to_string(),
+        };
+
+        let deps = get_deps(&mut deps_empty);
         let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
 
         assert!(res.is_ok(), "Expected subscribe call to suceed");
+
+        // check if Alice got paid
+        // let balance_request = cosmwasm_std::BankQuery::Balance { 
+        //     address:  "alice_key".to_string(),
+        //     denom: "core".to_string(),
+        // };
+        let balance_request = coreum::asset::ft::v1::QueryBalanceRequest {
+            account:  "alice_key".to_string(),
+            denom: "core".to_string(),
+        };
+        let q: QueryRequest<CoreumQueries> = balance_request.into();
+        let deps = get_deps(&mut deps_empty);
+        let balance_response = deps.querier.query::<coreum::asset::ft::v1::QueryBalanceResponse>(&q);
+        println!("{:?}", balance_response);
+        // assert!(balance_response.balance == "8core");
     }
 
 }

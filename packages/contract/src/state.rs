@@ -3,7 +3,7 @@ use std::collections::LinkedList;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Coin, Int64, Storage, Uint64};
+use cosmwasm_std::{Addr, Coin, Storage, Uint64};
 use cosmwasm_storage::{
     bucket, bucket_read, singleton, singleton_read, Bucket, ReadonlyBucket, ReadonlySingleton,
     Singleton,
