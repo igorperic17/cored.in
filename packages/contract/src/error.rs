@@ -1,5 +1,8 @@
+use cosmwasm_std::Coin;
 use cosmwasm_std::StdError;
 use thiserror::Error;
+
+use crate::state::SubscriptionInfo;
 
 #[derive(Error, Debug)]
 pub enum ContractError {
@@ -10,7 +13,7 @@ pub enum ContractError {
     Unauthorized {},
 
     #[error("Insufficient funds sent")]
-    InsufficientFundsSend {},
+    InsufficientFundsSend { sent: Option<Coin>, expected: Option<Coin>},
 
     #[error("Name does not exist (name {name})")]
     NameNotExists { name: String },
@@ -29,4 +32,12 @@ pub enum ContractError {
 
     #[error("Saving profile for DID {did} failed")]
     ProfileSaveFailed { did: String },
+
+    #[error("Subscription failed - error minting NFT")]
+    SubscriptionNFTMintingError { },
+
+    #[error("A valid subscription exists: {subscription_info}")]
+    ExistingSubscriptionFound { subscription_info: SubscriptionInfo },
+
+
 }

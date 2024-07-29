@@ -56,7 +56,7 @@ pub fn execute(
             execute_update_vc_root(deps, env, info, did, root)
         }
         ExecuteMsg::SetSubscriptionPrice { price } => set_subscription_price(deps, info, price),
-        ExecuteMsg::Subscribe { did } => subscribe(deps, info, did),
+        ExecuteMsg::Subscribe { did } => subscribe(deps, env, info, did),
     }
 }
 
@@ -92,7 +92,7 @@ pub fn execute_register(
     wallet_storage(deps.storage).save(record.wallet.as_bytes(), &record)?;
 
     let user_profile = ProfileInfo {
-        subscription_price: Some(coin(0, "core")),
+        subscription_price: Some(coin(0, "ucore")),
         top_subscribers: LinkedList::new(),
         subscriber_count: Uint64::zero(),
     };
@@ -120,7 +120,8 @@ pub fn execute_register(
         royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
     });
 
-    Ok(Response::default().add_message(issue_class_msg))
+    Ok(Response::default()
+        .add_message(issue_class_msg))
 }
 
 pub fn execute_remove(
@@ -167,7 +168,7 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
             credential_hash,
             merkle_proofs,
         } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
-        QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, did, subscriber),
+        QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, env, did, subscriber),
         QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did),
     }
 }

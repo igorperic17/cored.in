@@ -2,50 +2,119 @@
 
 #[cfg(test)]
 pub mod common {
+
     use coreum_wasm_sdk::core::CoreumQueries;
     use cosmwasm_std::testing::{mock_env, mock_info, MockApi, MockQuerier, MockStorage};
-    use cosmwasm_std::{coins, from_json, Addr, Coin, Deps, DepsMut, Empty, OwnedDeps, QuerierWrapper};
+    use cosmwasm_std::{coin, coins, from_json, Addr, Coin, Deps, DepsMut, Empty, MemoryStorage, OwnedDeps, QuerierWrapper, Storage};
 
     use crate::contract::{execute, instantiate, query};
     use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
     use crate::state::Config;
+    
+    // use coreum_test_tube::{Account, CoreumTestApp, Module, SigningAccount, Wasm};
 
-    // pub struct DepsMutCoreum<'a> {
-    //     deps: DepsMut<'a, CoreumQueries>
+    // // function pointer is invoked when mock env is set to execute test defined in the injected function
+    // // signature: (app, accounts, contract_addr, code_id, wasm)
+    // pub fn with_test_tube(f: &dyn Fn(Vec<SigningAccount>, String, Wasm<CoreumTestApp>)) {
+
+    //     // test-tube setup
+
+    //     // Create new Coreum appchain instance.
+    //     let app = CoreumTestApp::new();
+
+    //     // `Wasm` is the module we use to interact with cosmwasm releated logic on the appchain
+    //     let wasm = Wasm::new(&app);
+
+    //     // init multiple accounts
+    //     let accs = app
+    //                 .init_accounts(&coins(100 * 100_000_000_000, "ucore".to_string()), 3)
+    //                 .unwrap();
+    //     let admin = &accs.get(0).unwrap();
+
+    //     // Store compiled wasm code on the appchain and retrieve its code id
+    //     let wasm_byte_code = std::fs::read("./artifacts/coredin.wasm").unwrap();
+    //     let code_id = wasm
+    //                 .store_code(&wasm_byte_code, None, &admin)
+    //                 .unwrap()
+    //                 .data
+    //                 .code_id;
+
+    //     // Instantiate contract with initial admin (signer) account defined beforehand and make admin list mutable
+    //     let contract_addr = wasm
+    //                 .instantiate(
+    //                     code_id,
+    //                     &InstantiateMsg {
+    //                         purchase_price: None,
+    //                         transfer_price: None,
+    //                     },
+    //                     None,
+    //                     "label".into(),
+    //                     &coins(20 * 100_000_000_000, "ucore".to_string()),
+    //                     &admin,
+    //                 )
+    //                 .unwrap()
+    //                 .data
+    //                 .address;
+        
+    //     f(accs, contract_addr, wasm);
     // }
 
-    // impl<'a> DepsMutCoreum<'a> {
 
-    //     pub fn new() -> Self {
-    //         DepsMutCoreum {
-    //             deps: mock_dependencies()
-    //         }
-    //     }
-
-
-    //     pub fn get_mut(&mut self) -> Self {
-    //         let mut deps_empty = Box::new(mock_dependencies());
-    //         DepsMutCoreum {
-    //             deps: DepsMut {
-    //                 storage: &mut self.deps.storage,
-    //                 api: &self.deps.api,
-    //                 querier: QuerierWrapper::new(&self.deps.querier),
-    //             }
-    //         }
-    //     }
+    // pub fn mock_register_account(wasm: &Wasm<CoreumTestApp>, contract_addr: &String, account: &SigningAccount, username: String) {
+    //         let register_did_msg = ExecuteMsg::Register { 
+    //             did: format!("{}_did", username).to_string(), 
+    //             username: username 
+    //         };
+    //         wasm.execute::<ExecuteMsg>(
+    //                 &contract_addr, 
+    //                 &register_did_msg,
+    //                 &coins(10_000_000_000, "ucore"),
+    //                 // &[],
+    //                 &account
+    //             )
+    //             .unwrap();
     // }
 
-    // impl Clone for DepsMutCoreum<'_> {
-    //     fn clone(&self) -> Self {
-    //         Self { deps: self.deps.clone() }
-    //     }
-    // }
+
+
+    pub fn mock_coredin_initial_accounts() -> Vec<(String, Coin)> {
+        vec![
+            ("alice_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
+            ("bob_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
+            ("claire_key".to_string(), coin(100 * 10_000_000_000, "ucore"))
+        ]
+    }
 
     pub fn get_deps<'a>(deps_empty: &'a mut OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>) -> DepsMut<'a, CoreumQueries> {
         DepsMut {
             storage: &mut deps_empty.storage,
             api: &deps_empty.api,
             querier: QuerierWrapper::new(&deps_empty.querier),
+        }
+    }
+
+    pub fn copy_deps<'a>(deps_empty: &'a mut DepsMut<'a, CoreumQueries>) -> DepsMut<'a, CoreumQueries> {
+        DepsMut {
+            storage: deps_empty.storage,
+            api: deps_empty.api,
+            querier: deps_empty.querier,
+        }
+    }
+    pub struct MockCoreumDeps {
+        pub deps: OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>,
+    }
+    
+    impl MockCoreumDeps {
+        pub fn new(deps: OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>) -> Self {
+            MockCoreumDeps { deps }
+        }
+    
+        pub fn as_deps_mut(&mut self) -> DepsMut<CoreumQueries> {
+            DepsMut {
+                storage: &mut self.deps.storage,
+                api: &self.deps.api,
+                querier: QuerierWrapper::new(&self.deps.querier),
+            }
         }
     }
 

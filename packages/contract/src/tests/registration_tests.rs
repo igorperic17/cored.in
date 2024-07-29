@@ -234,7 +234,7 @@ mod tests {
 
         match res {
             Ok(_) => panic!("register call should fail with insufficient fees"),
-            Err(ContractError::InsufficientFundsSend {}) => {}
+            Err(ContractError::InsufficientFundsSend { sent: _, expected: _}) => {}
             Err(e) => panic!("Unexpected error: {:?}", e),
         }
     }
@@ -257,7 +257,7 @@ mod tests {
 
         match res {
             Ok(_) => panic!("register call should fail with insufficient fees"),
-            Err(ContractError::InsufficientFundsSend {}) => {}
+            Err(ContractError::InsufficientFundsSend {sent: _, expected: _}) => {}
             Err(e) => panic!("Unexpected error: {:?}", e),
         }
     }

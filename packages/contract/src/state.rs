@@ -1,9 +1,10 @@
-use std::collections::LinkedList;
+use std::{collections::LinkedList};
+use std::fmt::Display;
 
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Coin, Storage, Uint64};
+use cosmwasm_std::{Addr, Coin, Storage, Timestamp, Uint64};
 use cosmwasm_storage::{
     bucket, bucket_read, singleton, singleton_read, Bucket, ReadonlyBucket, ReadonlySingleton,
     Singleton,
@@ -13,7 +14,9 @@ pub static CONFIG_KEY: &[u8] = b"config";
 pub static DID_RESOLVER_KEY: &[u8] = b"didresolver";
 pub static USERNAME_RESOLVER_KEY: &[u8] = b"usernameresolver"; // maps usernames to DIDs
 pub static WALLET_RESOLVER_KEY: &[u8] = b"walletlresolver"; // maps wallet addresses to DIDs
+
 pub static VC_MERKLE_RESOLVER_KEY: &[u8] = b"vcmerklelresolver"; // maps DIDs to Merkle root commitments
+
 pub static PROFILE_INFO: &[u8] = b"profileinfo"; // stores top subscribers, subcription price, etc.
 pub static SINGLE_SUBSCRIPTION: &[u8] = b"singlesub"; // stores info about a single (user -> subscriber) pair
 pub static POST_KEY: &[u8] = b"postinfo"; // post info (includes optional bounty, creator tips, wheather accepted answer has been marked, claimed, etc)
@@ -77,9 +80,16 @@ pub struct SubscriptionInfo {
     // pub subscriber: Addr,
     pub subscriber: String, // subscriber's DID
     pub subscribed_to: String, // DID of the profile subscribet to
+    pub valid_until: Timestamp,
     pub cost: Coin
 }
 
+impl Display for SubscriptionInfo {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.write_str(format!("{:?}", self).as_str());
+        Ok(())
+    }
+}
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct ProfileInfo {
