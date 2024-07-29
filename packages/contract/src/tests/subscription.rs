@@ -242,7 +242,6 @@ mod tests {
             ("bob_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("claire_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }])
             ]);
-
         mock_init_no_price(deps.as_mut());
 
         // register actors
