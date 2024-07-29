@@ -103,25 +103,25 @@ pub fn execute_register(
         return Err(ContractError::ProfileSaveFailed { did: did });
     }
 
-    // create an NFT class for this DID
-    // so all of the subscription to this user is an NFT of this class
-    let clipped_did_length = min(26, record.did.len());
-    let symbol = record.did.to_string()[record.did.len() - clipped_did_length..].to_string(); // TODO: Coreum regex workaround
-    let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
-        name: record.did.to_string(), // class = user's DID they just registered
-        symbol,                       // class = cropped DID
-        description: Some(
-            format!("Subscribers of {} (DID: {})", record.username, record.did).to_string(),
-        ),
-        uri: None,
-        uri_hash: None,
-        data: None,                            //
-        features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
-        royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
-    });
+    // // create an NFT class for this DID
+    // // so all of the subscription to this user is an NFT of this class
+    // let clipped_did_length = min(26, record.did.len());
+    // let symbol = record.did.to_string()[record.did.len() - clipped_did_length..].to_string(); // TODO: Coreum regex workaround
+    // let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
+    //     name: record.did.to_string(), // class = user's DID they just registered
+    //     symbol,                       // class = cropped DID
+    //     description: Some(
+    //         format!("Subscribers of {} (DID: {})", record.username, record.did).to_string(),
+    //     ),
+    //     uri: None,
+    //     uri_hash: None,
+    //     data: None,                            //
+    //     features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
+    //     royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
+    // });
 
-    Ok(Response::default()
-        .add_message(issue_class_msg))
+    Ok(Response::default())
+        // .add_message(issue_class_msg))
 }
 
 pub fn execute_remove(

@@ -111,16 +111,18 @@ pub fn subscribe(
         .save(subscribe_to_did.as_bytes(), &profile_info)
         .expect("Error incrementing subscriber count");
 
-    // mint the subscription NFT
-    let nft_class_id = generate_nft_class_id(env.clone(), subscribe_to_did.clone());
-    let nft_id = generate_nft_id(env.clone(), subscriber_did.clone().did, subscribe_to_did);
-    let valid_until = env.block.time.plus_days(30); // valid for a month, ability to subscribe for more/less TBD
-    let mint_res = mint_nft(info.clone(), nft_class_id, nft_id, Some(to_json_binary(&valid_until).unwrap()));
-    if mint_res.is_err() {
-        return Err(ContractError::SubscriptionNFTMintingError {});
-    } else {
-        Response::new().add_submessages(mint_res.unwrap().messages);
-    }
+    // // mint the subscription NFT
+    // let nft_class_id = generate_nft_class_id(env.clone(), subscribe_to_did.clone());
+    // let nft_id = generate_nft_id(env.clone(), subscriber_did.clone().did, subscribe_to_did);
+    // let valid_until = env.block.time.plus_days(30); // valid for a month, ability to subscribe for more/less TBD
+    // let mint_res = mint_nft(info.clone(), nft_class_id, nft_id, Some(to_json_binary(&valid_until).unwrap()));
+    // if mint_res.is_err() {
+    //     return Err(ContractError::SubscriptionNFTMintingError {});
+    // } else {
+    //     let sub_msg = mint_res.unwrap().messages;
+    //     deps.api.debug(format!("MINT NFT messages: {:?}", sub_msg).as_str());
+    //     Response::new().add_submessages(sub_msg);
+    // }
 
     // payout
     // deps.api.debug("Trying to pay the subscriber...");
@@ -136,7 +138,7 @@ pub fn subscribe(
         .add_attribute("action", "subscribe")
         .add_attribute("subscribed_to_did", subscribed_to_wallet.did)
         .add_attribute("subscribed_to_wallet", subscribed_to_wallet.wallet)
-        .add_attribute("valid_until", valid_until.to_string())
+        // .add_attribute("valid_until", valid_until.to_string())
         .add_attribute("subscriber", info.sender)
         .add_message(pay_owner_msg))
 }
