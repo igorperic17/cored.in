@@ -84,7 +84,7 @@ pub fn subscribe(
     let existing_sub = single_subscription_storage_read(deps.storage).load(subscription_key.as_bytes());
     if existing_sub.is_ok() {
         let existing_subscription = existing_sub.unwrap();
-        if existing_subscription.valid_until.seconds() < env.block.time.seconds() {
+        if existing_subscription.valid_until.seconds() > env.block.time.seconds() {
             return Err(ContractError::ExistingSubscriptionFound { subscription_info: existing_subscription });
         }
     }

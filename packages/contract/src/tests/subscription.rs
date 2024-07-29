@@ -232,10 +232,6 @@ mod tests {
         let res = execute(deps.as_mut(), mock_env(), subscribe_info.clone(), subscribe_msg.clone());
         assert!(res.is_ok(), "Expected subscribe call to suceed");
 
-        // repeated subscription should pass
-        let res = execute(deps.as_mut(), mock_env(), subscribe_info, subscribe_msg);
-        assert!(res.is_ok(), "Expected subscribe call to suceed");
-
     }
 
     #[test]
