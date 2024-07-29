@@ -2,7 +2,7 @@
 mod tests {
     use crate::contract::{execute, query};
     use crate::msg::{ExecuteMsg, GetMerkleRootResponse, QueryMsg};
-    use crate::tests::common::common::{get_deps, mock_alice_registers_name, mock_init_no_price};
+    use crate::tests::common::common::{mock_alice_registers_name, mock_init_no_price};
     use cosmwasm_std::from_json;
     use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
     use hex;
@@ -69,13 +69,11 @@ mod tests {
 
     #[test]
     fn test_verify() {
-        let mut deps_empty = mock_dependencies();
+        let mut deps = mock_dependencies();
 
-        let deps = get_deps(&mut deps_empty);
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
 
-        let deps = get_deps(&mut deps_empty);
-        mock_alice_registers_name(deps, &[]);
+        mock_alice_registers_name(deps.as_mut(), &[]);
 
         let info = mock_info("alice_key", &[]);
 
@@ -92,14 +90,12 @@ mod tests {
             did: "alice_did".to_string(),
             root: root.clone(),
         };
-        let deps = get_deps(&mut deps_empty);
-        let _res = execute(deps, mock_env(), info, msg)
+        let _res = execute(deps.as_mut(), mock_env(), info, msg)
             .expect("contract successfully handles UpdateCredentialMerkeRoot message");
 
         let query_root_msg = QueryMsg::GetMerkleRoot {
             did: "alice_did".to_string(),
         };
-        let deps = get_deps(&mut deps_empty);
         let query_root_res = query(deps.as_ref(), mock_env(), query_root_msg).unwrap();
         let query_root_value: GetMerkleRootResponse = from_json(&query_root_res).unwrap();
         assert!(
@@ -125,12 +121,10 @@ mod tests {
     #[test]
     fn test_store_and_verify_dummy_credentials() {
         
-        let mut deps_empty = mock_dependencies();
+        let mut deps = mock_dependencies();
 
-        let deps = get_deps(&mut deps_empty);
-        mock_init_no_price(deps);
-        let deps = get_deps(&mut deps_empty);
-        mock_alice_registers_name(deps, &[]);
+        mock_init_no_price(deps.as_mut());
+        mock_alice_registers_name(deps.as_mut(), &[]);
 
         // Update VC root with dummy credentials
         let info: cosmwasm_std::MessageInfo = mock_info("alice_key", &[]);
@@ -154,8 +148,7 @@ mod tests {
             did: String::from("alice_did"),
             root: root.clone(),
         };
-        let deps = get_deps(&mut deps_empty);
-        let _res = execute(deps, mock_env(), info, msg)
+        let _res = execute(deps.as_mut(), mock_env(), info, msg)
             .expect("contract successfully handles UpdateCredentialMerkeRoot message");
 
         // Generate proofs for the dummy credential
@@ -170,7 +163,6 @@ mod tests {
             credential_hash: MerkleTree::hash(hex::encode(target_credential).as_str()),
             merkle_proofs: merkle_proofs.clone(),
         };
-        let deps = get_deps(&mut deps_empty);
         let res = query(deps.as_ref(), mock_env(), query_msg).unwrap();
         let value: bool = from_json(&res).unwrap();
 

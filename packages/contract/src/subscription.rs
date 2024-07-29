@@ -4,15 +4,10 @@ use crate::state::{
     did_storage_read, profile_storage, profile_storage_read, single_subscription_storage, single_subscription_storage_read, wallet_storage_read, SubscriptionInfo
 };
 use coreum_wasm_sdk::assetnft;
-use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft;
-use coreum_wasm_sdk::shim::Timestamp;
-use coreum_wasm_sdk::types::cosmos::group::v1::MsgUpdateGroupPolicyMetadataResponse;
+use coreum_wasm_sdk::core::CoreumMsg;
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Deps, DepsMut, Env, Int64, MessageInfo, QueryRequest, Response, StdError, StdResult, SubMsg, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64
 };
-use std::cmp::min;
-use std::convert::TryInto;
 
 // hash function used to map an arbitrary length string (i.e. DID) into a string of a specific lenght
 // needed for using DID as part of the NFT id
@@ -28,7 +23,7 @@ pub fn hash_did(s: &str, n: usize) -> String {
 }
 
 pub fn subscribe(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     env: Env,
     info: MessageInfo,
     subscribe_to_did: String,
@@ -172,7 +167,7 @@ fn mint_nft(
 }
 
 pub fn is_subscriber(
-    deps: Deps<CoreumQueries>,
+    deps: Deps,
     env: Env,
     did: String,
     subscriber: String,
@@ -206,7 +201,7 @@ pub fn is_subscriber(
 }
 
 // gets current subscription cost
-pub fn get_subscription_price(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
+pub fn get_subscription_price(deps: Deps, did: String) -> StdResult<Binary> {
     let profile_info = profile_storage_read(deps.storage).load(did.as_bytes());
 
     match profile_info {
@@ -226,7 +221,7 @@ pub fn get_subscription_price(deps: Deps<CoreumQueries>, did: String) -> StdResu
 }
 
 pub fn set_subscription_price(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     info: MessageInfo,
     price: Coin,
 ) -> Result<Response<CoreumMsg>, ContractError> {

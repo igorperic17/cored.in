@@ -1,28 +1,20 @@
 #[cfg(test)]
 mod tests {
-    use std::borrow::{Borrow, BorrowMut};
-
     // use coreum_test_tube::{CoreumTestApp, SigningAccount, Wasm};
-    use coreum_wasm_sdk::core::CoreumQueries;
-    use coreum_wasm_sdk::types::coreum;
-    use coreum_wasm_sdk::types::cosmos::bank;
     use cosmwasm_std::testing::{mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_json, BalanceResponse, BankMsg, BankQuery, Coin, CosmosMsg, QueryRequest, SubMsg, Uint128};
+    use cosmwasm_std::{coin, coins, from_json, BalanceResponse, BankMsg, Coin, CosmosMsg, QueryRequest, Uint128};
     use crate::contract::{execute, query};
     use crate::msg::{ExecuteMsg, QueryMsg};
-    use crate::subscription::is_subscriber;
-    use crate::tests::common::common::{copy_deps, get_deps, mock_coredin_initial_accounts, mock_init_no_price, mock_register, MockCoreumDeps};
+    use crate::tests::common::common::{mock_init_no_price, mock_register};
 
     #[test]
     fn set_subscription_price() {
-        let mut deps_empty = mock_dependencies();
-        let deps = get_deps(&mut deps_empty);
+        let mut deps = mock_dependencies();
 
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
 
         // register actors
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "alice", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "alice", &[coin(10, "core")]);
 
         let info = mock_info("alice_key", &[]);
         let price = coin(10, "core");
@@ -30,12 +22,10 @@ mod tests {
             price: price.clone(),
         };
 
-        let deps = get_deps(&mut deps_empty);
-        let _res = execute(deps, mock_env(), info, msg)
+        let _res = execute(deps.as_mut(), mock_env(), info, msg)
             .expect("contract successfully handles SetSubscriptionPrice message");
 
-        let deps = get_deps(&mut deps_empty);
-        let stored_price = crate::state::profile_storage_read(deps.storage)
+        let stored_price = crate::state::profile_storage_read(deps.as_mut().storage)
             .may_load("alice_did".as_bytes())
             .expect("load subscription price")
             .unwrap().subscription_price.unwrap();
@@ -45,24 +35,20 @@ mod tests {
 
     #[test]
     fn subscribe_success() {
-        let mut deps_empty = mock_dependencies();
-        let deps = get_deps(&mut deps_empty);
+        let mut deps = mock_dependencies();
 
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
 
         // register actors
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "alice", &[coin(10, "core")]);
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "bob", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "alice", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "bob", &[coin(10, "core")]);
 
         let subscribe_info = mock_info("bob_key", &coins(10, "core"));
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
 
-        let deps = get_deps(&mut deps_empty);
-        let _res = execute(deps, mock_env(), subscribe_info, subscribe_msg)
+        let _res = execute(deps.as_mut(), mock_env(), subscribe_info, subscribe_msg)
             .expect("contract successfully handles Subscribe message");
 
         let is_subscriber_msg = QueryMsg::IsSubscriber {
@@ -70,7 +56,6 @@ mod tests {
             subscriber: "bob_did".to_string(),
         };
 
-        let deps = get_deps(&mut deps_empty);
         let res = query(deps.as_ref(), mock_env(), is_subscriber_msg).unwrap();
         let value: bool = from_json(&res).unwrap();
         assert!(value, "Expected Bob to be a subscriber of Alice");
@@ -78,24 +63,20 @@ mod tests {
 
     #[test]
     fn subscribe_insufficient_funds() {
-        let mut deps_empty = mock_dependencies();
-        let deps = get_deps(&mut deps_empty);
+        let mut deps = mock_dependencies();
         
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
 
         // register actors
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "alice", &[coin(10, "core")]);
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "bob", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "alice", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "bob", &[coin(10, "core")]);
 
         let info = mock_info("alice_key", &[]);
         let price = coin(10, "core");
         let set_price_msg = ExecuteMsg::SetSubscriptionPrice {
             price: price.clone(),
         };
-        let deps = get_deps(&mut deps_empty);
-        let _res = execute(deps, mock_env(), info.clone(), set_price_msg)
+        let _res = execute(deps.as_mut(), mock_env(), info.clone(), set_price_msg)
             .expect("contract successfully handles SetSubscriptionPrice message");
 
         let subscribe_info = mock_info("bob_key", &coins(5, "core"));
@@ -103,27 +84,22 @@ mod tests {
             did: "alice_key".to_string(),
         };
 
-        let deps = get_deps(&mut deps_empty);
-        let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
+        let res = execute(deps.as_mut(), mock_env(), subscribe_info, subscribe_msg);
 
         assert!(res.is_err(), "Expected subscribe call to fail with insufficient funds");
     }
 
     #[test]
     fn subscribe_excess_funds() {
-        let mut deps_empty = mock_dependencies();
-        let deps = get_deps(&mut deps_empty);
+        let mut deps = mock_dependencies();
         let env = mock_env(); 
 
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
 
         // register actors
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "alice", &[coin(100, "ucore")]);
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "bob", &[coin(100, "ucore")]);
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "claire", &[coin(100, "ucore")]);
+        mock_register(deps.as_mut(), "alice", &[coin(100, "ucore")]);
+        mock_register(deps.as_mut(), "bob", &[coin(100, "ucore")]);
+        mock_register(deps.as_mut(), "claire", &[coin(100, "ucore")]);
 
         // Alice sets her sub price to 10 CORE tokens
         //  1st subscriber pays 1 * 10 CORE = 10 CORE
@@ -135,8 +111,7 @@ mod tests {
             price: price.clone(),
         };
 
-        let deps = get_deps(&mut deps_empty);
-        let _res = execute(deps, env.clone(), info.clone(), set_price_msg)
+        let _res = execute(deps.as_mut(), env.clone(), info.clone(), set_price_msg)
             .expect("contract successfully handles SetSubscriptionPrice message");
 
         // Bob wants to sub to Alice, which should cost him 10 CORE, but he attaches 15 CORE to the transaction...
@@ -144,8 +119,7 @@ mod tests {
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
-        let deps = get_deps(&mut deps_empty);
-        let res = execute(deps, env.clone(), subscribe_info.clone(), subscribe_msg.clone())
+        let res = execute(deps.as_mut(), env.clone(), subscribe_info.clone(), subscribe_msg.clone())
             .expect("contract successfully handles Subscribe message");
 
         // .. and he gets 5 CORE refunded 
@@ -158,7 +132,6 @@ mod tests {
             did: "alice_did".to_string(),
             subscriber: "bob_did".to_string(),
         };
-        let deps = get_deps(&mut deps_empty);
         let res = query(deps.as_ref(), env.clone(), is_bob_subscriber_msg).unwrap();
         let value: bool = from_json(&res).unwrap();
         assert!(value, "Expected Bob to be a subscriber of Alice");
@@ -175,22 +148,18 @@ mod tests {
         // Claire tries to subscribe to Alice by attaching 15 CORE, less than needed 
         // since Alice already has 1 subscriber so the price is 20 CORE
         let claire_subscribe_info = mock_info("claire_key", &coins(15, "ucore"));
-        let deps = get_deps(&mut deps_empty);
-        let _ = execute(deps, env.clone(), claire_subscribe_info.clone(), subscribe_msg.clone())
+        let _ = execute(deps.as_mut(), env.clone(), claire_subscribe_info.clone(), subscribe_msg.clone())
             .expect_err("contract successfully handles Subscribe message");
         
-            let deps = get_deps(&mut deps_empty);
         let res = query(deps.as_ref(), env.clone(), is_claire_subscriber_msg.clone()).unwrap();
         let value: bool = from_json(&res).unwrap();
         assert!(value == false, "Expected Claire not to be a subscriber of Alice at this moment");
 
         // Claire tries to subscribe to Alice by attaching 55 CORE, more than needed
         let claire_subscribe_info = mock_info("claire_key", &coins(55, "ucore"));
-        let deps = get_deps(&mut deps_empty);
-        let claire_sub_res = execute(deps, env.clone(), claire_subscribe_info.clone(), subscribe_msg.clone())
+        let claire_sub_res = execute(deps.as_mut(), env.clone(), claire_subscribe_info.clone(), subscribe_msg.clone())
             .expect("contract successfully handles Subscribe message");
         
-            let deps = get_deps(&mut deps_empty);
         let res = query(deps.as_ref(), env.clone(), is_claire_subscriber_msg).unwrap();
         let value: bool = from_json(&res).unwrap();
         assert!(value, "Expected Claire to be a subscriber of Alice at this moment");
@@ -204,36 +173,30 @@ mod tests {
 
     #[test]
     fn subscribe_nonexistent_did() {
-        let mut deps_empty = mock_dependencies();
+        let mut deps = mock_dependencies();
 
-        let deps = get_deps(&mut deps_empty);
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
         // register actors
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "bob", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "bob", &[coin(10, "core")]);
 
         let subscribe_info = mock_info("bob_key", &coins(10, "core"));
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "nonexistent_did".to_string(),
         };
 
-        let deps = get_deps(&mut deps_empty);
-        let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
+        let res = execute(deps.as_mut(), mock_env(), subscribe_info, subscribe_msg);
 
         assert!(res.is_err(), "Expected subscribe call to fail for nonexistent DID");
     }
 
     #[test]
     fn subscribe_nft_issued() {
-        let mut deps_empty = mock_dependencies();
+        let mut deps = mock_dependencies();
 
-        let deps = get_deps(&mut deps_empty);
-        mock_init_no_price(deps);
+        mock_init_no_price(deps.as_mut());
         // register actors
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "alice", &[coin(10, "core")]);
-        let deps = get_deps(&mut deps_empty);
-        mock_register(deps, "bob", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "alice", &[coin(10, "core")]);
+        mock_register(deps.as_mut(), "bob", &[coin(10, "core")]);
 
         let subscribe_info = mock_info("bob_key", &coins(10, "core"));
         let subscribe_msg = ExecuteMsg::Subscribe {
@@ -266,46 +229,30 @@ mod tests {
         // //     None => to_binary(&false),
         // // }
 
-        let deps = get_deps(&mut deps_empty);
-        let res = execute(deps, mock_env(), subscribe_info.clone(), subscribe_msg.clone());
+        let res = execute(deps.as_mut(), mock_env(), subscribe_info.clone(), subscribe_msg.clone());
         assert!(res.is_ok(), "Expected subscribe call to suceed");
 
         // repeated subscription should pass
-        let deps = get_deps(&mut deps_empty);
-        let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
+        let res = execute(deps.as_mut(), mock_env(), subscribe_info, subscribe_msg);
         assert!(res.is_ok(), "Expected subscribe call to suceed");
 
     }
 
     #[test]
     fn subscribe_payout_owner() {
-
         let env = mock_env();
-
         let mut deps = mock_dependencies_with_balances(&[
             ("alice_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("bob_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("claire_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }])
             ]);
 
-        {
-            let deps = get_deps(&mut deps);
-            mock_init_no_price(deps);
-        }
+        mock_init_no_price(deps.as_mut());
 
         // register actors
-        {
-            let deps = get_deps(&mut deps);
-            mock_register(deps, "alice", &[]);
-        }
-        {
-            let deps = get_deps(&mut deps);
-            mock_register(deps, "bob", &[]);
-        }
-        {
-            let deps = get_deps(&mut deps);
-            mock_register(deps, "claire", &[]);
-        }
+        mock_register(deps.as_mut(), "alice", &[]);
+        mock_register(deps.as_mut(), "bob", &[]);
+        mock_register(deps.as_mut(), "claire", &[]);
 
         let balance_request = QueryRequest::Bank(cosmwasm_std::BankQuery::Balance {
             // coreum_wasm_sdk::assetft::Query::Balance {
@@ -314,11 +261,9 @@ mod tests {
             });
         // let q: QueryRequest<CoreumQueries> = balance_request.into();
         
-        {
-            let deps = get_deps(&mut deps);
-            let balance_response: BalanceResponse = deps.querier.query::<cosmwasm_std::BalanceResponse>(&balance_request).unwrap();
-            println!("{:?}", balance_response);
-        }
+        let balance_response: BalanceResponse = deps.as_mut().querier.query::<cosmwasm_std::BalanceResponse>(&balance_request).unwrap();
+        println!("{:?}", balance_response);
+        
 
         let info = mock_info("alice_key", &[]);
         let price = coin(20, "ucore");
@@ -326,40 +271,32 @@ mod tests {
             price: price.clone(),
         };
 
-        {
-            let deps = get_deps(&mut deps);
-            let _res = execute(deps, env.clone(), info.clone(), set_price_msg)
-                .expect("contract successfully handles SetSubscriptionPrice message");
+        let _res = execute(deps.as_mut(), env.clone(), info.clone(), set_price_msg)
+            .expect("contract successfully handles SetSubscriptionPrice message");
 
-        }
-        
-        
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
+        
+        let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
+        let res = execute(deps.as_mut(), env.clone(), claire_subscribe_info, subscribe_msg);
+        println!("{:?}", res);
 
-        {
-            let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
-            let deps = get_deps(&mut deps);
-            let res = execute(deps, env.clone(), claire_subscribe_info, subscribe_msg);
-            println!("{:?}", res);
-    
-            assert!(res.is_ok(), "Expected subscribe call to succeed, it failed with error: {:?}", res.err());
-    
-            let response = res.unwrap();
-    
-            // Check that Alice got paid
-            let alice_got_paid = response.messages.iter().any(|msg| {
-                match &msg.msg {
-                    CosmosMsg::Bank(BankMsg::Send { to_address, amount }) => {
-                        to_address == "alice_key" && amount.iter().any(|coin| coin.amount == Uint128::from(19u128) && coin.denom == "ucore")
-                    }
-                    _ => false,
+        assert!(res.is_ok(), "Expected subscribe call to succeed, it failed with error: {:?}", res.err());
+
+        let response = res.unwrap();
+
+        // Check that Alice got paid
+        let alice_got_paid = response.messages.iter().any(|msg| {
+            match &msg.msg {
+                CosmosMsg::Bank(BankMsg::Send { to_address, amount }) => {
+                    to_address == "alice_key" && amount.iter().any(|coin| coin.amount == Uint128::from(19u128) && coin.denom == "ucore")
                 }
-            });
-            assert!(alice_got_paid, "Expected alice_key to be paid 19 ucore");
-        }
-
+                _ => false,
+            }
+        });
+        assert!(alice_got_paid, "Expected alice_key to be paid 19 ucore");
+        
         // this is how one would normally check if the balance was deducted from claire_key and moved to alice_key
         // but mocked deps have immutable balances
         // so instead, the most we can do without coreum_test_tube is the assert for the correct returned CoreumMsg from the execute call above
@@ -378,130 +315,87 @@ mod tests {
 
     #[test]
     fn subscribe_validity_should_expire() {
-
         let mut env = mock_env();
-
         let mut deps = mock_dependencies_with_balances(&[
             ("alice_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("bob_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("claire_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }])
             ]);
-
-        {
-            let deps = get_deps(&mut deps);
-            mock_init_no_price(deps);
-        }
+        mock_init_no_price(deps.as_mut());
 
         // register actors
-        {
-            let deps = get_deps(&mut deps);
-            mock_register(deps, "alice", &[]);
-        }
-        {
-            let deps = get_deps(&mut deps);
-            mock_register(deps, "bob", &[]);
-        }
-        {
-            let deps = get_deps(&mut deps);
-            mock_register(deps, "claire", &[]);
-        }
-
+        mock_register(deps.as_mut(), "alice", &[]);
+        mock_register(deps.as_mut(), "bob", &[]);
+        mock_register(deps.as_mut(), "claire", &[]);
+    
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
 
         // subscribe claire to alice
-        {
-            let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
-            let deps = get_deps(&mut deps);
-            let res = execute(deps, env.clone(), claire_subscribe_info, subscribe_msg);
-            println!("{:?}", res);
-    
-            assert!(res.is_ok(), "Expected subscribe call to succeed, it failed with error: {:?}", res.err());
-        }
+        let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
+        let res = execute(deps.as_mut(), env.clone(), claire_subscribe_info, subscribe_msg);
+        println!("{:?}", res);
+        assert!(res.is_ok(), "Expected subscribe call to succeed, it failed with error: {:?}", res.err());
+        
 
         // confirm we are subscribed now
         let is_subscriber_msg = QueryMsg::IsSubscriber {
             did: "alice_did".to_string(),
             subscriber: "claire_did".to_string(),
         };
-        {
-            let deps = get_deps(&mut deps);
-            let res = query(deps.as_ref(), env.clone(), is_subscriber_msg.clone()).unwrap();
-            let value: bool = from_json(&res).unwrap();
-            assert!(value, "Expected Claire to be a subscriber of Alice");
-        }
+        let res = query(deps.as_ref(), env.clone(), is_subscriber_msg.clone()).unwrap();
+        let value: bool = from_json(&res).unwrap();
+        assert!(value, "Expected Claire to be a subscriber of Alice");
+        
 
         // move the clock forward in time for one month
         env.block.time = env.block.time.plus_days(31);
 
         // confirm we are NOT subscribed now
-        {
-            let deps = get_deps(&mut deps);
-            let res = query(deps.as_ref(), env.clone(), is_subscriber_msg).unwrap();
-            let value: bool = from_json(&res).unwrap();
-            assert!(!value, "Expected Claire's subscription to Alice to expire after a month.");
-        }
+        let res = query(deps.as_ref(), env.clone(), is_subscriber_msg).unwrap();
+        let value: bool = from_json(&res).unwrap();
+        assert!(!value, "Expected Claire's subscription to Alice to expire after a month.");
+        
 
     }
 
 
     #[test]
     fn subscribe_reject_double_subscription() {
-
         let env = mock_env();
-
-        let deps_empty = mock_dependencies_with_balances(&[
+        let mut deps = mock_dependencies_with_balances(&[
             ("alice_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("bob_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }]),
             ("claire_key", &[Coin { amount: Uint128::from(20u128), denom: "ucore".to_string() }])
             ]);
-        let mut mock_deps = MockCoreumDeps::new(deps_empty);
 
-        {
-            let deps = mock_deps.as_deps_mut();
-            mock_init_no_price(deps);
-        }
-
+        mock_init_no_price(deps.as_mut());
+        
         // register actors
-        {
-            let deps = mock_deps.as_deps_mut();
-            mock_register(deps, "alice", &[]);
-        }
-
-        {
-            let deps = mock_deps.as_deps_mut();
-            mock_register(deps, "bob", &[]);
-        }
-        {
-            let deps = mock_deps.as_deps_mut();
-            mock_register(deps, "claire", &[]);
-        }
-
+        mock_register(deps.as_mut(), "alice", &[]);
+        mock_register(deps.as_mut(), "bob", &[]);
+        mock_register(deps.as_mut(), "claire", &[]);
+        
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
         let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
 
         // subscribe claire to alice once
-        {
-            let deps = mock_deps.as_deps_mut();
-            let res = execute(deps, env.clone(), claire_subscribe_info.clone(), subscribe_msg.clone());
-            println!("{:?}", res);
-            // let is_sub = is_subscriber(deps.as_ref(), env, "alice_did".to_string(), "claire_did".to_string());
-            // print!("is sub: {:?}", is_sub);
-    
-            assert!(res.is_ok(), "Expected subscribe call to succeed, it failed with error: {:?}", res.err());
-        }
-        // try subscribing claire to alice again
-        {
-            let deps = mock_deps.as_deps_mut();
-            let res = execute(deps, env.clone(), claire_subscribe_info, subscribe_msg);
-            println!("{:?}", res);
-    
-            // assert!(res.is_err(), "Expected subscribe call to fail due to an existing subscription");
-        }
+
+        let res = execute(deps.as_mut(), env.clone(), claire_subscribe_info.clone(), subscribe_msg.clone());
+        println!("{:?}", res);
+        // let is_sub = is_subscriber(deps.as_ref(), env, "alice_did".to_string(), "claire_did".to_string());
+
+        assert!(res.is_ok(), "Expected subscribe call to succeed, it failed with error: {:?}", res.err());
         
+        // try subscribing claire to alice again
+        
+        let res = execute(deps.as_mut(), env.clone(), claire_subscribe_info, subscribe_msg);
+        println!("{:?}", res);
+
+        assert!(res.is_err(), "Expected subscribe call to fail due to an existing subscription");
     }
 
     // leaving for the reference if we ever want to revisit coreum_test_tube

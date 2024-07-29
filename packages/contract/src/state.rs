@@ -86,7 +86,7 @@ pub struct SubscriptionInfo {
 
 impl Display for SubscriptionInfo {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.write_str(format!("{:?}", self).as_str());
+        let _ = f.write_str(format!("{:?}", self).as_str());
         Ok(())
     }
 }

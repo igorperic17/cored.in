@@ -3,14 +3,82 @@
 #[cfg(test)]
 pub mod common {
 
-    use coreum_wasm_sdk::core::CoreumQueries;
-    use cosmwasm_std::testing::{mock_env, mock_info, MockApi, MockQuerier, MockStorage};
-    use cosmwasm_std::{coin, coins, from_json, Addr, Coin, Deps, DepsMut, Empty, MemoryStorage, OwnedDeps, QuerierWrapper, Storage};
+    use cosmwasm_std::testing::{mock_env, mock_info};
+    use cosmwasm_std::{coin, coins, from_json, Addr, Coin, Deps, DepsMut};
 
     use crate::contract::{execute, instantiate, query};
     use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
     use crate::state::Config;
-    
+
+    pub fn mock_coredin_initial_accounts() -> Vec<(String, Coin)> {
+        vec![
+            ("alice_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
+            ("bob_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
+            ("claire_key".to_string(), coin(100 * 10_000_000_000, "ucore"))
+        ]
+    }
+
+    pub fn assert_name_owner(deps: Deps, name: &str, owner: &Addr) {
+        let res = query(
+            deps,
+            mock_env(),
+            QueryMsg::GetUsernameDID {
+                username: name.to_string(),
+            },
+        )
+        .unwrap();
+
+        let value: GetDIDResponse = from_json(&res).unwrap();
+        assert_eq!(
+            Some(owner.to_string()),
+            Some(value.did_info.unwrap().wallet.to_string())
+        );
+    }
+
+    pub fn assert_config_state(deps: Deps, expected: Config) {
+        let res = query(deps, mock_env(), QueryMsg::Config {}).unwrap();
+        let value: Config = from_json(&res).unwrap();
+        assert_eq!(value, expected);
+    }
+
+    pub fn mock_init_with_price(deps: DepsMut, purchase_price: Coin, transfer_price: Coin) {
+        let msg = InstantiateMsg {
+            purchase_price: Some(purchase_price),
+            transfer_price: Some(transfer_price),
+        };
+
+        let info = mock_info("creator", &coins(2, "token"));
+        let _res = instantiate(deps, mock_env(), info, msg)
+            .expect("contract successfully handles InstantiateMsg");
+    }
+
+    pub fn mock_init_no_price(deps: DepsMut) {
+        let msg = InstantiateMsg {
+            purchase_price: None,
+            transfer_price: None,
+        };
+
+        let info = mock_info("creator", &coins(2, "token"));
+        let _res = instantiate(deps, mock_env(), info, msg)
+            .expect("contract successfully handles InstantiateMsg");
+    }
+
+    pub fn mock_register(deps: DepsMut, name: &str, sent: &[Coin]) {
+        // alice can register an available name
+        let info = mock_info(format!("{}_key", name).as_str(), sent);
+        let msg = ExecuteMsg::Register {
+            username: format!("{}", name).as_str().to_string(),
+            did: format!("{}_did", name).as_str().to_string(),
+        };
+        let _res = execute(deps, mock_env(), info, msg)
+            .expect("contract successfully handles Register message");
+    }
+
+    pub fn mock_alice_registers_name(deps: DepsMut, sent: &[Coin]) {
+        mock_register(deps, &"alice", sent)
+    }
+
+
     // use coreum_test_tube::{Account, CoreumTestApp, Module, SigningAccount, Wasm};
 
     // // function pointer is invoked when mock env is set to execute test defined in the injected function
@@ -74,107 +142,4 @@ pub mod common {
     //             )
     //             .unwrap();
     // }
-
-
-
-    pub fn mock_coredin_initial_accounts() -> Vec<(String, Coin)> {
-        vec![
-            ("alice_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
-            ("bob_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
-            ("claire_key".to_string(), coin(100 * 10_000_000_000, "ucore"))
-        ]
-    }
-
-    pub fn get_deps<'a>(deps_empty: &'a mut OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>) -> DepsMut<'a, CoreumQueries> {
-        DepsMut {
-            storage: &mut deps_empty.storage,
-            api: &deps_empty.api,
-            querier: QuerierWrapper::new(&deps_empty.querier),
-        }
-    }
-
-    pub fn copy_deps<'a>(deps_empty: &'a mut DepsMut<'a, CoreumQueries>) -> DepsMut<'a, CoreumQueries> {
-        DepsMut {
-            storage: deps_empty.storage,
-            api: deps_empty.api,
-            querier: deps_empty.querier,
-        }
-    }
-    pub struct MockCoreumDeps {
-        pub deps: OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>,
-    }
-    
-    impl MockCoreumDeps {
-        pub fn new(deps: OwnedDeps<MockStorage, MockApi, MockQuerier, Empty>) -> Self {
-            MockCoreumDeps { deps }
-        }
-    
-        pub fn as_deps_mut(&mut self) -> DepsMut<CoreumQueries> {
-            DepsMut {
-                storage: &mut self.deps.storage,
-                api: &self.deps.api,
-                querier: QuerierWrapper::new(&self.deps.querier),
-            }
-        }
-    }
-
-    pub fn assert_name_owner(deps: Deps<CoreumQueries>, name: &str, owner: &Addr) {
-        let res = query(
-            deps,
-            mock_env(),
-            QueryMsg::GetUsernameDID {
-                username: name.to_string(),
-            },
-        )
-        .unwrap();
-
-        let value: GetDIDResponse = from_json(&res).unwrap();
-        assert_eq!(
-            Some(owner.to_string()),
-            Some(value.did_info.unwrap().wallet.to_string())
-        );
-    }
-
-    pub fn assert_config_state(deps: Deps<CoreumQueries>, expected: Config) {
-        let res = query(deps, mock_env(), QueryMsg::Config {}).unwrap();
-        let value: Config = from_json(&res).unwrap();
-        assert_eq!(value, expected);
-    }
-
-    pub fn mock_init_with_price(deps: DepsMut<CoreumQueries>, purchase_price: Coin, transfer_price: Coin) {
-        let msg = InstantiateMsg {
-            purchase_price: Some(purchase_price),
-            transfer_price: Some(transfer_price),
-        };
-
-        let info = mock_info("creator", &coins(2, "token"));
-        let _res = instantiate(deps, mock_env(), info, msg)
-            .expect("contract successfully handles InstantiateMsg");
-    }
-
-    pub fn mock_init_no_price(deps: DepsMut<CoreumQueries>) {
-        let msg = InstantiateMsg {
-            purchase_price: None,
-            transfer_price: None,
-        };
-
-        let info = mock_info("creator", &coins(2, "token"));
-        let _res = instantiate(deps, mock_env(), info, msg)
-            .expect("contract successfully handles InstantiateMsg");
-    }
-
-    pub fn mock_register(deps: DepsMut<CoreumQueries>, name: &str, sent: &[Coin]) {
-        // alice can register an available name
-        let info = mock_info(format!("{}_key", name).as_str(), sent);
-        let msg = ExecuteMsg::Register {
-            username: format!("{}", name).as_str().to_string(),
-            did: format!("{}_did", name).as_str().to_string(),
-        };
-        let _res = execute(deps, mock_env(), info, msg)
-            .expect("contract successfully handles Register message");
-    }
-
-    pub fn mock_alice_registers_name(deps: DepsMut<CoreumQueries>, sent: &[Coin]) {
-        mock_register(deps, &"alice", sent)
-    }
 }

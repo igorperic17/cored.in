@@ -1,5 +1,5 @@
 use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
-use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
+use coreum_wasm_sdk::core::CoreumMsg;
 use cosmwasm_std::{
     coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
     StdResult, Storage, Uint64,
@@ -27,7 +27,7 @@ const MAX_NAME_LENGTH: u64 = 64;
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     _env: Env,
     info: MessageInfo,
     msg: InstantiateMsg,
@@ -44,7 +44,7 @@ pub fn instantiate(
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     env: Env,
     info: MessageInfo,
     msg: ExecuteMsg,
@@ -61,7 +61,7 @@ pub fn execute(
 }
 
 pub fn execute_register(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     _env: Env,
     info: MessageInfo,
     username: String,
@@ -125,7 +125,7 @@ pub fn execute_register(
 }
 
 pub fn execute_remove(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     _env: Env,
     info: MessageInfo,
     username: String,
@@ -153,7 +153,7 @@ pub fn execute_remove(
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Binary> {
+pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::Config {} => to_json_binary(&config_storage_read(deps.storage).load()?),
 
@@ -175,7 +175,7 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
 
 type ResolverFnPointer = fn(&dyn Storage) -> ReadonlyBucket<DidInfo>;
 fn query_resolver(
-    deps: Deps<CoreumQueries>,
+    deps: Deps,
     _env: Env,
     query_key: String,
     storage_resolver: ResolverFnPointer,
@@ -193,7 +193,7 @@ fn query_resolver(
     to_json_binary(&did_response)
 }
 
-fn query_merkle_root(deps: Deps<CoreumQueries>, _env: Env, did: String) -> StdResult<Binary> {
+fn query_merkle_root(deps: Deps, _env: Env, did: String) -> StdResult<Binary> {
     let stored_root = vc_storage_read(deps.storage).may_load(did.as_bytes())?;
 
     if stored_root.is_none() {
@@ -206,7 +206,7 @@ fn query_merkle_root(deps: Deps<CoreumQueries>, _env: Env, did: String) -> StdRe
 }
 
 fn query_verify_credential(
-    deps: Deps<CoreumQueries>,
+    deps: Deps,
     _env: Env,
     did: String,
     credential_hash: String,
@@ -256,7 +256,7 @@ fn validate_name(name: &str) -> Result<(), ContractError> {
 }
 
 pub fn execute_update_vc_root(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     _env: Env,
     _info: MessageInfo,
     did: String,
