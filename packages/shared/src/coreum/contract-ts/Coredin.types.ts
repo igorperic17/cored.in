@@ -34,7 +34,8 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 } | {
-  set_subscription_price: {
+  set_subscription: {
+    duration: Uint64;
     price: Coin;
     [k: string]: unknown;
   };
@@ -44,6 +45,7 @@ export type ExecuteMsg = {
     [k: string]: unknown;
   };
 };
+export type Uint64 = string;
 export type QueryMsg = {
   config: {
     [k: string]: unknown;
@@ -83,6 +85,11 @@ export type QueryMsg = {
   };
 } | {
   get_subscription_price: {
+    did: string;
+    [k: string]: unknown;
+  };
+} | {
+  get_subscription_duration: {
     did: string;
     [k: string]: unknown;
   };

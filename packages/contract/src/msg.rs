@@ -1,7 +1,7 @@
 use std::collections::LinkedList;
 
 use cosmwasm_schema::QueryResponses;
-use cosmwasm_std::Coin;
+use cosmwasm_std::{Coin, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -26,7 +26,7 @@ pub enum ExecuteMsg {
     // set subscription price for a DID
     // this sets only the multiplierfor, final price = number of subscribers * multiplier
     // defualt value = 1
-    SetSubscriptionPrice { price: Coin },
+    SetSubscription { price: Coin, duration: Uint64 },
     // subscribe to a DID
     Subscribe { did: String },
 }
@@ -61,6 +61,10 @@ pub enum QueryMsg {
     // returns the subscription price for a profile
     #[returns(Coin)]
     GetSubscriptionPrice { did: String },
+
+    // returns the subscription price for a profile
+    #[returns(Uint64)]
+    GetSubscriptionDuration { did: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

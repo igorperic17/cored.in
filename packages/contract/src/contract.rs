@@ -16,7 +16,7 @@ use crate::state::{
     wallet_storage_read, Config, DidInfo, ProfileInfo,
 };
 use crate::subscription::{
-    get_subscription_price, is_subscriber, set_subscription_price, subscribe,
+    get_subscription_duration, get_subscription_price, is_subscriber, set_subscription, subscribe,
 };
 use cosmwasm_storage::ReadonlyBucket;
 
@@ -55,7 +55,9 @@ pub fn execute(
         ExecuteMsg::UpdateCredentialMerkleRoot { did, root } => {
             execute_update_vc_root(deps, env, info, did, root)
         }
-        ExecuteMsg::SetSubscriptionPrice { price } => set_subscription_price(deps, info, price),
+        ExecuteMsg::SetSubscription { price, duration } => {
+            set_subscription(deps, info, price, duration)
+        }
         ExecuteMsg::Subscribe { did } => subscribe(deps, env, info, did),
     }
 }
@@ -93,6 +95,7 @@ pub fn execute_register(
 
     let user_profile = ProfileInfo {
         subscription_price: Some(coin(0, "ucore")),
+        subscription_duration_days: Some(Uint64::from(7u64)),
         top_subscribers: LinkedList::new(),
         subscriber_count: Uint64::zero(),
     };
@@ -121,7 +124,7 @@ pub fn execute_register(
     // });
 
     Ok(Response::default())
-        // .add_message(issue_class_msg))
+    // .add_message(issue_class_msg))
 }
 
 pub fn execute_remove(
@@ -170,6 +173,7 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
         QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, env, did, subscriber),
         QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did),
+        QueryMsg::GetSubscriptionDuration { did } => get_subscription_duration(deps, did),
     }
 }
 

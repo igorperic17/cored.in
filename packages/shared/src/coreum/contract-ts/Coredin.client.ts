@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, InstantiateMsg, Coin, ExecuteMsg, QueryMsg, Addr, Config, GetDIDResponse, DidInfo, GetMerkleRootResponse, Boolean } from "./Coredin.types";
+import { Uint128, InstantiateMsg, Coin, ExecuteMsg, Uint64, QueryMsg, Addr, Config, GetDIDResponse, DidInfo, GetMerkleRootResponse, Boolean } from "./Coredin.types";
 export interface CoredinReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -51,6 +51,11 @@ export interface CoredinReadOnlyInterface {
   }: {
     did: string;
   }) => Promise<Coin>;
+  getSubscriptionDuration: ({
+    did
+  }: {
+    did: string;
+  }) => Promise<Uint64>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -66,6 +71,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.verifyCredential = this.verifyCredential.bind(this);
     this.isSubscriber = this.isSubscriber.bind(this);
     this.getSubscriptionPrice = this.getSubscriptionPrice.bind(this);
+    this.getSubscriptionDuration = this.getSubscriptionDuration.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -158,6 +164,17 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
       }
     });
   };
+  getSubscriptionDuration = async ({
+    did
+  }: {
+    did: string;
+  }): Promise<Uint64> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_subscription_duration: {
+        did
+      }
+    });
+  };
 }
 export interface CoredinInterface extends CoredinReadOnlyInterface {
   contractAddress: string;
@@ -183,9 +200,11 @@ export interface CoredinInterface extends CoredinReadOnlyInterface {
     did: string;
     root: string;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
-  setSubscriptionPrice: ({
+  setSubscription: ({
+    duration,
     price
   }: {
+    duration: Uint64;
     price: Coin;
   }, fee?: number | StdFee | "auto", memo?: string, _funds?: Coin[]) => Promise<ExecuteResult>;
   subscribe: ({
@@ -206,7 +225,7 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
     this.register = this.register.bind(this);
     this.removeDID = this.removeDID.bind(this);
     this.updateCredentialMerkleRoot = this.updateCredentialMerkleRoot.bind(this);
-    this.setSubscriptionPrice = this.setSubscriptionPrice.bind(this);
+    this.setSubscription = this.setSubscription.bind(this);
     this.subscribe = this.subscribe.bind(this);
   }
   register = async ({
@@ -251,13 +270,16 @@ export class CoredinClient extends CoredinQueryClient implements CoredinInterfac
       }
     }, fee, memo, _funds);
   };
-  setSubscriptionPrice = async ({
+  setSubscription = async ({
+    duration,
     price
   }: {
+    duration: Uint64;
     price: Coin;
   }, fee: number | StdFee | "auto" = "auto", memo?: string, _funds?: Coin[]): Promise<ExecuteResult> => {
     return await this.client.execute(this.sender, this.contractAddress, {
-      set_subscription_price: {
+      set_subscription: {
+        duration,
         price
       }
     }, fee, memo, _funds);

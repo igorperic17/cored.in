@@ -1,4 +1,4 @@
-use std::{collections::LinkedList};
+use std::collections::LinkedList;
 use std::fmt::Display;
 
 use schemars::JsonSchema;
@@ -24,7 +24,7 @@ pub static POST_KEY: &[u8] = b"postinfo"; // post info (includes optional bounty
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
     pub did_register_price: Option<Coin>,
-    pub owner: Addr
+    pub owner: Addr,
 }
 
 pub fn config_storage(storage: &mut dyn Storage) -> Singleton<Config> {
@@ -39,7 +39,7 @@ pub fn config_storage_read(storage: &dyn Storage) -> ReadonlySingleton<Config> {
 pub struct DidInfo {
     pub wallet: Addr,
     pub did: String,
-    pub username: String
+    pub username: String,
 }
 // todo - PUT HERE all immutable public info
 
@@ -78,10 +78,10 @@ pub fn vc_storage_read(storage: &dyn Storage) -> ReadonlyBucket<String> {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct SubscriptionInfo {
     // pub subscriber: Addr,
-    pub subscriber: String, // subscriber's DID
+    pub subscriber: String,    // subscriber's DID
     pub subscribed_to: String, // DID of the profile subscribet to
     pub valid_until: Timestamp,
-    pub cost: Coin
+    pub cost: Coin,
 }
 
 impl Display for SubscriptionInfo {
@@ -94,8 +94,9 @@ impl Display for SubscriptionInfo {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct ProfileInfo {
     pub subscription_price: Option<Coin>, // multiplier, if not set, defaults to zero
+    pub subscription_duration_days: Option<Uint64>, // number of days the subscription is valid for the price, defaults to 7
     pub top_subscribers: LinkedList<SubscriptionInfo>, // max 10 subscribers due to the gas limits
-    pub subscriber_count: Uint64 // future proof to accommodate estimeted user base :)
+    pub subscriber_count: Uint64, // future proof to accommodate estimeted user base :)
 }
 
 pub fn single_subscription_storage(storage: &mut dyn Storage) -> Bucket<SubscriptionInfo> {
