@@ -41,7 +41,7 @@ export const SubscriptionModal: FC<SubscriptionModalProps> = ({
         <ModalBody>
           <Text textStyle="sm" mb="1em">
             By subscribing to this profile you will be able to see their private
-            information and send messages.
+            posts and credentials.
           </Text>
 
           <TableContainer whiteSpace="normal" mb="1em">

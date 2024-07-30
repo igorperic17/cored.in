@@ -71,13 +71,17 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
 
-  // TODO - get actual values from contract!
-  // const subscriptionPrice = 4.45;
-  const subscriptionDurationDays = 7;
+  const { data: subscriptionDays } = useContractRead(
+    CONTRACT_QUERIES.getSubscriptionDuration(
+      coredinClient!,
+      profileDid?.did_info?.did || ""
+    ),
+    { enabled: !!coredinClient && !!profileDid?.did_info?.did }
+  );
 
   const handleSubscribe = () => {
     console.log("Subscribing to", profileDid?.did_info?.did);
-    if (coredinClient && profileDid?.did_info) {
+    if (coredinClient && subscriptionPrice && profileDid?.did_info) {
       coredinClient
         .subscribe(
           {
@@ -85,12 +89,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           },
           "auto",
           undefined,
-          [
-            {
-              amount: "10",
-              denom: TESTNET_STAKING_DENOM
-            }
-          ]
+          [subscriptionPrice]
         )
         .then(() => {
           refetch();
@@ -242,22 +241,25 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           {userProfile.bio}
         </Text>
 
-        {!isOwnProfile && !isSubscribed && subscriptionPrice && (
-          <>
-            <Button variant="primary" size="sm" onClick={onOpen}>
-              Subscribe for {subscriptionPrice.amount}{" "}
-              {subscriptionPrice?.denom}
-            </Button>
-            <SubscriptionModal
-              isOpen={isOpen}
-              onClose={onClose}
-              username={userProfile.username}
-              subscriptionPrice={subscriptionPrice.amount}
-              subscriptionDurationDays={subscriptionDurationDays}
-              handleSubscribe={handleSubscribe}
-            />
-          </>
-        )}
+        {!isOwnProfile &&
+          !isSubscribed &&
+          subscriptionPrice &&
+          subscriptionDays && (
+            <>
+              <Button variant="primary" size="sm" onClick={onOpen}>
+                Subscribe for {subscriptionPrice.amount}{" "}
+                {subscriptionPrice?.denom}
+              </Button>
+              <SubscriptionModal
+                isOpen={isOpen}
+                onClose={onClose}
+                username={userProfile.username}
+                subscriptionPrice={subscriptionPrice.amount}
+                subscriptionDurationDays={parseInt(subscriptionDays)}
+                handleSubscribe={handleSubscribe}
+              />
+            </>
+          )}
 
         {isSubscribed && (
           <HStack>

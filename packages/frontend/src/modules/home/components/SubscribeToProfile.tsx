@@ -61,8 +61,7 @@ export const SubscribeToProfile: FC<SubscribeToProfileProps> = ({
         // textTransform="uppercase"
         textAlign="center"
       >
-        Subscribe to this user's profile to see their private information and
-        send messages.
+        Subscribe to this user's profile to see their posts and credentials.
       </Text>
       <Button
         variant="primary"
