@@ -35,6 +35,13 @@ export const SubscriptionSettings = () => {
     ),
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
+  const { data: subscriptionDays } = useContractRead(
+    CONTRACT_QUERIES.getSubscriptionDuration(
+      coredinClient!,
+      profileDid?.did_info?.did || ""
+    ),
+    { enabled: !!coredinClient && !!profileDid?.did_info?.did }
+  );
   const [subscriptionSettings, setSubscriptionSettings] = useState({
     price: "10",
     durationDays: 7
@@ -54,6 +61,15 @@ export const SubscriptionSettings = () => {
     }
   }, [subscriptionPrice]);
 
+  useEffect(() => {
+    if (subscriptionDays) {
+      setSubscriptionSettings((prev) => ({
+        price: prev.price,
+        durationDays: parseInt(subscriptionDays)
+      }));
+    }
+  }, [subscriptionDays]);
+
   const handleSubmit = () => {
     console.log(
       "Updating onchain subscription settings... to",
@@ -62,11 +78,12 @@ export const SubscriptionSettings = () => {
     if (coredinClient) {
       setIsUpdating(true);
       coredinClient
-        .setSubscriptionPrice({
+        .setSubscription({
           price: {
             amount: subscriptionSettings.price,
             denom: TESTNET_STAKING_DENOM
-          }
+          },
+          duration: subscriptionSettings.durationDays.toString()
         })
         .then(() => {
           toast({

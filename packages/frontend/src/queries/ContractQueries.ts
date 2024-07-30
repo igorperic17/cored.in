@@ -10,6 +10,10 @@ export const CONTRACT_QUERIES = {
     queryKey: [BaseServerStateKeys.CONTRACT_GET_SUBSCRIPTION_PRICE, did],
     queryFn: () => coredinClient.getSubscriptionPrice({ did })
   }),
+  getSubscriptionDuration: (coredinClient: CoredinClient, did: string) => ({
+    queryKey: [BaseServerStateKeys.CONTRACT_GET_SUBSCRIPTION_DURATION, did],
+    queryFn: () => coredinClient.getSubscriptionDuration({ did })
+  }),
   isSubscriber: (
     coredinClient: CoredinClient,
     profileDid: string,
