@@ -93,6 +93,12 @@ export type QueryMsg = {
     did: string;
     [k: string]: unknown;
   };
+} | {
+  get_subscription_info: {
+    did: string;
+    subscriber: string;
+    [k: string]: unknown;
+  };
 };
 export type Addr = string;
 export interface Config {
@@ -112,6 +118,18 @@ export interface DidInfo {
 }
 export interface GetMerkleRootResponse {
   root?: string | null;
+  [k: string]: unknown;
+}
+export type Timestamp = Uint64;
+export interface GetSubscriptionInfoResponse {
+  info?: SubscriptionInfo | null;
+  [k: string]: unknown;
+}
+export interface SubscriptionInfo {
+  cost: Coin;
+  subscribed_to: string;
+  subscriber: string;
+  valid_until: Timestamp;
   [k: string]: unknown;
 }
 export type Boolean = boolean;

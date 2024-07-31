@@ -188,6 +188,30 @@
         }
       },
       "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "get_subscription_info"
+      ],
+      "properties": {
+        "get_subscription_info": {
+          "type": "object",
+          "required": [
+            "did",
+            "subscriber"
+          ],
+          "properties": {
+            "did": {
+              "type": "string"
+            },
+            "subscriber": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "additionalProperties": false
     }
   ]
 }

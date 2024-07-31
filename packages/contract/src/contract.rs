@@ -16,7 +16,8 @@ use crate::state::{
     wallet_storage_read, Config, DidInfo, ProfileInfo,
 };
 use crate::subscription::{
-    get_subscription_duration, get_subscription_price, is_subscriber, set_subscription, subscribe,
+    get_subscription_duration, get_subscription_info, get_subscription_price, is_subscriber,
+    set_subscription, subscribe,
 };
 use cosmwasm_storage::ReadonlyBucket;
 
@@ -174,6 +175,9 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
         QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, env, did, subscriber),
         QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did),
         QueryMsg::GetSubscriptionDuration { did } => get_subscription_duration(deps, did),
+        QueryMsg::GetSubscriptionInfo { did, subscriber } => {
+            get_subscription_info(deps, env, did, subscriber)
+        }
     }
 }
 

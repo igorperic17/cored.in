@@ -5,7 +5,7 @@ use cosmwasm_std::{Coin, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::state::{Config, DidInfo};
+use crate::state::{Config, DidInfo, SubscriptionInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
@@ -65,6 +65,10 @@ pub enum QueryMsg {
     // returns the subscription price for a profile
     #[returns(Uint64)]
     GetSubscriptionDuration { did: String },
+
+    // returns subscription info
+    #[returns(GetSubscriptionInfoResponse)]
+    GetSubscriptionInfo { did: String, subscriber: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -75,4 +79,9 @@ pub struct GetDIDResponse {
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct GetMerkleRootResponse {
     pub root: Option<String>,
+}
+
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+pub struct GetSubscriptionInfoResponse {
+    pub info: Option<SubscriptionInfo>,
 }

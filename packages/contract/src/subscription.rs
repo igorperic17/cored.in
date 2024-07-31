@@ -1,5 +1,6 @@
 use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
 use crate::error::ContractError;
+use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
     did_storage_read, profile_storage, profile_storage_read, single_subscription_storage,
     single_subscription_storage_read, wallet_storage_read, SubscriptionInfo,
@@ -214,6 +215,26 @@ pub fn is_subscriber(deps: Deps, env: Env, did: String, subscriber: String) -> S
     // println!("{:?}", res);
 
     to_json_binary(&response)
+}
+
+pub fn get_subscription_info(
+    deps: Deps,
+    env: Env,
+    did: String,
+    subscriber: String,
+) -> StdResult<Binary> {
+    let key = format!("{}{}", subscriber, did); // Concatenate strings and store in a variable
+    let subscriber_info =
+        match single_subscription_storage_read(deps.storage).may_load(key.as_bytes()) {
+            Ok(info) => info,
+            Err(_) => None,
+        };
+
+    let info_response: GetSubscriptionInfoResponse = GetSubscriptionInfoResponse {
+        info: subscriber_info,
+    };
+
+    return to_json_binary(&info_response);
 }
 
 // gets current subscription cost

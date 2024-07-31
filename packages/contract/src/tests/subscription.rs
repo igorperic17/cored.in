@@ -2,7 +2,7 @@
 mod tests {
     // use coreum_test_tube::{CoreumTestApp, SigningAccount, Wasm};
     use crate::contract::{execute, query};
-    use crate::msg::{ExecuteMsg, QueryMsg};
+    use crate::msg::{ExecuteMsg, GetSubscriptionInfoResponse, QueryMsg};
     use crate::tests::common::common::{mock_init_no_price, mock_register};
     use cosmwasm_std::testing::{
         mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info,
@@ -54,6 +54,7 @@ mod tests {
 
     #[test]
     fn subscribe_success() {
+        let mut env = mock_env();
         let mut deps = mock_dependencies();
 
         mock_init_no_price(deps.as_mut());
@@ -78,6 +79,21 @@ mod tests {
         let res = query(deps.as_ref(), mock_env(), is_subscriber_msg).unwrap();
         let value: bool = from_json(&res).unwrap();
         assert!(value, "Expected Bob to be a subscriber of Alice");
+
+        let sub_info_msg = QueryMsg::GetSubscriptionInfo {
+            did: "alice_did".to_string(),
+            subscriber: "bob_did".to_string(),
+        };
+
+        let read_res = query(deps.as_ref(), mock_env(), sub_info_msg).unwrap();
+        let info: GetSubscriptionInfoResponse = from_json(&read_res).unwrap();
+        let expected_end = env.block.time.plus_days(7);
+
+        assert_eq!(
+            info.info.unwrap().valid_until,
+            expected_end,
+            "Expected subscription to be valid for 7 days"
+        );
     }
 
     #[test]
