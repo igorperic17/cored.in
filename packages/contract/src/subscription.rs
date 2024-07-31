@@ -150,7 +150,7 @@ pub fn subscribe(
     // deps.api.debug(format!("Trying to pay {}...", subscribed_to_wallet.wallet.to_string()).as_str());
     let pay_owner_msg = BankMsg::Send {
         to_address: subscribed_to_wallet.wallet.to_string(),
-        amount: coins(owner_payout.u128(), "ucore"),
+        amount: coins(owner_payout.u128(), "utestcore"),
     };
 
     Ok(response

@@ -120,16 +120,16 @@ mod tests {
         mock_init_no_price(deps.as_mut());
 
         // register actors
-        mock_register(deps.as_mut(), "alice", &[coin(100, "ucore")]);
-        mock_register(deps.as_mut(), "bob", &[coin(100, "ucore")]);
-        mock_register(deps.as_mut(), "claire", &[coin(100, "ucore")]);
+        mock_register(deps.as_mut(), "alice", &[coin(100, "utestcore")]);
+        mock_register(deps.as_mut(), "bob", &[coin(100, "utestcore")]);
+        mock_register(deps.as_mut(), "claire", &[coin(100, "utestcore")]);
 
         // Alice sets her sub price to 10 CORE tokens
         //  1st subscriber pays 1 * 10 CORE = 10 CORE
         //  2nd subscriber pays 2 * 10 CORE = 20 CORE
         //  ...
         let info = mock_info("alice_key", &[]);
-        let price = coin(10, "ucore");
+        let price = coin(10, "utestcore");
         let set_price_msg = ExecuteMsg::SetSubscription {
             price: price.clone(),
             duration: 30u64.into(),
@@ -139,7 +139,7 @@ mod tests {
             .expect("contract successfully handles SetSubscription message");
 
         // Bob wants to sub to Alice, which should cost him 10 CORE, but he attaches 15 CORE to the transaction...
-        let subscribe_info = mock_info("bob_key", &coins(15, "ucore"));
+        let subscribe_info = mock_info("bob_key", &coins(15, "utestcore"));
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
@@ -158,8 +158,8 @@ mod tests {
             .find(|&attr| attr.key == "refund")
             .unwrap();
         assert_eq!(
-            refund_attribute.value, "5ucore",
-            "Expected refund of 5 ucore"
+            refund_attribute.value, "5utestcore",
+            "Expected refund of 5 utestcore"
         );
 
         // confirm Bob is a subscriber of Alice...
@@ -185,7 +185,7 @@ mod tests {
 
         // Claire tries to subscribe to Alice by attaching 15 CORE, less than needed
         // since Alice already has 1 subscriber so the price is 20 CORE
-        let claire_subscribe_info = mock_info("claire_key", &coins(15, "ucore"));
+        let claire_subscribe_info = mock_info("claire_key", &coins(15, "utestcore"));
         let _ = execute(
             deps.as_mut(),
             env.clone(),
@@ -202,7 +202,7 @@ mod tests {
         );
 
         // Claire tries to subscribe to Alice by attaching 55 CORE, more than needed
-        let claire_subscribe_info = mock_info("claire_key", &coins(55, "ucore"));
+        let claire_subscribe_info = mock_info("claire_key", &coins(55, "utestcore"));
         let claire_sub_res = execute(
             deps.as_mut(),
             env.clone(),
@@ -225,8 +225,8 @@ mod tests {
             .find(|&attr| attr.key == "refund")
             .unwrap();
         assert_eq!(
-            refund_attribute.value, "35ucore",
-            "Expected refund of 35 ucore"
+            refund_attribute.value, "35utestcore",
+            "Expected refund of 35 utestcore"
         );
     }
 
@@ -307,21 +307,21 @@ mod tests {
                 "alice_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
             (
                 "bob_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
             (
                 "claire_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
         ]);
@@ -335,7 +335,7 @@ mod tests {
         let balance_request = QueryRequest::Bank(cosmwasm_std::BankQuery::Balance {
             // coreum_wasm_sdk::assetft::Query::Balance {
             address: "claire_key".to_string(),
-            denom: "ucore".to_string(),
+            denom: "utestcore".to_string(),
         });
         // let q: QueryRequest<CoreumQueries> = balance_request.into();
 
@@ -347,7 +347,7 @@ mod tests {
         println!("{:?}", balance_response);
 
         let info = mock_info("alice_key", &[]);
-        let price = coin(20, "ucore");
+        let price = coin(20, "utestcore");
         let set_price_msg = ExecuteMsg::SetSubscription {
             price: price.clone(),
             duration: 30u64.into(),
@@ -360,7 +360,7 @@ mod tests {
             did: "alice_did".to_string(),
         };
 
-        let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
+        let claire_subscribe_info = mock_info("claire_key", &coins(20, "utestcore"));
         let res = execute(
             deps.as_mut(),
             env.clone(),
@@ -381,13 +381,13 @@ mod tests {
         let alice_got_paid = response.messages.iter().any(|msg| match &msg.msg {
             CosmosMsg::Bank(BankMsg::Send { to_address, amount }) => {
                 to_address == "alice_key"
-                    && amount
-                        .iter()
-                        .any(|coin| coin.amount == Uint128::from(19u128) && coin.denom == "ucore")
+                    && amount.iter().any(|coin| {
+                        coin.amount == Uint128::from(19u128) && coin.denom == "utestcore"
+                    })
             }
             _ => false,
         });
-        assert!(alice_got_paid, "Expected alice_key to be paid 19 ucore");
+        assert!(alice_got_paid, "Expected alice_key to be paid 19 utestcore");
 
         // this is how one would normally check if the balance was deducted from claire_key and moved to alice_key
         // but mocked deps have immutable balances
@@ -395,7 +395,7 @@ mod tests {
         // {
         //     let balance_request = QueryRequest::Bank(cosmwasm_std::BankQuery::Balance {
         //         address:  "claire_key".to_string(),
-        //         denom: "ucore".to_string(),
+        //         denom: "utestcore".to_string(),
         //     });
         //     let deps = get_deps(&mut deps);
         //     let balance_response: BalanceResponse = deps.querier.query::<cosmwasm_std::BalanceResponse>(&balance_request).unwrap();
@@ -412,21 +412,21 @@ mod tests {
                 "alice_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
             (
                 "bob_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
             (
                 "claire_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
         ]);
@@ -442,7 +442,7 @@ mod tests {
         };
 
         // subscribe claire to alice
-        let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
+        let claire_subscribe_info = mock_info("claire_key", &coins(20, "utestcore"));
         let res = execute(
             deps.as_mut(),
             env.clone(),
@@ -485,21 +485,21 @@ mod tests {
                 "alice_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
             (
                 "bob_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
             (
                 "claire_key",
                 &[Coin {
                     amount: Uint128::from(20u128),
-                    denom: "ucore".to_string(),
+                    denom: "utestcore".to_string(),
                 }],
             ),
         ]);
@@ -514,7 +514,7 @@ mod tests {
         let subscribe_msg = ExecuteMsg::Subscribe {
             did: "alice_did".to_string(),
         };
-        let claire_subscribe_info = mock_info("claire_key", &coins(20, "ucore"));
+        let claire_subscribe_info = mock_info("claire_key", &coins(20, "utestcore"));
 
         // subscribe claire to alice once
 
@@ -578,7 +578,7 @@ mod tests {
     //         wasm.execute::<ExecuteMsg>(
     //                 &contract_addr,
     //                 &subscribe_msg,
-    //                 &coins(10_000_000_000, "ucore".to_string()),
+    //                 &coins(10_000_000_000, "utestcore".to_string()),
     //                 &bob
     //             )
     //             .unwrap();

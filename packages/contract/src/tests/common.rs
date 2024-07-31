@@ -12,9 +12,18 @@ pub mod common {
 
     pub fn mock_coredin_initial_accounts() -> Vec<(String, Coin)> {
         vec![
-            ("alice_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
-            ("bob_key".to_string(), coin(100 * 10_000_000_000, "ucore")),
-            ("claire_key".to_string(), coin(100 * 10_000_000_000, "ucore"))
+            (
+                "alice_key".to_string(),
+                coin(100 * 10_000_000_000, "utestcore"),
+            ),
+            (
+                "bob_key".to_string(),
+                coin(100 * 10_000_000_000, "utestcore"),
+            ),
+            (
+                "claire_key".to_string(),
+                coin(100 * 10_000_000_000, "utestcore"),
+            ),
         ]
     }
 
@@ -78,7 +87,6 @@ pub mod common {
         mock_register(deps, &"alice", sent)
     }
 
-
     // use coreum_test_tube::{Account, CoreumTestApp, Module, SigningAccount, Wasm};
 
     // // function pointer is invoked when mock env is set to execute test defined in the injected function
@@ -95,7 +103,7 @@ pub mod common {
 
     //     // init multiple accounts
     //     let accs = app
-    //                 .init_accounts(&coins(100 * 100_000_000_000, "ucore".to_string()), 3)
+    //                 .init_accounts(&coins(100 * 100_000_000_000, "utestcore".to_string()), 3)
     //                 .unwrap();
     //     let admin = &accs.get(0).unwrap();
 
@@ -117,26 +125,25 @@ pub mod common {
     //                     },
     //                     None,
     //                     "label".into(),
-    //                     &coins(20 * 100_000_000_000, "ucore".to_string()),
+    //                     &coins(20 * 100_000_000_000, "utestcore".to_string()),
     //                     &admin,
     //                 )
     //                 .unwrap()
     //                 .data
     //                 .address;
-        
+
     //     f(accs, contract_addr, wasm);
     // }
 
-
     // pub fn mock_register_account(wasm: &Wasm<CoreumTestApp>, contract_addr: &String, account: &SigningAccount, username: String) {
-    //         let register_did_msg = ExecuteMsg::Register { 
-    //             did: format!("{}_did", username).to_string(), 
-    //             username: username 
+    //         let register_did_msg = ExecuteMsg::Register {
+    //             did: format!("{}_did", username).to_string(),
+    //             username: username
     //         };
     //         wasm.execute::<ExecuteMsg>(
-    //                 &contract_addr, 
+    //                 &contract_addr,
     //                 &register_did_msg,
-    //                 &coins(10_000_000_000, "ucore"),
+    //                 &coins(10_000_000_000, "utestcore"),
     //                 // &[],
     //                 &account
     //             )
