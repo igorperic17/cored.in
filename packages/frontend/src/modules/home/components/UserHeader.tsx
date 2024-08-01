@@ -50,8 +50,8 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     CONTRACT_QUERIES.getWalletDid(coredinClient!, userWallet),
     { enabled: !!coredinClient }
   );
-  const { data: isSubscribed, refetch } = useContractRead(
-    CONTRACT_QUERIES.isSubscriber(
+  const { data: subscriptionInfo, refetch } = useContractRead(
+    CONTRACT_QUERIES.getSubscriptionInfo(
       coredinClient!,
       profileDid?.did_info?.did || "",
       userDid?.did_info?.did || ""
@@ -159,6 +159,20 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     }
   };
 
+  console.log(subscriptionInfo?.info?.valid_until);
+
+  const subscriptionInfoValidUntil = new Date(
+    subscriptionInfo?.info?.valid_until
+      ? parseInt(subscriptionInfo.info.valid_until) / 1000000 // Contract timestamp in nanoseconds!
+      : Date.now() - 1
+  );
+
+  console.log(subscriptionInfoValidUntil);
+
+  const isSubscribed = subscriptionInfo?.info?.valid_until
+    ? subscriptionInfoValidUntil > new Date()
+    : false;
+
   return (
     <Box layerStyle="cardBox" w="100%">
       <Box
@@ -265,7 +279,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           <HStack>
             <Icon as={FaCheckDouble} color="brand.500" />
             <Text as="span" textStyle="sm" color="brand.500">
-              Subscribed
+              Subscribed until {subscriptionInfoValidUntil.toLocaleString()}
             </Text>
           </HStack>
         )}

@@ -26,5 +26,21 @@ export const CONTRACT_QUERIES = {
     ],
     queryFn: () =>
       coredinClient.isSubscriber({ did: profileDid, subscriber: subscriberDid })
+  }),
+  getSubscriptionInfo: (
+    coredinClient: CoredinClient,
+    profileDid: string,
+    subscriberDid: string
+  ) => ({
+    queryKey: [
+      BaseServerStateKeys.CONTRACT_SUBSCRIPTION_INFO,
+      profileDid,
+      subscriberDid
+    ],
+    queryFn: () =>
+      coredinClient.getSubscriptionInfo({
+        did: profileDid,
+        subscriber: subscriberDid
+      })
   })
 };

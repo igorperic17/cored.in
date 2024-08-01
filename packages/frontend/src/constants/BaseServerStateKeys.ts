@@ -18,5 +18,6 @@ export enum BaseServerStateKeys {
   CONTRACT_GET_WALLET_DID = "contract_get_wallet_did",
   CONTRACT_GET_SUBSCRIPTION_PRICE = "contract_get_subscription_price",
   CONTRACT_GET_SUBSCRIPTION_DURATION = "contract_get_subscription_duration",
-  CONTRACT_IS_SUBSCRIBED = "contract_is_subscribed"
+  CONTRACT_IS_SUBSCRIBED = "contract_is_subscribed",
+  CONTRACT_SUBSCRIPTION_INFO = "contract_subscription_info"
 }
