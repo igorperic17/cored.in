@@ -1,10 +1,12 @@
 import { Header, Logo, SocialMedia } from "@/components";
 import { Disclaimer } from "@/components/Disclaimer";
+import { useAuth, useLoggedInServerState } from "@/hooks";
 import {
   Navigation,
   SubscribeToProfile,
   UserSignOut
 } from "@/modules/home/components";
+import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
 import {
   Box,
@@ -31,6 +33,13 @@ export const HomeRoot = () => {
   );
   const location = useLocation();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const { needsAuth } = useAuth();
+  const { data: userProfile } = useLoggedInServerState(
+    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
+    {
+      enabled: !!chainContext.address
+    }
+  );
   if (!chainContext.isWalletConnected) {
     return (
       <Navigate to={ROUTES.LOGIN.path + "?redirect=" + location.pathname} />
@@ -39,8 +48,9 @@ export const HomeRoot = () => {
 
   return (
     <Box>
-      {/* TODO - username */}
-      {!isLargerThanLg && <Header username="username" />}
+      {!isLargerThanLg && userProfile && (
+        <Header username={userProfile.username} />
+      )}
 
       <Flex
         justify="center"
