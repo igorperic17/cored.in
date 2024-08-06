@@ -18,7 +18,7 @@ import { TESTNET_STAKING_DENOM, UserProfile } from "@coredin/shared";
 import { FaCheckDouble, FaPen } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
@@ -79,9 +79,12 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
 
+  const [isSubscribing, setIsSubscribing] = useState(false);
+
   const handleSubscribe = () => {
     console.log("Subscribing to", profileDid?.did_info?.did);
     if (coredinClient && subscriptionPrice && profileDid?.did_info) {
+      setIsSubscribing(true);
       coredinClient
         .subscribe(
           {
@@ -132,6 +135,9 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             ),
             isClosable: true
           });
+        })
+        .finally(() => {
+          setIsSubscribing(false);
         });
     }
     onClose();
@@ -260,7 +266,12 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           subscriptionPrice &&
           subscriptionDays && (
             <>
-              <Button variant="primary" size="sm" onClick={onOpen}>
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={onOpen}
+                isLoading={isSubscribing}
+              >
                 Subscribe for {subscriptionPrice.amount}{" "}
                 {subscriptionPrice?.denom}
               </Button>
