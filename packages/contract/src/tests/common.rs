@@ -6,26 +6,9 @@ pub mod common {
     use cosmwasm_std::testing::{mock_env, mock_info};
     use cosmwasm_std::{coin, coins, from_json, Addr, Coin, Deps, DepsMut};
 
-    use crate::contract::{execute, instantiate, query};
+    use crate::contract::{execute, instantiate, query, FEE_DENOM};
     use crate::msg::{ExecuteMsg, GetDIDResponse, InstantiateMsg, QueryMsg};
     use crate::state::Config;
-
-    pub fn mock_coredin_initial_accounts() -> Vec<(String, Coin)> {
-        vec![
-            (
-                "alice_key".to_string(),
-                coin(100 * 10_000_000_000, "utestcore"),
-            ),
-            (
-                "bob_key".to_string(),
-                coin(100 * 10_000_000_000, "utestcore"),
-            ),
-            (
-                "claire_key".to_string(),
-                coin(100 * 10_000_000_000, "utestcore"),
-            ),
-        ]
-    }
 
     pub fn assert_name_owner(deps: Deps, name: &str, owner: &Addr) {
         let res = query(
@@ -103,7 +86,7 @@ pub mod common {
 
         // init multiple accounts
         let accs = app
-                    .init_accounts(&coins(100 * 100_000_000_000, "utestcore".to_string()), 3)
+                    .init_accounts(&coins(200 * 100_000_000_000, FEE_DENOM.to_string()), 3)
                     .unwrap();
         let admin = &accs.get(0).unwrap();
 
@@ -125,7 +108,7 @@ pub mod common {
                         },
                         None,
                         "label".into(),
-                        &coins(20 * 100_000_000_000, "utestcore".to_string()),
+                        &coins(20 * 100_000_000_000, FEE_DENOM.to_string()),
                         &admin,
                     )
                     .unwrap()
@@ -143,7 +126,7 @@ pub mod common {
             wasm.execute::<ExecuteMsg>(
                     &contract_addr,
                     &register_did_msg,
-                    &coins(10_000_000_000, "utestcore"),
+                    &coins(10_000_000_000, FEE_DENOM),
                     // &[],
                     &account
                 )

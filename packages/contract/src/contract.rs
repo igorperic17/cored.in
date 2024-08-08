@@ -26,6 +26,9 @@ use crate::merkle_tree::MerkleTree;
 const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
 
+// TODO: adjust this to "utestcore" when deploying the contract, so it works when deployed to testnet
+pub const FEE_DENOM: &str = "ucore";
+
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
@@ -95,7 +98,7 @@ pub fn execute_register(
     wallet_storage(deps.storage).save(record.wallet.as_bytes(), &record)?;
 
     let user_profile = ProfileInfo {
-        subscription_price: Some(coin(0, "utestcore")), // TODO - get from env / use native coin?
+        subscription_price: Some(coin(0, FEE_DENOM)), // TODO - get from env / use native coin?
         subscription_duration_days: Some(Uint64::from(7u64)),
         top_subscribers: LinkedList::new(),
         subscriber_count: Uint64::zero(),

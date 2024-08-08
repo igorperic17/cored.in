@@ -1,4 +1,5 @@
 use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
+use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
@@ -69,7 +70,7 @@ pub fn subscribe(
 
             if refund.amount.is_zero() {
                 refund = Coin {
-                    denom: String::new(),
+                    denom: FEE_DENOM.to_owned(),
                     amount: 0u128.into(),
                 };
             }
@@ -151,7 +152,7 @@ pub fn subscribe(
     // deps.api.debug(format!("Trying to pay {}...", subscribed_to_wallet.wallet.to_string()).as_str());
     let pay_owner_msg = BankMsg::Send {
         to_address: subscribed_to_wallet.wallet.to_string(),
-        amount: coins(owner_payout.u128(), "utestcore"),
+        amount: coins(owner_payout.u128(), FEE_DENOM),
     };
 
     Ok(response
