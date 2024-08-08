@@ -1,10 +1,8 @@
-use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
 use coreum_wasm_sdk::core::CoreumMsg;
 use cosmwasm_std::{
     coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
     StdResult, Storage, Uint64,
 };
-use std::cmp::min;
 use std::collections::LinkedList;
 
 use crate::coin_helpers::assert_sent_sufficient_coin;

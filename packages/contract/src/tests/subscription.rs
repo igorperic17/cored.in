@@ -54,7 +54,7 @@ mod tests {
 
     #[test]
     fn subscribe_success() {
-        let mut env = mock_env();
+        let env = mock_env();
         let mut deps = mock_dependencies();
 
         mock_init_no_price(deps.as_mut());
@@ -570,11 +570,6 @@ mod tests {
 
         with_test_tube(&|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>| {
 
-            // let mut deps_empty = mock_dependencies();
-
-            // let deps = get_deps(&mut deps_empty);
-            // mock_init_no_price(deps);
-
             // register actors
             let alice = accounts.get(1).unwrap();
             let bob = accounts.get(2).unwrap();
@@ -590,8 +585,8 @@ mod tests {
             wasm.execute::<ExecuteMsg>(
                     &contract_addr,
                     &subscribe_msg,
-                    // &coins(10_000_000_000, FEE_DENOM.to_string()),
-                    &[],
+                    &coins(10_000_000_000, FEE_DENOM.to_string()),
+                    // &[],
                     &bob
                 )
                 .unwrap();

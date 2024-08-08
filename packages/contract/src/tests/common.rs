@@ -103,12 +103,13 @@ pub mod common {
                     .instantiate(
                         code_id,
                         &InstantiateMsg {
-                            purchase_price: None,
-                            transfer_price: None,
+                            purchase_price: Some(coin(0, FEE_DENOM)),
+                            transfer_price: Some(coin(0, FEE_DENOM)),
                         },
-                        None,
+                        Some(admin.address().as_str()),
                         "label".into(),
-                        &coins(20 * 100_000_000_000, FEE_DENOM.to_string()),
+                        // &coins(100_000_000_000, FEE_DENOM.to_string()),
+                        &[],
                         &admin,
                     )
                     .unwrap()

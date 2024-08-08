@@ -1,4 +1,4 @@
-use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
+use crate::coin_helpers::{assert_sent_sufficient_coin};
 use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
