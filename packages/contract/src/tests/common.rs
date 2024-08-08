@@ -87,66 +87,66 @@ pub mod common {
         mock_register(deps, &"alice", sent)
     }
 
-    // use coreum_test_tube::{Account, CoreumTestApp, Module, SigningAccount, Wasm};
+    use coreum_test_tube::{Account, CoreumTestApp, Module, SigningAccount, Wasm};
 
-    // // function pointer is invoked when mock env is set to execute test defined in the injected function
-    // // signature: (app, accounts, contract_addr, code_id, wasm)
-    // pub fn with_test_tube(f: &dyn Fn(Vec<SigningAccount>, String, Wasm<CoreumTestApp>)) {
+    // function pointer is invoked when mock env is set to execute test defined in the injected function
+    // signature: (app, accounts, contract_addr, code_id, wasm)
+    pub fn with_test_tube(f: &dyn Fn(Vec<SigningAccount>, String, Wasm<CoreumTestApp>)) {
 
-    //     // test-tube setup
+        // test-tube setup
 
-    //     // Create new Coreum appchain instance.
-    //     let app = CoreumTestApp::new();
+        // Create new Coreum appchain instance.
+        let app = CoreumTestApp::new();
 
-    //     // `Wasm` is the module we use to interact with cosmwasm releated logic on the appchain
-    //     let wasm = Wasm::new(&app);
+        // `Wasm` is the module we use to interact with cosmwasm releated logic on the appchain
+        let wasm = Wasm::new(&app);
 
-    //     // init multiple accounts
-    //     let accs = app
-    //                 .init_accounts(&coins(100 * 100_000_000_000, "utestcore".to_string()), 3)
-    //                 .unwrap();
-    //     let admin = &accs.get(0).unwrap();
+        // init multiple accounts
+        let accs = app
+                    .init_accounts(&coins(100 * 100_000_000_000, "utestcore".to_string()), 3)
+                    .unwrap();
+        let admin = &accs.get(0).unwrap();
 
-    //     // Store compiled wasm code on the appchain and retrieve its code id
-    //     let wasm_byte_code = std::fs::read("./artifacts/coredin.wasm").unwrap();
-    //     let code_id = wasm
-    //                 .store_code(&wasm_byte_code, None, &admin)
-    //                 .unwrap()
-    //                 .data
-    //                 .code_id;
+        // Store compiled wasm code on the appchain and retrieve its code id
+        let wasm_byte_code = std::fs::read("./artifacts/coredin.wasm").unwrap();
+        let code_id = wasm
+                    .store_code(&wasm_byte_code, None, &admin)
+                    .unwrap()
+                    .data
+                    .code_id;
 
-    //     // Instantiate contract with initial admin (signer) account defined beforehand and make admin list mutable
-    //     let contract_addr = wasm
-    //                 .instantiate(
-    //                     code_id,
-    //                     &InstantiateMsg {
-    //                         purchase_price: None,
-    //                         transfer_price: None,
-    //                     },
-    //                     None,
-    //                     "label".into(),
-    //                     &coins(20 * 100_000_000_000, "utestcore".to_string()),
-    //                     &admin,
-    //                 )
-    //                 .unwrap()
-    //                 .data
-    //                 .address;
+        // Instantiate contract with initial admin (signer) account defined beforehand and make admin list mutable
+        let contract_addr = wasm
+                    .instantiate(
+                        code_id,
+                        &InstantiateMsg {
+                            purchase_price: None,
+                            transfer_price: None,
+                        },
+                        None,
+                        "label".into(),
+                        &coins(20 * 100_000_000_000, "utestcore".to_string()),
+                        &admin,
+                    )
+                    .unwrap()
+                    .data
+                    .address;
 
-    //     f(accs, contract_addr, wasm);
-    // }
+        f(accs, contract_addr, wasm);
+    }
 
-    // pub fn mock_register_account(wasm: &Wasm<CoreumTestApp>, contract_addr: &String, account: &SigningAccount, username: String) {
-    //         let register_did_msg = ExecuteMsg::Register {
-    //             did: format!("{}_did", username).to_string(),
-    //             username: username
-    //         };
-    //         wasm.execute::<ExecuteMsg>(
-    //                 &contract_addr,
-    //                 &register_did_msg,
-    //                 &coins(10_000_000_000, "utestcore"),
-    //                 // &[],
-    //                 &account
-    //             )
-    //             .unwrap();
-    // }
+    pub fn mock_register_account(wasm: &Wasm<CoreumTestApp>, contract_addr: &String, account: &SigningAccount, username: String) {
+            let register_did_msg = ExecuteMsg::Register {
+                did: format!("{}_did", username).to_string(),
+                username: username
+            };
+            wasm.execute::<ExecuteMsg>(
+                    &contract_addr,
+                    &register_did_msg,
+                    &coins(10_000_000_000, "utestcore"),
+                    // &[],
+                    &account
+                )
+                .unwrap();
+    }
 }

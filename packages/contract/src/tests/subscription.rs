@@ -1,9 +1,9 @@
 #[cfg(test)]
 mod tests {
-    // use coreum_test_tube::{CoreumTestApp, SigningAccount, Wasm};
+    use coreum_test_tube::{CoreumTestApp, SigningAccount, Wasm};
     use crate::contract::{execute, query};
     use crate::msg::{ExecuteMsg, GetSubscriptionInfoResponse, QueryMsg};
-    use crate::tests::common::common::{mock_init_no_price, mock_register};
+    use crate::tests::common::common::{mock_init_no_price, mock_register, mock_register_account, with_test_tube};
     use cosmwasm_std::testing::{
         mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info,
     };
@@ -567,64 +567,65 @@ mod tests {
 
     // leaving for the reference if we ever want to revisit coreum_test_tube
 
-    // #[test]
-    // fn subscribe_payout_owner_tube() {
+    #[test]
+    fn subscribe_payout_owner_tube() {
 
-    //     with_test_tube(&|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>| {
+        with_test_tube(&|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>| {
 
-    //         // let mut deps_empty = mock_dependencies();
+            // let mut deps_empty = mock_dependencies();
 
-    //         // let deps = get_deps(&mut deps_empty);
-    //         // mock_init_no_price(deps);
+            // let deps = get_deps(&mut deps_empty);
+            // mock_init_no_price(deps);
 
-    //         // register actors
-    //         let alice = accounts.get(1).unwrap();
-    //         let bob = accounts.get(2).unwrap();
+            // register actors
+            let alice = accounts.get(1).unwrap();
+            let bob = accounts.get(2).unwrap();
 
-    //         mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
-    //         mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+            mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
+            mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
 
-    //         // let subscribe_info = mock_info("bob_key", );
-    //         let subscribe_msg = ExecuteMsg::Subscribe {
-    //             did: "alice_did".to_string(),
-    //         };
+            // let subscribe_info = mock_info("bob_key", );
+            let subscribe_msg = ExecuteMsg::Subscribe {
+                did: "alice_did".to_string(),
+            };
 
-    //         // println!("{}", bob.address().to_string());
-    //         // Execute the contract to modify admin to user address
-    //         wasm.execute::<ExecuteMsg>(
-    //                 &contract_addr,
-    //                 &subscribe_msg,
-    //                 &coins(10_000_000_000, "utestcore".to_string()),
-    //                 &bob
-    //             )
-    //             .unwrap();
+            // println!("{}", bob.address().to_string());
+            // Execute the contract to modify admin to user address
+            wasm.execute::<ExecuteMsg>(
+                    &contract_addr,
+                    &subscribe_msg,
+                    &coins(10_000_000_000, "utestcore".to_string()),
+                    &bob
+                )
+                .unwrap();
 
-    //         // // Query the contract to verify that the admin has been updated correctly.
-    //         // let admin_list = wasm
-    //         //         .query::<QueryMsg, AdminListResponse>(&contract_addr, &QueryMsg::AdminList {})
-    //         //         .unwrap();
+            // // Query the contract to verify that the admin has been updated correctly.
+            // let admin_list = wasm
+            //         .query::<QueryMsg, AdminListResponse>(&contract_addr, &QueryMsg::AdminList {})
+            //         .unwrap();
 
-    //         // assert_eq!(admin_list.admins, vec![user.address()]);
-    //         // assert!(admin_list.mutable);
+            // assert_eq!(admin_list.admins, vec![user.address()]);
+            // assert!(admin_list.mutable);
 
-    //         // let deps = get_deps(&mut deps_empty);
-    //         // let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
+            // let deps = get_deps(&mut deps_empty);
+            // let res = execute(deps, mock_env(), subscribe_info, subscribe_msg);
 
-    //         // assert!(res.is_ok(), "Expected subscribe call to suceed");
+            // assert!(res.is_ok(), "Expected subscribe call to suceed");
 
-    //         // // check if Alice got paid
-    //         // // let balance_request = cosmwasm_std::BankQuery::Balance {
-    //         // //     address:  "alice_key".to_string(),
-    //         // //     denom: "core".to_string(),
-    //         // // };
-    //         // let balance_request = coreum::asset::ft::v1::QueryBalanceRequest {
-    //         //     account:  "alice_key".to_string(),
-    //         //     denom: "core".to_string(),
-    //         // };
-    //         // let q: QueryRequest<CoreumQueries> = balance_request.into();
-    //         // let deps = get_deps(&mut deps_empty);
-    //         // let balance_response = deps.querier.query::<coreum::asset::ft::v1::QueryBalanceResponse>(&q);
-    //         // println!("{:?}", balance_response);
-    //         // assert!(balance_response.balance == "8core");
-    //     });
+            // // check if Alice got paid
+            // // let balance_request = cosmwasm_std::BankQuery::Balance {
+            // //     address:  "alice_key".to_string(),
+            // //     denom: "core".to_string(),
+            // // };
+            // let balance_request = coreum::asset::ft::v1::QueryBalanceRequest {
+            //     account:  "alice_key".to_string(),
+            //     denom: "core".to_string(),
+            // };
+            // let q: QueryRequest<CoreumQueries> = balance_request.into();
+            // let deps = get_deps(&mut deps_empty);
+            // let balance_response = deps.querier.query::<coreum::asset::ft::v1::QueryBalanceResponse>(&q);
+            // println!("{:?}", balance_response);
+            // assert!(balance_response.balance == "8core");
+        });
+    }
 }
