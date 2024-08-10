@@ -139,6 +139,13 @@ pub fn subscribe(
     //     Response::new().add_submessages(sub_msg);
     // }
 
+    response = response
+        .add_attribute("action", "subscribe")
+        .add_attribute("subscribed_to_did", subscribed_to_wallet.did.clone())
+        .add_attribute("subscribed_to_wallet", subscribed_to_wallet.wallet.clone())
+        // .add_attribute("valid_until", valid_until.to_string())
+        .add_attribute("subscriber", info.sender);
+
     // payout
     // deps.api.debug("Trying to pay the subscriber...");
     let cored_in_commission_fraction = (1u128, 20u128); // TODO: hardcoded to 5% = 1/20 for now, TBD and configurable
@@ -149,19 +156,18 @@ pub fn subscribe(
     let owner_payout = price.amount.checked_sub(cored_in_commission).unwrap();
     // deps.api.debug(format!("Subscriber payment {}, cored.in commission {}", owner_payout, cored_in_commission).as_str());
 
-    // deps.api.debug(format!("Trying to pay {}...", subscribed_to_wallet.wallet.to_string()).as_str());
-    let pay_owner_msg = BankMsg::Send {
-        to_address: subscribed_to_wallet.wallet.to_string(),
-        amount: coins(owner_payout.u128(), FEE_DENOM),
-    };
+    if owner_payout != Uint128::zero() {
+        // deps.api.debug(format!("Trying to pay {}...", subscribed_to_wallet.wallet.to_string()).as_str());
+        let pay_owner_msg = BankMsg::Send {
+            to_address: subscribed_to_wallet.wallet.to_string(),
+            amount: coins(owner_payout.u128(), FEE_DENOM),
+        };
 
-    Ok(response
-        .add_attribute("action", "subscribe")
-        .add_attribute("subscribed_to_did", subscribed_to_wallet.did)
-        .add_attribute("subscribed_to_wallet", subscribed_to_wallet.wallet)
-        // .add_attribute("valid_until", valid_until.to_string())
-        .add_attribute("subscriber", info.sender)
-        .add_message(pay_owner_msg))
+        response = response.add_message(pay_owner_msg)
+    }
+
+
+    Ok(response)
 }
 
 fn mint_nft(
