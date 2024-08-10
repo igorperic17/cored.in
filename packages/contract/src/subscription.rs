@@ -1,16 +1,16 @@
-use crate::coin_helpers::{assert_sent_sufficient_coin};
+use std::str::FromStr;
+
+use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
 use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
-    did_storage_read, profile_storage, profile_storage_read, single_subscription_storage,
-    single_subscription_storage_read, wallet_storage_read, SubscriptionInfo,
+    config_storage_read, did_storage_read, profile_storage, profile_storage_read, single_subscription_storage, single_subscription_storage_read, wallet_storage_read, SubscriptionInfo
 };
-use coreum_wasm_sdk::assetnft;
-use coreum_wasm_sdk::core::CoreumMsg;
+use coreum_wasm_sdk::{assetnft, nft};
+use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Deps, DepsMut, Env, MessageInfo,
-    Response, StdError, StdResult, Uint128, Uint64,
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a string of a specific lenght
@@ -27,7 +27,7 @@ pub fn hash_did(s: &str, n: usize) -> String {
 }
 
 pub fn subscribe(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     env: Env,
     info: MessageInfo,
     subscribe_to_did: String,
@@ -126,33 +126,33 @@ pub fn subscribe(
         .save(subscribe_to_did.as_bytes(), &profile_info)
         .expect("Error incrementing subscriber count");
 
-    // // mint the subscription NFT
-    // let nft_class_id = generate_nft_class_id(env.clone(), subscribe_to_did.clone());
-    // let nft_id = generate_nft_id(env.clone(), subscriber_did.clone().did, subscribe_to_did);
-    // let valid_until = env.block.time.plus_days(30); // valid for a month, ability to subscribe for more/less TBD
-    // let mint_res = mint_nft(info.clone(), nft_class_id, nft_id, Some(to_json_binary(&valid_until).unwrap()));
-    // if mint_res.is_err() {
-    //     return Err(ContractError::SubscriptionNFTMintingError {});
-    // } else {
-    //     let sub_msg = mint_res.unwrap().messages;
-    //     deps.api.debug(format!("MINT NFT messages: {:?}", sub_msg).as_str());
-    //     Response::new().add_submessages(sub_msg);
-    // }
+    // mint the subscription NFT
+    let nft_class_id = generate_nft_class_id(env.clone(), subscribe_to_did.clone());
+    let nft_id = generate_nft_id(env.clone(), subscriber_did.clone().did, subscribe_to_did);
+    let valid_until = env.block.time.plus_days(30); // valid for a month, ability to subscribe for more/less TBD
+    let mint_res = mint_nft(info.clone(), nft_class_id, nft_id, Some(to_json_binary(&valid_until).unwrap()));
+    if mint_res.is_err() {
+        return Err(ContractError::SubscriptionNFTMintingError {});
+    } else {
+        let sub_msg = mint_res.unwrap().messages;
+        deps.api.debug(format!("MINT NFT messages: {:?}", sub_msg).as_str());
+        Response::new().add_submessages(sub_msg);
+    }
 
     response = response
         .add_attribute("action", "subscribe")
         .add_attribute("subscribed_to_did", subscribed_to_wallet.did.clone())
         .add_attribute("subscribed_to_wallet", subscribed_to_wallet.wallet.clone())
-        // .add_attribute("valid_until", valid_until.to_string())
+        .add_attribute("valid_until", valid_until.to_string())
         .add_attribute("subscriber", info.sender);
 
     // payout
     // deps.api.debug("Trying to pay the subscriber...");
-    let cored_in_commission_fraction = (1u128, 20u128); // TODO: hardcoded to 5% = 1/20 for now, TBD and configurable
-    let cored_in_commission = price
-        .amount
-        .checked_mul_floor(cored_in_commission_fraction)
-        .unwrap();
+    let contact_config = config_storage_read(deps.storage).load().unwrap();
+    let sub_fee_percentage = contact_config.subscription_fee;
+
+    let cored_in_commission = 
+        sub_fee_percentage.checked_mul(Decimal::from_str(price.amount.to_string().as_str())?).unwrap().floor().to_uint_floor();
     let owner_payout = price.amount.checked_sub(cored_in_commission).unwrap();
     // deps.api.debug(format!("Subscriber payment {}, cored.in commission {}", owner_payout, cored_in_commission).as_str());
 
@@ -195,13 +195,13 @@ fn mint_nft(
         .add_message(msg))
 }
 
-pub fn is_subscriber(deps: Deps, env: Env, did: String, subscriber: String) -> StdResult<Binary> {
+pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, did: String, subscriber: String) -> StdResult<Binary> {
     let key = format!("{}{}", subscriber, did); // Concatenate strings and store in a variable
     let subscriber_info =
         single_subscription_storage_read(deps.storage).may_load(key.as_bytes())?;
 
     // rely on chain internal state instead of the NFT data until minting is fixed
-    let response = match subscriber_info {
+    let response = match subscriber_info.clone() {
         None => false,
         Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
     };
@@ -209,23 +209,22 @@ pub fn is_subscriber(deps: Deps, env: Env, did: String, subscriber: String) -> S
     // check NFT
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
 
-    // // issues NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    // let class_id = generate_nft_class_id(env.clone(), subscriber_info.clone().unwrap().subscribed_to);
-    // let nft_id = generate_nft_id(env, subscriber_info.clone().unwrap().subscriber, subscriber_info.unwrap().subscribed_to);
-    // let request = CoreumQueries::NFT(nft::Query::NFT {
-    //     class_id,
-    //     id: nft_id,
-    // })
-    // .into();
-    // // getting Err(GenericErr { msg: "Querier system error: Unsupported query type: custom" })
-    // let res = deps.querier.query::<nft::NFTResponse>(&request);
-    // println!("{:?}", res);
+    // issues NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
+    let class_id = generate_nft_class_id(env.clone(), subscriber_info.clone().unwrap().subscribed_to);
+    let nft_id = generate_nft_id(env, subscriber_info.clone().unwrap().subscriber, subscriber_info.unwrap().subscribed_to);
+    let request = QueryRequest::Custom(CoreumQueries::NFT(nft::Query::NFT {
+        class_id,
+        id: nft_id,
+    }));
+    // getting Err(GenericErr { msg: "Querier system error: Unsupported query type: custom" })
+    let res = deps.querier.query::<nft::NFTResponse>(&request);
+    println!("{:?}", res);
 
     to_json_binary(&response)
 }
 
 pub fn get_subscription_info(
-    deps: Deps,
+    deps: Deps<CoreumQueries>,
     env: Env,
     did: String,
     subscriber: String,
@@ -245,7 +244,7 @@ pub fn get_subscription_info(
 }
 
 // gets current subscription cost
-pub fn get_subscription_price(deps: Deps, did: String) -> StdResult<Binary> {
+pub fn get_subscription_price(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
     let profile_info = profile_storage_read(deps.storage).load(did.as_bytes());
 
     match profile_info {
@@ -263,7 +262,7 @@ pub fn get_subscription_price(deps: Deps, did: String) -> StdResult<Binary> {
     }
 }
 
-pub fn get_subscription_duration(deps: Deps, did: String) -> StdResult<Binary> {
+pub fn get_subscription_duration(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
     let profile_info = profile_storage_read(deps.storage).load(did.as_bytes());
 
     match profile_info {
@@ -277,7 +276,7 @@ pub fn get_subscription_duration(deps: Deps, did: String) -> StdResult<Binary> {
 }
 
 pub fn set_subscription(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     info: MessageInfo,
     price: Coin,
     duration: Uint64,

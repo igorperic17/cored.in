@@ -4,7 +4,7 @@ use std::fmt::Display;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Coin, Storage, Timestamp, Uint64};
+use cosmwasm_std::{Addr, Coin, Decimal, Storage, Timestamp, Uint64};
 use cosmwasm_storage::{
     bucket, bucket_read, singleton, singleton_read, Bucket, ReadonlyBucket, ReadonlySingleton,
     Singleton,
@@ -25,6 +25,7 @@ pub static POST_KEY: &[u8] = b"postinfo"; // post info (includes optional bounty
 pub struct Config {
     pub did_register_price: Option<Coin>,
     pub owner: Addr,
+    pub subscription_fee: Decimal, // percentage from range [0.0, 1.0]
 }
 
 pub fn config_storage(storage: &mut dyn Storage) -> Singleton<Config> {

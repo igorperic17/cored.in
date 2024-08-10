@@ -1,7 +1,7 @@
 use std::collections::LinkedList;
 
 use cosmwasm_schema::QueryResponses;
-use cosmwasm_std::{Coin, Uint64};
+use cosmwasm_std::{Coin, Decimal, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
@@ -11,6 +11,7 @@ use crate::state::{Config, DidInfo, SubscriptionInfo};
 pub struct InstantiateMsg {
     pub purchase_price: Option<Coin>,
     pub transfer_price: Option<Coin>,
+    pub subscription_fee: Decimal
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
