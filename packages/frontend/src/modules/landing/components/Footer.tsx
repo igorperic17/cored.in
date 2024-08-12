@@ -15,34 +15,30 @@ export const Footer = () => {
       whileInView="animate"
       variants={fadeInAnimation}
       viewport={{ once: true, amount: 0.3 }}
+      color="brand.100"
       // border="1px solid red"
     >
       <Flex
         flexDirection="column"
         justify="center"
         align="center"
-        gap="3em"
+        gap="5em"
         pt="5em"
-        pb="10em"
+        mb="7.5em"
         px="1em"
         mt="7em"
       >
         <Heading
           as="h2"
           fontSize={{ base: "3rem", md: "4rem" }}
-          mb="2rem"
           textAlign="center"
           maxW="600px"
         >
-          Get notified when cored
-          <Text as="span" color="brand.500">
-            .in
-          </Text>{" "}
-          is ready
+          Get notified when coredin is ready
         </Heading>
         <SocialMedia size="3rem" gap="3.5em" />
       </Flex>
-      <Text color="text.400" textAlign="center" p="1em">
+      <Text color="brand.100" textAlign="center" p="1.5em">
         All rights reserved — cored.in &copy;{" "}
         <Text as="span">{new Date().getFullYear()}</Text>
       </Text>
