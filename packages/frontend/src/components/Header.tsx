@@ -1,4 +1,4 @@
-import { Login, Logo } from "@/components";
+import { LoginButton, Logo } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { Flex, Link } from "@chakra-ui/react";
 import { FC } from "react";
@@ -32,7 +32,11 @@ export const Header: FC<HeaderProps> = ({ username }) => {
         <Logo fontSize={{ base: "1.5rem", lg: "2rem" }} />
       </Link>
 
-      <Login username={username} variant="empty" signInText="Connect wallet" />
+      <LoginButton
+        username={username}
+        variant="empty"
+        signInText="Connect wallet"
+      />
     </Flex>
   );
 };

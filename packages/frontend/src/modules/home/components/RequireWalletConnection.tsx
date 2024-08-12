@@ -1,4 +1,4 @@
-import { Login } from "@/components";
+import { LoginButton } from "@/components";
 import { VStack, Text, Heading, Link, Stack, Box } from "@chakra-ui/react";
 
 export const RequireWalletConnection = () => {
@@ -21,7 +21,7 @@ export const RequireWalletConnection = () => {
         fontSize={{ base: "1rem", md: "1.25rem" }}
         mt="-5vh"
       >
-        <Login variant="primary" signInText="Connect wallet" />
+        <LoginButton variant="primary" signInText="Connect wallet" />
         <Text
           color="text.300"
           fontSize={{ base: "1rem", md: "1.25rem" }}

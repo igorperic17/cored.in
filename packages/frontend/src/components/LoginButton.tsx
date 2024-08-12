@@ -56,13 +56,17 @@ const options = {
 // Create a new CapsuleProvider instance with the options
 const capsuleProvider = new CapsuleProvider(options);
 
-interface LoginProps {
+interface LoginButtonProps {
   variant: "primary" | "empty";
   signInText: string;
   username?: string;
 }
 
-export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
+export const LoginButton: FC<LoginButtonProps> = ({
+  variant,
+  signInText,
+  username
+}) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const [showModal, setShowModal] = useState(false);

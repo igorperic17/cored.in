@@ -3,12 +3,11 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useAuth, useLoggedInServerState } from "@/hooks";
-import { Login, Logo } from "@/components";
+import { LoginButton, Logo } from "@/components";
 import { USER_QUERIES } from "@/queries";
 import { useChain } from "@cosmos-kit/react";
 import { NAV_SECTIONS } from "../constants";
 import { useSectionInView } from "../hooks";
-import BgNoise615 from "@/assets/bg-noise-6-15.png";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav = () => {
@@ -40,7 +39,6 @@ export const Nav = () => {
         gap="3em"
         maxW="1840px"
         mx="auto"
-        backgroundImage={BgNoise615}
         backgroundBlendMode="overlay"
         backdropFilter="blur(12px)"
         border="1px solid #29292940"
@@ -59,13 +57,7 @@ export const Nav = () => {
           }}
           flexShrink="0"
         >
-          <Link
-            as={ReactRouterLink}
-            to={ROUTES.ROOT.path}
-            _hover={{ textDecoration: "none" }}
-          >
-            <Logo w="148px" h="24px" />
-          </Link>
+          <Logo w="148px" h="24px" />
         </Link>
 
         {isLargerThanLg && (
@@ -108,17 +100,11 @@ export const Nav = () => {
             </Flex>
           </Box>
         )}
-        <Link
-          as={ReactRouterLink}
-          to={ROUTES.LOGIN.path}
-          _hover={{ textDecoration: "none" }}
-        >
-          <Login
-            variant="primary"
-            signInText="Sign in"
-            username={userProfile?.username}
-          />
-        </Link>
+        <LoginButton
+          variant="primary"
+          signInText="Sign in"
+          username={userProfile?.username}
+        />
       </Flex>
     </Box>
   );

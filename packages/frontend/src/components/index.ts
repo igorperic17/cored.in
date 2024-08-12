@@ -1,6 +1,6 @@
 export { BurguerMenu } from "./BurguerMenu";
 export { CookiesBar } from "./CookiesBar";
-export { Login } from "./Login";
+export { LoginButton } from "./LoginButton";
 export { Logo } from "./Logo";
 export { LogoIconColor } from "./LogoIconColor";
 export { Disclaimer } from "./Disclaimer";
