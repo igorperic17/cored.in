@@ -4,6 +4,5 @@ export { ReasonCard } from "./ReasonCard";
 export { Advantages } from "./Advantages";
 export { AdvantageCard } from "./AdvantageCard";
 export { Roadmap } from "./Roadmap";
-export { CallToAction } from "./CallToAction";
 export { Nav } from "./Nav";
 export { Footer } from "./Footer";
