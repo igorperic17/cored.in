@@ -1,5 +1,14 @@
 import { fadeInWithDelayAnimation } from "@/constants/animations";
-import { Box, Button, Flex, Heading, HStack, Text } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Flex,
+  Heading,
+  HStack,
+  Text,
+  useMediaQuery,
+  useTheme
+} from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { NAV_SECTIONS } from "../constants";
 import { LogoIconColor } from "@/components";
@@ -7,6 +16,11 @@ import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 
 export const Hero = () => {
+  const theme = useTheme();
+  const [isLargerThanMd] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.md})`
+  );
+
   return (
     <Flex
       as="section"
@@ -17,7 +31,7 @@ export const Hero = () => {
       minH={{ base: "92vh", md: "89vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       direction="column"
       align="start"
-      justify="center"
+      justify={{ base: "start", sm: "center" }}
       mt={{ base: "2em" }}
       pb={{ base: "1em", md: "2.5em" }} // TODO
       color="brand.100"
@@ -32,7 +46,7 @@ export const Hero = () => {
       >
         <Heading
           as="h1"
-          fontSize={{ base: "3rem", md: "4.5rem", xl: "5.25rem" }}
+          fontSize={{ base: "3rem", md: "4.125rem", xl: "5.25rem" }}
           textAlign="left"
           fontWeight="700"
           // maxW={{ base: "750px", xl: "900px" }}
@@ -51,7 +65,7 @@ export const Hero = () => {
         <Flex direction="column" gap="1.5em">
           <Text
             fontWeight="300"
-            fontSize={{ lg: "1.25rem" }}
+            fontSize={{ base: "1rem", md: "1.25rem" }}
             lineHeight="1.25"
             maxW="636px"
           >
@@ -80,19 +94,36 @@ export const Hero = () => {
           </HStack>
         </Flex>
       </Flex>
-      <Box position="absolute" right="24px" top="7vh" zIndex="-1">
-        <LogoIconColor w="764px" h="783px" />
-      </Box>
+
+      {isLargerThanMd && (
+        <Box
+          position="absolute"
+          right={{ md: "24px" }}
+          zIndex="-1"
+          // border="1px solid white"
+          w="47%"
+        >
+          <LogoIconColor w="100%" h="auto" />
+        </Box>
+      )}
+
       <Box
         layerStyle="transparentBox"
         alignSelf="center"
         maxW="810px"
         py="1.5em"
         px="1em"
-        position="absolute"
+        position={{ base: "static", md: "absolute" }}
         bottom="48px"
+        mt="4em"
+        // border="1px solid red"
       >
-        <Text fontWeight="300" fontSize={{ lg: "1rem" }} lineHeight="1.25">
+        <Text
+          fontWeight="300"
+          fontSize={{ base: "1rem", md: "1.25rem" }}
+          lineHeight="1.25"
+          textAlign="center"
+        >
           Elevate your career with a verified digital identity. Control your
           data, customize your visibility, and connect confidently in a curated,
           spam-free environment. Showcase your expertise and unlock authentic
