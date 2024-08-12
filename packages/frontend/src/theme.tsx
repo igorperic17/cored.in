@@ -23,15 +23,15 @@ const fonts = {
 const styles = {
   global: {
     "::-webkit-scrollbar": {
-      width: "12px",
+      width: "10px",
       backgroundColor: "background.800"
     },
     "::-webkit-scrollbar-thumb": {
       backgroundColor: "background.600",
-      borderRadius: "6px"
+      borderRadius: "8px"
     },
     "::-webkit-scrollbar-thumb:hover": {
-      backgroundColor: "background.100"
+      backgroundColor: "brand.200"
     },
     "html, body": {
       color: "text.100",
