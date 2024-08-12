@@ -77,7 +77,6 @@ export const Hero = () => {
               variant="primary"
               as={ReactRouterLink}
               to={ROUTES.LOGIN.path}
-              _hover={{ textDecoration: "none" }}
             >
               Join coredin
             </Button>
