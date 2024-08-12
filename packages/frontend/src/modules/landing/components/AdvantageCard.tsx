@@ -28,65 +28,81 @@ export const AdvantageCard: FC<AdvantageProps> = ({
       viewport={{ once: true, amount: 0.3 }}
       variants={fadeInOneByOne}
       custom={index}
-      borderRadius="16px"
-      color="text.100"
-      background="background.600"
-      px={{ base: "1em", md: "2em" }}
-      pt={{ base: "1.25em", md: "2.5em" }}
-      pb={{ base: "2em", md: "3.5em" }}
+      layerStyle="transparentBox"
+      border="1px solid #292929"
+      // borderColor="red"
+      // minW="280px"
+      maxW="500px"
+      // h="100%"
+      px="2em"
+      py="2.75em"
+      alignSelf={{ base: "unset", xl: "stretch" }}
     >
       <VStack
-        spacing="2em"
-        align="start"
+        spacing="1.5em"
         h="100%"
         //   border="1px solid white"
         filter="grayscale(100%)"
         _hover={{
           filter: "none !important"
         }}
+        textAlign="center"
+        color="brand.100"
       >
-        <Heading
-          as="h3"
-          fontSize={{ base: "1.5rem", md: "2.5rem", xl: "3rem" }}
-        >
-          {heading}
-        </Heading>
-        <Text whiteSpace="pre-line" mb="2em">
-          {text}
-        </Text>
         {link ? (
           <Link
             href={link}
             isExternal
-            alignSelf="center"
-            mt="auto"
             onClick={() => console.log(link)}
             aria-label={`Link to ${alt} website.`}
+            // border="1px solid red"
           >
             <Image
               src={image}
               alt=""
-              // aria-hidden="true"
-              // border="1px solid red"
               w="100%"
-              maxW="80%"
-              h="auto"
-              maxH="150px"
+              maxW="150px"
+              mx="auto"
+              h={{ base: "50px", md: "60px" }}
               objectFit="contain"
             />
           </Link>
         ) : (
-          <Image
-            src={image}
-            alt={alt}
-            // border="1px solid red"
+          <Box
             w="100%"
-            maxW="80%"
-            h="auto"
-            maxH="150px"
-            objectFit="contain"
-          />
+            maxW="150px"
+            mx="auto"
+            h={{ base: "60px", md: "60px" }}
+            // border="1px solid red"
+            //
+          >
+            <Image
+              src={image}
+              alt={alt}
+              // border="1px solid white"
+              w="100%"
+              h={{ base: "60px", md: "70px" }}
+              objectFit="contain"
+            />
+          </Box>
         )}
+        <Heading
+          as="h3"
+          fontSize={{ base: "1.5rem", md: "2.5rem", xl: "3rem" }}
+          lineHeight="1.25"
+          fontWeight="700"
+          whiteSpace={{ base: "none", md: "pre-line" }}
+        >
+          {heading}
+        </Heading>
+        <Text
+          whiteSpace="pre-line"
+          fontSize="1rem"
+          lineHeight="1.5"
+          fontWeight="400"
+        >
+          {text}
+        </Text>
       </VStack>
     </Box>
   );
