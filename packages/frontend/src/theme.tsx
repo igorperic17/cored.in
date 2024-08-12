@@ -1,6 +1,5 @@
 import { extendTheme } from "@chakra-ui/react";
-import "@fontsource/space-grotesk";
-import "@fontsource/noto-sans";
+import "@fontsource-variable/public-sans";
 import {
   badgeTheme,
   buttonTheme,
@@ -17,8 +16,8 @@ import {
 } from "./themes";
 
 const fonts = {
-  heading: `'Space Grotesk', sans-serif`,
-  body: `"Noto Sans", sans-serif`
+  heading: `'Public Sans Variable', sans-serif`,
+  body: `'Public Sans Variable', sans-serif`
 };
 
 const styles = {
