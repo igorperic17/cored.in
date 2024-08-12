@@ -54,7 +54,7 @@ export const Benefits = () => {
     <Box
       as="section"
       w="100%"
-      id="benefits"
+      id="why-coredin"
       h="min-content"
       minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.

@@ -53,7 +53,7 @@ export const OurProgress = () => {
       as="section"
       direction="column"
       w="100%"
-      id="progress"
+      id="roadmap"
       h="min-content"
       // border="1px solid blue"
       align="center"

@@ -1,8 +1,8 @@
 export const NAV_SECTIONS = [
   { title: "home", link: "#" },
-  { title: "benefits", link: "#benefits" },
-  { title: "tech", link: "#tech" },
-  { title: "progress", link: "#progress" }
+  { title: "Why cored.in?", link: "#why-coredin" },
+  { title: "advantages", link: "#advantages" },
+  { title: "roadmap", link: "#roadmap" }
   // { title: "team", link: "#team" }
 ] as const;
 
