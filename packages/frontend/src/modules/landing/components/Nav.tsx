@@ -26,8 +26,6 @@ export const Nav = () => {
     }
   );
 
-  console.log("current section: ", currentSection);
-
   return (
     <Box
       as="header"
