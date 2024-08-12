@@ -4,14 +4,12 @@ import { FC } from "react";
 export const Logo: FC<IconProps> = (iconProps) => {
   return (
     <Icon
-      width="148"
-      height="24"
       viewBox="0 0 148 24"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
       {...iconProps}
     >
-      <g clip-path="url(#clip0_2162_167)">
+      <g clipPath="url(#clip0_2162_167)">
         <path
           d="M12.5321 13.3979C9.4745 14.621 7.09897 16.7129 5.72302 19.1113C4.91226 20.5249 5.5016 22.3293 6.98085 23.0131C12.8775 25.7383 20.7929 22.5707 23.1832 16.5313C23.7827 15.0161 22.9652 13.3027 21.403 12.8387C18.7527 12.0508 15.5897 12.1748 12.5321 13.3979Z"
           fill="#7F02FE"
