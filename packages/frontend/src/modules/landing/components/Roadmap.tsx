@@ -15,6 +15,8 @@ import {
   StepStatus,
   StepTitle,
   Stepper,
+  Text,
+  VStack,
   useSteps
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
@@ -27,33 +29,47 @@ export const Roadmap = () => {
   });
 
   return (
-    <Flex
+    <VStack
       as="section"
-      direction="column"
       w="100%"
       id={NAV_SECTIONS.ROADMAP}
-      h="min-content"
-      // border="1px solid blue"
-      align="center"
-      justifyContent="space-between"
-      minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
-      pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
-      //
+      // h="min-content"
+      minH={{ base: "92vh", md: "89vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
+      pt={{ base: "8vh", md: "11vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
+      spacing="5em"
+      // border="1px solid red"
     >
-      <Heading
-        as="h2"
-        fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
-        color="brand.500"
-        mb={{ base: "0.75em", md: "0.5em", xl: "0.375em" }}
-      >
-        Roadmap
-      </Heading>
+      <Box textAlign="center">
+        <Heading
+          as="h2"
+          // fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
+          fontSize={{
+            base: "1.25rem",
+            md: "1.5rem",
+            lg: "1.75rem",
+            xl: "2.25rem"
+          }}
+          fontWeight="400"
+          lineHeight="1.25"
+          color="brand.200"
+          textTransform="uppercase"
+        >
+          Our progress
+        </Heading>
+        <Text
+          fontSize={{ base: "2.5rem", md: "3.5rem", lg: "4rem", xl: "4.5rem" }}
+          fontWeight="700"
+          lineHeight="1.25"
+          color="brand.100"
+        >
+          Powerful tech under the hood
+        </Text>
+      </Box>
       <Stepper
         index={activeStep}
-        colorScheme="brand"
         orientation="vertical"
         minH="600px"
-        gap="0"
+        gap="1em"
 
         // border="1px solid red"
       >
@@ -71,7 +87,7 @@ export const Roadmap = () => {
               flexShrink="0"
               w="600px"
               maxW="78vw"
-              pl="1em"
+              pl="1.5em"
               as={motion.div}
               variants={appearFromRightOneByOne}
               initial="initial"
@@ -94,6 +110,6 @@ export const Roadmap = () => {
           </Step>
         ))}
       </Stepper>
-    </Flex>
+    </VStack>
   );
 };
