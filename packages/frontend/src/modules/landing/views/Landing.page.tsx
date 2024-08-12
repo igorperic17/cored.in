@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { Advantages, Hero, OurProgress, Reasons } from "../components";
+import { Advantages, Hero, Reasons, Roadmap } from "../components";
 
 const LandingPage = () => {
   return (
@@ -13,7 +13,7 @@ const LandingPage = () => {
       <Hero />
       <Reasons />
       <Advantages />
-      <OurProgress />
+      <Roadmap />
     </Flex>
   );
 };
