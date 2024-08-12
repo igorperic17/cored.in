@@ -38,7 +38,7 @@ const styles = {
       boxSizing: "border-box"
     },
     body: {
-      background: "background.900"
+      background: "brand.900"
     },
     html: {
       scrollBehavior: "smooth"
@@ -56,7 +56,8 @@ const colors = {
     200: "#FBB030", //yellow
     300: "#00AA54", // green
     400: "#FF550F", // red
-    500: "#7F02FE" // purple
+    500: "#7F02FE", // purple
+    900: "#141413"
   },
   complimentary: {
     500: "#1F45F3" // blue but not readable // do not use yet
