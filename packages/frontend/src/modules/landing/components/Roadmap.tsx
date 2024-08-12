@@ -70,7 +70,6 @@ export const Roadmap = () => {
         orientation="vertical"
         minH="600px"
         gap="1em"
-
         // border="1px solid red"
       >
         {ROADMAP_STEPS.map((step, index) => (
@@ -88,6 +87,7 @@ export const Roadmap = () => {
               w="600px"
               maxW="78vw"
               pl="1.5em"
+              pb="3.125em"
               as={motion.div}
               variants={appearFromRightOneByOne}
               initial="initial"
