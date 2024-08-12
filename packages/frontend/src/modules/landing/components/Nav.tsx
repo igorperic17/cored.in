@@ -15,6 +15,7 @@ import { USER_QUERIES } from "@/queries";
 import { useChain } from "@cosmos-kit/react";
 import { NAV_SECTIONS } from "../constants";
 import { useSectionInView } from "../hooks";
+import BgNoise615 from "@/assets/bg-noise-6-15.png";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav = () => {
@@ -33,67 +34,89 @@ export const Nav = () => {
   );
 
   return (
-    <Flex
+    <Box
       as="header"
-      id="nav"
-      direction="row"
-      justify="space-between"
-      align="center"
       position="sticky"
-      top="0"
-      h={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the page sections also rely on vh to ensure content does not overlap.
-      w="100%"
-      maxW="1920px"
-      mx="auto"
-      px={{ base: "1.5em", md: "2.5em", lg: "3.5em", xl: "4em" }}
-      background="background.900"
-      // background="red"
+      top={{ base: "1rem", md: "1.5rem", lg: "1.75rem" }}
       zIndex="10"
+      px={{ base: "1em", md: "2.5em" }}
     >
-      <Link
-        as={ReactRouterLink}
-        to={ROUTES.ROOT.path}
-        _hover={{ textDecoration: "none" }}
+      <Flex
+        justify="space-between"
+        alignItems="center"
+        gap="3em"
+        maxW="1840px"
+        mx="auto"
+        backgroundImage={BgNoise615}
+        backgroundBlendMode="overlay"
+        backdropFilter="blur(12px)"
+        border="1px solid #29292940"
+        borderRadius="1em"
+        boxShadow="0px 4px 4px 0px #00000014"
+        p={{ base: "0.688em", xl: "1em" }}
+        // mt="16px" // might be needed
       >
-        <Logo fontSize={{ base: "2rem", md: "3rem" }} />
-      </Link>
-      {isLargerThanMd && (
-        <Box as="nav">
-          <HStack as="ul" spacing="1.5em" listStyleType="none">
-            {NAV_SECTIONS.map((item, index) => {
-              return (
-                <li key={`menu-section-item-${index}`}>
-                  <Link
-                    as={ReactRouterLink}
-                    to={item.link}
-                    textDecoration="none"
-                    textTransform="uppercase"
-                    color={currentSection === item.title ? "brand.500" : ""}
-                    fontSize="1.2em"
-                    // fontFamily="heading"
-                    _hover={{ color: "brand.500" }}
-                    //_focus={{ color: "text.500" }}
-                    _active={{ color: "" }}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              );
-            })}
-          </HStack>
-        </Box>
-      )}
-      <Link
-        as={ReactRouterLink}
-        to={ROUTES.LOGIN.path}
-        _hover={{ textDecoration: "none" }}
-      >
-        <Login
-          variant="primary"
-          signInText="Sign in"
-          username={userProfile?.username}
-        />
-      </Link>
-    </Flex>
+        <Link
+          as={ReactRouterLink}
+          to={ROUTES.ROOT.path}
+          aria-label="Main page."
+          _hover={{
+            textDecoration: "none"
+          }}
+          flexShrink="0"
+        >
+          <Link
+            as={ReactRouterLink}
+            to={ROUTES.ROOT.path}
+            _hover={{ textDecoration: "none" }}
+          >
+            <Logo w="148px" h="24px" />
+          </Link>
+        </Link>
+
+        {isLargerThanMd && (
+          <Box
+            as="nav"
+            w="60%"
+            maxW="450px"
+            justifySelf="center"
+            // border="1px solid red"
+          >
+            <HStack as="ul" spacing="1.5em" listStyleType="none">
+              {NAV_SECTIONS.map((item, index) => {
+                return (
+                  <li key={`menu-section-item-${index}`}>
+                    <Link
+                      as={ReactRouterLink}
+                      to={item.link}
+                      textDecoration="none"
+                      textTransform="uppercase"
+                      color={currentSection === item.title ? "brand.500" : ""}
+                      fontSize={{ base: "0.875rem", lg: "1rem" }}
+                      _hover={{ color: "brand.500" }}
+                      //_focus={{ color: "text.500" }}
+                      _active={{ color: "" }}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                );
+              })}
+            </HStack>
+          </Box>
+        )}
+        <Link
+          as={ReactRouterLink}
+          to={ROUTES.LOGIN.path}
+          _hover={{ textDecoration: "none" }}
+        >
+          <Login
+            variant="primary"
+            signInText="Sign in"
+            username={userProfile?.username}
+          />
+        </Link>
+      </Flex>
+    </Box>
   );
 };
