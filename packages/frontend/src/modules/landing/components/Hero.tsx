@@ -1,12 +1,13 @@
 import { fadeInWithDelayAnimation } from "@/constants/animations";
 import { Flex, Heading, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { NAV_SECTIONS } from "../constants";
 
 export const Hero = () => {
   return (
     <Flex
       as="section"
-      id="home"
+      id={NAV_SECTIONS.HOME}
       w="100%"
       h={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       direction="column"

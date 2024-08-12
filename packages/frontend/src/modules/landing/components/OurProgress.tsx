@@ -18,6 +18,7 @@ import {
   useSteps
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
+import { NAV_SECTIONS } from "../constants";
 
 const steps = [
   {
@@ -53,7 +54,7 @@ export const OurProgress = () => {
       as="section"
       direction="column"
       w="100%"
-      id="roadmap"
+      id={NAV_SECTIONS.ROADMAP}
       h="min-content"
       // border="1px solid blue"
       align="center"

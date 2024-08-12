@@ -1,11 +1,4 @@
-import {
-  Flex,
-  Link,
-  HStack,
-  useMediaQuery,
-  useTheme,
-  Box
-} from "@chakra-ui/react";
+import { Flex, Link, useMediaQuery, useTheme, Box } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
@@ -21,8 +14,8 @@ import BgNoise615 from "@/assets/bg-noise-6-15.png";
 export const Nav = () => {
   const currentSection = useSectionInView();
   const theme = useTheme();
-  const [isLargerThanMd] = useMediaQuery(
-    `(min-width: ${theme.breakpoints.md})`
+  const [isLargerThanLg] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.lg})`
   );
   const { needsAuth } = useAuth();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -32,6 +25,8 @@ export const Nav = () => {
       enabled: !!chainContext.address
     }
   );
+
+  console.log("current section: ", currentSection);
 
   return (
     <Box
@@ -74,35 +69,44 @@ export const Nav = () => {
           </Link>
         </Link>
 
-        {isLargerThanMd && (
+        {isLargerThanLg && (
           <Box
             as="nav"
             w="60%"
-            maxW="450px"
-            justifySelf="center"
+            maxW="540px"
             // border="1px solid red"
+            //
           >
-            <HStack as="ul" spacing="1.5em" listStyleType="none">
-              {NAV_SECTIONS.map((item, index) => {
+            <Flex
+              as="ul"
+              justify="space-between"
+              gap="1.5em"
+              listStyleType="none"
+            >
+              {Object.values(NAV_SECTIONS).map((item, index) => {
                 return (
-                  <li key={`menu-section-item-${index}`}>
+                  <Box as="li" key={`menu-section-li-${index}`}>
                     <Link
                       as={ReactRouterLink}
-                      to={item.link}
+                      to={`#${item}`}
                       textDecoration="none"
+                      fontSize={{ md: "0.875rem", lg: "1.125rem" }}
+                      lineHeight="1.25"
                       textTransform="uppercase"
-                      color={currentSection === item.title ? "brand.500" : ""}
-                      fontSize={{ base: "0.875rem", lg: "1rem" }}
-                      _hover={{ color: "brand.500" }}
-                      //_focus={{ color: "text.500" }}
-                      _active={{ color: "" }}
+                      color={
+                        currentSection === item ? "brand.300" : "brand.100"
+                      }
+                      _hover={{ color: "brand.300" }}
+                      // _active={{ color: "black" }}
                     >
-                      {item.title}
+                      {item === NAV_SECTIONS.WHY_COREDIN
+                        ? "Why cored.in?"
+                        : item}
                     </Link>
-                  </li>
+                  </Box>
                 );
               })}
-            </HStack>
+            </Flex>
           </Box>
         )}
         <Link

@@ -3,6 +3,7 @@ import { TechCard } from "./TechCard";
 import CoreumLogo from "@/assets/partner-logos/coreum.png";
 import WaltIdLogo from "@/assets/partner-logos/waltid.png";
 import FolderIcon from "@/assets/folderIcon.png";
+import { NAV_SECTIONS } from "../constants";
 
 const techData = [
   {
@@ -33,7 +34,7 @@ export const Tech = () => {
       // border="1px solid red"
       as="section"
       w="100%"
-      id="advantages"
+      id={NAV_SECTIONS.ADVANTAGES}
       h="min-content"
       minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.

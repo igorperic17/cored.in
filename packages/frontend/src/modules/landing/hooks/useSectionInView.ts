@@ -1,17 +1,19 @@
 import { useEffect, useState } from "react";
-import { NAV_SECTIONS, NavSection } from "../constants";
+import { NAV_SECTIONS } from "../constants";
 
 export const useSectionInView = () => {
-  const [currentSection, setCurrentSection] = useState<NavSection>("home");
+  const [currentSection, setCurrentSection] = useState<NAV_SECTIONS>(
+    NAV_SECTIONS.HOME
+  );
 
   const checkInView = () => {
-    for (const section of NAV_SECTIONS) {
-      const element = document.querySelector(`#${section.title}`);
+    for (const section of Object.values(NAV_SECTIONS)) {
+      const element = document.querySelector(`#${section}`);
       if (element) {
         const rect = element.getBoundingClientRect();
-        // console.log(section.title, "rect", rect);
+        // console.log(section, "rect", rect);
         if (rect.bottom >= window.innerHeight / 2) {
-          setCurrentSection(section.title);
+          setCurrentSection(section);
           break;
         }
       }

@@ -1,6 +1,7 @@
 import { Box, Heading, List } from "@chakra-ui/react";
 import { BenefitItem } from "./BenefitItem";
 import { useState } from "react";
+import { NAV_SECTIONS } from "../constants";
 
 const benefitsData = [
   {
@@ -54,7 +55,7 @@ export const Benefits = () => {
     <Box
       as="section"
       w="100%"
-      id="why-coredin"
+      id={NAV_SECTIONS.WHY_COREDIN}
       h="min-content"
       minH={{ base: "92vh", md: "91vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
