@@ -3,7 +3,7 @@ import { Heading, VStack, Text, Link, Box, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
 
-interface TechProps {
+interface AdvantageProps {
   heading: string;
   text: string;
   index: number;
@@ -12,7 +12,7 @@ interface TechProps {
   link?: string;
 }
 
-export const TechCard: FC<TechProps> = ({
+export const AdvantageCard: FC<AdvantageProps> = ({
   heading,
   text,
   index,
