@@ -44,6 +44,7 @@ export const Nav = () => {
         backgroundBlendMode="overlay"
         backdropFilter="blur(12px)"
         border="1px solid #29292940"
+        // borderColor="brand.300"
         borderRadius="1em"
         boxShadow="0px 4px 4px 0px #00000014"
         p={{ base: "0.688em", xl: "1em" }}
@@ -92,9 +93,9 @@ export const Nav = () => {
                       lineHeight="1.25"
                       textTransform="uppercase"
                       color={
-                        currentSection === item ? "brand.300" : "brand.100"
+                        currentSection === item ? "brand.200" : "brand.100"
                       }
-                      _hover={{ color: "brand.300" }}
+                      _hover={{ color: "brand.200" }}
                       // _active={{ color: "black" }}
                     >
                       {item === NAV_SECTIONS.WHY_COREDIN

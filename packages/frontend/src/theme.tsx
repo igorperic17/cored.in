@@ -46,14 +46,15 @@ const styles = {
     a: {
       textUnderlineOffset: "0.5em"
     },
-    p: textStyles.md
+    p: {}
   }
 };
 
 const colors = {
   brand: {
     100: "#F5F5F5", // white
-    300: "#FBB030", //yellow
+    200: "#FBB030", //yellow
+    300: "#00AA54", // green
     400: "#FF550F", // red
     500: "#7F02FE" // purple
   },
