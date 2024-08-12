@@ -1,6 +1,5 @@
 import { Box, Flex, Heading, Text, VStack } from "@chakra-ui/react";
-import { NAV_SECTIONS } from "../constants";
-import { REASONS_DATA } from "../constants/reasonsData";
+import { NAV_SECTIONS, REASONS_DATA } from "../constants";
 import { ReasonCard } from "./ReasonCard";
 
 export const Reasons = () => {
@@ -49,12 +48,12 @@ export const Reasons = () => {
         flexWrap="wrap"
         gap={{ base: "1.5em", md: "3.75em" }}
       >
-        {REASONS_DATA.map((benefit, index) => {
+        {REASONS_DATA.map((reason, index) => {
           return (
             <ReasonCard
               key={`landing-reason-${index}`}
-              title={benefit.title}
-              description={benefit.description}
+              title={reason.title}
+              description={reason.description}
               index={index}
             />
           );
