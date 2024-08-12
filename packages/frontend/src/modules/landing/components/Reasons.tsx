@@ -11,23 +11,29 @@ export const Reasons = () => {
       id={NAV_SECTIONS.WHY_COREDIN}
       // h="min-content"
       minH={{ base: "92vh", md: "89vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
-      pt={{ base: "8vh", md: "9vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
+      pt={{ base: "8vh", md: "11vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       spacing="3.125em"
-      border="1px solid red"
+      // border="1px solid red"
     >
       <Box textAlign="center">
         <Heading
           as="h2"
           // fontSize={{ base: "3rem", md: "4.5rem", xl: "5rem" }}
-          fontSize="2.25rem"
+          fontSize={{
+            base: "1.25rem",
+            md: "1.5rem",
+            lg: "1.75rem",
+            xl: "2.25rem"
+          }}
           fontWeight="400"
           lineHeight="1.25"
           color="brand.200"
+          textTransform="uppercase"
         >
           Why cored.in?
         </Heading>
         <Text
-          fontSize="4.5rem"
+          fontSize={{ base: "2.5rem", md: "3.5rem", lg: "4rem", xl: "4.5rem" }}
           fontWeight="700"
           lineHeight="1.25"
           color="brand.100"
@@ -41,7 +47,7 @@ export const Reasons = () => {
         maxW="1220px"
         justify="center"
         flexWrap="wrap"
-        gap="3.75em"
+        gap={{ base: "1.5em", md: "3.75em" }}
       >
         {REASONS_DATA.map((benefit, index) => {
           return (
