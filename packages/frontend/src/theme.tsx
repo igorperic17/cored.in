@@ -52,7 +52,10 @@ const styles = {
 
 const colors = {
   brand: {
-    500: "#7AF9B3" // green / main
+    100: "#F5F5F5", // white
+    300: "#FBB030", //yellow
+    400: "#FF550F", // red
+    500: "#7F02FE" // purple
   },
   complimentary: {
     500: "#1F45F3" // blue but not readable // do not use yet
