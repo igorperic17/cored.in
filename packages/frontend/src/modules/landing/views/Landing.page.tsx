@@ -1,5 +1,5 @@
 import { Flex } from "@chakra-ui/react";
-import { Benefits, Hero, OurProgress, Tech } from "../components";
+import { Hero, OurProgress, Reasons, Tech } from "../components";
 
 const LandingPage = () => {
   return (
@@ -11,7 +11,7 @@ const LandingPage = () => {
       gap="7em"
     >
       <Hero />
-      <Benefits />
+      <Reasons />
       <Tech />
       <OurProgress />
     </Flex>
