@@ -1,27 +1,32 @@
 export const REASONS_DATA = [
   {
-    title: "Create a verifiable profile",
+    title: "Forge Your Digital Truth",
     description:
-      "Gain credibility through verification of your diplomas and work experience by professional institutions, past, and present employers."
+      "Create a verified profile that showcases your authentic professional identity."
   },
   {
-    title: "Protect your data",
-    description: "Manage who has permission to view your complete profile."
-  },
-  {
-    title: "Chat securely",
-    description: "Securely message other users with encrypted messages."
-  },
-  {
-    title: "Get paid",
+    title: "Your Data, Your Rules",
     description:
-      "Get paid for sharing the information in your profile with other users and receiving messages."
+      "Take control of your personal information with cutting-edge blockchain privacy features."
   },
   {
-    title: "No spam",
+    title: "Connect Without the Noise",
     description:
-      "Since sending messages incurs a cost, it is less attractive for spammers. If you ever receive messages from them, you will be paid for it."
+      "Experience spam-free networking in a trusted environment where every interaction counts."
+  },
+  {
+    title: "Turn Expertise into Income",
+    description:
+      "Monetize your professional knowledge on a platform that values your unique contributions."
+  },
+  {
+    title: "Quality Over Quantity",
+    description:
+      'Our "pay to message" system ensures meaningful professional interactions.'
+  },
+  {
+    title: "Evolve at the Speed of Tech",
+    description:
+      "Grow your career with innovative tools designed for the ever-changing professional landscape."
   }
-] as const;
-
-export type reason = (typeof REASONS_DATA)[number]["title"];
+];
