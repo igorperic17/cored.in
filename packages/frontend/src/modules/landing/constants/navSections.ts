@@ -1,4 +1,4 @@
-export const navSections = [
+export const NAV_SECTIONS = [
   { title: "home", link: "#" },
   { title: "benefits", link: "#benefits" },
   { title: "tech", link: "#tech" },
@@ -6,4 +6,4 @@ export const navSections = [
   // { title: "team", link: "#team" }
 ] as const;
 
-export type NavSection = (typeof navSections)[number]["title"];
+export type NavSection = (typeof NAV_SECTIONS)[number]["title"];

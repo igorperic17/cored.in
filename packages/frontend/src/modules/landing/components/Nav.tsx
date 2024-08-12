@@ -9,11 +9,12 @@ import {
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
-import { navSections } from "@/constants";
-import { useAuth, useLoggedInServerState, useSectionInView } from "@/hooks";
+import { useAuth, useLoggedInServerState } from "@/hooks";
 import { Login, Logo } from "@/components";
 import { USER_QUERIES } from "@/queries";
 import { useChain } from "@cosmos-kit/react";
+import { NAV_SECTIONS } from "../constants";
+import { useSectionInView } from "../hooks";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const Nav = () => {
@@ -59,7 +60,7 @@ export const Nav = () => {
       {isLargerThanMd && (
         <Box as="nav">
           <HStack as="ul" spacing="1.5em" listStyleType="none">
-            {navSections.map((item, index) => {
+            {NAV_SECTIONS.map((item, index) => {
               return (
                 <li key={`menu-section-item-${index}`}>
                   <Link

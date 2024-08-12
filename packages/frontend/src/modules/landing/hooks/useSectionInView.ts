@@ -1,11 +1,11 @@
-import { NavSection, navSections } from "@/constants";
 import { useEffect, useState } from "react";
+import { NAV_SECTIONS, NavSection } from "../constants";
 
 export const useSectionInView = () => {
   const [currentSection, setCurrentSection] = useState<NavSection>("home");
 
   const checkInView = () => {
-    for (const section of navSections) {
+    for (const section of NAV_SECTIONS) {
       const element = document.querySelector(`#${section.title}`);
       if (element) {
         const rect = element.getBoundingClientRect();
