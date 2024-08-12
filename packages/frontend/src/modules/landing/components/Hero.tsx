@@ -32,7 +32,7 @@ export const Hero = () => {
       direction="column"
       align="start"
       justify={{ base: "start", sm: "center" }}
-      mt={{ base: "2em" }}
+      pt={{ base: "8vh", md: "11vh" }}
       pb={{ base: "1em", md: "2.5em" }} // TODO
       color="brand.100"
       // border="1px solid red"
@@ -49,7 +49,6 @@ export const Hero = () => {
           fontSize={{ base: "3rem", md: "4.125rem", xl: "5.25rem" }}
           textAlign="left"
           fontWeight="700"
-          // maxW={{ base: "750px", xl: "900px" }}
         >
           Your Expertise,{" "}
           <Text as="span" fontWeight="400">

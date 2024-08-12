@@ -210,7 +210,13 @@ export const Login: FC<LoginProps> = ({ variant, signInText, username }) => {
   } else {
     return (
       <>
-        <Button variant={variant} size="md" onClick={onOpen}>
+        <Button
+          as={ReactRouterLink}
+          to={ROUTES.LOGIN.path}
+          variant={variant}
+          size="md"
+          onClick={onOpen}
+        >
           {signInText}
         </Button>
 
