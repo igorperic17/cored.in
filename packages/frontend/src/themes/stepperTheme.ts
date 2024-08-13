@@ -9,10 +9,8 @@ const baseStyle = {
     color: "brand.100",
     fontSize: { base: "1rem" },
     lineHeight: "1.35"
-    // mb: "3em"
   },
   indicator: {
-    // color: "brand.300",
     bg: "transparent",
     borderColor: "brand.100",
     "[data-status=complete] &": {
