@@ -27,10 +27,12 @@ export const Hero = () => {
       w="100%"
       maxW="1620px"
       mx="auto"
-      minH={{ base: "92vh", md: "89vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
+      minH="100vh"
       direction="column"
       align="start"
       justify={{ base: "start", sm: "center" }}
+      gap="4em" // needed for mobile
+      mt={{ base: "0em", md: "-4.5em" }}
       pt={{ base: "8vh", md: "11vh" }}
       pb={{ base: "1em", md: "2.5em" }} // TODO
       color="brand.100"
@@ -39,6 +41,7 @@ export const Hero = () => {
     >
       <Flex
         direction="column"
+        justify="center"
         gap="1.5em"
         // border="1px solid yellow"
         //
@@ -115,10 +118,8 @@ export const Hero = () => {
         maxW="810px"
         py="1.5em"
         px="1em"
-        position={{ base: "static", md: "absolute" }}
-        bottom="0"
-        mt="4em"
-        // border="1px solid red"
+        position={{ base: "static", lg: "absolute" }}
+        bottom="1em"
       >
         <Text
           fontWeight="300"
