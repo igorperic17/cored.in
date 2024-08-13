@@ -54,7 +54,11 @@ export const Nav = () => {
           }}
           flexShrink="0"
         >
-          <Logo w="148px" h="24px" />
+          <Logo
+            w={{ base: "120px", md: "148px" }}
+            h="auto"
+            aspectRatio="6.17 / 1"
+          />
         </Link>
 
         {isLargerThanLg && (
@@ -99,6 +103,7 @@ export const Nav = () => {
         )}
         <LoginButton
           variant="primary"
+          size="md"
           signInText="Sign in"
           username={userProfile?.username}
         />
