@@ -262,33 +262,45 @@ export const LoginButton: FC<LoginButtonProps> = ({
           })}
         </VStack> */}
 
-        <Modal isOpen={isOpen} onClose={onClose} isCentered>
-          <ModalOverlay backdropFilter="blur(10px)" />
-          <ModalContent background="background.600">
-            <ModalHeader>Connect Wallet</ModalHeader>
-            <ModalCloseButton />
+        <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader
+              fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+              textTransform="uppercase"
+              color="brand.200"
+            >
+              Connect Wallet
+            </ModalHeader>
+            <ModalCloseButton size="xl" top="24px" right="24px" />
             <ModalBody>
-              <VStack gap="16px">
+              <VStack as="ul" gap="1em" align="start">
                 {chainContext.walletRepo.wallets.map((wallet) => {
                   return (
-                    <Button
-                      variant="empty"
-                      size="md"
-                      onClick={() => wallet.connect(true)}
-                      key={wallet.walletName}
-                      rightIcon={
-                        <Img
-                          src={
-                            typeof wallet.walletInfo.logo === "string"
-                              ? wallet.walletInfo.logo
-                              : wallet.walletInfo.logo?.minor
-                          }
-                          maxW="32px"
-                        />
-                      }
-                    >
-                      {wallet.walletInfo.prettyName}
-                    </Button>
+                    <li>
+                      <Button
+                        variant="empty"
+                        size="md"
+                        color="brand.100"
+                        textTransform="none"
+                        onClick={() => wallet.connect(true)}
+                        key={wallet.walletName}
+                        leftIcon={
+                          <Img
+                            src={
+                              typeof wallet.walletInfo.logo === "string"
+                                ? wallet.walletInfo.logo
+                                : wallet.walletInfo.logo?.minor
+                            }
+                            maxW="1.5rem"
+                            borderRadius="50%"
+                            mr="0.5em"
+                          />
+                        }
+                      >
+                        {wallet.walletInfo.prettyName}
+                      </Button>
+                    </li>
                   );
                 })}
               </VStack>
