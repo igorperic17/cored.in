@@ -1,92 +1,60 @@
 import { LoginButton } from "@/components";
-import { VStack, Text, Heading, Link, Stack, Box } from "@chakra-ui/react";
+import { VStack, Text, Heading, Link, Box, HStack } from "@chakra-ui/react";
+import { SUPPORTED_WALLETS } from "../constants";
 
 export const RequireWalletConnection = () => {
   return (
     <VStack
-      minH="70vh"
+      minH="66vh"
       align="center"
       justify="center"
-      spacing="15vh"
+      spacing="10vh"
       textAlign="center"
       maxW="600px"
       mx="auto"
+      pt="2vh"
       // border="1px solid red"
     >
-      <Heading as="h1" fontSize={{ base: "3rem", md: "4rem" }}>
+      <Heading
+        as="h1"
+        fontSize={{ base: "3rem", md: "4rem" }}
+        fontWeight="700"
+        lineHeight="1.25"
+      >
         Connect your wallet to begin
       </Heading>
-      <VStack
-        spacing="1rem"
-        fontSize={{ base: "1rem", md: "1.25rem" }}
-        mt="-5vh"
-      >
-        <LoginButton variant="primary" signInText="Connect wallet" />
+      <VStack spacing="1rem" fontSize={{ base: "1rem", md: "1.25rem" }}>
+        <LoginButton variant="primary" size="md" signInText="Connect wallet" />
         <Text
           color="text.300"
           fontSize={{ base: "1rem", md: "1.25rem" }}
-          mt="64px"
+          mt="4vh"
         >
           Don't have a wallet yet? We support the following:
         </Text>
-        <Stack
+        <HStack
           as="ul"
           listStyleType="none"
-          spacing={{ base: "1em", md: "1.5em" }}
-          direction={{ base: "column", md: "row" }}
+          spacing={{ base: "1.5em", md: "1em" }}
         >
-          <Box as="li">
-            <Link
-              href="https://www.keplr.app/"
-              isExternal
-              textDecoration="underline"
-              textDecorationThickness="1px"
-              color="text.300"
-              _hover={{
-                color: "brand.500"
-              }}
-              _focus={{
-                color: "brand.500"
-              }}
-            >
-              Keplr
-            </Link>
-          </Box>
-          <Box>
-            <Link
-              href="https://www.leapwallet.io/download"
-              isExternal
-              textDecoration="underline"
-              textDecorationThickness="1px"
-              color="text.300"
-              _hover={{
-                color: "brand.500"
-              }}
-              _focus={{
-                color: "brand.500"
-              }}
-            >
-              Leap
-            </Link>
-          </Box>
-          <Box>
-            <Link
-              href="https://cosmostation.io/products/cosmostation_extension"
-              isExternal
-              textDecoration="underline"
-              textDecorationThickness="1px"
-              color="text.300"
-              _hover={{
-                color: "brand.500"
-              }}
-              _focus={{
-                color: "brand.500"
-              }}
-            >
-              Cosmostation
-            </Link>
-          </Box>
-        </Stack>
+          {SUPPORTED_WALLETS.map((wallet) => (
+            <Box as="li" key={`supported-wallet-${wallet.title}`}>
+              <Link
+                href={wallet.href}
+                isExternal
+                color="text.300"
+                _hover={{
+                  color: "brand.300"
+                }}
+                _focus={{
+                  color: "brand.300"
+                }}
+              >
+                {wallet.title}
+              </Link>
+            </Box>
+          ))}
+        </HStack>
       </VStack>
     </VStack>
   );

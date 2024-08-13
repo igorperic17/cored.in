@@ -53,7 +53,7 @@ const styles = {
 const colors = {
   brand: {
     100: "#F5F5F5", // white
-    200: "#FBB030", //yellow
+    200: "#FBB030", // yellow
     300: "#00AA54", // green
     400: "#FF550F", // red
     500: "#7F02FE", // purple
@@ -64,7 +64,7 @@ const colors = {
   },
   text: {
     100: "#F1F1F0", // light - white / main text
-    300: "#b0b0b0", // hover / text in the stepper
+    300: "#b0b0b0", // USED IN LOGIN, HELPER TEXT *
     400: "#828178", // medium / text on card
     600: "#737373", // - hover 2 / not in use yet
     700: "#75746B", // heading in profile
