@@ -1,7 +1,7 @@
-import { appearFromRightOneByOne } from "@/constants/animations";
 import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
+import { appearFromRightOneByOne } from "../constants";
 
 interface ReasonCardProps {
   title: string;

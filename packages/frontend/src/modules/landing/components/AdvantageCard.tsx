@@ -1,7 +1,7 @@
-import { fadeInOneByOne } from "@/constants/animations";
 import { Heading, VStack, Text, Link, Box, Image } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
+import { fadeInOneByOne } from "../constants";
 
 interface AdvantageProps {
   heading: string;

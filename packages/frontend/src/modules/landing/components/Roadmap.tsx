@@ -1,8 +1,4 @@
 import {
-  appearFromRightOneByOne,
-  fadeInOneByOne
-} from "@/constants/animations";
-import {
   Box,
   Flex,
   Heading,
@@ -20,7 +16,12 @@ import {
   useSteps
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { NAV_SECTIONS, ROADMAP_STEPS } from "../constants";
+import {
+  appearFromRightOneByOne,
+  fadeInOneByOne,
+  NAV_SECTIONS,
+  ROADMAP_STEPS
+} from "../constants";
 
 export const Roadmap = () => {
   const { activeStep } = useSteps({
