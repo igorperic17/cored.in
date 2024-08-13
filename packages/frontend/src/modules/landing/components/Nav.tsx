@@ -39,14 +39,11 @@ export const Nav = () => {
         gap="3em"
         maxW="1840px"
         mx="auto"
-        backgroundBlendMode="overlay"
         backdropFilter="blur(12px)"
         border="1px solid #29292940"
-        // borderColor="brand.300"
         borderRadius="1em"
         boxShadow="0px 4px 4px 0px #00000014"
         p={{ base: "0.688em", xl: "1em" }}
-        // mt="16px" // might be needed
       >
         <Link
           as={ReactRouterLink}
