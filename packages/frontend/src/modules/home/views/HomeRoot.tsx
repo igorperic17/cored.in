@@ -1,11 +1,7 @@
 import { Header, Logo, SocialMedia } from "@/components";
 import { Disclaimer } from "@/components/Disclaimer";
 import { useAuth, useLoggedInServerState } from "@/hooks";
-import {
-  Navigation,
-  SubscribeToProfile,
-  UserSignOut
-} from "@/modules/home/components";
+import { Navigation, UserSignOut } from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
 import {
@@ -25,6 +21,7 @@ import {
   useLocation
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
+import LandingBg35 from "@/assets/landing-bg-35.png";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -47,7 +44,7 @@ export const HomeRoot = () => {
   }
 
   return (
-    <Box>
+    <Box bgImage={LandingBg35} bgPosition="center">
       {!isLargerThanLg && userProfile && (
         <Header username={userProfile.username} />
       )}
