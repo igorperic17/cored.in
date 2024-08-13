@@ -2,14 +2,14 @@ import { Box, Flex } from "@chakra-ui/react";
 import { CookiesBar } from "@/components";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { Footer, Nav } from "../components";
-import LandingBg50 from "@/assets/landing-bg-50.png";
+import LandingBg35 from "@/assets/landing-bg-35.png";
 
 export const Root = () => {
   return (
     <Flex
       direction="column"
       justify="start"
-      bgImage={LandingBg50}
+      bgImage={LandingBg35}
       bgPosition="center"
     >
       <Nav />
