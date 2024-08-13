@@ -9,7 +9,7 @@ import {
   useTheme
 } from "@chakra-ui/react";
 import { motion } from "framer-motion";
-import { NAV_SECTIONS } from "../constants";
+import { fadeInWithDelayAnimation, NAV_SECTIONS } from "../constants";
 import { LogoIconColor } from "@/components";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
@@ -105,13 +105,18 @@ export const Hero = () => {
       )}
 
       <Box
+        as={motion.div}
+        variants={fadeInWithDelayAnimation}
+        initial="initial"
+        whileInView="animate"
+        viewport={{ once: true, amount: 0 }}
         layerStyle="transparentBox"
         alignSelf="center"
         maxW="810px"
         py="1.5em"
         px="1em"
         position={{ base: "static", md: "absolute" }}
-        bottom="48px"
+        bottom="0"
         mt="4em"
         // border="1px solid red"
       >

@@ -1,7 +1,7 @@
 import { Box, Heading, Text, VStack } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { FC } from "react";
-import { appearFromRightOneByOne } from "../constants";
+import { fadeInOneByOne } from "../constants";
 
 interface ReasonCardProps {
   title: string;
@@ -17,7 +17,7 @@ export const ReasonCard: FC<ReasonCardProps> = ({
   return (
     <Box
       as={motion.li}
-      variants={appearFromRightOneByOne}
+      variants={fadeInOneByOne}
       initial="initial"
       whileInView="animate"
       viewport={{ once: true, amount: 0 }}
