@@ -38,6 +38,7 @@ export const Roadmap = () => {
       minH={{ base: "92vh", md: "89vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       pt={{ base: "8vh", md: "11vh" }} // NOTE: Do not modify this only as the nav bar and other page sections also rely on vh to ensure content does not overlap.
       spacing="5em"
+      overflowX="hidden"
       // border="1px solid red"
     >
       <Box textAlign="center">
