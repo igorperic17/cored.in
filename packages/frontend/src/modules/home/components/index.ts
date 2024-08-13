@@ -1,5 +1,4 @@
 export * from "./RegisteredProfile";
-export * from "./RequireWalletConnection";
 export * from "./Feed";
 export * from "./post";
 export * from "./NewPost";
