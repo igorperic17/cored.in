@@ -58,12 +58,14 @@ const capsuleProvider = new CapsuleProvider(options);
 
 interface LoginButtonProps {
   variant: "primary" | "empty";
+  size?: "sm" | "md";
   signInText: string;
   username?: string;
 }
 
 export const LoginButton: FC<LoginButtonProps> = ({
   variant,
+  size = "md",
   signInText,
   username
 }) => {
@@ -218,10 +220,12 @@ export const LoginButton: FC<LoginButtonProps> = ({
           as={ReactRouterLink}
           to={ROUTES.LOGIN.path}
           variant={variant}
-          size="md"
+          size={size}
+          // border="1px solid red"
           onClick={onOpen}
         >
           {signInText}
+          {/* connect */}
         </Button>
 
         {/* <Button
