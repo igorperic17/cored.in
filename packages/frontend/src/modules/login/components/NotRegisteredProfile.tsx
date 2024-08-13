@@ -31,12 +31,12 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
       w="100%"
       maxW="1200px"
       minH="50vh"
-      background="background.800"
+      layerStyle="cardBox"
       mx="auto"
       mt="52px"
-      px="2em"
-      py="2em"
-      borderRadius="16px"
+      // px="2em"
+      // py="2em"
+      // borderRadius="16px"
       justify="center"
       textAlign="center"
     >
@@ -44,13 +44,13 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
         <Heading
           as="h2"
           fontSize={{ base: "1rem", md: "1.25rem" }}
-          color="text.700"
+          color="brand.200"
         >
           Here is your new Decentralised Identifier (DID):
           <Text
             as="span"
             display="block"
-            color="text.300"
+            color="brand.100"
             mt="0.5em"
             wordBreak="break-all"
           >
@@ -67,10 +67,11 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
             placeholder="Enter desired username"
             onChange={handleChangeUserName}
             value={usernameInput}
-            focusBorderColor="brand.500"
+            focusBorderColor="brand.300"
             py="0.875em"
             textAlign="center"
             fontSize={{ base: "1.25rem", md: "1.75rem" }}
+            color="brand.300"
           />
           <Text my="1em" color="text.300">
             At least 3 characters required, only letters and numbers allowed.
@@ -81,10 +82,6 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
             onClick={registerProfile}
             size="md"
             variant="primary"
-            _disabled={{
-              cursor: "not-allowed",
-              backgroundColor: "background.600"
-            }}
             isLoading={isRegistering}
           >
             REGISTER
