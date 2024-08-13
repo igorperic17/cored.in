@@ -67,7 +67,7 @@ export const HomeRoot = () => {
                 _hover={{ textDecoration: "none" }}
                 aria-label="Main page."
               >
-                <Logo fontSize={{ base: "1.5rem", lg: "2rem" }} />
+                <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
               </Link>
             </Box>
             <Navigation wallet={chainContext.address || ""} />
