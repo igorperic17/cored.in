@@ -39,7 +39,11 @@ export const Header: FC<HeaderProps> = ({ username }) => {
           }}
           flexShrink="0"
         >
-          <Logo w={{ base: "120px", md: "148px" }} />
+          <Logo
+            w={{ base: "120px", md: "148px" }}
+            h="auto"
+            aspectRatio="6.17 / 1"
+          />
         </Link>
 
         <LoginButton
