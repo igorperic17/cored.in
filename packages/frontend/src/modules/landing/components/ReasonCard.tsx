@@ -26,9 +26,8 @@ export const ReasonCard: FC<ReasonCardProps> = ({
     >
       <VStack
         as="article"
-        layerStyle="transparentBox"
+        layerStyle="cardBox"
         p={{ base: "2em", md: "3.75em" }}
-        border="1px solid #292929"
         textAlign="center"
       >
         <Heading
