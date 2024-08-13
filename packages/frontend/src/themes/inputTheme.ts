@@ -6,7 +6,7 @@ const { definePartsStyle, defineMultiStyleConfig } =
 
 const baseStyle = definePartsStyle({
   field: {
-    color: "text.100",
+    color: "brand.100",
     fontFamily: "body",
     fontSize: { base: "0.875rem", lg: "1rem" },
     textAlign: "start",
