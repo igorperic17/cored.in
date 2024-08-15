@@ -11,8 +11,7 @@ pub mod dao;
 
 #[cfg(test)]
 mod tests {
-    mod common;
-    mod credential_tests;
-    mod registration_tests;
-    mod subscription;
+    mod test_common;
+    mod test_subscription;
+    mod test_merkle_tree;
 }

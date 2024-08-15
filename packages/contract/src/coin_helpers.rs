@@ -1,6 +1,4 @@
-use std::iter::repeat_with;
-
-use crate::{error::ContractError, subscription::hash_did};
+use crate::error::ContractError;
 use cosmwasm_std::{Coin, Env};
 
 pub fn generate_nft_symbol(_env: Env, subscribe_to_wallet: &String) -> String {
@@ -42,15 +40,8 @@ pub fn generate_nft_class_id(env: Env, subscribe_to_wallet_address: String) -> S
     .filter(|c| c.is_alphanumeric() || [':', '/', '.', '_', '-'].contains(c))
     .collect::<String>();
     
-
     // Append the filtered part to the class ID
     class_id.push_str(&filtered_part);
-
-    // Truncate the class ID to ensure it does not exceed 30 characters
-    // without this 
-    // if class_id.len() > 30 {
-    //     class_id.truncate(30);
-    // }
 
     class_id
 }

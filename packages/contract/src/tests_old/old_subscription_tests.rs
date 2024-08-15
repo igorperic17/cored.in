@@ -1,23 +1,23 @@
 #[cfg(test)]
 mod tests {
-    use core::f32;
-    use std::str::FromStr;
+    // use core::f32;
+    // use std::str::FromStr;
 
-    use coreum_test_tube::cosmrs::tx::MessageExt;
-    use coreum_test_tube::{Account, AssetNFT, Bank, CoreumTestApp, Module, SigningAccount, Wasm, NFT};
-    use coreum_wasm_sdk::types::cosmos::bank::v1beta1::QueryBalanceRequest;
-    use crate::contract::{execute, query, FEE_DENOM};
-    use crate::msg::{ExecuteMsg, GetSubscriptionInfoResponse, InstantiateMsg, QueryMsg};
-    use crate::tests::common::common::{get_balance, mock_register_account, with_test_tube};
-    // use crate::tests::common::common::{mock_init_no_price, mock_register, mock_register_account, with_test_tube};
-    use cosmwasm_std::testing::{
-        mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info,
-    };
-    use cosmwasm_std::{
-        coin, coins, from_json, BalanceResponse, BankMsg, Binary, Coin, CosmosMsg, Decimal, QueryRequest, StdResult, Uint128, Uint64
-    };
+    // use coreum_test_tube::cosmrs::tx::MessageExt;
+    // use coreum_test_tube::{Account, AssetNFT, Bank, CoreumTestApp, Module, SigningAccount, Wasm, NFT};
+    // use coreum_wasm_sdk::types::cosmos::bank::v1beta1::QueryBalanceRequest;
+    // use crate::contract::{execute, query, FEE_DENOM};
+    // use crate::msg::{ExecuteMsg, GetSubscriptionInfoResponse, InstantiateMsg, QueryMsg};
+    // use crate::tests::test_common::common::{get_balance, mock_register_account, with_test_tube};
+    // // use crate::tests::common::common::{mock_init_no_price, mock_register, mock_register_account, with_test_tube};
+    // use cosmwasm_std::testing::{
+    //     mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info,
+    // };
+    // use cosmwasm_std::{
+    //     coin, coins, from_json, BalanceResponse, BankMsg, Binary, Coin, CosmosMsg, Decimal, QueryRequest, StdResult, Uint128, Uint64
+    // };
     
-    use crate::tests::subscription::tests::QueryMsg::IsSubscriber;
+    // use crate::tests::old_subscription_tests::tests::QueryMsg::IsSubscriber;
 
     // #[test]
     // fn set_subscription() {
@@ -572,102 +572,103 @@ mod tests {
     //     );
     // }
 
-    #[test]
-    fn subscribe_payout_owner_tube() {
-        with_test_tube(InstantiateMsg::zero(), 
-            &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>, nft: NFT<CoreumTestApp>| {
+    // #[test]
+    // fn subscribe_payout_owner_tube() {
+    //     with_test_tube(InstantiateMsg::zero(), 
+    //         &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>, nft: NFT<CoreumTestApp>| {
 
-            // register actors
-            let alice = accounts.get(1).unwrap();
-            let bob = accounts.get(2).unwrap();
+    //         // register actors
+    //         let alice = accounts.get(1).unwrap();
+    //         let bob = accounts.get(2).unwrap();
 
-            mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
-            mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+    //         mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
+    //         mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
 
-            // bob sets his subscription price, Alice leaves it at zero
-            let bob_sub_price = Uint128::from(10_000_000_000u128);
-            let set_sub_price_msg = ExecuteMsg::SetSubscription { 
-                price: Coin::new(bob_sub_price.u128(), FEE_DENOM), 
-                duration: Uint64::one()
-            };
-            wasm.execute(&contract_addr, &set_sub_price_msg, &[], &bob).unwrap();
+    //         // bob sets his subscription price, Alice leaves it at zero
+    //         let bob_sub_price = Uint128::from(10_000_000_000u128);
+    //         let set_sub_price_msg = ExecuteMsg::SetSubscription { 
+    //             price: Coin::new(bob_sub_price.u128(), FEE_DENOM), 
+    //             duration: Uint64::one()
+    //         };
+    //         wasm.execute(&contract_addr, &set_sub_price_msg, &[], &bob).unwrap();
 
-            // now try "free" subscription (Bob subscribes to Alice)
-            let subscribe_msg = ExecuteMsg::Subscribe {
-                did: "alicedid".to_string(),
-            };
+    //         // now try "free" subscription (Bob subscribes to Alice)
+    //         let subscribe_msg = ExecuteMsg::Subscribe {
+    //             did: "alicedid".to_string(),
+    //         };
 
-            let alice_balance_before = get_balance(&bank, alice);
-            let _ = wasm.execute::<ExecuteMsg>(
-                    &contract_addr,
-                    &subscribe_msg,
-                    // &coins(10_000_000_000, FEE_DENOM.to_string()),
-                    &[],
-                    &bob
-                )
-                .unwrap();
-            // let tx_gas_cost = Uint128::from(res.gas_info.gas_used);
+    //         let alice_balance_before = get_balance(&bank, alice);
+    //         let _ = wasm.execute::<ExecuteMsg>(
+    //                 &contract_addr,
+    //                 &subscribe_msg,
+    //                 // &coins(10_000_000_000, FEE_DENOM.to_string()),
+    //                 &[],
+    //                 &bob
+    //             )
+    //             .unwrap();
+    //         // let tx_gas_cost = Uint128::from(res.gas_info.gas_used);
 
-            // confirm Alice did not get got paid (subscription is free)
-            let alice_balance_after = get_balance(&bank, alice);
-            assert!(alice_balance_before == alice_balance_after);
-
-
-            // now try "paid" subscription (Alice subscribes to Bob)
-            let subscribe_msg = ExecuteMsg::Subscribe {
-                did: "bobdid".to_string(),
-            };
-
-            let bob_balance_before = get_balance(&bank, bob);
-            let _ = wasm.execute::<ExecuteMsg>(
-                    &contract_addr,
-                    &subscribe_msg,
-                    &coins(bob_sub_price.u128(), FEE_DENOM.to_string()),
-                    // &[],
-                    &alice
-                )
-                .unwrap();
-            // let tx_gas_cost = Uint128::from(res.gas_info.gas_used);
-
-            // confirm Alice did not get got paid (subscription is free)
-            let bob_balance_after = get_balance(&bank, bob);
-            assert!(bob_balance_before + bob_sub_price == bob_balance_after);
-        });
-    }
+    //         // confirm Alice did not get got paid (subscription is free)
+    //         let alice_balance_after = get_balance(&bank, alice);
+    //         assert!(alice_balance_before == alice_balance_after);
 
 
-    #[test]
-    fn subscribe_mints_nft() {
-        with_test_tube(InstantiateMsg::zero(), 
-        &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>, nft: NFT<CoreumTestApp>| {
+    //         // now try "paid" subscription (Alice subscribes to Bob)
+    //         let subscribe_msg = ExecuteMsg::Subscribe {
+    //             did: "bobdid".to_string(),
+    //         };
 
-            // register actors
-            let alice = accounts.get(1).unwrap();
-            let bob = accounts.get(2).unwrap();
+    //         let bob_balance_before = get_balance(&bank, bob);
+    //         let _ = wasm.execute::<ExecuteMsg>(
+    //                 &contract_addr,
+    //                 &subscribe_msg,
+    //                 &coins(bob_sub_price.u128(), FEE_DENOM.to_string()),
+    //                 // &[],
+    //                 &alice
+    //             )
+    //             .unwrap();
+    //         // let tx_gas_cost = Uint128::from(res.gas_info.gas_used);
 
-            mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
-            mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+    //         // confirm Alice did not get got paid (subscription is free)
+    //         let bob_balance_after = get_balance(&bank, bob);
+    //         assert!(bob_balance_before + bob_sub_price == bob_balance_after);
+    //     });
+    // }
 
-            // Bob subscribes to Alice
-            let subscribe_msg = ExecuteMsg::Subscribe {
-                did: "alicedid".to_string(),
-            };
-            let res = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
-            println!("{:?}", res);
+
+    // #[test]
+    // fn subscribe_mints_nft() {
+    //     with_test_tube(InstantiateMsg::zero(), 
+    //     &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>, nft: NFT<CoreumTestApp>| {
+
+    //         // register actors
+    //         let alice = accounts.get(1).unwrap();
+    //         let bob = accounts.get(2).unwrap();
+
+    //         mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
+    //         mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+
+    //         // Bob subscribes to Alice
+    //         let subscribe_msg = ExecuteMsg::Subscribe {
+    //             did: "alicedid".to_string(),
+    //         };
+    //         let res = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+    //         println!("{:?}", res);
             
-            // query the contract's is_subscriber function
-            // which relies on the existance of the NFT
-            let is_sub_msg = QueryMsg::IsSubscriber {
-                target_did: "alicedid".to_string(),
-                subscriber_wallet: bob.address().to_string(),
-            };
-            // let res = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
-            // println!("{:?}", res);
+    //         // query the contract's is_subscriber function
+    //         // which relies on the existance of the NFT
+    //         let is_sub_msg = QueryMsg::IsSubscriber {
+    //             target_did: "alicedid".to_string(),
+    //             subscriber_wallet: bob.address().to_string(),
+    //         };
+    //         // let res = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+    //         // println!("{:?}", res);
 
-            // let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg).unwrap();
-            // assert!(is_sub)
-        });
-    }
+    //         let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+    //         println!("{:?}", is_sub);
+    //         assert!(is_sub.is_ok())
+    //     });
+    // }
 
 }
 

@@ -1,7 +1,7 @@
 // src/tests/common.rs
 
 #[cfg(test)]
-pub mod common {
+pub mod test_common {
 
     use coreum_wasm_sdk::core::CoreumQueries;
     use coreum_wasm_sdk::types::cosmos::bank::v1beta1::QueryBalanceRequest;
