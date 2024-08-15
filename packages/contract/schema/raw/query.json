@@ -134,14 +134,14 @@
         "is_subscriber": {
           "type": "object",
           "required": [
-            "did",
-            "subscriber"
+            "subscriber_wallet",
+            "target_did"
           ],
           "properties": {
-            "did": {
+            "subscriber_wallet": {
               "type": "string"
             },
-            "subscriber": {
+            "target_did": {
               "type": "string"
             }
           }

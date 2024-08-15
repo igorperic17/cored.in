@@ -27,4 +27,4 @@ docker run --rm -v "$(pwd)":/code --mount type=volume,source="$(basename "$(pwd)
 
 
 # run tests
-RUST_BACKTRACE=1 cargo test
+RUST_BACKTRACE=1 cargo test -- --nocapture

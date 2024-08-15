@@ -38,6 +38,7 @@ cargo-post = "0.1.7"
 sha2 = "0.10.8"
 hex = "0.4.3"
 sha3 = "0.10.8"
+base64 = "0.13.0"
 
 [dev-dependencies]
 cosmwasm-schema = { version = "1.0.0" }

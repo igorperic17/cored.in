@@ -1,3 +1,4 @@
+use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
     coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
@@ -5,7 +6,7 @@ use cosmwasm_std::{
 };
 use std::collections::LinkedList;
 
-use crate::coin_helpers::assert_sent_sufficient_coin;
+use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_symbol};
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
 use crate::state::{
@@ -67,7 +68,7 @@ pub fn execute(
 
 pub fn execute_register(
     deps: DepsMut<CoreumQueries>,
-    _env: Env,
+    env: Env,
     info: MessageInfo,
     username: String,
     did: String,
@@ -109,25 +110,25 @@ pub fn execute_register(
         return Err(ContractError::ProfileSaveFailed { did: did });
     }
 
-    // // create an NFT class for this DID
-    // // so all of the subscription to this user is an NFT of this class
-    // let clipped_did_length = min(26, record.did.len());
-    // let symbol = record.did.to_string()[record.did.len() - clipped_did_length..].to_string(); // TODO: Coreum regex workaround
-    // let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
-    //     name: record.did.to_string(), // class = user's DID they just registered
-    //     symbol,                       // class = cropped DID
-    //     description: Some(
-    //         format!("Subscribers of {} (DID: {})", record.username, record.did).to_string(),
-    //     ),
-    //     uri: None,
-    //     uri_hash: None,
-    //     data: None,                            //
-    //     features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
-    //     royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
-    // });
+    // create an NFT class for this DID
+    // so all of the subscription to this user is an NFT of this class
+    let class_id = generate_nft_class_id(env.clone(), record.wallet.to_string());
+    let symbol = generate_nft_symbol(env, &record.wallet.to_string());
+    let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
+        name: class_id, // class = user's DID they just registered
+        symbol: symbol,                       // class = cropped DID
+        description: Some(
+            format!("Subscribers of {} (DID: {})", record.username, record.did).to_string(),
+        ),
+        uri: None,
+        uri_hash: None,
+        data: None,                            //
+        features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
+        royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
+    });
 
-    Ok(Response::default())
-    // .add_message(issue_class_msg))
+    Ok(Response::default()
+        .add_message(issue_class_msg))
 }
 
 pub fn execute_remove(
@@ -174,7 +175,7 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
             credential_hash,
             merkle_proofs,
         } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
-        QueryMsg::IsSubscriber { did, subscriber } => is_subscriber(deps, env, did, subscriber),
+        QueryMsg::IsSubscriber { target_did, subscriber_wallet } => is_subscriber(deps, env, target_did, subscriber_wallet),
         QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did),
         QueryMsg::GetSubscriptionDuration { did } => get_subscription_duration(deps, did),
         QueryMsg::GetSubscriptionInfo { did, subscriber } => {

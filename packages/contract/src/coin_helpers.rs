@@ -1,28 +1,88 @@
+use std::iter::repeat_with;
+
 use crate::{error::ContractError, subscription::hash_did};
 use cosmwasm_std::{Coin, Env};
 
-pub fn generate_nft_class_id(env: Env, subscribe_to_did: String) -> String {
-    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    let class_id = format!(
+pub fn generate_nft_symbol(_env: Env, subscribe_to_wallet: &String) -> String {
+    // Filter out invalid characters that don't match [a-zA-Z0-9/:._]
+    let filtered_symbol: String = subscribe_to_wallet
+        .chars()
+        .filter(|c| c.is_alphanumeric() || ['/', ':', '.', '_'].contains(c))
+        .collect();
+
+    // Prepend a letter if the first character is not alphabetic
+    let mut symbol = if !filtered_symbol.chars().next().unwrap_or('0').is_alphabetic() {
+        format!("A{}", filtered_symbol)
+    } else {
+        filtered_symbol
+    };
+
+    // Ensure the length is 30 characters max
+    symbol = symbol.chars().take(30).collect::<String>();
+
+    symbol
+}
+
+pub fn generate_nft_class_id(env: Env, subscribe_to_wallet_address: String) -> String {
+    // classID must match format [symbol]-[issuer-address]
+    //      and must match this regex:
+    // symbol in classID should be lowercase and must be unique in the contract
+    //      and should match this regex: ^[a-zA-Z][a-zA-Z0-9/:._]{0,30}$
+    // issuer-address in classID should be the address of the contract
+    let mut class_id = String::new();
+
+    // Concatenate the remaining parts of the address and wallet, filtering for valid characters
+    let filtered_part = format!(
         "{}-{}",
-        env.contract.address.to_string(),
-        hash_did(subscribe_to_did.as_str(), 26)
-    );
+        // env.contract.address.to_string(),
+        generate_nft_symbol(env.clone(), &subscribe_to_wallet_address),
+        env.contract.address.to_string()
+        // subscribe_to_wallet_address
+    ).chars()
+    .filter(|c| c.is_alphanumeric() || [':', '/', '.', '_', '-'].contains(c))
+    .collect::<String>();
+    
+
+    // Append the filtered part to the class ID
+    class_id.push_str(&filtered_part);
+
+    // Truncate the class ID to ensure it does not exceed 30 characters
+    // without this 
+    // if class_id.len() > 30 {
+    //     class_id.truncate(30);
+    // }
+
     class_id
 }
 
-pub fn generate_nft_id(env: Env, subscriber_did: String, subscribe_to_did: String) -> String {
-    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    let class_id = format!(
-        "{}-{}",
-        env.contract.address.to_string(),
-        hash_did(subscribe_to_did.as_str(), 26)
-    );
-    let nft_id = format!(
-        "{}-{}",
-        class_id,
-        hash_did(subscriber_did.as_str(), 26)
-    );
+
+pub fn generate_nft_id(env: Env, subscriber_did: String, subscribe_to_wallet: String) -> String {
+    let mut nft_id = String::new();
+
+    // Concatenate characters from the input strings to form the rest of the NFT ID
+    nft_id.push_str(&format!(
+        "{}{}{}",
+        env.contract.address,
+        subscriber_did,
+        subscribe_to_wallet
+    ));
+
+    // Filter out any characters not allowed by the regex
+    nft_id = nft_id.chars()
+        .filter(|c| c.is_alphanumeric() || [':', '/', '.', '_', '-'].contains(c))
+        .collect();
+
+    // Ensure the length of the ID is between 3 and 101 characters
+    if nft_id.len() < 3 {
+        nft_id.push_str(
+            &std::iter::repeat_with(|| '0')
+                .take(3 - nft_id.len())
+                .collect::<String>(),
+        );
+    } else if nft_id.len() > 100 {
+        nft_id.truncate(100);
+    }
+
     nft_id
 }
 

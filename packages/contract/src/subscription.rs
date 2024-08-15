@@ -7,23 +7,27 @@ use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
     config_storage_read, did_storage_read, profile_storage, profile_storage_read, single_subscription_storage, single_subscription_storage_read, wallet_storage_read, SubscriptionInfo
 };
+use coreum_wasm_sdk::nft::{NFTResponse, OwnerResponse};
 use coreum_wasm_sdk::{assetnft, nft};
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QuerierResult, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
 
-// hash function used to map an arbitrary length string (i.e. DID) into a string of a specific lenght
+
+// hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
 // needed for using DID as part of the NFT id
 pub fn hash_did(s: &str, n: usize) -> String {
-    let mut result = vec![0u8; n];
+    let mut ret = base64::encode(s);
 
-    for (i, &byte) in s.as_bytes().iter().enumerate() {
-        result[i % n] = ((result[i % n] as u8 + byte) % 128) as u8; // Circular addition and keep within ASCII range
-    }
+    // match the string to this regex before returning it: ^[a-zA-Z][a-zA-Z0-9/:._-]{2,100}$
+    // replacing all characters which don't match with an empty string
+    // and keep the length of the string to n
+    
+    ret = ret.chars().filter(|c| c.is_alphanumeric() || *c == '/' || *c == ':' || *c == '.' || *c == '_' || *c == '-').collect();
 
-    // Convert the result to a string
-    result.iter().map(|&c| (c as char)).collect()
+    // return the first n characters
+    ret.chars().take(n).collect()
 }
 
 pub fn subscribe(
@@ -82,12 +86,12 @@ pub fn subscribe(
     // convert the sender wallet to DID
     let subscriber_did = wallet_storage_read(deps.storage)
         .may_load(info.sender.as_bytes())?
-        .unwrap();
+        .ok_or(StdError::generic_err(format!("Couldn't find the subscriber's DID for wallet {} in the contract registry", info.sender)))?;
 
     // convert the subscribed_to DID into a wallet
     let subscribed_to_wallet = did_storage_read(deps.storage)
         .may_load(subscribe_to_did.clone().as_bytes())?
-        .unwrap();
+        .ok_or(StdError::generic_err(format!("Couldn't fetch the wallet info from the registry for the DID subscribing to: {}", subscribe_to_did)))?;
 
     // make sure there's no existing valid subscription
     let subscription_key = subscriber_did.did.clone() + subscribe_to_did.as_str();
@@ -127,18 +131,19 @@ pub fn subscribe(
         .expect("Error incrementing subscriber count");
 
     // mint the subscription NFT
-    let nft_class_id = generate_nft_class_id(env.clone(), subscribe_to_did.clone());
-    let nft_id = generate_nft_id(env.clone(), subscriber_did.clone().did, subscribe_to_did);
-    let valid_until = env.block.time.plus_days(30); // valid for a month, ability to subscribe for more/less TBD
-    let mint_res = mint_nft(info.clone(), nft_class_id, nft_id, Some(to_json_binary(&valid_until).unwrap()));
+    let nft_class_id = generate_nft_class_id(env.clone(), subscribed_to_wallet.wallet.to_string().clone());
+    let nft_id = generate_nft_id(env.clone(), subscriber_did.clone().did, subscribed_to_wallet.wallet.to_string());
+    let valid_until = env.block.time.plus_days(profile_info.subscription_duration_days.unwrap().u64());
+    response = response.add_attribute("nft_id", nft_id.to_string());
+    let mint_res = mint_nft(&deps, info.clone(), nft_class_id, nft_id, Some(to_json_binary(&valid_until).unwrap()));
     if mint_res.is_err() {
         return Err(ContractError::SubscriptionNFTMintingError {});
     } else {
-        let sub_msg = mint_res.unwrap().messages;
+        let sub_msg = mint_res.unwrap();
         deps.api.debug(format!("MINT NFT messages: {:?}", sub_msg).as_str());
-        Response::new().add_submessages(sub_msg);
+        response = response.add_submessages(sub_msg.messages).add_events(sub_msg.events).add_attributes(sub_msg.attributes);
     }
-
+    
     response = response
         .add_attribute("action", "subscribe")
         .add_attribute("subscribed_to_did", subscribed_to_wallet.did.clone())
@@ -171,7 +176,7 @@ pub fn subscribe(
 }
 
 fn mint_nft(
-    // _deps: DepsMut<CoreumQueries>,
+    deps: &DepsMut<CoreumQueries>,
     info: MessageInfo,
     class_id: String,
     nft_id: String,
@@ -187,6 +192,9 @@ fn mint_nft(
         recipient: Some(info.sender.to_string()),
     });
 
+    deps.api.debug(nft_id.as_str());
+    println!("{}", nft_id);
+
     Ok(Response::new()
         .add_attribute("method", "mint_nft")
         .add_attribute("class_id", class_id)
@@ -195,37 +203,60 @@ fn mint_nft(
         .add_message(msg))
 }
 
-pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, did: String, subscriber: String) -> StdResult<Binary> {
-    let key = format!("{}{}", subscriber, did); // Concatenate strings and store in a variable
-    let subscriber_info =
-        single_subscription_storage_read(deps.storage).may_load(key.as_bytes())?;
+pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, target_did: String, subscriber_wallet: String) -> StdResult<Binary> {
 
-    // rely on chain internal state instead of the NFT data until minting is fixed
-    let response = match subscriber_info.clone() {
-        None => false,
-        Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
-    };
+    // // old way, using internal contract storage
+    // let key = format!("{}{}", subscriber_profile.did, target_did); // Concatenate strings and store in a variable
+    // let subscriber_info =
+    //     single_subscription_storage_read(deps.storage).may_load(key.as_bytes())?;
 
-    // check NFT
+    // // rely on chain internal state instead of the NFT data until minting is fixed
+    // let response = match subscriber_info.clone() {
+    //     None => false,
+    //     Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
+    // };
+
+    // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
-
-    // issues NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    let class_id = generate_nft_class_id(env.clone(), subscriber_info.clone().unwrap().subscribed_to);
-    let nft_id = generate_nft_id(env, subscriber_info.clone().unwrap().subscriber, subscriber_info.unwrap().subscribed_to);
-    let request = QueryRequest::Custom(CoreumQueries::NFT(nft::Query::NFT {
+    // convert the sender wallet to DID
+    let subscriber_profile = wallet_storage_read(deps.storage)
+        .may_load(subscriber_wallet.as_bytes())?
+        .ok_or(StdError::generic_err(format!("Couldn't find the subscriber's DID for wallet {} in the contract registry", subscriber_wallet)))?;
+    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
+    let class_id = generate_nft_class_id(env.clone(), target_did.clone());
+    let nft_id = generate_nft_id(env, subscriber_profile.did, target_did);
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Owner {
         class_id,
         id: nft_id,
-    }));
-    // getting Err(GenericErr { msg: "Querier system error: Unsupported query type: custom" })
-    let res = deps.querier.query::<nft::NFTResponse>(&request);
-    println!("{:?}", res);
+    }).into();
+    
+    let res = deps.querier.query::<OwnerResponse>(&request);
+    // this fails with: 
+    // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
+    // called `Result::unwrap()` on an `Err` value: 
+    //      QueryError { msg: "Error parsing into type coreum_wasm_sdk::nft::OwnerResponse: missing field `owner`: query wasm contract failed" }
 
-    to_json_binary(&response)
+    // in the intent to find out how does the response look like before deserializing it, I tried this:
+    // let request_json = match to_json_binary(&request) {
+    //     Ok(json) => json,
+    //     Err(err) => return Err(err.into()),
+    // };
+    // let res = deps.querier.raw_query(&request_json);
+    // Ok(to_json_binary(&res)?)
+
+    match res {
+        Err(e) => return Err(e),
+        Ok(_nft) => {
+            // consider the subscriber a subscriber if they own the NFT
+            to_json_binary(&true)
+            // TODO: NFT found, verify expiration date
+        }
+    }
 }
 
 pub fn get_subscription_info(
     deps: Deps<CoreumQueries>,
-    env: Env,
+    _env: Env,
     did: String,
     subscriber: String,
 ) -> StdResult<Binary> {

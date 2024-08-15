@@ -4,7 +4,7 @@ mod tests {
     use std::str::FromStr;
 
     use coreum_test_tube::cosmrs::tx::MessageExt;
-    use coreum_test_tube::{Account, Bank, CoreumTestApp, SigningAccount, Wasm};
+    use coreum_test_tube::{Account, AssetNFT, Bank, CoreumTestApp, Module, SigningAccount, Wasm, NFT};
     use coreum_wasm_sdk::types::cosmos::bank::v1beta1::QueryBalanceRequest;
     use crate::contract::{execute, query, FEE_DENOM};
     use crate::msg::{ExecuteMsg, GetSubscriptionInfoResponse, InstantiateMsg, QueryMsg};
@@ -14,8 +14,10 @@ mod tests {
         mock_dependencies, mock_dependencies_with_balances, mock_env, mock_info,
     };
     use cosmwasm_std::{
-        coin, coins, from_json, BalanceResponse, BankMsg, Coin, CosmosMsg, Decimal, QueryRequest, Uint128, Uint64
+        coin, coins, from_json, BalanceResponse, BankMsg, Binary, Coin, CosmosMsg, Decimal, QueryRequest, StdResult, Uint128, Uint64
     };
+    
+    use crate::tests::subscription::tests::QueryMsg::IsSubscriber;
 
     // #[test]
     // fn set_subscription() {
@@ -572,16 +574,8 @@ mod tests {
 
     #[test]
     fn subscribe_payout_owner_tube() {
-
-        // allows instantiating test tube with custom config in each test function
-        let contract_config = InstantiateMsg {
-            purchase_price: Some(coin(0, FEE_DENOM)),
-            transfer_price: Some(coin(0, FEE_DENOM)),
-            // subscription_fee: Decimal::from_str("0.05").unwrap()
-            subscription_fee: Decimal::zero()
-        };
-
-        with_test_tube(contract_config, &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>| {
+        with_test_tube(InstantiateMsg::zero(), 
+            &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>, nft: NFT<CoreumTestApp>| {
 
             // register actors
             let alice = accounts.get(1).unwrap();
@@ -600,7 +594,7 @@ mod tests {
 
             // now try "free" subscription (Bob subscribes to Alice)
             let subscribe_msg = ExecuteMsg::Subscribe {
-                did: "alice_did".to_string(),
+                did: "alicedid".to_string(),
             };
 
             let alice_balance_before = get_balance(&bank, alice);
@@ -621,7 +615,7 @@ mod tests {
 
             // now try "paid" subscription (Alice subscribes to Bob)
             let subscribe_msg = ExecuteMsg::Subscribe {
-                did: "bob_did".to_string(),
+                did: "bobdid".to_string(),
             };
 
             let bob_balance_before = get_balance(&bank, bob);
@@ -640,4 +634,41 @@ mod tests {
             assert!(bob_balance_before + bob_sub_price == bob_balance_after);
         });
     }
+
+
+    #[test]
+    fn subscribe_mints_nft() {
+        with_test_tube(InstantiateMsg::zero(), 
+        &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, bank: Bank<CoreumTestApp>, nft: NFT<CoreumTestApp>| {
+
+            // register actors
+            let alice = accounts.get(1).unwrap();
+            let bob = accounts.get(2).unwrap();
+
+            mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
+            mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+
+            // Bob subscribes to Alice
+            let subscribe_msg = ExecuteMsg::Subscribe {
+                did: "alicedid".to_string(),
+            };
+            let res = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+            println!("{:?}", res);
+            
+            // query the contract's is_subscriber function
+            // which relies on the existance of the NFT
+            let is_sub_msg = QueryMsg::IsSubscriber {
+                target_did: "alicedid".to_string(),
+                subscriber_wallet: bob.address().to_string(),
+            };
+            // let res = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+            // println!("{:?}", res);
+
+            // let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg).unwrap();
+            // assert!(is_sub)
+        });
+    }
+
 }
+
+

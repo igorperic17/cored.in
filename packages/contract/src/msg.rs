@@ -14,6 +14,26 @@ pub struct InstantiateMsg {
     pub subscription_fee: Decimal
 }
 
+impl InstantiateMsg {
+    pub fn zero() -> Self {
+        InstantiateMsg {
+            purchase_price: None,
+            transfer_price: None,
+            subscription_fee: Decimal::zero()
+        }
+    }
+}
+
+impl Default for InstantiateMsg {
+    fn default() -> Self {
+        Self { 
+            purchase_price: None, 
+            transfer_price: None, 
+            subscription_fee: Decimal::percent(5) 
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
@@ -57,7 +77,7 @@ pub enum QueryMsg {
 
     // check if the user is a subscriber to the DID
     #[returns(bool)]
-    IsSubscriber { did: String, subscriber: String },
+    IsSubscriber { target_did: String, subscriber_wallet: String },
 
     // returns the subscription price for a profile
     #[returns(Coin)]

@@ -5,8 +5,10 @@
 */
 
 export type Uint128 = string;
+export type Decimal = string;
 export interface InstantiateMsg {
   purchase_price?: Coin | null;
+  subscription_fee: Decimal;
   transfer_price?: Coin | null;
   [k: string]: unknown;
 }
@@ -79,8 +81,8 @@ export type QueryMsg = {
   };
 } | {
   is_subscriber: {
-    did: string;
-    subscriber: string;
+    subscriber_wallet: string;
+    target_did: string;
     [k: string]: unknown;
   };
 } | {
@@ -104,6 +106,7 @@ export type Addr = string;
 export interface Config {
   did_register_price?: Coin | null;
   owner: Addr;
+  subscription_fee: Decimal;
   [k: string]: unknown;
 }
 export interface GetDIDResponse {
