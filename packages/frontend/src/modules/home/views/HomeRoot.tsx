@@ -1,11 +1,7 @@
 import { Header, Logo, SocialMedia } from "@/components";
 import { Disclaimer } from "@/components/Disclaimer";
 import { useAuth, useLoggedInServerState } from "@/hooks";
-import {
-  Navigation,
-  SubscribeToProfile,
-  UserSignOut
-} from "@/modules/home/components";
+import { Navigation, UserSignOut } from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
 import {
@@ -25,6 +21,7 @@ import {
   useLocation
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
+import LandingBg35 from "@/assets/landing-bg-35.png";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -47,7 +44,7 @@ export const HomeRoot = () => {
   }
 
   return (
-    <Box>
+    <Box bgImage={LandingBg35} bgPosition="center">
       {!isLargerThanLg && userProfile && (
         <Header username={userProfile.username} />
       )}
@@ -70,7 +67,7 @@ export const HomeRoot = () => {
                 _hover={{ textDecoration: "none" }}
                 aria-label="Main page."
               >
-                <Logo fontSize={{ base: "1.5rem", lg: "2rem" }} />
+                <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
               </Link>
             </Box>
             <Navigation wallet={chainContext.address || ""} />
@@ -98,7 +95,13 @@ export const HomeRoot = () => {
             position="sticky"
             top="1em"
           >
-            <VStack h="max-content" layerStyle="cardBox" pb="1.5em">
+            <VStack
+              h="max-content"
+              layerStyle="cardBox"
+              pt="0"
+              px="0"
+              pb="1.5em"
+            >
               <Disclaimer />
               <SocialMedia size="2rem" gap="2.25em" color="text.400" />
             </VStack>

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useCookies } from "react-cookie";
 import { FEATURE_FLAG } from "@coredin/shared";
 import { useFlag } from "@/hooks";
+import { motion } from "framer-motion";
 
 export const COOKIES_ACCEPTANCE_COOKIE_NAME = "CookiesConsent";
 
@@ -21,12 +22,19 @@ export const CookiesBar = () => {
     <>
       {!cookies.CookiesConsent && !rejected && (
         <Box
-          bg="background.900"
-          opacity="0.95"
-          maxW="100vw"
+          as={motion.div}
+          initial={{
+            opacity: 0
+          }}
+          animate={{
+            opacity: 1,
+            transition: { duration: 2, delay: 2 }
+          }}
+          color="brand.200"
           borderTopWidth="1px"
           borderTopStyle="solid"
-          borderTopColor="brand.500"
+          borderTopColor="brand.200"
+          backdropFilter="blur(12px)"
           position="sticky"
           bottom="0"
           zIndex="10"
@@ -48,6 +56,8 @@ export const CookiesBar = () => {
             <ButtonGroup spacing="2em">
               <Button
                 variant="empty"
+                size="sm"
+                color="brand.200"
                 onClick={() => {
                   removeCookie(COOKIES_ACCEPTANCE_COOKIE_NAME);
                   setRejected(true);
@@ -57,6 +67,8 @@ export const CookiesBar = () => {
               </Button>
               <Button
                 variant="empty"
+                size="sm"
+                color="brand.200"
                 onClick={() => setCookie(COOKIES_ACCEPTANCE_COOKIE_NAME, true)}
               >
                 Accept

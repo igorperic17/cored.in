@@ -10,21 +10,21 @@ const baseStyle = definePartsStyle({
   },
   control: {
     borderRadius: "2px",
-    borderColor: "background.400",
+    borderColor: "brand.100",
     borderWidth: "1px",
     p: 1,
     mr: "6px",
     _hover: {
-      borderColor: "brand.500",
+      borderColor: "brand.300",
       _checked: {
-        borderColor: "background.400",
-        bg: "background.400"
+        borderColor: "brand.100",
+        bg: "brand.100"
       }
     },
     _checked: {
-      bg: "brand.500",
-      borderColor: "brand.500",
-      color: "text.900"
+      bg: "brand.300",
+      borderColor: "brand.300",
+      color: "brand.900"
     }
   }
 });

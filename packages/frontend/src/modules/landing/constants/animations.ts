@@ -1,6 +1,6 @@
 import { Variants } from "framer-motion";
 
-// hero subheading
+// hero bottom transparent box with tezxt
 export const fadeInWithDelayAnimation: Variants = {
   initial: {
     opacity: 0
@@ -11,15 +11,13 @@ export const fadeInWithDelayAnimation: Variants = {
   }
 };
 
-// benefit item, progress text
-export const appearFromRightOneByOne: Variants = {
+// reason card, advantage card, progress lines
+export const fadeInOneByOne: Variants = {
   initial: {
-    opacity: 0,
-    x: 300
+    opacity: 0
   },
   animate: (index: number) => ({
     opacity: 1,
-    x: 0,
     transition: {
       duration: 0.5,
       delay: 0.2 * index
@@ -27,13 +25,15 @@ export const appearFromRightOneByOne: Variants = {
   })
 };
 
-// tech card, progress lines
-export const fadeInOneByOne: Variants = {
+// progress text
+export const appearFromRightOneByOne: Variants = {
   initial: {
-    opacity: 0
+    opacity: 0,
+    x: 200
   },
   animate: (index: number) => ({
     opacity: 1,
+    x: 0,
     transition: {
       duration: 0.5,
       delay: 0.2 * index

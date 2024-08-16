@@ -16,7 +16,7 @@ export const SocialMedia: FC<SocialMediaSize> = ({ size, gap, color }) => (
         as={FaXTwitter}
         aria-label="X."
         _hover={{
-          color: "brand.500"
+          color: "brand.300"
         }}
       />
     </Link>
@@ -26,7 +26,7 @@ export const SocialMedia: FC<SocialMediaSize> = ({ size, gap, color }) => (
         as={FaDiscord}
         aria-label="Discord."
         _hover={{
-          color: "brand.500"
+          color: "brand.300"
         }}
       />
     </Link>

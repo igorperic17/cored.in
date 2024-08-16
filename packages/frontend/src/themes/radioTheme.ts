@@ -7,15 +7,15 @@ const { definePartsStyle, defineMultiStyleConfig } =
 const baseStyle = definePartsStyle({
   // define the part you're going to style
   control: {
-    borderRadius: "12px", // change the border radius
-    borderColor: "brand.500", // change the border color,
+    borderRadius: "50%", // change the border radius
+    borderColor: "brand.200", // change the border color,
     _checked: {
-      borderColor: "brand.500",
-      bg: "brand.500",
-      color: "brand.500",
+      borderColor: "brand.200",
+      bg: "transparent",
+      color: "brand.200",
       _hover: {
-        borderColor: "brand.500",
-        bg: "brand.500"
+        borderColor: "brand.200",
+        bg: "brand.200"
       }
     }
   }

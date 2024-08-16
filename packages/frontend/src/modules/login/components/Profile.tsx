@@ -7,12 +7,11 @@ import { USER_MUTATIONS, USER_QUERIES } from "@/queries";
 import { Box, Center } from "@chakra-ui/layout";
 import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useContext, useEffect, useState } from "react";
-import { RequireWalletConnection } from "../../home/components";
 import { Spinner } from "@chakra-ui/spinner";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useChain } from "@cosmos-kit/react";
 import { Navigate, useSearchParams } from "react-router-dom";
-import { NotRegisteredProfile } from ".";
+import { NotRegisteredProfile, RequireWalletConnection } from ".";
 import { ROUTES } from "@/router/routes";
 
 export const Profile = () => {
@@ -106,7 +105,7 @@ export const Profile = () => {
     <Box>
       {(isLoadingContract || isLoading) && chainContext.address && (
         <Center mt="32px">
-          <Spinner size="xl" color="brand.500" />
+          <Spinner size="xl" color="brand.200" />
         </Center>
       )}
       {!chainContext.address && <RequireWalletConnection />}

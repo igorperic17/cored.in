@@ -1,7 +1,8 @@
 export { Hero } from "./Hero";
-export { Benefits } from "./Benefits";
-export { CallToAction } from "./CallToAction";
-export { Tech } from "./Tech";
-export { OurProgress } from "./OurProgress";
+export { Reasons } from "./Reasons";
+export { ReasonCard } from "./ReasonCard";
+export { Advantages } from "./Advantages";
+export { AdvantageCard } from "./AdvantageCard";
+export { Roadmap } from "./Roadmap";
 export { Nav } from "./Nav";
 export { Footer } from "./Footer";

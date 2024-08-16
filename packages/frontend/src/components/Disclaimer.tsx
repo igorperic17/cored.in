@@ -5,7 +5,6 @@ export const Disclaimer = () => {
     <Text
       color="text.400"
       textStyle="sm"
-      mt="auto"
       mx="auto"
       py="2em"
       px={{ base: "1em", md: "2.5em", lg: "3.5em" }}

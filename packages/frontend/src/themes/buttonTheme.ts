@@ -19,7 +19,7 @@ const sizes = defineStyle({
     fontSize: { base: "1rem", md: "1.125rem" },
     px: "1.5em",
     py: "0.5em",
-    borderRadius: "3xl"
+    borderRadius: "0.375em"
   },
   xl: {
     fontSize: "2rem",
@@ -30,24 +30,27 @@ const sizes = defineStyle({
 });
 
 const primary = defineStyle({
-  bg: "brand.500",
-  color: "text.900",
-  fontWeight: 600,
-  _loading: {
-    _hover: {
-      bg: "background.100"
+  bg: "brand.400",
+  color: "brand.100",
+  fontWeight: "500",
+  _hover: {
+    bg: "brand.300",
+    color: "brand.100",
+    _disabled: {
+      bg: "background.400",
+      color: "brand.900"
+    },
+    _loading: {
+      bg: "brand.300"
     }
   },
-  _hover: {
-    bg: "background.100",
-    color: "text.900",
-    _disabled: {
-      bg: "background.400"
-    }
+  _loading: {
+    bg: "brand.300",
+    opacity: "1"
   },
   _disabled: {
     bg: "background.400",
-    color: "text.900"
+    color: "brand.900"
   }
 });
 
