@@ -181,6 +181,10 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
         QueryMsg::GetSubscriptionInfo { did, subscriber } => {
             get_subscription_info(deps, env, did, subscriber)
         }
+        QueryMsg::GetSubscriberList { did, page, page_size } => {
+            todo!()
+            // get_subscriber_list(deps, did, page, page_size)
+        }
     }
 }
 

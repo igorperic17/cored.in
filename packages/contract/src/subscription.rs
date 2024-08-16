@@ -7,10 +7,12 @@ use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
     config_storage_read, did_storage_read, profile_storage, profile_storage_read, single_subscription_storage, single_subscription_storage_read, wallet_storage_read, SubscriptionInfo
 };
-use coreum_wasm_sdk::assetnft;
+use coreum_wasm_sdk::pagination::PageRequest;
+use coreum_wasm_sdk::{assetnft, nft};
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
+use coreum_wasm_sdk::nft::NFTsResponse;
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
 
 
@@ -253,6 +255,36 @@ pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, target_did: String, su
     //         // TODO: NFT found, verify expiration date
     //     }
     // }
+}
+
+
+pub fn get_subscribers(
+    deps: Deps<CoreumQueries>,
+    env: Env,
+    did: String,
+    page: Uint64
+) -> StdResult<Binary> {
+    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
+    let class_id = generate_nft_class_id(env.clone(), did.clone());
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs { 
+        class_id: Some(class_id), 
+        owner: None, 
+        pagination: Some(PageRequest {
+            key: todo!(),
+            offset: Some(0u64),
+            limit: todo!(),
+            count_total: todo!(),
+            reverse: todo!(),
+        })
+    }).into();
+    
+    let res = deps.querier.query::<NFTsResponse>(&request)?;
+    // ^------- this fails with: 
+    // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
+    // called `Result::unwrap()` on an `Err` value: 
+    //      QueryError { msg: "Error parsing into type coreum_wasm_sdk::nft::OwnerResponse: missing field `owner`: query wasm contract failed" }
+
+    return to_json_binary(&res);
 }
 
 pub fn get_subscription_info(

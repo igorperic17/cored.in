@@ -101,6 +101,13 @@ export type QueryMsg = {
     subscriber: string;
     [k: string]: unknown;
   };
+} | {
+  get_subscriber_list: {
+    did: string;
+    page: Uint64;
+    page_size: Uint64;
+    [k: string]: unknown;
+  };
 };
 export type Addr = string;
 export interface Config {
@@ -121,6 +128,10 @@ export interface DidInfo {
 }
 export interface GetMerkleRootResponse {
   root?: string | null;
+  [k: string]: unknown;
+}
+export interface GetSubscribersResponse {
+  subscribers: string[];
   [k: string]: unknown;
 }
 export type Timestamp = Uint64;

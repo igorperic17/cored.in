@@ -1,0 +1,16 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "GetSubscribersResponse",
+  "type": "object",
+  "required": [
+    "subscribers"
+  ],
+  "properties": {
+    "subscribers": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}
