@@ -6,7 +6,7 @@ use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP};
 use coreum_wasm_sdk::assetnft;
-use coreum_wasm_sdk::core::CoreumMsg;
+use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
     coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64
 };
@@ -28,7 +28,7 @@ pub fn hash_did(s: &str, n: usize) -> String {
 }
 
 pub fn subscribe(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     env: Env,
     info: MessageInfo,
     subscribe_to_did: String,
@@ -173,7 +173,7 @@ pub fn subscribe(
 }
 
 fn mint_nft(
-    deps: &DepsMut,
+    deps: &DepsMut<CoreumQueries>,
     info: MessageInfo,
     class_id: String,
     nft_id: String,
@@ -200,7 +200,7 @@ fn mint_nft(
         .add_message(msg))
 }
 
-pub fn is_subscriber(deps: Deps, env: Env, target_did: String, subscriber_wallet: String) -> StdResult<Binary> {
+pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, target_did: String, subscriber_wallet: String) -> StdResult<Binary> {
 
     // convert the sender wallet to DID
     let subscriber_profile = WALLET_PROFILE_MAP
@@ -217,7 +217,6 @@ pub fn is_subscriber(deps: Deps, env: Env, target_did: String, subscriber_wallet
         None => false,
         Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
     };
-    return to_json_binary(&response);
 
     // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
@@ -229,7 +228,8 @@ pub fn is_subscriber(deps: Deps, env: Env, target_did: String, subscriber_wallet
     //     id: nft_id,
     // }).into();
     
-    // let res = deps.querier.query::<OwnerResponse>(&request);
+    // (UNCOMMENT THIS TO REPRODUCE THE CRASH)
+    // let res = deps.querier.query::<OwnerResponse>(&request)?;
     // ^------- this fails with: 
     // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
     // called `Result::unwrap()` on an `Err` value: 
@@ -251,6 +251,8 @@ pub fn is_subscriber(deps: Deps, env: Env, target_did: String, subscriber_wallet
     //         // TODO: NFT found, verify expiration date
     //     }
     // }
+
+    return to_json_binary(&response);
 }
 
 
@@ -285,7 +287,7 @@ pub fn get_subscribers(
 }
 
 pub fn get_subscription_info(
-    deps: Deps,
+    deps: Deps<CoreumQueries>,
     _env: Env,
     did: String,
     subscriber: String,
@@ -305,7 +307,7 @@ pub fn get_subscription_info(
 }
 
 // gets current subscription cost
-pub fn get_subscription_price(deps: Deps, did: String) -> StdResult<Binary> {
+pub fn get_subscription_price(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
     let profile_info = DID_PROFILE_MAP.load(deps.storage, did);
 
     match profile_info {
@@ -323,7 +325,7 @@ pub fn get_subscription_price(deps: Deps, did: String) -> StdResult<Binary> {
     }
 }
 
-pub fn get_subscription_duration(deps: Deps, did: String) -> StdResult<Binary> {
+pub fn get_subscription_duration(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
     let profile_info = DID_PROFILE_MAP.load(deps.storage, did);
 
     match profile_info {

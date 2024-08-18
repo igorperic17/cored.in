@@ -3,12 +3,12 @@
 #[cfg(test)]
 mod tests {
     // use cosmwasm_std::testing::{mock_dependencies, mock_env, mock_info};
-    use cosmwasm_std::{coin, coins, from_json, Addr};
+    // use cosmwasm_std::{coin, coins, from_json, Addr};
 
-    use crate::contract::{execute, query};
-    use crate::error::ContractError;
-    use crate::msg::{ExecuteMsg, GetDIDResponse, QueryMsg};
-    use crate::state::Config;
+    // use crate::contract::{execute, query};
+    // use crate::error::ContractError;
+    // use crate::msg::{ExecuteMsg, GetDIDResponse, QueryMsg};
+    // use crate::state::Config;
     // use crate::tests::common::common::{
     //     assert_config_state, assert_name_owner, mock_alice_registers_name, mock_init_no_price, mock_init_with_price
     // };

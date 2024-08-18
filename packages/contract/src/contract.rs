@@ -1,5 +1,5 @@
 use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
-use coreum_wasm_sdk::core::CoreumMsg;
+use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
     coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
     StdResult, Uint64,
@@ -43,19 +43,19 @@ pub fn instantiate(
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn execute(
-    deps: DepsMut,
+    deps: DepsMut<CoreumQueries>,
     env: Env,
     info: MessageInfo,
     msg: ExecuteMsg,
 ) -> Result<Response<CoreumMsg>, ContractError> {
     match msg {
-        ExecuteMsg::Register { did, username } => execute_register(deps, env, info, username, did),
-        ExecuteMsg::RemoveDID { did, username } => execute_remove(deps, env, info, username, did),
+        ExecuteMsg::Register { did, username } => execute_register(deps.into_empty(), env, info, username, did),
+        ExecuteMsg::RemoveDID { did, username } => execute_remove(deps.into_empty(), env, info, username, did),
         ExecuteMsg::UpdateCredentialMerkleRoot { did, root } => {
-            execute_update_vc_root(deps, env, info, did, root)
+            execute_update_vc_root(deps.into_empty(), env, info, did, root)
         }
         ExecuteMsg::SetSubscription { price, duration } => {
-            set_subscription(deps, info, price, duration)
+            set_subscription(deps.into_empty(), info, price, duration)
         }
         ExecuteMsg::Subscribe { did } => subscribe(deps, env, info, did),
     }
@@ -145,7 +145,7 @@ pub fn execute_remove(
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
-pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
+pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
         QueryMsg::Config {} => to_json_binary(&CONFIG.load(deps.storage)?),
 
@@ -175,7 +175,7 @@ pub fn query(deps: Deps, env: Env, msg: QueryMsg) -> StdResult<Binary> {
 
 type ResolverFnPointer<'a> = Map<'a, String, ProfileInfo>;
 fn query_resolver(
-    deps: Deps,
+    deps: Deps<CoreumQueries>,
     _env: Env,
     query_key: String,
     storage_resolver: ResolverFnPointer,
@@ -192,7 +192,7 @@ fn query_resolver(
     to_json_binary(&did_response)
 }
 
-fn query_merkle_root(deps: Deps, _env: Env, did: String) -> StdResult<Binary> {
+fn query_merkle_root(deps: Deps<CoreumQueries>, _env: Env, did: String) -> StdResult<Binary> {
     let stored_root = CREDENTIAL.may_load(deps.storage, did)?;
 
     if stored_root.is_none() {
@@ -205,7 +205,7 @@ fn query_merkle_root(deps: Deps, _env: Env, did: String) -> StdResult<Binary> {
 }
 
 fn query_verify_credential(
-    deps: Deps,
+    deps: Deps<CoreumQueries>,
     _env: Env,
     did: String,
     credential_hash: String,

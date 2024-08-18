@@ -90,6 +90,8 @@ mod tests {
             };
 
             let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+            println!("{:?}", is_sub);
+            
             // expect that is_sub is false (still not subscribed)
             assert!(is_sub.is_ok() && !is_sub.unwrap());
 
@@ -98,8 +100,6 @@ mod tests {
                 did: "alicedid".to_string(),
             };
             let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
-            // println!("{:?}", res);
-            
 
             let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
             // expect that is_sub is true after subscription
