@@ -97,8 +97,8 @@ mod tests {
             let subscribe_msg = ExecuteMsg::Subscribe {
                 did: "alicedid".to_string(),
             };
-            let res = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
-            println!("{:?}", res);
+            let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+            // println!("{:?}", res);
             
 
             let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);

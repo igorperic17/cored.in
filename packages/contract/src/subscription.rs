@@ -4,15 +4,11 @@ use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, ge
 use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
-use crate::state::{
-    config_storage_read, did_storage_read, profile_storage, profile_storage_read, single_subscription_storage, single_subscription_storage_read, wallet_storage_read, SubscriptionInfo
-};
-use coreum_wasm_sdk::pagination::PageRequest;
-use coreum_wasm_sdk::{assetnft, nft};
-use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft::NFTsResponse;
+use crate::state::{SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP};
+use coreum_wasm_sdk::assetnft;
+use coreum_wasm_sdk::core::CoreumMsg;
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64
 };
 
 
@@ -32,7 +28,7 @@ pub fn hash_did(s: &str, n: usize) -> String {
 }
 
 pub fn subscribe(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     env: Env,
     info: MessageInfo,
     subscribe_to_did: String,
@@ -85,19 +81,19 @@ pub fn subscribe(
     }
 
     // convert the sender wallet to DID
-    let subscriber_did = wallet_storage_read(deps.storage)
-        .may_load(info.sender.as_bytes())?
+    let subscriber_did = WALLET_PROFILE_MAP
+        .may_load(deps.storage, info.sender.to_string())?
         .ok_or(StdError::generic_err(format!("Couldn't find the subscriber's DID for wallet {} in the contract registry", info.sender)))?;
 
     // convert the subscribed_to DID into a wallet
-    let subscribed_to_wallet = did_storage_read(deps.storage)
-        .may_load(subscribe_to_did.clone().as_bytes())?
+    let subscribed_to_wallet = DID_PROFILE_MAP
+        .may_load(deps.storage, subscribe_to_did.clone())?
         .ok_or(StdError::generic_err(format!("Couldn't fetch the wallet info from the registry for the DID subscribing to: {}", subscribe_to_did)))?;
 
     // make sure there's no existing valid subscription
     let subscription_key = subscriber_did.did.clone() + subscribe_to_did.as_str();
     let existing_sub =
-        single_subscription_storage_read(deps.storage).load(subscription_key.as_bytes());
+        SUBSCRIPTION.load(deps.storage, subscription_key.clone());
     if existing_sub.is_ok() {
         let existing_subscription = existing_sub.unwrap();
         if existing_subscription.valid_until.seconds() > env.block.time.seconds() {
@@ -108,8 +104,8 @@ pub fn subscribe(
     }
 
     // get the profile info for the subscribed_to DID
-    let mut profile_info = profile_storage_read(deps.storage)
-        .may_load(subscribe_to_did.as_bytes())?
+    let profile_info = DID_PROFILE_MAP
+        .may_load(deps.storage, subscribe_to_did.clone())?
         .unwrap();
 
     // store a single subscription info
@@ -123,13 +119,13 @@ pub fn subscribe(
         cost: price.clone(),
     };
 
-    single_subscription_storage(deps.storage).save(subscription_key.as_ref(), &subscription)?;
+    SUBSCRIPTION.save(deps.storage, subscription_key.clone(), &subscription)?;
 
-    // increment the subscription counter for the profile
-    profile_info.subscriber_count += Uint64::from(1u64);
-    profile_storage(deps.storage)
-        .save(subscribe_to_did.as_bytes(), &profile_info)
-        .expect("Error incrementing subscriber count");
+    // increment the subscription counter for the profile (have to do it in all 3 places, suboptimal?)
+    // profile_info.subscriber_count += Uint64::from(1u64);
+    // profile_storage(deps.storage)
+    //     .save(subscribe_to_did.as_bytes(), &profile_info)
+    //     .expect("Error incrementing subscriber count");
 
     // mint the subscription NFT
     let nft_class_id = generate_nft_class_id(env.clone(), subscribed_to_wallet.wallet.to_string().clone());
@@ -154,7 +150,7 @@ pub fn subscribe(
 
     // payout
     // deps.api.debug("Trying to pay the subscriber...");
-    let contact_config = config_storage_read(deps.storage).load().unwrap();
+    let contact_config = CONFIG.load(deps.storage).unwrap();
     let sub_fee_percentage = contact_config.subscription_fee;
 
     let cored_in_commission = 
@@ -177,7 +173,7 @@ pub fn subscribe(
 }
 
 fn mint_nft(
-    deps: &DepsMut<CoreumQueries>,
+    deps: &DepsMut,
     info: MessageInfo,
     class_id: String,
     nft_id: String,
@@ -204,17 +200,17 @@ fn mint_nft(
         .add_message(msg))
 }
 
-pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, target_did: String, subscriber_wallet: String) -> StdResult<Binary> {
+pub fn is_subscriber(deps: Deps, env: Env, target_did: String, subscriber_wallet: String) -> StdResult<Binary> {
 
     // convert the sender wallet to DID
-    let subscriber_profile = wallet_storage_read(deps.storage)
-        .may_load(subscriber_wallet.as_bytes())?
+    let subscriber_profile = WALLET_PROFILE_MAP
+        .may_load(deps.storage, subscriber_wallet.clone())?
         .ok_or(StdError::generic_err(format!("Couldn't find the subscriber's DID for wallet {} in the contract registry", subscriber_wallet)))?;
 
     // old way, using internal contract storage
     let key = format!("{}{}", subscriber_profile.did, target_did); // Concatenate strings and store in a variable
     let subscriber_info =
-        single_subscription_storage_read(deps.storage).may_load(key.as_bytes())?;
+        SUBSCRIPTION.may_load(deps.storage, key)?;
 
     // rely on chain internal state instead of the NFT data until minting is fixed
     let response = match subscriber_info.clone() {
@@ -259,43 +255,44 @@ pub fn is_subscriber(deps: Deps<CoreumQueries>, env: Env, target_did: String, su
 
 
 pub fn get_subscribers(
-    deps: Deps<CoreumQueries>,
-    env: Env,
-    did: String,
-    page: Uint64
+    _deps: Deps,
+    _env: Env,
+    _did: String,
+    _page: Uint64
 ) -> StdResult<Binary> {
-    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    let class_id = generate_nft_class_id(env.clone(), did.clone());
-    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs { 
-        class_id: Some(class_id), 
-        owner: None, 
-        pagination: Some(PageRequest {
-            key: todo!(),
-            offset: Some(0u64),
-            limit: todo!(),
-            count_total: todo!(),
-            reverse: todo!(),
-        })
-    }).into();
+    // // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
+    // let class_id = generate_nft_class_id(env.clone(), did.clone());
+    // let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs { 
+    //     class_id: Some(class_id), 
+    //     owner: None, 
+    //     pagination: Some(PageRequest {
+    //         key: todo!(),
+    //         offset: Some(0u64),
+    //         limit: todo!(),
+    //         count_total: todo!(),
+    //         reverse: todo!(),
+    //     })
+    // }).into();
     
-    let res = deps.querier.query::<NFTsResponse>(&request)?;
-    // ^------- this fails with: 
-    // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
-    // called `Result::unwrap()` on an `Err` value: 
-    //      QueryError { msg: "Error parsing into type coreum_wasm_sdk::nft::OwnerResponse: missing field `owner`: query wasm contract failed" }
+    // let res = deps.querier.query::<NFTsResponse>(&request);
+    // // ^------- this fails with: 
+    // // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
+    // // called `Result::unwrap()` on an `Err` value: 
+    // //      QueryError { msg: "Error parsing into type coreum_wasm_sdk::nft::OwnerResponse: missing field `owner`: query wasm contract failed" }
 
-    return to_json_binary(&res);
+    // return to_json_binary(&res);
+    return to_json_binary(&true);
 }
 
 pub fn get_subscription_info(
-    deps: Deps<CoreumQueries>,
+    deps: Deps,
     _env: Env,
     did: String,
     subscriber: String,
 ) -> StdResult<Binary> {
     let key = format!("{}{}", subscriber, did); // Concatenate strings and store in a variable
     let subscriber_info =
-        match single_subscription_storage_read(deps.storage).may_load(key.as_bytes()) {
+        match SUBSCRIPTION.may_load(deps.storage, key) {
             Ok(info) => info,
             Err(_) => None,
         };
@@ -308,8 +305,8 @@ pub fn get_subscription_info(
 }
 
 // gets current subscription cost
-pub fn get_subscription_price(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
-    let profile_info = profile_storage_read(deps.storage).load(did.as_bytes());
+pub fn get_subscription_price(deps: Deps, did: String) -> StdResult<Binary> {
+    let profile_info = DID_PROFILE_MAP.load(deps.storage, did);
 
     match profile_info {
         Err(e) => return Err(e),
@@ -326,8 +323,8 @@ pub fn get_subscription_price(deps: Deps<CoreumQueries>, did: String) -> StdResu
     }
 }
 
-pub fn get_subscription_duration(deps: Deps<CoreumQueries>, did: String) -> StdResult<Binary> {
-    let profile_info = profile_storage_read(deps.storage).load(did.as_bytes());
+pub fn get_subscription_duration(deps: Deps, did: String) -> StdResult<Binary> {
+    let profile_info = DID_PROFILE_MAP.load(deps.storage, did);
 
     match profile_info {
         Err(e) => return Err(e),
@@ -340,27 +337,37 @@ pub fn get_subscription_duration(deps: Deps<CoreumQueries>, did: String) -> StdR
 }
 
 pub fn set_subscription(
-    deps: DepsMut<CoreumQueries>,
+    deps: DepsMut,
     info: MessageInfo,
     price: Coin,
     duration: Uint64,
 ) -> Result<Response<CoreumMsg>, ContractError> {
-    let did_info = wallet_storage_read(deps.storage)
-        .may_load(info.sender.as_bytes())
+    let did_info = WALLET_PROFILE_MAP
+        .may_load(deps.storage, info.sender.to_string())
         .expect("No DID registerred with the current wallet");
     println!("Set sub price: {:?}", did_info);
     let did_info_unwrapped = did_info.unwrap();
     println!("Set sub price UNWRAPPED: {:?}", did_info_unwrapped);
 
-    let mut profile_info = profile_storage_read(deps.storage)
-        .may_load(did_info_unwrapped.did.as_bytes())
+    let mut profile_info = DID_PROFILE_MAP
+        .may_load(deps.storage, did_info_unwrapped.did.clone())
         .expect("Profile info for DID not found")
         .expect("Stored profile info is empty");
     profile_info.subscription_price = Some(price.clone());
     profile_info.subscription_duration_days = Some(duration.clone());
-    profile_storage(deps.storage)
-        .save(did_info_unwrapped.did.as_bytes(), &profile_info)
+
+    // TODO: update in all 3 places, suboptimal?
+    USERNAME_PROFILE_MAP
+        .save(deps.storage, did_info_unwrapped.username, &profile_info)
         .expect("Error storing the new subscription price");
+
+    DID_PROFILE_MAP
+        .save(deps.storage, did_info_unwrapped.did, &profile_info)
+        .expect("Error storing the new subscription price");
+
+    WALLET_PROFILE_MAP
+            .save(deps.storage, did_info_unwrapped.wallet.to_string(), &profile_info)
+            .expect("Error storing the new subscription price");
 
     Ok(Response::<CoreumMsg>::default())
 }

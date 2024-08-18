@@ -10,103 +10,78 @@ export interface InstantiateMsg {
   purchase_price?: Coin | null;
   subscription_fee: Decimal;
   transfer_price?: Coin | null;
-  [k: string]: unknown;
 }
 export interface Coin {
   amount: Uint128;
   denom: string;
-  [k: string]: unknown;
 }
 export type ExecuteMsg = {
   register: {
     did: string;
     username: string;
-    [k: string]: unknown;
   };
 } | {
   remove_d_i_d: {
     did: string;
     username: string;
-    [k: string]: unknown;
   };
 } | {
   update_credential_merkle_root: {
     did: string;
     root: string;
-    [k: string]: unknown;
   };
 } | {
   set_subscription: {
     duration: Uint64;
     price: Coin;
-    [k: string]: unknown;
   };
 } | {
   subscribe: {
     did: string;
-    [k: string]: unknown;
   };
 };
 export type Uint64 = string;
 export type QueryMsg = {
-  config: {
-    [k: string]: unknown;
-  };
+  config: {};
 } | {
   get_wallet_d_i_d: {
     wallet: string;
-    [k: string]: unknown;
   };
 } | {
   get_username_d_i_d: {
     username: string;
-    [k: string]: unknown;
   };
 } | {
   get_d_i_d: {
     did: string;
-    [k: string]: unknown;
   };
 } | {
   get_merkle_root: {
     did: string;
-    [k: string]: unknown;
   };
 } | {
   verify_credential: {
     credential_hash: string;
     did: string;
     merkle_proofs: string[];
-    [k: string]: unknown;
   };
 } | {
   is_subscriber: {
     subscriber_wallet: string;
     target_did: string;
-    [k: string]: unknown;
   };
 } | {
   get_subscription_price: {
     did: string;
-    [k: string]: unknown;
   };
 } | {
   get_subscription_duration: {
     did: string;
-    [k: string]: unknown;
   };
 } | {
   get_subscription_info: {
     did: string;
     subscriber: string;
-    [k: string]: unknown;
-  };
-} | {
-  get_subscriber_list: {
-    did: string;
-    page: Uint64;
-    page_size: Uint64;
-    [k: string]: unknown;
   };
 };
 export type Addr = string;
@@ -114,36 +89,30 @@ export interface Config {
   did_register_price?: Coin | null;
   owner: Addr;
   subscription_fee: Decimal;
-  [k: string]: unknown;
-}
-export interface GetDIDResponse {
-  did_info?: DidInfo | null;
-  [k: string]: unknown;
-}
-export interface DidInfo {
-  did: string;
-  username: string;
-  wallet: Addr;
-  [k: string]: unknown;
-}
-export interface GetMerkleRootResponse {
-  root?: string | null;
-  [k: string]: unknown;
-}
-export interface GetSubscribersResponse {
-  subscribers: string[];
-  [k: string]: unknown;
 }
 export type Timestamp = Uint64;
-export interface GetSubscriptionInfoResponse {
-  info?: SubscriptionInfo | null;
-  [k: string]: unknown;
+export interface GetDIDResponse {
+  did_info?: ProfileInfo | null;
+}
+export interface ProfileInfo {
+  did: string;
+  subscriber_count: Uint64;
+  subscription_duration_days?: Uint64 | null;
+  subscription_price?: Coin | null;
+  top_subscribers: SubscriptionInfo[];
+  username: string;
+  wallet: Addr;
 }
 export interface SubscriptionInfo {
   cost: Coin;
   subscribed_to: string;
   subscriber: string;
   valid_until: Timestamp;
-  [k: string]: unknown;
+}
+export interface GetMerkleRootResponse {
+  root?: string | null;
+}
+export interface GetSubscriptionInfoResponse {
+  info?: SubscriptionInfo | null;
 }
 export type Boolean = boolean;

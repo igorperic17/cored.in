@@ -9,7 +9,8 @@
       ],
       "properties": {
         "config": {
-          "type": "object"
+          "type": "object",
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -29,7 +30,8 @@
             "wallet": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -49,7 +51,8 @@
             "username": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -69,7 +72,8 @@
             "did": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -89,7 +93,8 @@
             "did": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -120,7 +125,8 @@
                 "type": "string"
               }
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -144,7 +150,8 @@
             "target_did": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -164,7 +171,8 @@
             "did": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -184,7 +192,8 @@
             "did": {
               "type": "string"
             }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
@@ -208,44 +217,11 @@
             "subscriber": {
               "type": "string"
             }
-          }
-        }
-      },
-      "additionalProperties": false
-    },
-    {
-      "type": "object",
-      "required": [
-        "get_subscriber_list"
-      ],
-      "properties": {
-        "get_subscriber_list": {
-          "type": "object",
-          "required": [
-            "did",
-            "page",
-            "page_size"
-          ],
-          "properties": {
-            "did": {
-              "type": "string"
-            },
-            "page": {
-              "$ref": "#/definitions/Uint64"
-            },
-            "page_size": {
-              "$ref": "#/definitions/Uint64"
-            }
-          }
+          },
+          "additionalProperties": false
         }
       },
       "additionalProperties": false
     }
-  ],
-  "definitions": {
-    "Uint64": {
-      "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
-      "type": "string"
-    }
-  }
+  ]
 }

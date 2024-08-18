@@ -5,7 +5,7 @@ use cosmwasm_std::{Coin, Decimal, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::state::{Config, DidInfo, SubscriptionInfo};
+use crate::state::{Config, ProfileInfo, SubscriptionInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
@@ -92,13 +92,13 @@ pub enum QueryMsg {
     GetSubscriptionInfo { did: String, subscriber: String },
 
     // return the list of subscribers
-    #[returns(GetSubscribersResponse)]
-    GetSubscriberList { did: String, page: Uint64, page_size: Uint64 },
+    // #[returns(GetSubscribersResponse)]
+    // GetSubscriberList { did: String, page: Uint64, page_size: Uint64 },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct GetDIDResponse {
-    pub did_info: Option<DidInfo>,
+    pub did_info: Option<ProfileInfo>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -111,8 +111,8 @@ pub struct GetSubscriptionInfoResponse {
     pub info: Option<SubscriptionInfo>,
 }
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct GetSubscribersResponse {
-    pub subscribers: Vec<String>, // list of subscriber's DIDs
-}
+// #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+// pub struct GetSubscribersResponse {
+//     pub subscribers: Vec<String>, // list of subscriber's DIDs
+// }
 

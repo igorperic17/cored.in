@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, Decimal, InstantiateMsg, Coin, ExecuteMsg, Uint64, QueryMsg, Addr, Config, GetDIDResponse, DidInfo, GetMerkleRootResponse, GetSubscribersResponse, Timestamp, GetSubscriptionInfoResponse, SubscriptionInfo, Boolean } from "./Coredin.types";
+import { Uint128, Decimal, InstantiateMsg, Coin, ExecuteMsg, Uint64, QueryMsg, Addr, Config, Timestamp, GetDIDResponse, ProfileInfo, SubscriptionInfo, GetMerkleRootResponse, GetSubscriptionInfoResponse, Boolean } from "./Coredin.types";
 export interface CoredinReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -63,15 +63,6 @@ export interface CoredinReadOnlyInterface {
     did: string;
     subscriber: string;
   }) => Promise<GetSubscriptionInfoResponse>;
-  getSubscriberList: ({
-    did,
-    page,
-    pageSize
-  }: {
-    did: string;
-    page: Uint64;
-    pageSize: Uint64;
-  }) => Promise<GetSubscribersResponse>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -89,7 +80,6 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getSubscriptionPrice = this.getSubscriptionPrice.bind(this);
     this.getSubscriptionDuration = this.getSubscriptionDuration.bind(this);
     this.getSubscriptionInfo = this.getSubscriptionInfo.bind(this);
-    this.getSubscriberList = this.getSubscriberList.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -204,23 +194,6 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
       get_subscription_info: {
         did,
         subscriber
-      }
-    });
-  };
-  getSubscriberList = async ({
-    did,
-    page,
-    pageSize
-  }: {
-    did: string;
-    page: Uint64;
-    pageSize: Uint64;
-  }): Promise<GetSubscribersResponse> => {
-    return this.client.queryContractSmart(this.contractAddress, {
-      get_subscriber_list: {
-        did,
-        page,
-        page_size: pageSize
       }
     });
   };
