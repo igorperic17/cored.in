@@ -39,7 +39,7 @@ export const ReasonCard: FC<ReasonCardProps> = ({
           {title}
         </Heading>
         <Text
-          color="brand.100"
+          color="brand.900"
           fontWeight="300"
           fontSize={{ base: "1rem", md: "1.25rem" }}
           lineHeight="1.25"
