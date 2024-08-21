@@ -26,7 +26,7 @@ export const Advantages = () => {
           }}
           fontWeight="400"
           lineHeight="1.25"
-          color="brand.200"
+          color="brand.500"
           textTransform="uppercase"
         >
           The cored.in advantages
@@ -35,7 +35,7 @@ export const Advantages = () => {
           fontSize={{ base: "2.5rem", md: "3.5rem", lg: "4rem", xl: "4.5rem" }}
           fontWeight="700"
           lineHeight="1.25"
-          color="brand.100"
+          color="brand.900"
         >
           Powerful tech under the hood
         </Text>
