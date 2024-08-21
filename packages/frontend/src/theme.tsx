@@ -38,7 +38,7 @@ const styles = {
       boxSizing: "border-box"
     },
     body: {
-      background: "brand.900"
+      background: "brand.100"
     },
     html: {
       scrollBehavior: "smooth"
@@ -72,7 +72,7 @@ const colors = {
     900: "#121111" // dark
   },
   background: {
-    100: "#ebebeb", // - not in use yet
+    100: "#F5F5F5", // body bg
     400: "#828178", /// === text.400
     600: "#3E3D3A", // card bg
     700: "#272723",
