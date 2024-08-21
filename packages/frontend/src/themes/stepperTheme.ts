@@ -1,18 +1,18 @@
 const baseStyle = {
   title: {
-    color: "brand.200",
+    color: "brand.900",
     fontSize: { base: "1.25rem", lg: "1.75rem" },
     lineHeight: "1.25",
     mb: "0.25em"
   },
   description: {
-    color: "brand.100",
+    color: "brand.900",
     fontSize: { base: "1rem" },
     lineHeight: "1.35"
   },
   indicator: {
     bg: "transparent",
-    borderColor: "brand.100",
+    borderColor: "brand.900",
     "[data-status=complete] &": {
       bg: "brand.300"
     },
@@ -21,13 +21,13 @@ const baseStyle = {
     }
   },
   number: {
-    color: "brand.100"
+    color: "brand.900"
   },
   icon: {
     color: "brand.100"
   },
   separator: {
-    bg: "brand.100",
+    bg: "brand.900",
     "[data-status=complete] &": {
       bg: "brand.300"
     }
