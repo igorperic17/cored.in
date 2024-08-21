@@ -16,15 +16,15 @@ const sizes = {
 
 const baseStyle = definePartsStyle({
   tab: {
-    bg: "#FFFFFFBF",
-    backdropFilter: "blur(12px)",
+    bg: "transparent",
     borderTopRadius: "1em",
     borderBottom: "1px solid #E6E6E6",
     _selected: {
       color: "brand.500",
       border: "1px solid #E6E6E6",
       borderBottom: "none",
-      bg: "#FFFFFFBF"
+      bg: "#FFFFFFBF",
+      backdropFilter: "blur(12px)"
     },
     _hover: {
       color: "brand.300",
@@ -35,8 +35,8 @@ const baseStyle = definePartsStyle({
   },
 
   tabpanel: {
-    px: "1em",
-    py: "1.5em",
+    px: "2em",
+    py: "2.5em",
     border: "1px solid #E6E6E6",
     borderTop: "0",
     borderTopRadius: "0",
