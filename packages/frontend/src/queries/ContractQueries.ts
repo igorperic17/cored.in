@@ -17,15 +17,15 @@ export const CONTRACT_QUERIES = {
   isSubscriber: (
     coredinClient: CoredinClient,
     profileDid: string,
-    subscriberDid: string
+    subscriberWallet: string
   ) => ({
     queryKey: [
       BaseServerStateKeys.CONTRACT_IS_SUBSCRIBED,
       profileDid,
-      subscriberDid
+      subscriberWallet
     ],
     queryFn: () =>
-      coredinClient.isSubscriber({ did: profileDid, subscriber: subscriberDid })
+      coredinClient.isSubscriber({ targetDid: profileDid, subscriberWallet })
   }),
   getSubscriptionInfo: (
     coredinClient: CoredinClient,
