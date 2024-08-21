@@ -39,10 +39,16 @@ export const Nav = () => {
         gap="3em"
         maxW="1840px"
         mx="auto"
+        bg="#FFFFFFBF"
         backdropFilter="blur(12px)"
-        border="1px solid #29292940"
+        border="1px solid #E7E7E740"
         borderRadius="1em"
-        boxShadow="0px 4px 4px 0px #00000014"
+        boxShadow="
+          5px 4px 14px 0px #1414130D,
+          18px 17px 25px 0px #1414130A,
+          41px 38px 34px 0px #14141305,
+          72px 68px 40px 0px #14141303,
+          113px 106px 43px 0px #14141300"
         p={{ base: "0.688em", xl: "1em" }}
       >
         <Link
@@ -86,9 +92,9 @@ export const Nav = () => {
                       lineHeight="1.25"
                       textTransform="uppercase"
                       color={
-                        currentSection === item ? "brand.200" : "brand.100"
+                        currentSection === item ? "brand.300" : "brand.900"
                       }
-                      _hover={{ color: "brand.200" }}
+                      _hover={{ color: "brand.300" }}
                       // _active={{ color: "black" }}
                     >
                       {item === NAV_SECTIONS.WHY_COREDIN
