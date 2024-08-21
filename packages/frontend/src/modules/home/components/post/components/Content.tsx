@@ -71,7 +71,7 @@ export const Content: React.FC<PostContentProps> = ({
                 overflow="hidden"
               >
                 {/* recommended username width 12 characters */}
-                <Text as="span" color="text.100" textStyle="md">
+                <Text as="span" color="brand.900" textStyle="md">
                   @{post.creatorUsername}
                 </Text>
               </Box>
@@ -81,7 +81,7 @@ export const Content: React.FC<PostContentProps> = ({
                 <MenuButton
                   as={IconButton}
                   variant="empty"
-                  color="text.400"
+                  color="text.700"
                   aria-label="See menu."
                   icon={<FaEllipsis fontSize="1.5rem" />}
                   size="lg"
@@ -103,11 +103,11 @@ export const Content: React.FC<PostContentProps> = ({
               </Menu>
             )}
           </Flex>
-          <Text color="text.100" textStyle="sm" wordBreak="break-word">
+          <Text color="brand.900" textStyle="sm" wordBreak="break-word">
             {post.text}
           </Text>
           {/* to add dateTime later */}
-          <Text as="time" dateTime="" color="text.400" textStyle="sm">
+          <Text as="time" dateTime="" color="text.700" textStyle="sm">
             {new Date(post.createdAt).toLocaleTimeString()}
             <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
               {"    •    "}
