@@ -29,9 +29,6 @@ const colors = {
     500: "#7F02FE", // purple
     900: "#141413"
   },
-  complimentary: {
-    500: "#1F45F3" // blue but not readable // do not use yet
-  },
   text: {
     100: "#F1F1F0", // light - white / main text
     300: "#b0b0b0", // USED IN LOGIN, HELPER TEXT *

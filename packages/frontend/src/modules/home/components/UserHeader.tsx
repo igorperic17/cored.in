@@ -180,12 +180,12 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     : false;
 
   return (
-    <Box layerStyle="cardBox" w="100%">
+    <Box layerStyle="cardBox" py="1em" w="100%">
       <Box
         h={{ base: "75px", sm: "90px", lg: "125px" }}
         w="100%"
-        bg={userProfile.backgroundColor || "brand.500"}
-        borderTopRadius="inherit"
+        bg={userProfile.backgroundColor || "brand.200"}
+        borderTopRadius="0.75em"
       ></Box>
       <Flex
         justify="space-between"
@@ -197,11 +197,11 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
         <Avatar
           name={userProfile.username}
           src={userProfile.avatarUrl}
-          bg="background.600"
+          bg="brand.100"
           color={userProfile.avatarFallbackColor || "brand.500"}
           size={{ base: "lg", sm: "xl", lg: "2xl" }}
           // ml="0.5em"
-          border="4px solid #1C1C1A"
+          border="2px solid #141413"
         />
         {isOwnProfile && (
           <Link
@@ -210,12 +210,12 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             aria-label="Edit profile."
             variant="empty"
             size="sm"
-            color="text.400"
+            color="text.700"
             mt="3.5em"
             // mt={{ base: "-3rem", md: "-4.5rem" }}
             _hover={{
               textDecoration: "none",
-              color: "text.100"
+              color: "brand.300"
             }}
           >
             <Icon as={FaPen} size="0.875rem" />
@@ -230,7 +230,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           <VisuallyHidden>
             <Heading as="h1">{userProfile.username}'s profile page</Heading>
           </VisuallyHidden>
-          <Text as="span" color="text.100" textStyle="md">
+          <Text as="span" color="brand.900" textStyle="md">
             {`@${userProfile.username}`}
           </Text>
           {userProfile.issuerDid && (
@@ -244,7 +244,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           <Button
             variant="empty"
             size="sm"
-            color="text.400"
+            color="text.700"
             alignSelf="start"
             rightIcon={<CopyIcon ml="0.5em" />}
             aria-label="Copy user DID."
