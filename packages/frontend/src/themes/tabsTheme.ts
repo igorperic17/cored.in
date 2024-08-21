@@ -15,44 +15,34 @@ const sizes = {
 };
 
 const baseStyle = definePartsStyle({
-  tablist: {
-    color: "text.300"
-  },
   tab: {
-    bg: "background.900",
-    border: "1px solid #292929",
+    bg: "#FFFFFFBF",
     backdropFilter: "blur(12px)",
-    borderTopRadius: "0.5em",
+    borderTopRadius: "1em",
+    borderBottom: "1px solid #E6E6E6",
     _selected: {
-      color: "brand.200",
-      borderBottom: "none"
-
-      // bg: "background.700"
+      color: "brand.500",
+      border: "1px solid #E6E6E6",
+      borderBottom: "none",
+      bg: "#FFFFFFBF"
     },
     _hover: {
-      color: "text.100",
+      color: "brand.300",
       _selected: {
-        color: "brand.200"
+        color: "brand.500"
       }
     }
   },
-  tabPanels: {
-    // bg: "red",
-    // borderColor: "yellow"
-    // border: "1px solid #292929",
-    // bg: "red"
-  },
+
   tabpanel: {
-    p: "0",
-    borderBottomRadius: "0.5em",
-    border: "1px solid #292929",
-    bg: "#121111BF",
+    px: "1em",
+    py: "1.5em",
+    border: "1px solid #E6E6E6",
+    borderTop: "0",
+    borderTopRadius: "0",
+    borderBottomRadius: "1em",
+    bg: "#FFFFFFBF",
     backdropFilter: "blur(12px)"
-    // _selected: {
-    //   borderTop: "none"
-    // }
-    // border: "1px solid #141413",
-    // bg: ""
   }
 });
 
