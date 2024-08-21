@@ -21,7 +21,7 @@ import {
   useLocation
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
-import LandingBg35 from "@/assets/landing-bg-35.png";
+import LandingBgDark35 from "@/assets/landing-bg-dark-35.png";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -44,7 +44,7 @@ export const HomeRoot = () => {
   }
 
   return (
-    <Box bgImage={LandingBg35} bgPosition="center">
+    <Box bgImage={LandingBgDark35} bgPosition="center">
       {!isLargerThanLg && userProfile && (
         <Header username={userProfile.username} />
       )}
