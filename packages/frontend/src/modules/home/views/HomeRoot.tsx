@@ -82,6 +82,7 @@ export const HomeRoot = () => {
           w="52%"
           maxW={{ base: "600px", lg: "none" }}
           mx="auto"
+          mb={{ base: "6em", lg: "2em" }}
         >
           <Outlet />
           <ScrollRestoration />
