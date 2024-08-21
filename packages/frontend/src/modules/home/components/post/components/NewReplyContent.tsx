@@ -26,8 +26,9 @@ export const NewReplyContent: FC<NewContentProps> = ({
         name={userProfile.username}
         src={userProfile.avatarUrl}
         size="sm"
-        bg="background.600"
+        bg="brand.100"
         color={userProfile.avatarFallbackColor || "brand.500"}
+        border="1px solid #b0b0b0"
       />
       <AutoResizeTextarea
         value={postContent}

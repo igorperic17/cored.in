@@ -57,8 +57,9 @@ export const NewPostContent: FC<NewContentProps> = ({
           name={userProfile.username}
           src={userProfile.avatarUrl}
           size="md"
-          bg="background.600"
+          bg="brand.100"
           color={userProfile.avatarFallbackColor || "brand.500"}
+          border="1px solid #b0b0b0"
         />
         <AutoResizeTextarea
           placeholder="Share your thoughts"
