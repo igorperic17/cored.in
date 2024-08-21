@@ -9,27 +9,26 @@ export class CoredinContractService {
 
   async isWalletSubscribed(profileWallet: string, subscriberWallet: string) {
     const profileInfo = await this.getWalletInfo(profileWallet);
-    const subscriberInfo = await this.getWalletInfo(subscriberWallet);
-    if (!profileInfo.did_info || !subscriberInfo.did_info) {
+    // const subscriberInfo = await this.getWalletInfo(subscriberWallet);
+    if (!profileInfo.did_info) {
       console.error(
         "No DID info found for profile or subscriber: ",
         profileWallet,
         profileInfo,
-        subscriberWallet,
-        subscriberInfo
+        subscriberWallet
       );
       return false;
     }
     return this.coredinQueryClient.isSubscriber({
-      did: profileInfo.did_info.did,
-      subscriber: subscriberInfo.did_info.did
+      targetDid: profileInfo.did_info.did,
+      subscriberWallet
     });
   }
 
-  async isSubscribed(profileDid: string, subscriberDid: string) {
-    return this.coredinQueryClient.isSubscriber({
-      did: profileDid,
-      subscriber: subscriberDid
-    });
-  }
+  // async isSubscribed(profileDid: string, subscriberDid: string) {
+  //   return this.coredinQueryClient.isSubscriber({
+  //     did: profileDid,
+  //     subscriber: subscriberDid
+  //   });
+  // }
 }
