@@ -20,7 +20,7 @@ import {
 } from "@chakra-ui/react";
 import { FaTriangleExclamation } from "react-icons/fa6";
 import { FC } from "react";
-import { Disclaimer, SocialMedia } from "@/components";
+import { DisclaimerText, SocialMedia } from "@/components";
 import { useLoggedInServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { CredentialRequestStatus } from "@coredin/shared";
@@ -151,7 +151,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               <ModalContent bg="transparent">
                 <ModalCloseButton color="text.100" />
                 <ModalBody layerStyle="cardBox">
-                  <Disclaimer />
+                  <DisclaimerText />
                   <SocialMedia size="1.75rem" gap="2.25em" color="text.400" />
                 </ModalBody>
               </ModalContent>
