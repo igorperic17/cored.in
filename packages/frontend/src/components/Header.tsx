@@ -16,6 +16,7 @@ export const Header: FC<HeaderProps> = ({ username }) => {
       top={{ base: "1rem", md: "1.5rem", lg: "1.75rem" }}
       zIndex="10"
       px={{ base: "1em", md: "2.5em" }}
+      mb={{ base: "1em", md: "2em", lg: "0" }}
     >
       <Flex
         justify="space-between"
