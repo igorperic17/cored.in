@@ -16,7 +16,8 @@ import {
   Text,
   useDisclosure,
   useMediaQuery,
-  useTheme
+  useTheme,
+  VStack
 } from "@chakra-ui/react";
 import { FaTriangleExclamation } from "react-icons/fa6";
 import { FC } from "react";
@@ -148,11 +149,13 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
             </Flex>
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
               <ModalOverlay />
-              <ModalContent bg="transparent">
-                <ModalCloseButton color="text.100" />
-                <ModalBody layerStyle="cardBox">
-                  <DisclaimerText />
-                  <SocialMedia size="1.75rem" gap="2.25em" color="text.400" />
+              <ModalContent layerStyle="cardBox">
+                <ModalCloseButton color="brand.900" />
+                <ModalBody pt="2.5em">
+                  <VStack spacing="2em">
+                    <DisclaimerText />
+                    <SocialMedia size="1.75rem" gap="2.25em" color="text.400" />
+                  </VStack>
                 </ModalBody>
               </ModalContent>
             </Modal>
