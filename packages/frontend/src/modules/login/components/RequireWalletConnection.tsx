@@ -26,7 +26,7 @@ export const RequireWalletConnection = () => {
       <VStack spacing="1rem" fontSize={{ base: "1rem", md: "1.25rem" }}>
         <LoginButton variant="primary" size="md" signInText="Connect wallet" />
         <Text
-          color="text.300"
+          color="brand.900"
           fontSize={{ base: "1rem", md: "1.25rem" }}
           mt="4vh"
         >
@@ -42,7 +42,7 @@ export const RequireWalletConnection = () => {
               <Link
                 href={wallet.href}
                 isExternal
-                color="text.300"
+                color="brand.900"
                 _hover={{
                   color: "brand.300"
                 }}

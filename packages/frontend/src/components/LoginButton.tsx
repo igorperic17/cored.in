@@ -268,11 +268,16 @@ export const LoginButton: FC<LoginButtonProps> = ({
             <ModalHeader
               fontSize={{ base: "1.25rem", lg: "1.5rem" }}
               textTransform="uppercase"
-              color="brand.200"
+              color="brand.500"
             >
               Connect Wallet
             </ModalHeader>
-            <ModalCloseButton size="xl" top="24px" right="24px" />
+            <ModalCloseButton
+              size="xl"
+              top="24px"
+              right="24px"
+              color="brand.900"
+            />
             <ModalBody>
               <VStack as="ul" gap="1em" align="start">
                 {chainContext.walletRepo.wallets.map((wallet) => {
@@ -281,7 +286,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
                       <Button
                         variant="empty"
                         size="md"
-                        color="brand.100"
+                        color="brand.900"
                         textTransform="none"
                         onClick={() => wallet.connect(true)}
                         key={wallet.walletName}

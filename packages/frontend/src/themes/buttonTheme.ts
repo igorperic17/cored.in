@@ -57,7 +57,7 @@ const primary = defineStyle({
 const empty = defineStyle({
   border: "none",
   borderRadius: "0",
-  color: "brand.200",
+  color: "brand.300",
   px: "0",
   _hover: {
     color: "brand.300"
