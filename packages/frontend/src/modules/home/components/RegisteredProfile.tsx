@@ -1,8 +1,11 @@
 import { Heading, Text, VStack } from "@chakra-ui/react";
-import { DidInfo } from "@coredin/shared";
+import { ProfileInfo } from "@coredin/shared";
 import { FC } from "react";
 
-export const RegisteredProfile: FC<Partial<DidInfo>> = ({ did, username }) => {
+export const RegisteredProfile: FC<Partial<ProfileInfo>> = ({
+  did,
+  username
+}) => {
   return (
     <VStack
       spacing="2em"

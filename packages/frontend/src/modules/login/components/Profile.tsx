@@ -5,7 +5,11 @@ import {
 } from "@/hooks";
 import { USER_MUTATIONS, USER_QUERIES } from "@/queries";
 import { Box, Center } from "@chakra-ui/layout";
-import { DidInfo, GetDIDResponse, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import {
+  ProfileInfo,
+  GetDIDResponse,
+  TESTNET_CHAIN_NAME
+} from "@coredin/shared";
 import { useContext, useEffect, useState } from "react";
 import { Spinner } from "@chakra-ui/spinner";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
@@ -28,7 +32,9 @@ export const Profile = () => {
   const { mutateAsync: updateProfile } = useMutableServerState(
     USER_MUTATIONS.updateProfile()
   );
-  const [onchainProfile, setOnchainProfile] = useState<DidInfo | null>(null);
+  const [onchainProfile, setOnchainProfile] = useState<ProfileInfo | null>(
+    null
+  );
   const [usernameInput, setUsernameInput] = useState<string>(
     userProfile?.username || ""
   );

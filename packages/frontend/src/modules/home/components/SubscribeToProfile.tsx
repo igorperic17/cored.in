@@ -2,11 +2,11 @@ import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { Button, Text, useDisclosure, VStack } from "@chakra-ui/react";
 import { useChain } from "@cosmos-kit/react";
 import { FC, useContext, useEffect, useState } from "react";
-import { DidInfo, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { ProfileInfo, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { SubscriptionModal } from ".";
 
 type SubscribeToProfileProps = {
-  profileDid: DidInfo;
+  profileDid: ProfileInfo;
 };
 
 export const SubscribeToProfile: FC<SubscribeToProfileProps> = ({
