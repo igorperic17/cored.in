@@ -2,7 +2,6 @@
 
 #[cfg(test)]
 pub mod test_common {
-
     use coreum_wasm_sdk::types::cosmos::bank::v1beta1::QueryBalanceRequest;
     use cosmwasm_std::{coins, Uint128};
 

@@ -1,9 +1,9 @@
 use crate::error::ContractError;
 use cosmwasm_std::{Coin, Env};
 
-pub fn generate_nft_symbol(_env: Env, subscribe_to_wallet: &String) -> String {
+pub fn generate_nft_symbol(_env: Env) -> String {
     // Filter out invalid characters that don't match [a-zA-Z0-9/:._]
-    let filtered_symbol: String = subscribe_to_wallet
+    let filtered_symbol: String = "coredin-subscribers"
         .chars()
         .filter(|c| c.is_alphanumeric() || ['/', ':', '.', '_'].contains(c))
         .collect();
@@ -21,7 +21,7 @@ pub fn generate_nft_symbol(_env: Env, subscribe_to_wallet: &String) -> String {
     symbol
 }
 
-pub fn generate_nft_class_id(env: Env, subscribe_to_wallet_address: String) -> String {
+pub fn generate_nft_class_id(env: Env) -> String {
     // classID must match format [symbol]-[issuer-address]
     //      and must match this regex:
     // symbol in classID should be lowercase and must be unique in the contract
@@ -33,7 +33,7 @@ pub fn generate_nft_class_id(env: Env, subscribe_to_wallet_address: String) -> S
     let filtered_part = format!(
         "{}-{}",
         // env.contract.address.to_string(),
-        generate_nft_symbol(env.clone(), &subscribe_to_wallet_address),
+        generate_nft_symbol(env.clone()),
         env.contract.address.to_string()
         // subscribe_to_wallet_address
     ).chars()

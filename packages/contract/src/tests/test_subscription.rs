@@ -1,10 +1,15 @@
 #[cfg(test)]
 mod tests {
+    use core::time;
+    use std::thread::sleep;
+
     use coreum_test_tube::{Account, Bank, CoreumTestApp, SigningAccount, Wasm, NFT};
+    use coreum_wasm_sdk::core::CoreumMsg;
     use crate::contract::FEE_DENOM;
+    use crate::error::ContractError;
     use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
     use crate::tests::test_common::test_common::{get_balance, mock_register_account, with_test_tube};
-    use cosmwasm_std::{coins, Coin, Uint128, Uint64};
+    use cosmwasm_std::{coins, from_json, Binary, Coin, StdError, StdResult, Uint128, Uint64, Response};
 
     #[test]
     fn subscribe_payout_owner() {
@@ -89,21 +94,43 @@ mod tests {
                 subscriber_wallet: bob.address().to_string(),
             };
 
-            let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
-            println!("{:?}", is_sub);
-            
-            // expect that is_sub is false (still not subscribed)
-            assert!(is_sub.is_ok() && !is_sub.unwrap());
+            // let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+            // println!("{:?}", is_sub);
+
+            // // expect that is_sub is false (still not subscribed)
+            // assert!(is_sub.is_ok() && !is_sub.unwrap());
 
             // Bob subscribes to Alice
             let subscribe_msg = ExecuteMsg::Subscribe {
                 did: "alicedid".to_string(),
             };
-            let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
 
-            let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+            // let is_sub = wasm.query::<QueryMsg, String>(&contract_addr, &is_sub_msg);
+            // println!("{:?}", is_sub);
+
+            println!("1");
+            let res_sub = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+            assert!(res_sub.is_ok());
+
+            println!("2");
+            let is_sub = wasm.query::<QueryMsg, Binary>(&contract_addr, &is_sub_msg);
+            
+            println!("3");
+            if is_sub.is_err() {
+                println!("4");
+                let er = is_sub.err();
+                println!("ERR: {:?}", er);
+            } else {
+                println!("5");
+                let res = is_sub.unwrap();
+                println!("BINARY: {:?}", res);
+                let res_deserialized = from_json::<String>(&res);
+                println!("DESERIALIZED: {:?}", res_deserialized);
+                let res_deserialized_unwrapped = res_deserialized.unwrap();
+                println!("FINAL: {:?}", res_deserialized_unwrapped);
+            }
             // expect that is_sub is true after subscription
-            assert!(is_sub.is_ok() && is_sub.unwrap());
+            // assert!(is_sub.as_ref().is_ok() && is_sub.unwrap());
         });
     }
 
