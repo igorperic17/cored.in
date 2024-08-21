@@ -35,17 +35,7 @@ export const AdvantageCard: FC<AdvantageProps> = ({
       py="2.75em"
       alignSelf={{ base: "unset", xl: "stretch" }}
     >
-      <VStack
-        spacing="1.5em"
-        h="100%"
-        //   border="1px solid white"
-        filter="grayscale(100%)"
-        _hover={{
-          filter: "none !important"
-        }}
-        textAlign="center"
-        color="brand.100"
-      >
+      <VStack spacing="1.5em" h="100%" textAlign="center" color="brand.900">
         {link ? (
           <Link
             href={link}
