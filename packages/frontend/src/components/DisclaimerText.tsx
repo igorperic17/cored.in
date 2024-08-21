@@ -1,9 +1,9 @@
 import { Text } from "@chakra-ui/layout";
 
-export const Disclaimer = () => {
+export const DisclaimerText = () => {
   return (
     <Text
-      color="text.400"
+      color="text.700"
       textStyle="sm"
       mx="auto"
       py="2em"

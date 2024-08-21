@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
-import { Disclaimer } from "@/components/Disclaimer";
+import { DisclaimerText } from "@/components/DisclaimerText";
 import { Header } from "@/components";
 import LandingBgDark35 from "@/assets/landing-bg-dark-35.png";
 
@@ -19,7 +19,7 @@ export const LoginRoot = () => {
         <Outlet />
         <ScrollRestoration />
       </Box>
-      <Disclaimer />
+      <DisclaimerText />
     </Flex>
   );
 };

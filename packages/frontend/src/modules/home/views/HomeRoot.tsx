@@ -1,5 +1,4 @@
-import { Header, Logo, SocialMedia } from "@/components";
-import { Disclaimer } from "@/components/Disclaimer";
+import { DisclaimerText, Header, Logo, SocialMedia } from "@/components";
 import { useAuth, useLoggedInServerState } from "@/hooks";
 import { Navigation, UserSignOut } from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
@@ -102,7 +101,7 @@ export const HomeRoot = () => {
               px="0"
               pb="1.5em"
             >
-              <Disclaimer />
+              <DisclaimerText />
               <SocialMedia size="2rem" gap="2.25em" color="text.400" />
             </VStack>
           </VStack>
