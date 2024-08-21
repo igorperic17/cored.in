@@ -12,7 +12,8 @@ import {
   selectTheme,
   stepperTheme,
   tabsTheme,
-  textStyles
+  textStyles,
+  tooltipTheme
 } from "./themes";
 
 const fonts = {
@@ -88,7 +89,8 @@ const components = {
   Radio: radioTheme,
   Select: selectTheme,
   Stepper: stepperTheme,
-  Tabs: tabsTheme
+  Tabs: tabsTheme,
+  Tooltip: tooltipTheme
 };
 
 const breakpoints = {
