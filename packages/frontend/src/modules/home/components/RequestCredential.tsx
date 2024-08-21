@@ -1,5 +1,4 @@
 import {
-  Avatar,
   Box,
   Button,
   Checkbox,
@@ -8,12 +7,6 @@ import {
   FormLabel,
   Heading,
   Input,
-  Modal,
-  ModalBody,
-  ModalCloseButton,
-  ModalContent,
-  ModalHeader,
-  ModalOverlay,
   Select,
   Text,
   VStack,
@@ -40,6 +33,8 @@ import {
 } from "./credentials/helpers";
 import { years } from "../constants/years";
 import { ChevronDownIcon } from "@chakra-ui/icons";
+import { formElementBorderStyles } from "@/themes";
+import { IssuersListModal } from "./credentials";
 
 export const RequestCredential = () => {
   const { data: issuers } = useLoggedInServerState(ISSUER_QUERIES.getIssuers());
@@ -89,16 +84,15 @@ export const RequestCredential = () => {
         setIsSubmitting(false);
       });
   };
-  console.log("state", state);
+  // console.log("state", state);
 
   return (
     <VStack
       spacing="2.5em"
       layerStyle="cardBox"
-      p="1em"
-      pb="1.5em"
+      px="2em"
+      pb="2.5em"
       align="start"
-      mb="4em"
     >
       <Heading as="h1" fontFamily="body">
         Request new credential
@@ -107,8 +101,8 @@ export const RequestCredential = () => {
       <FormControl>
         <FormLabel>Select the type of a credential</FormLabel>
         <Select
-          border="1px solid #828178"
-          focusBorderColor="brand.500"
+          {...formElementBorderStyles}
+          _placeholder={{ color: "text.700" }}
           value={state.type}
           onChange={(e) =>
             setState({
@@ -132,8 +126,7 @@ export const RequestCredential = () => {
             <FormLabel>{credentialLabels[state.type].titleLabel}</FormLabel>
             <Input
               type="text"
-              border="1px solid #828178"
-              // focusBorderColor="brand.500"
+              {...formElementBorderStyles}
               placeholder={credentialLabels[state.type].titlePlaceholder}
               value={state.title}
               onChange={(e) => setState({ ...state, title: e.target.value })}
@@ -146,8 +139,7 @@ export const RequestCredential = () => {
             </FormLabel>
             <Input
               type="text"
-              border="1px solid #828178"
-              focusBorderColor="brand.500"
+              {...formElementBorderStyles}
               placeholder={
                 credentialLabels[state.type].establishmentPlaceholder
               }
@@ -162,8 +154,7 @@ export const RequestCredential = () => {
             <FormLabel>Start date</FormLabel>
             <Flex direction="row" gap="1em">
               <Select
-                border="1px solid #828178"
-                focusBorderColor="brand.500"
+                {...formElementBorderStyles}
                 onChange={(e) =>
                   setState({
                     ...state,
@@ -189,8 +180,7 @@ export const RequestCredential = () => {
               </Select>
 
               <Select
-                border="1px solid #828178"
-                focusBorderColor="brand.500"
+                {...formElementBorderStyles}
                 onChange={(e) =>
                   setState({
                     ...state,
@@ -222,8 +212,7 @@ export const RequestCredential = () => {
               <FormLabel>End date</FormLabel>
               <Flex direction="row" gap="1em">
                 <Select
-                  border="1px solid #828178"
-                  focusBorderColor="brand.500"
+                  {...formElementBorderStyles}
                   onChange={(e) =>
                     setState({
                       ...state,
@@ -245,8 +234,7 @@ export const RequestCredential = () => {
                 </Select>
 
                 <Select
-                  border="1px solid #828178"
-                  focusBorderColor="brand.500"
+                  {...formElementBorderStyles}
                   onChange={(e) =>
                     setState({
                       ...state,
@@ -268,7 +256,7 @@ export const RequestCredential = () => {
                 </Select>
               </Flex>
               {!isEndDateAfterStart(state.startDate, state.endDate) && (
-                <Text mt="0.5em" color="brand.500" textStyle="sm">
+                <Text mt="0.5em" color="brand.400" textStyle="sm">
                   Please enter a valid end date
                 </Text>
               )}
@@ -291,22 +279,21 @@ export const RequestCredential = () => {
               aria-expanded="false"
               bg="transparent"
               borderRadius="0.375rem"
-              color="text.100"
+              color="brand.900"
               textTransform="none"
-              fontWeight="normal"
+              fontWeight="400"
               fontSize={{ base: "0.875rem", lg: "1rem" }}
-              border="1px solid #828178"
+              border="1px solid #141413"
               _hover={{
-                bg: "transparent",
+                bg: "inherit",
                 color: "inherit",
-                border: "1px solid",
-                bordercolor: "background.100"
+                borderColor: "brand.200"
               }}
-              onClick={onOpen}
               textOverflow="ellipsis"
               whiteSpace="nowrap"
               overflow="hidden"
               rightIcon={<ChevronDownIcon fontSize="1.25em" mr="-0.625em" />}
+              onClick={onOpen}
             >
               <Text
                 as="span"
@@ -322,86 +309,13 @@ export const RequestCredential = () => {
               </Text>
             </Button>
 
-            <Modal onClose={onClose} isOpen={isOpen}>
-              <ModalOverlay />
-              <ModalContent w="96vw" maxW="450px">
-                <ModalHeader>List of available issuers</ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                  <VStack
-                    as="ul"
-                    display="block"
-                    role="listbox"
-                    id="issuers-listbox"
-                    listStyleType="none"
-                    align="start"
-                    borderRadius="1em"
-                  >
-                    {issuers?.map((issuer) => (
-                      <Flex
-                        as="li"
-                        role="option"
-                        key={`issuer-${issuer.issuerDid}`}
-                        value={issuer.issuerDid}
-                        // outline="1px solid yellow"
-                        direction="row"
-                        gap="0.5em"
-                        align="center"
-                        py="1em"
-                        px="1em"
-                        borderLeft="1px solid"
-                        borderLeftColor="transparent"
-                        borderBottom="2px solid #3E3D3A"
-                        _last={{ borderBottom: "none" }}
-                        cursor="pointer"
-                        _hover={{
-                          color: "brand.500",
-
-                          borderLeftColor: "brand.500"
-                        }}
-                        onClick={() => {
-                          onClose();
-                          setState({
-                            ...state,
-                            issuer: issuer.issuerDid || ""
-                          });
-                        }}
-                      >
-                        <Avatar
-                          name={issuer.username}
-                          src={issuer.avatarUrl}
-                          bg="background.600"
-                          color={issuer.avatarFallbackColor || "brand.500"}
-                          size={{ base: "sm", sm: "md", lg: "md" }}
-                        />
-                        <VStack align="start" spacing="0em">
-                          <Text as="span">{issuer.username}</Text>
-                          <Box
-                            color="text.400"
-                            textOverflow="ellipsis"
-                            display="inline"
-                            whiteSpace="nowrap"
-                            overflow="hidden"
-                            maxW={{ base: "200px", sm: "300px" }}
-                            // border="1px solid red"
-                          >
-                            <Text
-                              as="span"
-                              display="block"
-                              textOverflow="ellipsis"
-                              whiteSpace="nowrap"
-                              overflow="hidden"
-                            >
-                              {issuer.issuerDid}
-                            </Text>
-                          </Box>
-                        </VStack>
-                      </Flex>
-                    ))}
-                  </VStack>
-                </ModalBody>
-              </ModalContent>
-            </Modal>
+            <IssuersListModal
+              isOpen={isOpen}
+              onClose={onClose}
+              state={state}
+              setState={setState}
+              issuers={issuers}
+            />
           </FormControl>
 
           <Button
