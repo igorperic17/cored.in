@@ -20,36 +20,6 @@ const fonts = {
   body: `'Public Sans Variable', sans-serif`
 };
 
-const styles = {
-  global: {
-    "::-webkit-scrollbar": {
-      width: "10px",
-      backgroundColor: "background.800"
-    },
-    "::-webkit-scrollbar-thumb": {
-      backgroundColor: "background.600",
-      borderRadius: "8px"
-    },
-    "::-webkit-scrollbar-thumb:hover": {
-      backgroundColor: "brand.200"
-    },
-    "html, body": {
-      color: "text.100",
-      boxSizing: "border-box"
-    },
-    body: {
-      background: "brand.100"
-    },
-    html: {
-      scrollBehavior: "smooth"
-    },
-    a: {
-      textUnderlineOffset: "0.5em"
-    },
-    p: {}
-  }
-};
-
 const colors = {
   brand: {
     100: "#F5F5F5", // white
@@ -78,6 +48,36 @@ const colors = {
     700: "#272723",
     800: "#222320", // very dark bg / profile bg
     900: "#141413" // body bg / black // FLOC
+  }
+};
+
+const styles = {
+  global: {
+    "::-webkit-scrollbar": {
+      width: "10px"
+    },
+    "::-webkit-scrollbar-thumb": {
+      bg: "#FFFFFFBF",
+      border: "1px solid #141413",
+      borderRadius: "8px"
+    },
+    "::-webkit-scrollbar-thumb:hover": {
+      backgroundColor: "brand.200"
+    },
+    "html, body": {
+      color: "text.900",
+      boxSizing: "border-box"
+    },
+    body: {
+      background: "brand.100"
+    },
+    html: {
+      scrollBehavior: "smooth"
+    },
+    a: {
+      textUnderlineOffset: "0.5em"
+    },
+    p: {}
   }
 };
 
