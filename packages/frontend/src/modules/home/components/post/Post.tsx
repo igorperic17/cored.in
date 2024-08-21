@@ -73,7 +73,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       h="max-content"
       p="1em"
       borderBottom="2px solid"
-      borderBottomColor="background.900"
+      borderBottomColor="brand.100"
       _last={{ borderBottom: "none" }}
     >
       {postDetail?.parent && !isReply && (
