@@ -52,7 +52,7 @@ export const UserSignOut = () => {
           <Box
             color="text.900"
             p="1em 1.5em"
-            bg="brand.500"
+            bg="brand.300"
             borderRadius="0.5em"
           >
             DID copied to clipboard
@@ -75,7 +75,7 @@ export const UserSignOut = () => {
             bg="background.600"
             color="brand.500"
           /> */}
-      <VStack align="start" spacing="1.25em">
+      <VStack align="start" spacing="1.5em">
         <Link
           as={ReactRouterLink}
           to={
@@ -85,15 +85,15 @@ export const UserSignOut = () => {
           }
           _hover={{ textDecoration: "none" }}
         >
-          <Text as="span" color="text.100" fontSize="1rem">
+          <Text as="span" color="brand.900" fontSize="1rem">
             {`@${userProfile?.username || "No username"}`}
           </Text>
         </Link>
         <Button
           variant="empty"
           fontSize="0.825rem"
-          mt="-1em"
-          color="text.400"
+          mt="-1.75em"
+          color="brand.900"
           rightIcon={<CopyIcon ml="0.5em" />}
           onClick={copyDid}
         >
@@ -102,7 +102,7 @@ export const UserSignOut = () => {
         <Button
           variant="empty"
           size="xs"
-          color="text.400"
+          color="text.700"
           onClick={handleDisconnectWallet}
           rightIcon={<FaArrowRightFromBracket />}
         >
