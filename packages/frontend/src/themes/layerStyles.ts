@@ -12,8 +12,8 @@ export const layerStyles = {
     py: "1.5em",
     px: "1em",
     borderRadius: "1em",
-    border: "1px solid #141413",
-    boxShadow: "0px 4px 4px 0px #00000014",
+    border: "1px solid #E7E7E7",
+    bg: "#FFFFFFBF",
     backdropFilter: "blur(12px)"
   }
 };
