@@ -63,7 +63,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
           <Flex
             as="li"
             key={`home-navigation-${index}`}
-            color="brand.100"
+            // color="brand.900"
             justify="center"
             align="center"
             // border="1px solid red"
@@ -72,10 +72,11 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               as={ReactRouterLink}
               to={item.link}
               fontSize="1.375rem"
+              fontWeight="600"
               color={
-                location.pathname === item.link || isLargerThanLg
-                  ? ""
-                  : "brand.200"
+                location.pathname === item.link && isLargerThanLg
+                  ? "brand.300"
+                  : "brand.900"
               }
               w={{ base: "100%", lg: "100%" }}
               // bg={
@@ -86,6 +87,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               // borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
                 "& > div": {
+                  color: "brand.300"
                   // background: "background.600",
                   // borderRadius: "inherit"
                 }
