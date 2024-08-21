@@ -35,7 +35,7 @@ export const Hero = () => {
       mt={{ base: "0em", md: "-4.5em" }}
       pt={{ base: "8vh", md: "11vh" }}
       pb={{ base: "1em", md: "2.5em" }} // TODO
-      color="brand.100"
+      color="brand.900"
       // border="1px solid red"
       position="relative"
     >
