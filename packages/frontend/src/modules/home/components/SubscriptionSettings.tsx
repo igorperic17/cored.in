@@ -133,14 +133,7 @@ export const SubscriptionSettings = () => {
   };
 
   return (
-    <VStack
-      spacing="2.5em"
-      layerStyle="cardBox"
-      px="1em"
-      py="1.5em"
-      align="start"
-      mb="4em"
-    >
+    <VStack spacing="2.5em" align="start">
       <Heading as="h2" fontFamily="body">
         Your subscription details
       </Heading>
