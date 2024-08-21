@@ -19,7 +19,14 @@ export const LoginRoot = () => {
         <Outlet />
         <ScrollRestoration />
       </Box>
-      <DisclaimerText />
+      <Box
+        mx="auto"
+        py="2em"
+        px={{ base: "1em", md: "2.5em", lg: "3.5em" }}
+        maxW="1100px"
+      >
+        <DisclaimerText />
+      </Box>
     </Flex>
   );
 };

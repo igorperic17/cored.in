@@ -94,13 +94,7 @@ export const HomeRoot = () => {
             position="sticky"
             top="1em"
           >
-            <VStack
-              h="max-content"
-              layerStyle="cardBox"
-              pt="0"
-              px="0"
-              pb="1.5em"
-            >
+            <VStack h="max-content" layerStyle="cardBox" px="2em" spacing="2em">
               <DisclaimerText />
               <SocialMedia size="2rem" gap="2.25em" color="text.400" />
             </VStack>
