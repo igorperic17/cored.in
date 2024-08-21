@@ -1,6 +1,7 @@
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { useContractRead } from "@/hooks";
 import { CONTRACT_QUERIES } from "@/queries";
+import { formElementBorderStyles } from "@/themes";
 import {
   Button,
   FormControl,
@@ -92,9 +93,9 @@ export const SubscriptionSettings = () => {
             duration: 3000,
             render: () => (
               <Box
-                color="text.900"
+                color="brand.900"
                 p="1em 1.5em"
-                bg="brand.500"
+                bg="brand.300"
                 borderRadius="0.5em"
               >
                 Updated onchain subscription settings successfully
@@ -115,9 +116,9 @@ export const SubscriptionSettings = () => {
             duration: 3000,
             render: () => (
               <Box
-                color="text.900"
+                color="brand.100"
                 p="1em 1.5em"
-                bg="red.500"
+                bg="brand.500"
                 borderRadius="0.5em"
               >
                 Error updating onchain subscription settings
@@ -144,10 +145,9 @@ export const SubscriptionSettings = () => {
             <Input
               type="number"
               min="0"
-              border="1px solid #828178"
-              focusBorderColor="brand.500"
               placeholder="5.50"
               w="120px"
+              {...formElementBorderStyles}
               onChange={(e) =>
                 setSubscriptionSettings({
                   ...subscriptionSettings,
@@ -157,14 +157,14 @@ export const SubscriptionSettings = () => {
               value={subscriptionSettings.price}
             />
             <InputRightAddon
-              color="text.900"
-              bg="background.400"
-              border="1px solid #828178"
+              color="brand.900"
+              bg="text.300"
+              border="1px solid #141413"
             >
               CORE
             </InputRightAddon>
           </InputGroup>
-          <FormHelperText color="text.400">
+          <FormHelperText color="text.700">
             This is the price that users will be charged when subscribing to
             your profile. If you wish the subscription to be free, set the price
             to 0.
@@ -174,8 +174,7 @@ export const SubscriptionSettings = () => {
         <FormControl>
           <FormLabel>Duration</FormLabel>
           <Select
-            border="1px solid #828178"
-            focusBorderColor="brand.500"
+            {...formElementBorderStyles}
             value={subscriptionSettings.durationDays}
             onChange={(e) =>
               setSubscriptionSettings({
@@ -192,7 +191,7 @@ export const SubscriptionSettings = () => {
             <option value="60">2 months</option>
             <option value="90">3 months</option>
           </Select>
-          <FormHelperText color="text.400">
+          <FormHelperText color="text.700">
             This is the duration that users will be subscribed to your profile.
             After this period they will need to renew the subscription in order
             to get access to the subscription features again. 1 month equals to
