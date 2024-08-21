@@ -1,8 +1,8 @@
 import { AutoResizeTextarea } from "@/components";
 import { useLoggedInServerState, useMutableServerState } from "@/hooks";
 import { USER_MUTATIONS, USER_QUERIES } from "@/queries";
+import { formElementBorderStyles } from "@/themes";
 import {
-  Input,
   Button,
   FormControl,
   FormLabel,
@@ -13,7 +13,8 @@ import {
   useToast,
   Box,
   useMediaQuery,
-  useTheme
+  useTheme,
+  Input
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME, UpdateProfileDTO } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
@@ -29,16 +30,16 @@ export const ProfileSettings = () => {
   );
   const [settings, setSettings] = useState<UpdateProfileDTO>({
     avatarUrl: userProfile?.avatarUrl || "",
-    avatarFallbackColor: userProfile?.avatarFallbackColor || "#7AF9B3",
-    backgroundColor: userProfile?.backgroundColor || "#7AF9B3",
+    avatarFallbackColor: userProfile?.avatarFallbackColor || "#7F02FE",
+    backgroundColor: userProfile?.backgroundColor || "#FBB030",
     bio: userProfile?.bio || ""
   });
 
   useEffect(() => {
     setSettings({
       avatarUrl: userProfile?.avatarUrl || "",
-      avatarFallbackColor: userProfile?.avatarFallbackColor || "#7AF9B3",
-      backgroundColor: userProfile?.backgroundColor || "#7AF9B3",
+      avatarFallbackColor: userProfile?.avatarFallbackColor || "#7F02FE",
+      backgroundColor: userProfile?.backgroundColor || "#FBB030",
       bio: userProfile?.bio || ""
     });
   }, [userProfile]);
@@ -79,29 +80,27 @@ export const ProfileSettings = () => {
         Your information
       </Heading>
       <VStack spacing="1.25em" align="start">
-        <Text as="span" textStyle="lg">
+        <Text as="span" textStyle="lg" fontWeight="700">
           Avatar
         </Text>
         <FormControl>
           <FormLabel>Add a link to a photo</FormLabel>
           <Input
             type="text"
-            border="1px solid #828178"
-            focusBorderColor="brand.500"
             placeholder="https://somewebsite.com/avatar.jpg"
+            {...formElementBorderStyles}
             onChange={(e) =>
               setSettings({ ...settings, avatarUrl: e.target.value || "" })
             }
             value={settings.avatarUrl}
           />
-          <FormHelperText color="text.400">
-            First two letters of your username will be shown in cases when there
-            is no image provided.
+          <FormHelperText color="text.700">
+            First letter of your username will be shown in cases when there is
+            no image provided.
           </FormHelperText>
         </FormControl>
         <FormControl>
           <FormLabel>Letters color</FormLabel>
-          {/* Limit to 2 letters */}
           <Input
             type="color"
             h="40px"
@@ -136,8 +135,9 @@ export const ProfileSettings = () => {
           <InputGroup>
             <InputLeftElement
               pointerEvents="none"
-              color="text.400"
-              // fontSize="1.2em"
+              color="brand.900"
+              bg="text.300"
+              border="1px solid #141413"
             >
               @
             </InputLeftElement>
@@ -145,26 +145,28 @@ export const ProfileSettings = () => {
               type="text"
               placeholder="username"
               textAlign="start"
-              border="1px solid #828178"
-              focusBorderColor="brand.500"
+              {...formElementBorderStyles}
             />
           </InputGroup>
-          <FormHelperText color="text.400">
+          <FormHelperText color="text.700">
             Enter only letters and numbers. Maximum length: 16 characters
           </FormHelperText>
         </FormControl> */}
       <FormControl>
-        <FormLabel fontSize={{ base: "1.25rem", lg: "1.5rem" }}>Bio</FormLabel>
+        <FormLabel
+          fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+          fontWeight="700"
+        >
+          Bio
+        </FormLabel>
         <AutoResizeTextarea
           placeholder="Add short bio about yourself"
           minH="80px"
-          border="1px solid #828178"
-          focusBorderColor="brand.500"
           maxLength={250}
           onChange={(e) => setSettings({ ...settings, bio: e.target.value })}
           value={settings.bio}
         />
-        <FormHelperText color="text.400">
+        <FormHelperText color="text.700">
           Maximum length: 250 characters
         </FormHelperText>
       </FormControl>
