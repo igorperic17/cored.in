@@ -17,7 +17,7 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
   showRequestButton
 }) => {
   return (
-    <VStack align="start" p="1em" spacing="3em" layerStyle="cardBox">
+    <VStack align="start" p="1em" spacing="3em">
       {showRequestButton && (
         <Button
           as={ReactRouterLink}

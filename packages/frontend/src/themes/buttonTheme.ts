@@ -7,11 +7,11 @@ const baseStyle = defineStyle({
 const sizes = defineStyle({
   xs: {
     fontSize: { base: "0.75em", md: "0.875rem" },
-    borderRadius: "1em"
+    borderRadius: "0.375em"
   },
   sm: {
     fontSize: { base: "0.875rem", md: "1rem" },
-    borderRadius: "1em",
+    borderRadius: "0.375em",
     px: "1.5em",
     py: "0.5em"
   },
@@ -57,10 +57,10 @@ const primary = defineStyle({
 const empty = defineStyle({
   border: "none",
   borderRadius: "0",
-  color: "brand.500",
+  color: "brand.200",
   px: "0",
   _hover: {
-    color: "text.100"
+    color: "brand.300"
   }
   // _focus: {
   //   color: "text.100"

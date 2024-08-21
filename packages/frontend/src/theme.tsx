@@ -67,7 +67,7 @@ const colors = {
     300: "#b0b0b0", // USED IN LOGIN, HELPER TEXT *
     400: "#828178", // medium / text on card
     600: "#737373", // - hover 2 / not in use yet
-    700: "#75746B", // heading in profile
+    700: "#75746B", // PLEACEHOLDER *
     800: "#62625D", // - medium - dark / not in use yet
     900: "#121111" // dark
   },

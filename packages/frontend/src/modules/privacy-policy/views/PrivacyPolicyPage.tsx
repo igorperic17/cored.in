@@ -1,5 +1,6 @@
 import { Box, VStack, Text } from "@chakra-ui/react";
 
+// NOT IN USE
 const PrivatePolicyPage = () => {
   return (
     <Box mx="auto" maxW="1200px" gap="32px">

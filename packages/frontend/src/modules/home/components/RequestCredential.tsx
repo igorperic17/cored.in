@@ -133,7 +133,7 @@ export const RequestCredential = () => {
             <Input
               type="text"
               border="1px solid #828178"
-              focusBorderColor="brand.500"
+              // focusBorderColor="brand.500"
               placeholder={credentialLabels[state.type].titlePlaceholder}
               value={state.title}
               onChange={(e) => setState({ ...state, title: e.target.value })}

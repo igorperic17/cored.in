@@ -235,9 +235,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           </Text>
           {userProfile.issuerDid && (
             <Tooltip hasArrow label={`${userProfile.issuerDid}`} maxW="500px">
-              <Badge colorScheme="brand" variant="outline">
-                Issuer
-              </Badge>
+              <Badge variant="verified">Issuer</Badge>
             </Tooltip>
           )}
         </HStack>

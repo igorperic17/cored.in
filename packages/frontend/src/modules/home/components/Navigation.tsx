@@ -63,7 +63,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
           <Flex
             as="li"
             key={`home-navigation-${index}`}
-            color="text.100"
+            color="brand.100"
             justify="center"
             align="center"
             // border="1px solid red"
@@ -74,20 +74,20 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               fontSize="1.375rem"
               color={
                 location.pathname === item.link || isLargerThanLg
-                  ? "inherit"
-                  : "text.400"
+                  ? ""
+                  : "brand.200"
               }
               w={{ base: "100%", lg: "100%" }}
-              bg={
-                location.pathname === item.link && isLargerThanLg
-                  ? "background.600"
-                  : "none"
-              }
-              borderRadius={{ base: "none", lg: "0.5em" }}
+              // bg={
+              //   location.pathname === item.link && isLargerThanLg
+              //     ? "background.600"
+              //     : "none"
+              // }
+              // borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
                 "& > div": {
-                  background: "background.600",
-                  borderRadius: "inherit"
+                  // background: "background.600",
+                  // borderRadius: "inherit"
                 }
               }}
             >
@@ -110,7 +110,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                 {item.title === "credentials" &&
                   pendingRequests?.length !== 0 && (
                     <Box
-                      bg="brand.500"
+                      bg="brand.300"
                       w="6px"
                       h="6px"
                       borderRadius="50%"
