@@ -7,7 +7,9 @@ const baseStyle = defineStyle({
 const sizes = defineStyle({
   xs: {
     fontSize: { base: "0.75em", md: "0.875rem" },
-    borderRadius: "0.375em"
+    borderRadius: "0.375em",
+    py: "0.25em",
+    px: "0.5em"
   },
   sm: {
     fontSize: { base: "0.875rem", md: "1rem" },
