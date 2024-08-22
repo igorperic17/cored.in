@@ -2,7 +2,7 @@ import { Controller, Delete, Get, Param, Req, UseGuards } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
-import { TypedBody, TypedParam, TypedRoute } from "@nestia/core";
+import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 import { CreatePostDTO } from "@coredin/shared";
 
 @Controller("posts")
@@ -19,9 +19,9 @@ export class PostsController {
   async getPost(
     @Req() req: AuthenticatedRequest,
     @TypedParam("id") id: number,
-    @TypedParam("creator") creator: string
+    @TypedQuery() params: { creator: string }
   ) {
-    return this.postsService.get(id, creator, req.wallet);
+    return this.postsService.get(id, params.creator, req.wallet);
   }
 
   @Get("user/:owner")
