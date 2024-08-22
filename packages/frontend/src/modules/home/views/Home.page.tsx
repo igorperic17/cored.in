@@ -16,7 +16,7 @@ const HomePage = () => {
         <Heading as="h1">Home page, user feed</Heading>
       </VisuallyHidden>
       <NewPost />
-      <Box layerStyle="cardBox" py="1em">
+      <Box layerStyle="cardBox" py="1em" w="100%">
         <Feed posts={posts || []} />
       </Box>
     </VStack>
