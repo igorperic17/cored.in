@@ -6,15 +6,7 @@ import {
   useLoggedInServerState
 } from "@/hooks";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
-import {
-  Box,
-  Button,
-  HStack,
-  Icon,
-  Link,
-  Text,
-  VStack
-} from "@chakra-ui/react";
+import { Button, HStack, Icon, Link, Text, VStack } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import React, { useContext } from "react";
@@ -52,18 +44,9 @@ export const UserSignOut = () => {
     }
   };
 
-  // TODO - use a single Navigation "smart" component that handles the logic,
-  // and render dummmy NavigationDesktop or NavigationMobile that receives everything as props
-
   return (
     <HStack spacing="1em" align="start" layerStyle="cardBox" p="2em" w="100%">
       <Icon as={FaIdCard} fontSize="1.5rem" />
-      {/* <Avatar
-            name="U N"
-            // src="https://bit.ly/sage-adebayo"
-            bg="background.600"
-            color="brand.500"
-          /> */}
       <VStack align="start" spacing="1.5em">
         <Link
           as={ReactRouterLink}
@@ -75,7 +58,7 @@ export const UserSignOut = () => {
           _hover={{ textDecoration: "none" }}
         >
           <Text as="span" color="brand.900" fontSize="1rem">
-            {`@${userProfile?.username || "No username"}`}
+            {`${userProfile?.username || "No username"}`}
           </Text>
         </Link>
         <Button
