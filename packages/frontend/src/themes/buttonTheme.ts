@@ -32,7 +32,7 @@ const sizes = defineStyle({
 });
 
 const primary = defineStyle({
-  bg: "brand.400",
+  bg: "brand.500",
   color: "brand.100",
   fontWeight: "500",
   _hover: {
