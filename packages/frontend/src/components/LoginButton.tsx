@@ -1,7 +1,5 @@
 import {
-  Box,
   Button,
-  HStack,
   Img,
   Link,
   Modal,
@@ -10,6 +8,7 @@ import {
   ModalContent,
   ModalHeader,
   ModalOverlay,
+  Stack,
   Text,
   VStack,
   useDisclosure
@@ -175,7 +174,11 @@ export const LoginButton: FC<LoginButtonProps> = ({
 
   if (chainContext.isWalletConnected) {
     return (
-      <HStack spacing="0.75em" align="end">
+      <Stack
+        direction={{ base: "column", sm: "row" }}
+        spacing={{ base: "0em", sm: "0.75em" }}
+        align={{ base: "end", sm: "center" }}
+      >
         {username && (
           <Link
             as={ReactRouterLink}
@@ -185,33 +188,28 @@ export const LoginButton: FC<LoginButtonProps> = ({
                 : "#"
             }
             _hover={{ textDecoration: "none" }}
+            color="brand.500"
+            fontSize={{ base: "0.85rem", md: "1rem" }}
           >
-            <Text color="text.100" fontSize={{ base: "0.85rem", md: "1rem" }}>
-              @{username}
-            </Text>
+            @{username}
           </Link>
         )}
         <Button
-          borderStartStartRadius="0"
-          borderEndStartRadius="0"
-          borderStartEndRadius="xl"
-          borderEndEndRadius="xl"
           bg="none"
-          color="text.800"
+          color="text.700"
           variant={variant}
           size="xs"
           _hover={{
             bg: "none",
-            color: "text.100"
+            color: "brand.900"
           }}
           onClick={handleDisconnectWallet}
-          // border="1px solid green"
         >
           <Text fontFamily="inherit" fontSize="inherit" mt="auto">
             Sign Out
           </Text>
         </Button>
-      </HStack>
+      </Stack>
     );
   } else {
     return (
@@ -282,7 +280,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
               <VStack as="ul" gap="1em" align="start">
                 {chainContext.walletRepo.wallets.map((wallet) => {
                   return (
-                    <li>
+                    <li key={`wallet-${wallet.walletInfo.prettyName}`}>
                       <Button
                         variant="empty"
                         size="md"
