@@ -105,7 +105,7 @@ const UserPage = () => {
   const isOwnProfile = chainContext.address === wallet;
 
   return (
-    <VStack spacing={{ base: "0.5em", lg: "1.5em" }} mb="4em">
+    <VStack spacing={{ base: "0.5em", lg: "1.5em" }}>
       {userProfile && chainContext.address && (
         <UserHeader
           userProfile={userProfile}
