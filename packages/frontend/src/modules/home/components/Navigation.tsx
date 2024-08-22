@@ -56,7 +56,8 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       <Grid
         as="ul"
         templateColumns={{ base: "repeat(7, 1fr)", lg: "repeat(1, 1fr)" }}
-        gap="2em"
+        justifyContent="space-between"
+        gap={{ base: "0", lg: "2em" }}
         listStyleType="none"
         w="100%"
         // border="1px solid red"
@@ -111,7 +112,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                       ml="-0.25em"
                       position={{ base: "absolute", lg: "static" }}
                       top={{ base: "-4px" }}
-                      right={{ base: "-4px", sm: "4px", md: "24px" }}
+                      right={{ base: "8px", sm: "16px", md: "30px" }}
                     ></Box>
                   )}
               </HStack>
