@@ -55,7 +55,6 @@ export const HomeRoot = () => {
         maxW="1300px"
         mx="auto"
         p="1em"
-        minH="100dvh"
       >
         {isLargerThanLg ? (
           <VStack spacing="1.25em" w="24%" position="sticky" top="1em">
