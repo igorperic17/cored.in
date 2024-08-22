@@ -1,5 +1,10 @@
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { useAuth, useContractRead, useLoggedInServerState } from "@/hooks";
+import {
+  useAuth,
+  useContractRead,
+  useCustomToast,
+  useLoggedInServerState
+} from "@/hooks";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import {
   Box,
@@ -8,7 +13,6 @@ import {
   Icon,
   Link,
   Text,
-  useToast,
   VStack
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
@@ -35,7 +39,7 @@ export const UserSignOut = () => {
     }
   }, [chainContext]);
   const coredinClient = useContext(CoredinClientContext);
-  const toast = useToast();
+  const { successToast } = useCustomToast();
   const { data: walletDid } = useContractRead(
     CONTRACT_QUERIES.getWalletDid(coredinClient!, chainContext.address || ""),
     { enabled: !!coredinClient && !!chainContext.address }
@@ -44,22 +48,7 @@ export const UserSignOut = () => {
   const copyDid = () => {
     if (walletDid?.did_info) {
       navigator.clipboard.writeText(walletDid.did_info.did);
-      toast({
-        position: "top-right",
-        status: "success",
-        duration: 1000,
-        render: () => (
-          <Box
-            color="text.900"
-            p="1em 1.5em"
-            bg="brand.300"
-            borderRadius="0.5em"
-          >
-            DID copied to clipboard
-          </Box>
-        ),
-        isClosable: true
-      });
+      successToast("DID copied to clipboard");
     }
   };
 

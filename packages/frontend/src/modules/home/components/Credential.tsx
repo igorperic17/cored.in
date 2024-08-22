@@ -1,6 +1,6 @@
 import { BaseServerStateKeys } from "@/constants";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { useMutableServerState } from "@/hooks";
+import { useCustomToast, useMutableServerState } from "@/hooks";
 import { USER_MUTATIONS } from "@/queries";
 import {
   AlertDialog,
@@ -21,7 +21,6 @@ import {
   MenuList,
   Text,
   useDisclosure,
-  useToast,
   VStack
 } from "@chakra-ui/react";
 import { CredentialDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
@@ -65,7 +64,7 @@ export const Credential: FC<CredentialProps> = ({
   const { mutateAsync, isPending: isDeleting } = useMutableServerState(
     USER_MUTATIONS.deleteCredential(id)
   );
-  const toast = useToast();
+  const { successToast } = useCustomToast();
   const queryClient = useQueryClient();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
@@ -84,22 +83,7 @@ export const Credential: FC<CredentialProps> = ({
         .then((result: boolean) => {
           console.log(result);
           if (result) {
-            toast({
-              position: "top-right",
-              status: "success",
-              duration: 1000,
-              render: () => (
-                <Box
-                  color="text.900"
-                  p="1em 1.5em"
-                  bg="brand.500"
-                  borderRadius="0.5em"
-                >
-                  Credential successfully verified onchain
-                </Box>
-              ),
-              isClosable: true
-            });
+            successToast("Credential successfully verified onchain");
           }
         });
     }
@@ -107,22 +91,7 @@ export const Credential: FC<CredentialProps> = ({
 
   const handleDelete = () => {
     mutateAsync({ permanent: true }).then(() => {
-      toast({
-        position: "top-right",
-        status: "success",
-        duration: 1000,
-        render: () => (
-          <Box
-            color="text.900"
-            p="1em 1.5em"
-            bg="brand.500"
-            borderRadius="0.5em"
-          >
-            Credential deleted successfully
-          </Box>
-        ),
-        isClosable: true
-      });
+      successToast("Credential deleted successfully");
       queryClient.invalidateQueries({
         queryKey: [BaseServerStateKeys.USER]
       });

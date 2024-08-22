@@ -1,5 +1,9 @@
 import { AutoResizeTextarea } from "@/components";
-import { useLoggedInServerState, useMutableServerState } from "@/hooks";
+import {
+  useCustomToast,
+  useLoggedInServerState,
+  useMutableServerState
+} from "@/hooks";
 import { USER_MUTATIONS, USER_QUERIES } from "@/queries";
 import { formElementBorderStyles } from "@/themes";
 import {
@@ -10,9 +14,6 @@ import {
   VStack,
   Heading,
   Text,
-  useToast,
-  Box,
-  useMediaQuery,
   useTheme,
   Input
 } from "@chakra-ui/react";
@@ -47,30 +48,12 @@ export const ProfileSettings = () => {
   const { mutateAsync, isPending } = useMutableServerState(
     USER_MUTATIONS.updateProfile()
   );
-  const toast = useToast();
   const theme = useTheme();
-  const [isLargerThanLg] = useMediaQuery(
-    `(min-width: ${theme.breakpoints.lg})`
-  );
+  const { successToast } = useCustomToast();
 
   const handleSubmit = () => {
     mutateAsync({ profile: settings }).then(() => {
-      toast({
-        position: "top-right",
-        status: "success",
-        duration: 1000,
-        render: () => (
-          <Box
-            color="text.900"
-            p="1em 1.5em"
-            bg="brand.500"
-            borderRadius="0.5em"
-          >
-            Saved successfully
-          </Box>
-        ),
-        isClosable: true
-      });
+      successToast("Saved successfully");
     });
   };
 

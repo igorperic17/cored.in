@@ -1,5 +1,5 @@
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { useContractRead } from "@/hooks";
+import { useContractRead, useCustomToast } from "@/hooks";
 import { CONTRACT_QUERIES } from "@/queries";
 import { formElementBorderStyles } from "@/themes";
 import {
@@ -13,9 +13,7 @@ import {
   InputRightAddon,
   Text,
   Select,
-  VStack,
-  Box,
-  useToast
+  VStack
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
@@ -24,7 +22,7 @@ import { useContext, useEffect, useState } from "react";
 export const SubscriptionSettings = () => {
   const coredinClient = useContext(CoredinClientContext);
   const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const toast = useToast();
+  const { successToast, errorToast } = useCustomToast();
   const { data: profileDid } = useContractRead(
     CONTRACT_QUERIES.getWalletDid(coredinClient!, chainContext.address || ""),
     { enabled: !!coredinClient && !!chainContext.address }
@@ -87,22 +85,7 @@ export const SubscriptionSettings = () => {
           duration: subscriptionSettings.durationDays.toString()
         })
         .then(() => {
-          toast({
-            position: "top-right",
-            status: "success",
-            duration: 3000,
-            render: () => (
-              <Box
-                color="brand.900"
-                p="1em 1.5em"
-                bg="brand.300"
-                borderRadius="0.5em"
-              >
-                Updated onchain subscription settings successfully
-              </Box>
-            ),
-            isClosable: true
-          });
+          successToast("Updated onchain subscription settings successfully");
         })
         .catch((error) => {
           console.error(
@@ -110,22 +93,7 @@ export const SubscriptionSettings = () => {
             profileDid?.did_info?.did,
             error
           );
-          toast({
-            position: "top-right",
-            status: "error",
-            duration: 3000,
-            render: () => (
-              <Box
-                color="brand.100"
-                p="1em 1.5em"
-                bg="brand.500"
-                borderRadius="0.5em"
-              >
-                Error updating onchain subscription settings
-              </Box>
-            ),
-            isClosable: true
-          });
+          errorToast("Error updating onchain subscription settings");
         })
         .finally(() => {
           setIsUpdating(false);

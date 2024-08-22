@@ -11,8 +11,7 @@ import {
   Text,
   Tooltip,
   VisuallyHidden,
-  useDisclosure,
-  useToast
+  useDisclosure
 } from "@chakra-ui/react";
 import { TESTNET_STAKING_DENOM, UserProfile } from "@coredin/shared";
 import { FaCheckDouble, FaPen } from "react-icons/fa6";
@@ -23,7 +22,7 @@ import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
 import { SubscriptionModal } from ".";
-import { useContractRead } from "@/hooks";
+import { useContractRead, useCustomToast } from "@/hooks";
 import { CONTRACT_QUERIES } from "@/queries";
 
 type UserHeaderProps = {
@@ -40,7 +39,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   userWallet
 }) => {
   const coredinClient = useContext(CoredinClientContext);
-  const toast = useToast();
+  const { successToast, errorToast } = useCustomToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: profileDid } = useContractRead(
     CONTRACT_QUERIES.getWalletDid(coredinClient!, profileWallet),
@@ -96,22 +95,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
         )
         .then(() => {
           refetch();
-          toast({
-            position: "top-right",
-            status: "success",
-            duration: 3000,
-            render: () => (
-              <Box
-                color="text.900"
-                p="1em 1.5em"
-                bg="brand.500"
-                borderRadius="0.5em"
-              >
-                Subscribed to {userProfile.username}
-              </Box>
-            ),
-            isClosable: true
-          });
+          successToast(`Subscribed to ${userProfile.username}`);
         })
         .catch((error) => {
           console.error(
@@ -119,22 +103,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             profileDid?.did_info?.did,
             error
           );
-          toast({
-            position: "top-right",
-            status: "error",
-            duration: 3000,
-            render: () => (
-              <Box
-                color="text.900"
-                p="1em 1.5em"
-                bg="red.500"
-                borderRadius="0.5em"
-              >
-                Error subscribing to {userProfile.username}
-              </Box>
-            ),
-            isClosable: true
-          });
+          errorToast(`Error subscribing to ${userProfile.username}`);
         })
         .finally(() => {
           setIsSubscribing(false);
@@ -146,22 +115,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   const copyDid = () => {
     if (profileDid?.did_info) {
       navigator.clipboard.writeText(profileDid.did_info.did);
-      toast({
-        position: "top-right",
-        status: "success",
-        duration: 1000,
-        render: () => (
-          <Box
-            color="text.900"
-            p="1em 1.5em"
-            bg="brand.500"
-            borderRadius="0.5em"
-          >
-            User DID copied to clipboard
-          </Box>
-        ),
-        isClosable: true
-      });
+      successToast("User DID copied to clipboard");
     }
   };
 

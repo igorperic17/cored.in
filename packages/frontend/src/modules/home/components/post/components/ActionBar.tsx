@@ -1,5 +1,5 @@
 import { ROUTES } from "@/router/routes";
-import { Box, Button, Flex, IconButton, useToast } from "@chakra-ui/react";
+import { Button, Flex, IconButton } from "@chakra-ui/react";
 import { FC } from "react";
 import {
   FaHeart,
@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { PostDTO } from "@coredin/shared";
+import { useCustomToast } from "@/hooks";
 
 type PostActionBarProps = {
   post: PostDTO;
@@ -30,29 +31,13 @@ export const ActionBar: FC<PostActionBarProps> = ({
   handleLike,
   isLiking
 }) => {
-  const toast = useToast();
+  const { successToast } = useCustomToast();
 
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.origin + postUrl);
-    toast({
-      title: `Copied to clipboard`,
-      duration: 3000,
-      isClosable: true,
-      render: () => (
-        <Box
-          mx="auto"
-          color="brand.900"
-          p="1em 1.5em"
-          bg="brand.300"
-          textAlign="center"
-          borderRadius="4px"
-        >
-          Post URL copied to clipboard
-        </Box>
-      )
-    });
+    successToast("Post URL copied to clipboard");
   };
 
   return (
