@@ -10,9 +10,14 @@ const baseStyle = definePartsStyle({
     borderColor: "brand.200",
     bg: "transparent",
     color: "brand.200",
-    _hover: {
+    _checked: {
       borderColor: "brand.200",
-      bg: "brand.200"
+      bg: "transparent",
+      color: "brand.200",
+      _hover: {
+        borderColor: "brand.200",
+        bg: "brand.200"
+      }
     }
   }
 });
