@@ -50,13 +50,14 @@ export const NewPostContent: FC<NewContentProps> = ({
       h="max-content"
       layerStyle="cardBox"
       // outline="1px solid red"
-      p="1.125em"
+      // p="1.125em"
+      py="1em"
     >
       <Flex align="start" gap="1.125em" w="100%">
         <Avatar
           name={userProfile.username}
           src={userProfile.avatarUrl}
-          size="md"
+          size={{ base: "sm", sm: "md" }}
           bg="brand.100"
           color={userProfile.avatarFallbackColor || "brand.500"}
           border={userProfile.avatarUrl || "1px solid #b0b0b0"}
@@ -78,6 +79,9 @@ export const NewPostContent: FC<NewContentProps> = ({
           color="brand.500"
           fontWeight="normal"
           onClick={onOpen}
+          maxW="100%"
+          whiteSpace="normal"
+          textAlign="end"
         >
           {visibilityData.find((item) => item.value === visibility)?.title}
         </Button>
