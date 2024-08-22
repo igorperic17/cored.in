@@ -7,3 +7,4 @@ export { DisclaimerText } from "./DisclaimerText";
 export { SocialMedia } from "./SocialMedia";
 export { AutoResizeTextarea } from "./AutoResizeTextarea";
 export { Header } from "./Header";
+export { MainBackground } from "./MainBackground";
