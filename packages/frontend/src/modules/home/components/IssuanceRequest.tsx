@@ -66,7 +66,13 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
             wordBreak="break-all"
             lineHeight="1.5"
           >
-            <Link as={ReactRouterLink}>@{request.requester.username}</Link>
+            {/* TODO: add link */}
+            <Link
+              as={ReactRouterLink}
+              _hover={{ textDecoration: "none", color: "brand.300" }}
+            >
+              {request.requester.username}
+            </Link>
           </Heading>
         </HStack>
         <CredentialContent
