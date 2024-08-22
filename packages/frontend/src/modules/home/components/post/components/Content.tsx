@@ -1,8 +1,19 @@
 import { Flex, Box, Text, VStack, Link } from "@chakra-ui/layout";
-import React from "react";
+import React, { useRef } from "react";
 import { PostDTO } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
-import { Avatar, IconButton } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Avatar,
+  Button,
+  IconButton,
+  useDisclosure
+} from "@chakra-ui/react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -33,6 +44,9 @@ export const Content: React.FC<PostContentProps> = ({
   handleComment,
   handleLike
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef(null);
+
   return (
     <>
       <Flex
@@ -92,7 +106,7 @@ export const Content: React.FC<PostContentProps> = ({
                 />
                 <MenuList>
                   <MenuItem
-                    onClick={handleDelete}
+                    onClick={onOpen}
                     // border="1px solid red"
                     icon={<FaTrash color="red" />}
                   >
@@ -103,6 +117,52 @@ export const Content: React.FC<PostContentProps> = ({
                 </MenuList>
               </Menu>
             )}
+            <AlertDialog
+              isOpen={isOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+              motionPreset="slideInBottom"
+              isCentered
+              closeOnEsc
+              closeOnOverlayClick
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader
+                    fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+                    fontWeight="700"
+                    textTransform="uppercase"
+                  >
+                    Delete post
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                    <Text>
+                      Are you sure? You can't undo this action afterwards.
+                    </Text>
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                    <Button
+                      ref={cancelRef}
+                      onClick={onClose}
+                      variant="empty"
+                      color="text.700"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      bg="brand.400"
+                      onClick={handleDelete}
+                      ml="1.5em"
+                    >
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
           </Flex>
           <Text color="brand.900" textStyle="sm" wordBreak="break-word">
             {post.text}
