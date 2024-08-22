@@ -48,14 +48,15 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       position={{ base: "fixed", lg: "static" }}
       bottom={{ base: "0", lg: "" }}
       layerStyle="cardBox"
-      p={{ base: "0", lg: "1em" }}
+      borderBottomRadius={{ base: "0", lg: "1em" }}
+      pl={{ base: "0", lg: "2em" }}
       zIndex="1"
       // border="1px solid red"
     >
       <Grid
         as="ul"
         templateColumns={{ base: "repeat(7, 1fr)", lg: "repeat(1, 1fr)" }}
-        gap="0.5em"
+        gap="2em"
         listStyleType="none"
         w="100%"
         // border="1px solid red"
@@ -64,7 +65,6 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
           <Flex
             as="li"
             key={`home-navigation-${index}`}
-            // color="brand.900"
             justify="center"
             align="center"
             // border="1px solid red"
@@ -80,24 +80,14 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                   : "brand.900"
               }
               w={{ base: "100%", lg: "100%" }}
-              // bg={
-              //   location.pathname === item.link && isLargerThanLg
-              //     ? "background.600"
-              //     : "none"
-              // }
-              // borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
                 "& > div": {
                   color: "brand.300"
-                  // background: "background.600",
-                  // borderRadius: "inherit"
                 }
               }}
             >
               <HStack
                 spacing={{ base: "0", lg: "0.75em" }}
-                py="0.75em"
-                px="0.5em"
                 w={{ base: "100%", lg: "100%" }}
                 // border="1px solid white"
                 position="relative"
@@ -114,14 +104,14 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                   pendingRequests?.length !== 0 && (
                     <Box
                       bg="brand.300"
-                      w="6px"
-                      h="6px"
+                      w="7px"
+                      h="7px"
                       borderRadius="50%"
                       alignSelf="start"
                       ml="-0.25em"
                       position={{ base: "absolute", lg: "static" }}
-                      top={{ base: "20%" }}
-                      right={{ base: "16%", sm: "23%", md: "32%" }}
+                      top={{ base: "-4px" }}
+                      right={{ base: "-4px", sm: "4px", md: "24px" }}
                     ></Box>
                   )}
               </HStack>
