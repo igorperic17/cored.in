@@ -87,7 +87,7 @@ export const Content: React.FC<PostContentProps> = ({
               >
                 {/* recommended username width 12 characters */}
                 <Text as="span" color="brand.900" textStyle="md">
-                  @{post.creatorUsername}
+                  {post.creatorUsername}
                 </Text>
               </Box>
             </Link>
