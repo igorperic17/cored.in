@@ -1,22 +1,24 @@
 import { menuAnatomy } from "@chakra-ui/anatomy";
-import { createMultiStyleConfigHelpers, defineStyle } from "@chakra-ui/react";
+import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(menuAnatomy.keys);
 
 const baseStyle = definePartsStyle({
-  button: {},
   list: {
-    bg: "background.900",
-    borderColor: "background.600",
+    bg: "brand.100",
+    border: "1px solid #E6E6E6",
     borderRadius: "0.5em",
     minW: "150px",
-    w: "max-content"
+    w: "max-content",
+    px: "6px"
   },
   item: {
-    bg: "inherit",
-    _hover: { bg: "background.700" },
-    _focus: { bg: "background.700" }
+    bg: "transparent",
+    borderRadius: "6px",
+    border: "1px solid transparent",
+    _hover: { borderColor: "brand.200" },
+    _focus: { borderColor: "brand.200" }
   }
 });
 
