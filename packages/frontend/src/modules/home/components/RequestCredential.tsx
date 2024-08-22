@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Checkbox,
   Flex,
@@ -10,8 +9,7 @@ import {
   Select,
   Text,
   VStack,
-  useDisclosure,
-  useToast
+  useDisclosure
 } from "@chakra-ui/react";
 import {
   CredentialDTO,
@@ -22,7 +20,11 @@ import { useState } from "react";
 import { credentialLabels } from "../constants/credentialLabels";
 import { handleMonthChange, handleYearChange } from "../helpers/dates";
 import { months } from "../constants/months";
-import { useLoggedInServerState, useMutableServerState } from "@/hooks";
+import {
+  useCustomToast,
+  useLoggedInServerState,
+  useMutableServerState
+} from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { ISSUER_MUTATIONS } from "@/queries/IssuerMutations";
 import { defaultDate, defaultState } from "./credentials/constants";
@@ -45,7 +47,7 @@ export const RequestCredential = () => {
   const [state, setState] = useState<CredentialDTO>({ ...defaultState });
   const [hasEndDate, setHasEndDate] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const toast = useToast();
+  const { successToast, errorToast } = useCustomToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   const handleEndDateCheckbox = () => {
@@ -59,27 +61,14 @@ export const RequestCredential = () => {
       .then((response) => {
         // console.log(response);
         if (response) {
-          toast({
-            position: "top-right",
-            status: "success",
-            duration: 1000,
-            render: () => (
-              <Box
-                color="text.900"
-                p="1em 1.5em"
-                bg="brand.500"
-                borderRadius="0.5em"
-              >
-                Credential submitted successfully
-              </Box>
-            )
-          });
+          successToast("Credential submitted successfully");
           setState({ ...defaultState });
           setHasEndDate(false);
         }
         setIsSubmitting(false);
       })
       .catch((error) => {
+        errorToast("Something went wrong");
         console.error(error);
         setIsSubmitting(false);
       });
