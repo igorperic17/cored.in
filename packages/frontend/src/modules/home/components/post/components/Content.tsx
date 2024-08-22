@@ -50,7 +50,7 @@ export const Content: React.FC<PostContentProps> = ({
             src={post.creatorAvatar}
             bg="brand.100"
             color={post.creatorAvatarFallbackColor || "brand.500"}
-            border="1px solid #b0b0b0"
+            border={post.creatorAvatar || "1px solid #b0b0b0"}
             size="md"
           />
         </Link>

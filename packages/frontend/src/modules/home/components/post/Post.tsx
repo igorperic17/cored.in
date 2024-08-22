@@ -71,10 +71,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       spacing="0.5em"
       w="100%"
       h="max-content"
-      p="1em"
-      borderBottom="2px solid"
-      borderBottomColor="brand.100"
-      _last={{ borderBottom: "none" }}
+      layerStyle="cardBox"
     >
       {postDetail?.parent && !isReply && (
         <Content
