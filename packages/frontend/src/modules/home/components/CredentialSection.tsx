@@ -33,6 +33,7 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
           as="h2"
           fontFamily="body"
           fontSize={{ base: "1.25rem", lg: "1.75rem" }}
+          color="brand.900"
         >
           {section.toUpperCase()}
         </Heading>
@@ -41,7 +42,7 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
             as={ReactRouterLink}
             to={ROUTES.CREDENTIALS.REQUEST.path}
             variant="empty"
-            color="text.400"
+            color="text.700"
             aria-label={`Add ${section}.`}
           >
             <Icon as={FaPlus} fontSize="1.5rem" />
@@ -50,7 +51,7 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
       </Flex>
       {credentials.map((cred, index) => (
         <Credential
-          key={`credential-${index}`}
+          key={`credential-${section}-${index}`}
           profileWallet={profileWallet}
           credential={cred}
           tree={tree}
