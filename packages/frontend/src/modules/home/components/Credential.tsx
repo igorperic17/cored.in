@@ -10,7 +10,6 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Badge,
-  Box,
   Button,
   HStack,
   IconButton,
@@ -186,21 +185,21 @@ export const Credential: FC<CredentialProps> = ({
             <AlertDialogHeader
               fontSize={{ base: "1.25rem", lg: "1.5rem" }}
               fontWeight="700"
+              textTransform="uppercase"
             >
-              Delete Credential
+              Delete credential
             </AlertDialogHeader>
 
             <AlertDialogBody>
-              Are you sure? You can't undo this action afterwards.
+              <Text>Are you sure? You can't undo this action afterwards.</Text>
             </AlertDialogBody>
 
             <AlertDialogFooter>
               <Button
                 ref={cancelRef}
                 onClick={onClose}
-                bg="transparent"
+                variant="empty"
                 color="text.700"
-                _hover={{ color: "brand.300" }}
               >
                 Cancel
               </Button>
@@ -208,7 +207,7 @@ export const Credential: FC<CredentialProps> = ({
                 variant="primary"
                 bg="brand.400"
                 onClick={handleDelete}
-                ml={3}
+                ml="1.5em"
               >
                 Delete
               </Button>
