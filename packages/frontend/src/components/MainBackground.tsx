@@ -15,37 +15,37 @@ export const MainBackground = () => {
       transform="translateX(-50%)"
       zIndex="-100"
     >
-      <Box h="100px" w="auto" position="absolute" top="10px" left="810px">
+      <Box h="100px" w="auto" position="absolute" top="1vh" left="810px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="100px" w="auto" position="absolute" top="20px" right="250px">
+      <Box h="100px" w="auto" position="absolute" top="2vh" right="250px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="80px" w="auto" position="absolute" top="200px" left="520px">
+      <Box h="80px" w="auto" position="absolute" top="20vh" left="520px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="150px" w="auto" position="absolute" top="390px" left="110px">
+      <Box h="150px" w="auto" position="absolute" top="39vh" left="110px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="80px" w="auto" position="absolute" top="360px" right="630px">
+      <Box h="80px" w="auto" position="absolute" top="37vh" right="630px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="130px" w="auto" position="absolute" top="450px" left="750px">
+      <Box h="130px" w="auto" position="absolute" top="46vh" left="750px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="200px" w="auto" position="absolute" top="430px" right="200px">
+      <Box h="200px" w="auto" position="absolute" top="46vh" right="200px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="80px" w="auto" position="absolute" top="610px" left="550px">
+      <Box h="80px" w="auto" position="absolute" top="62vh" left="550px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="100px" w="auto" position="absolute" top="820px" left="360px">
+      <Box h="100px" w="auto" position="absolute" top="85vh" left="360px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="100px" w="auto" position="absolute" top="750px" right="760px">
+      <Box h="100px" w="auto" position="absolute" top="77vh" right="760px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
-      <Box h="100px" w="auto" position="absolute" top="810px" right="410px">
+      <Box h="100px" w="auto" position="absolute" top="84vh" right="410px">
         <LogoIconColor w="100%" h="100%" />
       </Box>
     </Box>
