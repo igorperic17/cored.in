@@ -66,7 +66,8 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Like the post."
         size="1rem"
-        color={isLiked ? "brand.400" : "text.400"}
+        color={isLiked ? "brand.400" : "text.700"}
+        _hover={{ color: "brand.400" }}
         leftIcon={
           isLiked ? (
             <FaHeart fontSize="1.25rem" />
@@ -84,7 +85,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
-        color={opened ? "brand.300" : "text.400"}
+        color={opened ? "brand.300" : "text.700"}
         onClick={handleComment}
         isLoading={isDetailLoading}
       />
@@ -94,7 +95,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Share."
         size="1rem"
-        color="text.400"
+        color="text.700"
         onClick={handleShare}
       />
 
@@ -105,7 +106,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
-        color="text.400"
+        color="text.700"
       />
     </Flex>
   );
