@@ -72,6 +72,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       w="100%"
       h="max-content"
       layerStyle="cardBox"
+      py="1em"
     >
       {postDetail?.parent && !isReply && (
         <Content

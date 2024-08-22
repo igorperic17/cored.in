@@ -50,8 +50,7 @@ export const Content: React.FC<PostContentProps> = ({
   return (
     <>
       <Flex
-        // align="center"
-        gap="1.125em"
+        gap={{ base: "0.75em", sm: "1.125em" }}
         w="100%"
         // border="1px solid red"
       >
@@ -65,7 +64,7 @@ export const Content: React.FC<PostContentProps> = ({
             bg="brand.100"
             color={post.creatorAvatarFallbackColor || "brand.500"}
             border={post.creatorAvatar || "1px solid #b0b0b0"}
-            size="md"
+            size={{ base: "sm", sm: "md" }}
           />
         </Link>
         <VStack
