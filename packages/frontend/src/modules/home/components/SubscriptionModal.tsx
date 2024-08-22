@@ -52,7 +52,7 @@ export const SubscriptionModal: FC<SubscriptionModalProps> = ({
                     Username:
                   </Td>
                   <Td px="0" pb="0">
-                    @{username}
+                    {username}
                   </Td>
                 </Tr>
                 <Tr>
@@ -77,7 +77,13 @@ export const SubscriptionModal: FC<SubscriptionModalProps> = ({
         </ModalBody>
 
         <ModalFooter>
-          <Button variant="empty" size="sm" onClick={onClose} mr="1.5em">
+          <Button
+            variant="empty"
+            color="text.700"
+            size="sm"
+            onClick={onClose}
+            mr="1.5em"
+          >
             Close
           </Button>
           <Button variant="primary" size="sm" onClick={handleSubscribe}>
