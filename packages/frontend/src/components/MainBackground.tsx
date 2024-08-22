@@ -1,5 +1,9 @@
-import { Box } from "@chakra-ui/react";
+import { Box, BoxProps } from "@chakra-ui/react";
 import { LogoIconColor } from ".";
+import { toBottom, toLeft, toRight, toUp } from "@/constants";
+import { motion } from "framer-motion";
+
+const MotionBox = motion<Omit<BoxProps, "transition">>(Box);
 
 export const MainBackground = () => {
   return (
@@ -7,47 +11,136 @@ export const MainBackground = () => {
       w="100%"
       maxW="1920px"
       h="100vh"
-      filter="blur(20px) saturate(0%) opacity(35%)"
+      filter="blur(14px) saturate(0%) opacity(35%)"
       //   border="5px solid red"
       position="fixed"
       top="0"
       left="50%"
       transform="translateX(-50%)"
       zIndex="-100"
+      aria-hidden="true"
     >
-      <Box h="100px" w="auto" position="absolute" top="1vh" left="810px">
+      <MotionBox
+        as={motion.div}
+        {...toRight}
+        h="100px"
+        w="auto"
+        position="absolute"
+        top="1vh"
+        left="810px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="100px" w="auto" position="absolute" top="2vh" right="250px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toBottom}
+        h="100px"
+        w="auto"
+        position="absolute"
+        top="2vh"
+        right="250px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="80px" w="auto" position="absolute" top="20vh" left="520px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toLeft}
+        h="80px"
+        w="auto"
+        position="absolute"
+        top="20vh"
+        left="520px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="150px" w="auto" position="absolute" top="39vh" left="110px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toUp}
+        h="150px"
+        w="auto"
+        position="absolute"
+        top="39vh"
+        left="110px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="80px" w="auto" position="absolute" top="37vh" right="630px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toRight}
+        h="80px"
+        w="auto"
+        position="absolute"
+        top="37vh"
+        right="630px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="130px" w="auto" position="absolute" top="46vh" left="750px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toBottom}
+        h="130px"
+        w="auto"
+        position="absolute"
+        top="46vh"
+        left="750px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="200px" w="auto" position="absolute" top="46vh" right="200px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toLeft}
+        h="200px"
+        w="auto"
+        position="absolute"
+        top="46vh"
+        right="300px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="80px" w="auto" position="absolute" top="62vh" left="550px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toUp}
+        h="80px"
+        w="auto"
+        position="absolute"
+        top="62vh"
+        left="550px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="100px" w="auto" position="absolute" top="85vh" left="360px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toRight}
+        h="100px"
+        w="auto"
+        position="absolute"
+        top="85vh"
+        left="360px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="100px" w="auto" position="absolute" top="77vh" right="760px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toBottom}
+        h="100px"
+        w="auto"
+        position="absolute"
+        top="77vh"
+        right="760px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
-      <Box h="100px" w="auto" position="absolute" top="84vh" right="410px">
+      </MotionBox>
+      <MotionBox
+        as={motion.div}
+        {...toLeft}
+        h="100px"
+        w="auto"
+        position="absolute"
+        top="84vh"
+        right="410px"
+      >
         <LogoIconColor w="100%" h="100%" />
-      </Box>
+      </MotionBox>
     </Box>
   );
 };
