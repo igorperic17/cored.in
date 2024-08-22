@@ -134,15 +134,16 @@ export const Credential: FC<CredentialProps> = ({
     <HStack
       as="article"
       align="start"
-      borderBottom="2px solid #3E3D3A"
-      _last={{ borderBottom: "none" }}
+      borderBottom="2px solid"
+      borderBottomColor="brand.100"
+      _last={{ borderBottom: "none", pb: "0" }}
       py="1.5em"
       // border="1px solid red"
     >
       <VStack
         align="start"
         spacing="1em"
-        color={verified ? "text.100" : "text.800"}
+        color={verified ? "brand.900" : "text.300"}
         w="100%"
       >
         {verified && issuer && issuerWallet !== profileWallet && (
@@ -169,7 +170,7 @@ export const Credential: FC<CredentialProps> = ({
               <Link
                 to={ROUTES.USER.buildPath(credential.issuerWallet)}
                 as={ReactRouterLink}
-                _hover={{ color: "brand.500" }}
+                _hover={{ color: "brand.300" }}
                 wordBreak="break-word"
               >
                 @{issuerUsername}
@@ -182,7 +183,7 @@ export const Credential: FC<CredentialProps> = ({
           <MenuButton
             as={IconButton}
             variant="empty"
-            color="text.400"
+            color="text.700"
             aria-label="See menu."
             icon={<FaEllipsis fontSize="1.5rem" />}
             size="lg"
@@ -213,7 +214,10 @@ export const Credential: FC<CredentialProps> = ({
       >
         <AlertDialogOverlay>
           <AlertDialogContent>
-            <AlertDialogHeader fontSize="lg" fontWeight="bold">
+            <AlertDialogHeader
+              fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+              fontWeight="700"
+            >
               Delete Credential
             </AlertDialogHeader>
 
@@ -226,12 +230,17 @@ export const Credential: FC<CredentialProps> = ({
                 ref={cancelRef}
                 onClick={onClose}
                 bg="transparent"
-                color="inherit"
-                _hover={{ bg: "background.400" }}
+                color="text.700"
+                _hover={{ color: "brand.300" }}
               >
                 Cancel
               </Button>
-              <Button colorScheme="red" onClick={handleDelete} ml={3}>
+              <Button
+                variant="primary"
+                bg="brand.400"
+                onClick={handleDelete}
+                ml={3}
+              >
                 Delete
               </Button>
             </AlertDialogFooter>
