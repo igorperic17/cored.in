@@ -12,8 +12,8 @@ export const CredentialsMain = () => {
   );
 
   return (
-    <Box layerStyle="cardBox" p="1em" pb="1.5em" mb="4em">
-      <Heading as="h1" fontFamily="body" mb="2.5em">
+    <Box layerStyle="cardBox" p="2em" pb="2.5em">
+      <Heading as="h1" fontFamily="body" mb="2.5em" color="brand.900">
         Credentials
       </Heading>
       <VStack as="ul" spacing="1em" align="start">
@@ -41,7 +41,8 @@ export const CredentialsMain = () => {
         <Box
           as="li"
           _hover={{
-            bg: "background.600"
+            bg: "brand.300",
+            color: "brand.100"
           }}
           w="100%"
           p="0.75em"
@@ -61,8 +62,10 @@ export const CredentialsMain = () => {
 
         <Box
           as="li"
+          color={pendingRequests?.length === 0 ? "text.700" : "brand.900"}
           _hover={{
-            bg: "background.600"
+            bg: "brand.300",
+            color: "brand.100"
           }}
           w="100%"
           p="0.75em"
@@ -78,7 +81,6 @@ export const CredentialsMain = () => {
               as="h2"
               fontFamily="body"
               fontSize={{ base: "1.25rem", lg: "1.5rem" }}
-              color={pendingRequests?.length === 0 ? "text.700" : "text.100"}
             >
               Incoming requests: {pendingRequests?.length}
             </Heading>
