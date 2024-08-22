@@ -32,8 +32,5 @@
       "packages/*"
     ]
   },
-  "packageManager": "yarn@4.3.1",
-  "dependencies": {
-    "@fontsource-variable/public-sans": "^5.0.19"
-  }
+  "packageManager": "yarn@4.3.1"
 }
