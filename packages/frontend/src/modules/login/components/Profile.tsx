@@ -111,7 +111,7 @@ export const Profile = () => {
     <Box>
       {(isLoadingContract || isLoading) && chainContext.address && (
         <Center mt="32px">
-          <Spinner size="xl" color="brand.200" />
+          <Spinner size="xl" color="brand.500" />
         </Center>
       )}
       {!chainContext.address && <RequireWalletConnection />}

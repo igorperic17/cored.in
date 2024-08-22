@@ -34,9 +34,6 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
       layerStyle="cardBox"
       mx="auto"
       mt="52px"
-      // px="2em"
-      // py="2em"
-      // borderRadius="16px"
       justify="center"
       textAlign="center"
     >
@@ -44,13 +41,13 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
         <Heading
           as="h2"
           fontSize={{ base: "1rem", md: "1.25rem" }}
-          color="brand.200"
+          color="brand.900"
         >
           Here is your new Decentralised Identifier (DID):
           <Text
             as="span"
             display="block"
-            color="brand.100"
+            color="brand.900"
             mt="0.5em"
             wordBreak="break-all"
           >
