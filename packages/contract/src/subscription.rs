@@ -10,10 +10,9 @@ use crate::state::{
 };
 use coreum_wasm_sdk::assetnft;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft::{self, OwnerResponse};
+use coreum_wasm_sdk::nft;
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env,
-    MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64,
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Timestamp, Uint128, Uint64
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
@@ -256,57 +255,69 @@ pub fn is_subscriber(
         )))?;
 
     // old way, using internal contract storage
-    let key = format!("{}{}", subscriber_profile.did, target_did); // Concatenate strings and store in a variable
-    let subscriber_info = SUBSCRIPTION.may_load(deps.storage, key)?;
+    // let key = format!("{}{}", subscriber_profile.did, target_did); // Concatenate strings and store in a variable
+    // let subscriber_info = SUBSCRIPTION.may_load(deps.storage, key)?;
 
-    // rely on chain internal state instead of the NFT data until minting is fixed
-    let response = match subscriber_info.clone() {
-        None => false,
-        Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
-    };
+    // // rely on chain internal state instead of the NFT data until minting is fixed
+    // let response = match subscriber_info.clone() {
+    //     None => false,
+    //     Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
+    // };
 
     // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
-    // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
     let class_id = generate_nft_class_id(env.clone(), target_profile.wallet.to_string());
     let nft_id = generate_nft_id(
-        env,
+        env.clone(),
         subscriber_profile.did,
         target_profile.wallet.to_string(),
     );
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Owner {
+        class_id: class_id.clone(),
+        id: nft_id.clone(),
+    })
+    .into();
+
+    let res = deps.querier.query::<nft::OwnerResponse>(&request);
+    let owner_correct = match res {
+        Ok(nft) => {
+            // NFT found, check if it's owned by the subscriber
+            nft.owner == subscriber_wallet
+        }
+        // when NFT is not found query returns "{}"
+        // which can't be deserialized to OwnerResponse struct
+        Err(_) => false,
+    };
+
+    if !owner_correct {
+        return to_json_binary(&false);
+    }
+
+    // check NFT expiration
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFT {
         class_id,
         id: nft_id,
     })
     .into();
 
-    // (UNCOMMENT THIS TO REPRODUCE THE CRASH)
-    // let res: nft::OwnerResponse = deps.querier.query(&request)?;
-    // ^------- this fails with:
-    // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
-    // called `Result::unwrap()` on an `Err` value:
-    //      QueryError { msg: "Error parsing into type coreum_wasm_sdk::nft::OwnerResponse: missing field `owner`: query wasm contract failed" }
-
-    // in the intent to find out how does the response look like before deserializing it, I tried this:
-    let request_json = match to_json_binary(&request) {
-        Ok(json) => json,
-        Err(err) => return Err(err.into()),
-    };
-    let res: Result<OwnerResponse, StdError> =
-        from_json(&deps.querier.raw_query(&request_json).unwrap().unwrap());
-
-    // Ok(to_json_binary(&res)?)
-
-    match res {
-        Ok(_nft) => {
-            // consider the subscriber a subscriber if they own the NFT
-            to_json_binary(&(_nft.owner == subscriber_wallet))
-            // TODO: NFT found, verify expiration date
+    let res = deps.querier.query::<nft::NFTResponse>(&request);
+    let expiration_is_ok = match res {
+        Ok(nft) => {
+            // NFT found, check the expiration date
+            match nft.nft.data {
+                None => true,
+                Some(data) => {
+                    let expiration: Timestamp = from_json(&data)?;
+                    expiration.seconds() >= env.block.time.seconds()
+                }
+            }
         }
-        Err(_) => return to_json_binary(&false),
-    }
+        // when NFT is not found query returns "{}"
+        // which can't be deserialized to NFTResponse struct
+        Err(_) => false,
+    };
 
-    // return to_json_binary(&(res.owner == subscriber_wallet));
+    return to_json_binary(&expiration_is_ok);
 }
 
 pub fn get_subscribers(_deps: Deps, _env: Env, _did: String, _page: Uint64) -> StdResult<Binary> {
