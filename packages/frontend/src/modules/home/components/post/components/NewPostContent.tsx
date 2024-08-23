@@ -50,29 +50,25 @@ export const NewPostContent: FC<NewContentProps> = ({
       h="max-content"
       layerStyle="cardBox"
       // outline="1px solid red"
-      p="1.125em"
+      // p="1.125em"
+      py="1em"
     >
       <Flex align="start" gap="1.125em" w="100%">
         <Avatar
           name={userProfile.username}
           src={userProfile.avatarUrl}
-          size="md"
-          bg="background.600"
+          size={{ base: "sm", sm: "md" }}
+          bg="brand.100"
           color={userProfile.avatarFallbackColor || "brand.500"}
+          border={userProfile.avatarUrl || "1px solid #b0b0b0"}
         />
         <AutoResizeTextarea
           placeholder="Share your thoughts"
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
           variant="unstyled"
-          border="1px solid #828178"
           borderRadius="0.5em"
           p="0.5em"
-          // textStyle="lg"
-          // border="none"
-          // borderRadius="0"
-          // borderBottom="2px solid"
-          // borderBottomColor="background.400"
         />
       </Flex>
       <HStack alignSelf="end" spacing="1.5em">
@@ -80,9 +76,12 @@ export const NewPostContent: FC<NewContentProps> = ({
           variant="empty"
           size="sm"
           textTransform="none"
-          color="text.100"
+          color="brand.500"
           fontWeight="normal"
           onClick={onOpen}
+          maxW="100%"
+          whiteSpace="normal"
+          textAlign="end"
         >
           {visibilityData.find((item) => item.value === visibility)?.title}
         </Button>

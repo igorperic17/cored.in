@@ -1,12 +1,5 @@
 import { ROUTES } from "@/router/routes";
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Spinner,
-  useToast
-} from "@chakra-ui/react";
+import { Button, Flex, IconButton } from "@chakra-ui/react";
 import { FC } from "react";
 import {
   FaHeart,
@@ -17,6 +10,7 @@ import {
 } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { PostDTO } from "@coredin/shared";
+import { useCustomToast } from "@/hooks";
 
 type PostActionBarProps = {
   post: PostDTO;
@@ -37,29 +31,13 @@ export const ActionBar: FC<PostActionBarProps> = ({
   handleLike,
   isLiking
 }) => {
-  const toast = useToast();
+  const { successToast } = useCustomToast();
 
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
 
   const handleShare = () => {
     navigator.clipboard.writeText(window.location.origin + postUrl);
-    toast({
-      title: `Copied to clipboard`,
-      duration: 3000,
-      isClosable: true,
-      render: () => (
-        <Box
-          mx="auto"
-          color="text.100"
-          p="1em 1.5em"
-          bg="background.600"
-          textAlign="center"
-          borderRadius="4px"
-        >
-          Post URL copied to clipboard
-        </Box>
-      )
-    });
+    successToast("Post URL copied to clipboard");
   };
 
   return (
@@ -73,7 +51,8 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Like the post."
         size="1rem"
-        color={isLiked ? "brand.500" : "text.400"}
+        color={isLiked ? "brand.400" : "text.700"}
+        _hover={{ color: "brand.400" }}
         leftIcon={
           isLiked ? (
             <FaHeart fontSize="1.25rem" />
@@ -91,7 +70,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
-        color={opened ? "text.100" : "text.400"}
+        color={opened ? "brand.300" : "text.700"}
         onClick={handleComment}
         isLoading={isDetailLoading}
       />
@@ -101,7 +80,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Share."
         size="1rem"
-        color="text.400"
+        color="text.700"
         onClick={handleShare}
       />
 
@@ -112,7 +91,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         variant="empty"
         aria-label="Add comment."
         fontSize="1rem"
-        color={"text.400"}
+        color="text.700"
       />
     </Flex>
   );

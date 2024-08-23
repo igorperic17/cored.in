@@ -5,10 +5,11 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(radioAnatomy.keys);
 
 const baseStyle = definePartsStyle({
-  // define the part you're going to style
   control: {
-    borderRadius: "50%", // change the border radius
-    borderColor: "brand.200", // change the border color,
+    borderRadius: "50%",
+    borderColor: "brand.200",
+    bg: "transparent",
+    color: "brand.200",
     _checked: {
       borderColor: "brand.200",
       bg: "transparent",

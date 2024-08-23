@@ -11,7 +11,6 @@ export const useSectionInView = () => {
       const element = document.querySelector(`#${section}`);
       if (element) {
         const rect = element.getBoundingClientRect();
-        // console.log(section, "rect", rect);
         if (rect.bottom >= window.innerHeight / 2) {
           setCurrentSection(section);
           break;
@@ -21,9 +20,13 @@ export const useSectionInView = () => {
   };
 
   useEffect(() => {
-    document.addEventListener("scroll", checkInView);
+    document
+      .querySelector("#landing-root")
+      ?.addEventListener("scroll", checkInView);
     return () => {
-      document.removeEventListener("scroll", checkInView);
+      document
+        .querySelector("#landing-main")
+        ?.removeEventListener("scroll", checkInView);
     };
   }, []);
 

@@ -1,4 +1,11 @@
-import { Avatar, Box, Button, Flex, Text, VStack } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  ButtonGroup,
+  Flex,
+  Text,
+  VStack
+} from "@chakra-ui/react";
 
 // type SubscriptionListCardProps = {
 //   username: string,
@@ -18,8 +25,9 @@ export const SubscriptionListCard = () => {
       px="1em"
       borderLeft="1px solid"
       borderLeftColor="transparent"
-      borderBottom="2px solid #3E3D3A"
-      _last={{ borderBottom: "none" }}
+      borderBottom="1px solid"
+      borderBottomColor="brand.100"
+      _last={{ borderBottom: "none", pb: "0" }}
       _hover={{
         color: "brand.500",
 
@@ -30,10 +38,20 @@ export const SubscriptionListCard = () => {
         // name={issuer.username}
         name="N"
         // src={issuer.avatarUrl}
-        bg="background.600"
-        // color={issuer.avatarFallbackColor || "brand.500"}
-        size={{ base: "sm", sm: "md", lg: "md" }}
+        bg="brand.100"
+        color="brand.500"
+        border="1px solid #b0b0b0"
+        size="md"
       />
+      {/* Copied from Post Content */}
+      {/* <Avatar
+            name={post.creatorUsername}
+            src={post.creatorAvatar}
+            bg="brand.100"
+            color={post.creatorAvatarFallbackColor || "brand.500"}
+            border={post.creatorAvatar || "1px solid #b0b0b0"}
+            size="md"
+          /> */}
       <VStack
         align="start"
         spacing="0em"
@@ -49,10 +67,10 @@ export const SubscriptionListCard = () => {
           whiteSpace="nowrap"
           overflow="hidden"
         >
-          @natalialeap1fghfghfjgfjgfjghjdtrjhg
+          natalialeap1fghfghfjgfjgfjghjdtrjhg
         </Text>
         <Text
-          color="text.400"
+          color="text.700"
           textOverflow="ellipsis"
           whiteSpace="nowrap"
           overflow="hidden"
@@ -63,14 +81,18 @@ export const SubscriptionListCard = () => {
         </Text>
       </VStack>
 
-      <VStack ml="auto" spacing="0" align="end">
-        <Button variant="empty" size="xs" color="text.400">
+      <ButtonGroup
+        display="flex"
+        flexDir="column"
+        ml="auto"
+        variant="empty"
+        size="xs"
+      >
+        <Button color="text.700" _hover={{ color: "brand.400" }}>
           Remove
         </Button>
-        <Button variant="empty" size="xs">
-          Renew
-        </Button>
-      </VStack>
+        <Button>Renew</Button>
+      </ButtonGroup>
     </Flex>
   );
 };

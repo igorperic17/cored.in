@@ -1,6 +1,7 @@
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { useContractRead } from "@/hooks";
+import { useContractRead, useCustomToast } from "@/hooks";
 import { CONTRACT_QUERIES } from "@/queries";
+import { formElementBorderStyles } from "@/themes";
 import {
   Button,
   FormControl,
@@ -12,9 +13,7 @@ import {
   InputRightAddon,
   Text,
   Select,
-  VStack,
-  Box,
-  useToast
+  VStack
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
@@ -23,7 +22,7 @@ import { useContext, useEffect, useState } from "react";
 export const SubscriptionSettings = () => {
   const coredinClient = useContext(CoredinClientContext);
   const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const toast = useToast();
+  const { successToast, errorToast } = useCustomToast();
   const { data: profileDid } = useContractRead(
     CONTRACT_QUERIES.getWalletDid(coredinClient!, chainContext.address || ""),
     { enabled: !!coredinClient && !!chainContext.address }
@@ -86,22 +85,7 @@ export const SubscriptionSettings = () => {
           duration: subscriptionSettings.durationDays.toString()
         })
         .then(() => {
-          toast({
-            position: "top-right",
-            status: "success",
-            duration: 3000,
-            render: () => (
-              <Box
-                color="text.900"
-                p="1em 1.5em"
-                bg="brand.500"
-                borderRadius="0.5em"
-              >
-                Updated onchain subscription settings successfully
-              </Box>
-            ),
-            isClosable: true
-          });
+          successToast("Updated onchain subscription settings successfully");
         })
         .catch((error) => {
           console.error(
@@ -109,22 +93,7 @@ export const SubscriptionSettings = () => {
             profileDid?.did_info?.did,
             error
           );
-          toast({
-            position: "top-right",
-            status: "error",
-            duration: 3000,
-            render: () => (
-              <Box
-                color="text.900"
-                p="1em 1.5em"
-                bg="red.500"
-                borderRadius="0.5em"
-              >
-                Error updating onchain subscription settings
-              </Box>
-            ),
-            isClosable: true
-          });
+          errorToast("Error updating onchain subscription settings");
         })
         .finally(() => {
           setIsUpdating(false);
@@ -133,14 +102,7 @@ export const SubscriptionSettings = () => {
   };
 
   return (
-    <VStack
-      spacing="2.5em"
-      layerStyle="cardBox"
-      px="1em"
-      py="1.5em"
-      align="start"
-      mb="4em"
-    >
+    <VStack spacing="2.5em" align="start">
       <Heading as="h2" fontFamily="body">
         Your subscription details
       </Heading>
@@ -151,10 +113,9 @@ export const SubscriptionSettings = () => {
             <Input
               type="number"
               min="0"
-              border="1px solid #828178"
-              focusBorderColor="brand.500"
               placeholder="5.50"
               w="120px"
+              {...formElementBorderStyles}
               onChange={(e) =>
                 setSubscriptionSettings({
                   ...subscriptionSettings,
@@ -164,14 +125,14 @@ export const SubscriptionSettings = () => {
               value={subscriptionSettings.price}
             />
             <InputRightAddon
-              color="text.900"
-              bg="background.400"
-              border="1px solid #828178"
+              color="brand.900"
+              bg="text.300"
+              border="1px solid #141413"
             >
               CORE
             </InputRightAddon>
           </InputGroup>
-          <FormHelperText color="text.400">
+          <FormHelperText color="text.700">
             This is the price that users will be charged when subscribing to
             your profile. If you wish the subscription to be free, set the price
             to 0.
@@ -181,8 +142,7 @@ export const SubscriptionSettings = () => {
         <FormControl>
           <FormLabel>Duration</FormLabel>
           <Select
-            border="1px solid #828178"
-            focusBorderColor="brand.500"
+            {...formElementBorderStyles}
             value={subscriptionSettings.durationDays}
             onChange={(e) =>
               setSubscriptionSettings({
@@ -199,7 +159,7 @@ export const SubscriptionSettings = () => {
             <option value="60">2 months</option>
             <option value="90">3 months</option>
           </Select>
-          <FormHelperText color="text.400">
+          <FormHelperText color="text.700">
             This is the duration that users will be subscribed to your profile.
             After this period they will need to renew the subscription in order
             to get access to the subscription features again. 1 month equals to

@@ -2499,8 +2499,7 @@ __metadata:
     "@emotion/react": "npm:^11.11.3"
     "@emotion/styled": "npm:^11.11.0"
     "@ethersproject/keccak256": "npm:^5.7.0"
-    "@fontsource/noto-sans": "npm:^5.0.21"
-    "@fontsource/space-grotesk": "npm:^5.0.17"
+    "@fontsource-variable/public-sans": "npm:^5.0.19"
     "@interchain-ui/react": "npm:^1.23.9"
     "@leapwallet/cosmos-social-login-capsule-provider": "npm:^0.0.39"
     "@leapwallet/cosmos-social-login-capsule-provider-ui": "npm:^0.0.56"
@@ -4190,20 +4189,6 @@ __metadata:
   version: 5.0.19
   resolution: "@fontsource-variable/public-sans@npm:5.0.19"
   checksum: 10/36de33d17eeabe30fdae80368372c2f4abe1139b5df78fb7b7dbfc09e4b82cd81b0b72612137b49b5eb035f954a57d81b8aecffb442245e54543f7ae6a1c1b62
-  languageName: node
-  linkType: hard
-
-"@fontsource/noto-sans@npm:^5.0.21":
-  version: 5.0.21
-  resolution: "@fontsource/noto-sans@npm:5.0.21"
-  checksum: 10/c53877e59b855320fc750f1ddfb395b323bc1005e014c8819e1c2bccf45545a9377813a7f0dd827294343878b7d0f75aa1b060e911ef6fe6e3de3feb22e68a06
-  languageName: node
-  linkType: hard
-
-"@fontsource/space-grotesk@npm:^5.0.17":
-  version: 5.0.17
-  resolution: "@fontsource/space-grotesk@npm:5.0.17"
-  checksum: 10/d15714c8be175c9bd0c76581289d7e572129166cc07906ea9ce779547f8d8a15ad6d664113858106ca043a933e44dcb16e4c036f335a3fd5feb8eca707b60cfd
   languageName: node
   linkType: hard
 
@@ -12994,8 +12979,6 @@ __metadata:
 "coredin@workspace:.":
   version: 0.0.0-use.local
   resolution: "coredin@workspace:."
-  dependencies:
-    "@fontsource-variable/public-sans": "npm:^5.0.19"
   languageName: unknown
   linkType: soft
 

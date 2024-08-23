@@ -16,11 +16,12 @@ import {
   Text,
   useDisclosure,
   useMediaQuery,
-  useTheme
+  useTheme,
+  VStack
 } from "@chakra-ui/react";
 import { FaTriangleExclamation } from "react-icons/fa6";
 import { FC } from "react";
-import { Disclaimer, SocialMedia } from "@/components";
+import { DisclaimerText, SocialMedia } from "@/components";
 import { useLoggedInServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { CredentialRequestStatus } from "@coredin/shared";
@@ -47,14 +48,16 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       position={{ base: "fixed", lg: "static" }}
       bottom={{ base: "0", lg: "" }}
       layerStyle="cardBox"
-      p={{ base: "0", lg: "1em" }}
+      borderBottomRadius={{ base: "0", lg: "1em" }}
+      pl={{ base: "0", lg: "2em" }}
       zIndex="1"
       // border="1px solid red"
     >
       <Grid
         as="ul"
         templateColumns={{ base: "repeat(7, 1fr)", lg: "repeat(1, 1fr)" }}
-        gap="0.5em"
+        justifyContent="space-between"
+        gap={{ base: "0", lg: "2em" }}
         listStyleType="none"
         w="100%"
         // border="1px solid red"
@@ -63,7 +66,6 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
           <Flex
             as="li"
             key={`home-navigation-${index}`}
-            color="brand.100"
             justify="center"
             align="center"
             // border="1px solid red"
@@ -72,29 +74,21 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               as={ReactRouterLink}
               to={item.link}
               fontSize="1.375rem"
+              fontWeight="600"
               color={
-                location.pathname === item.link || isLargerThanLg
-                  ? ""
-                  : "brand.200"
+                location.pathname.includes(item.link) && isLargerThanLg
+                  ? "brand.300"
+                  : "brand.900"
               }
               w={{ base: "100%", lg: "100%" }}
-              // bg={
-              //   location.pathname === item.link && isLargerThanLg
-              //     ? "background.600"
-              //     : "none"
-              // }
-              // borderRadius={{ base: "none", lg: "0.5em" }}
               _hover={{
                 "& > div": {
-                  // background: "background.600",
-                  // borderRadius: "inherit"
+                  color: "brand.300"
                 }
               }}
             >
               <HStack
                 spacing={{ base: "0", lg: "0.75em" }}
-                py="0.75em"
-                px="0.5em"
                 w={{ base: "100%", lg: "100%" }}
                 // border="1px solid white"
                 position="relative"
@@ -111,14 +105,14 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                   pendingRequests?.length !== 0 && (
                     <Box
                       bg="brand.300"
-                      w="6px"
-                      h="6px"
+                      w="7px"
+                      h="7px"
                       borderRadius="50%"
                       alignSelf="start"
                       ml="-0.25em"
                       position={{ base: "absolute", lg: "static" }}
-                      top={{ base: "20%" }}
-                      right={{ base: "16%", sm: "23%", md: "32%" }}
+                      top={{ base: "-4px" }}
+                      right={{ base: "8px", sm: "16px", md: "30px" }}
                     ></Box>
                   )}
               </HStack>
@@ -146,11 +140,13 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
             </Flex>
             <Modal isOpen={isOpen} onClose={onClose} isCentered>
               <ModalOverlay />
-              <ModalContent bg="transparent">
-                <ModalCloseButton color="text.100" />
-                <ModalBody layerStyle="cardBox">
-                  <Disclaimer />
-                  <SocialMedia size="1.75rem" gap="2.25em" color="text.400" />
+              <ModalContent layerStyle="cardBox">
+                <ModalCloseButton color="brand.900" />
+                <ModalBody pt="2.5em">
+                  <VStack spacing="2em">
+                    <DisclaimerText />
+                    <SocialMedia size="1.75rem" gap="2.25em" color="text.400" />
+                  </VStack>
                 </ModalBody>
               </ModalContent>
             </Modal>

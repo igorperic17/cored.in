@@ -9,12 +9,14 @@ export type FeedProps = {
 
 export const Feed: FC<FeedProps> = ({ posts }) => {
   return (
-    <VStack spacing="0.5em" w="100%" layerStyle="cardBox">
+    <VStack spacing="0.5em" w="100%">
       {posts.length ? (
         posts.map((post) => <Post key={`post-${post.id}`} post={post} />)
       ) : (
-        <Box p="1em">
-          <Text textStyle="sm">There is no activity here yet.</Text>
+        <Box p="1em" w="100%">
+          <Text textStyle="sm" color="text.700">
+            There is no activity here yet.
+          </Text>
         </Box>
       )}
     </VStack>

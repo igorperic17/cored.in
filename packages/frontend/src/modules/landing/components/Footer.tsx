@@ -15,7 +15,7 @@ export const Footer = () => {
       whileInView="animate"
       variants={fadeInAnimation}
       viewport={{ once: true, amount: 0.3 }}
-      color="brand.100"
+      color="brand.900"
       // border="1px solid red"
     >
       <Flex
@@ -38,7 +38,7 @@ export const Footer = () => {
         </Heading>
         <SocialMedia size="3rem" gap="3.5em" />
       </Flex>
-      <Text color="brand.100" textAlign="center" p="1.5em">
+      <Text textAlign="center" p="1.5em">
         All rights reserved — cored.in &copy;{" "}
         <Text as="span">{new Date().getFullYear()}</Text>
       </Text>

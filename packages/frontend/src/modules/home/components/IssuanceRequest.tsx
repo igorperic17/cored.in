@@ -49,12 +49,13 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
       as="article"
       align="start"
       spacing="1.5em"
-      color="text.100"
+      color="brand.900"
       // border="1px solid red"
       w="100%"
       py="1.5em"
-      borderBottom="2px solid #3E3D3A"
-      _last={{ borderBottom: "none" }}
+      borderBottom="1px solid"
+      borderBottomColor="brand.100"
+      _last={{ borderBottom: "none", pb: "0" }}
     >
       <VStack align="start" spacing="0.75em" w="100%">
         <HStack justify="space-between" w="100%">
@@ -65,7 +66,13 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
             wordBreak="break-all"
             lineHeight="1.5"
           >
-            <Link as={ReactRouterLink}>@{request.requester.username}</Link>
+            {/* TODO: add link */}
+            <Link
+              as={ReactRouterLink}
+              _hover={{ textDecoration: "none", color: "brand.300" }}
+            >
+              {request.requester.username}
+            </Link>
           </Heading>
         </HStack>
         <CredentialContent
@@ -79,7 +86,7 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
         <Button
           variant="empty"
           onClick={handleReject}
-          color="text.400"
+          color="text.700"
           isLoading={isRejecting}
         >
           Decline

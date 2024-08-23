@@ -1,8 +1,19 @@
 import { Flex, Box, Text, VStack, Link } from "@chakra-ui/layout";
-import React from "react";
+import React, { useRef } from "react";
 import { PostDTO } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
-import { Avatar, IconButton } from "@chakra-ui/react";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Avatar,
+  Button,
+  IconButton,
+  useDisclosure
+} from "@chakra-ui/react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -33,11 +44,13 @@ export const Content: React.FC<PostContentProps> = ({
   handleComment,
   handleLike
 }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const cancelRef = useRef(null);
+
   return (
     <>
       <Flex
-        // align="center"
-        gap="1.125em"
+        gap={{ base: "0.75em", sm: "1.125em" }}
         w="100%"
         // border="1px solid red"
       >
@@ -48,9 +61,10 @@ export const Content: React.FC<PostContentProps> = ({
           <Avatar
             name={post.creatorUsername}
             src={post.creatorAvatar}
-            bg="background.600"
+            bg="brand.100"
             color={post.creatorAvatarFallbackColor || "brand.500"}
-            size="md"
+            border={post.creatorAvatar || "1px solid #b0b0b0"}
+            size={{ base: "sm", sm: "md" }}
           />
         </Link>
         <VStack
@@ -71,8 +85,8 @@ export const Content: React.FC<PostContentProps> = ({
                 overflow="hidden"
               >
                 {/* recommended username width 12 characters */}
-                <Text as="span" color="text.100" textStyle="md">
-                  @{post.creatorUsername}
+                <Text as="span" color="brand.900" textStyle="md">
+                  {post.creatorUsername}
                 </Text>
               </Box>
             </Link>
@@ -81,7 +95,7 @@ export const Content: React.FC<PostContentProps> = ({
                 <MenuButton
                   as={IconButton}
                   variant="empty"
-                  color="text.400"
+                  color="text.700"
                   aria-label="See menu."
                   icon={<FaEllipsis fontSize="1.5rem" />}
                   size="lg"
@@ -91,7 +105,7 @@ export const Content: React.FC<PostContentProps> = ({
                 />
                 <MenuList>
                   <MenuItem
-                    onClick={handleDelete}
+                    onClick={onOpen}
                     // border="1px solid red"
                     icon={<FaTrash color="red" />}
                   >
@@ -102,12 +116,58 @@ export const Content: React.FC<PostContentProps> = ({
                 </MenuList>
               </Menu>
             )}
+            <AlertDialog
+              isOpen={isOpen}
+              leastDestructiveRef={cancelRef}
+              onClose={onClose}
+              motionPreset="slideInBottom"
+              isCentered
+              closeOnEsc
+              closeOnOverlayClick
+            >
+              <AlertDialogOverlay>
+                <AlertDialogContent>
+                  <AlertDialogHeader
+                    fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+                    fontWeight="700"
+                    textTransform="uppercase"
+                  >
+                    Delete post
+                  </AlertDialogHeader>
+
+                  <AlertDialogBody>
+                    <Text>
+                      Are you sure? You can't undo this action afterwards.
+                    </Text>
+                  </AlertDialogBody>
+
+                  <AlertDialogFooter>
+                    <Button
+                      ref={cancelRef}
+                      onClick={onClose}
+                      variant="empty"
+                      color="text.700"
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      variant="primary"
+                      bg="brand.400"
+                      onClick={handleDelete}
+                      ml="1.5em"
+                    >
+                      Delete
+                    </Button>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialogOverlay>
+            </AlertDialog>
           </Flex>
-          <Text color="text.100" textStyle="sm" wordBreak="break-word">
+          <Text color="brand.900" textStyle="sm" wordBreak="break-word">
             {post.text}
           </Text>
           {/* to add dateTime later */}
-          <Text as="time" dateTime="" color="text.400" textStyle="sm">
+          <Text as="time" dateTime="" color="text.700" textStyle="sm">
             {new Date(post.createdAt).toLocaleTimeString()}
             <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
               {"    •    "}

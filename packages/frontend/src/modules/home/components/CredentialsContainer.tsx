@@ -17,7 +17,7 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
   showRequestButton
 }) => {
   return (
-    <VStack align="start" p="1em" spacing="3em">
+    <VStack align="start" spacing="3em">
       {showRequestButton && (
         <Button
           as={ReactRouterLink}
@@ -26,9 +26,6 @@ export const CredentialsContainer: FC<CredentialsContainerProps> = ({
           size="sm"
           leftIcon={<FaPlus fontSize="1rem" />}
           iconSpacing="1em"
-          mt="1em"
-          // ml="auto"
-          // mr="0.75em"
         >
           Request new credential
         </Button>

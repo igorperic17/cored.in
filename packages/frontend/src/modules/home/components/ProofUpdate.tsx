@@ -11,8 +11,8 @@ export const ProofUpdate: FC<ProofUpdateProps> = ({
   isUpdateRootDisabled
 }) => {
   return (
-    <VStack spacing="2em" w="100%" layerStyle="cardBox" p="1.125em" pb="1.75em">
-      <Text color="text.100" textStyle="md" textAlign="center">
+    <VStack spacing="2em" w="100%" layerStyle="cardBox">
+      <Text color="brand.900" textStyle="md" textAlign="center">
         We've noticed a change in your credentials. To ensure your subscribers
         can verify them, please update the onchain, privacy-preserving proof
         associated with your profile.

@@ -10,14 +10,14 @@ export const IncomingRequests = () => {
   );
 
   return (
-    <Box layerStyle="cardBox" p="1em" pb="1.5em" mb="4em">
+    <Box layerStyle="cardBox" p="2em" pb="2.5em">
       <Heading as="h1" fontFamily="body" mb="2.5em">
         Incoming requests: {pendingRequests?.length}
       </Heading>
       {pendingRequests?.length === 0 ? (
-        <Text color="text.400">There are no pending credential requests</Text>
+        <Text color="text.700">There are no pending credential requests</Text>
       ) : (
-        <VStack spacing="1em" layerStyle="cardBox" align="start" w="100%">
+        <VStack spacing="1em" align="start" w="100%">
           {pendingRequests &&
             pendingRequests.map((request, i) => (
               <IssuanceRequest

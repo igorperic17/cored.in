@@ -1,5 +1,10 @@
-import { Header, Logo, SocialMedia } from "@/components";
-import { Disclaimer } from "@/components/Disclaimer";
+import {
+  DisclaimerText,
+  Header,
+  Logo,
+  MainBackground,
+  SocialMedia
+} from "@/components";
 import { useAuth, useLoggedInServerState } from "@/hooks";
 import { Navigation, UserSignOut } from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
@@ -21,7 +26,6 @@ import {
   useLocation
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
-import LandingBg35 from "@/assets/landing-bg-35.png";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -44,7 +48,14 @@ export const HomeRoot = () => {
   }
 
   return (
-    <Box bgImage={LandingBg35} bgPosition="center">
+    <Box
+      maxH="100%"
+      w="100%"
+      bg="brand.100"
+      position="fixed"
+      overflow="auto"
+      // border="5px solid green"
+    >
       {!isLargerThanLg && userProfile && (
         <Header username={userProfile.username} />
       )}
@@ -56,7 +67,6 @@ export const HomeRoot = () => {
         maxW="1300px"
         mx="auto"
         p="1em"
-        minH="100dvh"
       >
         {isLargerThanLg ? (
           <VStack spacing="1.25em" w="24%" position="sticky" top="1em">
@@ -83,6 +93,7 @@ export const HomeRoot = () => {
           w="52%"
           maxW={{ base: "600px", lg: "none" }}
           mx="auto"
+          mb={{ base: "6em", lg: "2em" }}
         >
           <Outlet />
           <ScrollRestoration />
@@ -95,19 +106,14 @@ export const HomeRoot = () => {
             position="sticky"
             top="1em"
           >
-            <VStack
-              h="max-content"
-              layerStyle="cardBox"
-              pt="0"
-              px="0"
-              pb="1.5em"
-            >
-              <Disclaimer />
+            <VStack h="max-content" layerStyle="cardBox" px="2em" spacing="2em">
+              <DisclaimerText />
               <SocialMedia size="2rem" gap="2.25em" color="text.400" />
             </VStack>
           </VStack>
         )}
       </Flex>
+      <MainBackground />
     </Box>
   );
 };

@@ -1,6 +1,7 @@
 import { Textarea, TextareaProps } from "@chakra-ui/react";
 import ResizeTextarea from "react-textarea-autosize";
 import React from "react";
+import { formElementBorderStyles } from "@/themes";
 
 export const AutoResizeTextarea = React.forwardRef<
   HTMLTextAreaElement,
@@ -16,11 +17,9 @@ export const AutoResizeTextarea = React.forwardRef<
       ref={ref}
       minRows={1}
       fontSize={{ base: "0.875rem", lg: "1rem" }}
+      {...formElementBorderStyles}
       _placeholder={{
-        color: "text.400"
-      }}
-      _focus={{
-        borderColor: "brand.500"
+        color: "text.700"
       }}
       {...props}
     />
