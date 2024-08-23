@@ -5,14 +5,15 @@ use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
-    ProfileInfo, SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP
+    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP
 };
 use coreum_wasm_sdk::assetnft;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
+use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicItem, DataEditor, MsgMint};
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
@@ -104,17 +105,17 @@ pub fn subscribe(
             subscribe_to_did
         )))?;
 
-    // make sure there's no existing valid subscription
-    let subscription_key = subscriber_did.did.clone() + subscribe_to_did.as_str();
-    let existing_sub = SUBSCRIPTION.load(deps.storage, subscription_key.clone());
-    if existing_sub.is_ok() {
-        let existing_subscription = existing_sub.unwrap();
-        if existing_subscription.valid_until.seconds() > env.block.time.seconds() {
-            return Err(ContractError::ExistingSubscriptionFound {
-                subscription_info: existing_subscription,
-            });
-        }
-    }
+    // // make sure there's no existing valid subscription
+    // let subscription_key = subscriber_did.did.clone() + subscribe_to_did.as_str();
+    // let existing_sub = SUBSCRIPTION.load(deps.storage, subscription_key.clone());
+    // if existing_sub.is_ok() {
+    //     let existing_subscription = existing_sub.unwrap();
+    //     if existing_subscription.valid_until.seconds() > env.block.time.seconds() {
+    //         return Err(ContractError::ExistingSubscriptionFound {
+    //             subscription_info: existing_subscription,
+    //         });
+    //     }
+    // }
 
     // get the profile info for the subscribed_to DID
     let profile_info = DID_PROFILE_MAP
@@ -125,20 +126,12 @@ pub fn subscribe(
     let subscription = SubscriptionInfo {
         subscriber: subscriber_did.did.clone(),
         subscribed_to: subscribe_to_did.clone(),
-        valid_until: env
+        valid_until: env.clone()
             .block
             .time
             .plus_days(profile_info.subscription_duration_days.unwrap().u64()),
         cost: price.clone(),
     };
-
-    SUBSCRIPTION.save(deps.storage, subscription_key.clone(), &subscription)?;
-
-    // increment the subscription counter for the profile (have to do it in all 3 places, suboptimal?)
-    // profile_info.subscriber_count += Uint64::from(1u64);
-    // profile_storage(deps.storage)
-    //     .save(subscribe_to_did.as_bytes(), &profile_info)
-    //     .expect("Error incrementing subscriber count");
 
     // mint the subscription NFT
     let nft_class_id =
@@ -148,9 +141,39 @@ pub fn subscribe(
         subscriber_did.clone().did,
         subscribed_to_wallet.wallet.to_string(),
     );
+
+    // try getting existing subscription
+    let existing_subscription_res = get_subscription_info(deps.as_ref(), env.clone(), subscriber_did.did, subscribed_to_wallet.wallet.to_string());
+    if existing_subscription_res.is_ok() {
+        let existing_sub_info = from_json(&existing_subscription_res.unwrap());
+        if existing_sub_info.is_ok() {
+            let subscription: SubscriptionInfo = existing_sub_info.unwrap();
+            // just update the validity date
+            // subscription.valid_until = env
+            //     .block
+            //     .time
+            //     .plus_days(profile_info.subscription_duration_days.unwrap().u64());
+
+            // let nft_update_msg = CoreumMsg::AssetNFT(assetnft::Msg:: {
+            //     class_id: nft_class_id,
+            //     id: nft_id,
+            //     data: Some(to_json_binary(&subscription).unwrap()),
+            // });
+        }
+    };
+
+    // SUBSCRIPTION.save(deps.storage, subscription_key.clone(), &subscription)?;
+
+    // increment the subscription counter for the profile (have to do it in all 3 places, suboptimal?)
+    // profile_info.subscriber_count += Uint64::from(1u64);
+    // profile_storage(deps.storage)
+    //     .save(subscribe_to_did.as_bytes(), &profile_info)
+    //     .expect("Error incrementing subscriber count");
+
     response = response.add_attribute("nft_id", nft_id.to_string());
     let mint_res = mint_nft(
         &deps,
+        env,
         info.clone(),
         nft_class_id,
         nft_id,
@@ -202,30 +225,58 @@ pub fn subscribe(
 }
 
 fn mint_nft(
-    deps: &DepsMut<CoreumQueries>,
+    _deps: &DepsMut<CoreumQueries>,
+    env: Env,
     info: MessageInfo,
     class_id: String,
     nft_id: String,
     // recipient_wallet: String, // if we need to mint into someone else's wallet in the future...
     data: Option<Binary>,
 ) -> Result<Response<CoreumMsg>, ContractError> {
-    let msg = CoreumMsg::AssetNFT(assetnft::Msg::Mint {
-        class_id: class_id.clone(),
-        id: nft_id.clone(),
-        uri: None,
-        uri_hash: None,
-        data: data.clone(),
-        recipient: Some(info.sender.to_string()),
+
+    let nft_data = data.map(|data| {
+        DataDynamic {
+            items: [
+                DataDynamicItem {editors: [DataEditor::Admin as i32, DataEditor::Owner as i32].to_vec(),data: data.to_vec(),}
+                ]
+            .to_vec(),
+        }
+        .to_any()
     });
 
-    deps.api.debug(nft_id.as_str());
-    println!("{}", nft_id);
+    let mint = MsgMint {
+        sender: env.contract.address.to_string(),
+        class_id: class_id.clone(),
+        id: nft_id.clone(),
+        uri: String::new(),
+        uri_hash: String::new(),
+        data: nft_data,
+        recipient: info.sender.to_string(),
+    };
+
+    let mint_bytes = mint.to_proto_bytes();
+
+    let msg = CosmosMsg::Stargate {
+        type_url: mint.to_any().type_url,
+        value: Binary::from(mint_bytes),
+    };
+
+    // let msg = CoreumMsg::AssetNFT(assetnft::Msg::Mint {
+    //     class_id: class_id.clone(),
+    //     id: nft_id.clone(),
+    //     uri: None,
+    //     uri_hash: None,
+    //     data: data.clone(),
+    //     recipient: Some(info.sender.to_string()),
+    // });
+
+    // deps.api.debug(nft_id.as_str());
+    // println!("{}", nft_id);
 
     Ok(Response::new()
         .add_attribute("method", "mint_nft")
         .add_attribute("class_id", class_id)
         .add_attribute("nft_id", nft_id)
-        .add_attribute("nft_data", data.unwrap_or_default().to_string())
         .add_message(msg))
 }
 
@@ -299,14 +350,34 @@ pub fn is_subscriber(
     let res = deps.querier.query::<nft::NFTResponse>(&request);
     let expiration_is_ok = match res {
         Ok(nft) => {
-            // NFT found, check the expiration date
-            match nft.nft.data {
-                None => true,
-                Some(data) => {
-                    let sub_info: SubscriptionInfo = from_json(&data)?;
-                    sub_info.valid_until.seconds() >= env.block.time.seconds()
+            // Ensure the NFT has data
+            if let Some(nft_data) = nft.nft.data {
+                // Attempt to decode the data into DataDynamic structure
+                if let Ok(sub_info_dyn) = from_json::<DataDynamic>(&nft_data) {
+                    // Attempt to deserialize the data inside DataDynamic to SubscriptionInfo
+                    if let Ok(sub_info) = from_json::<SubscriptionInfo>(&sub_info_dyn.items[0].data) {
+                        let is_valid_sub = sub_info.valid_until.seconds() >= env.block.time.seconds();
+                        return to_json_binary(&is_valid_sub);
+                    } else {
+                        // there is data but it's not a subscription info - something is wrong
+                        return to_json_binary(&false);
+                    }
+                } else {
+                    // there is data but it's not a subscription info - something is wrong
+                    return to_json_binary(&false);
                 }
+            } else {
+                // future-proofing for when NFTs are minted without data (no subscription info)
+                return to_json_binary(&true);
             }
+
+            // // NFT found, check the expiration date
+            // match nft.nft.data {
+            //     None => true,
+            //     Some(data) => {
+            //         let sub_info: SubscriptionInfo = from_json(&data)?;
+            //     }
+            // }
         }
         // when NFT is not found query returns "{}"
         // which can't be deserialized to NFTResponse struct
@@ -333,12 +404,22 @@ pub fn get_subscribers(deps: Deps<CoreumQueries>, env: Env, wallet: String, page
     let res = deps.querier.query::<NFTsResponse>(&request);
     match res {
         Ok(nfts) => {
-            let subscribers: Vec<SubscriptionInfo> = nfts.nfts.iter().map(|nft| {
-                let nft_data = nft.data.clone().unwrap();
-                let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
-                return sub_info;
-        }).collect();
-            return to_json_binary(&subscribers);
+            let subscribers: Vec<SubscriptionInfo> = nfts.nfts.iter().filter_map(|nft| {
+                // Ensure the NFT has data
+                if let Some(nft_data) = nft.data.clone() {
+                    // Attempt to decode the data into DataDynamic structure
+                    if let Ok(sub_info_dyn) = from_json::<DataDynamic>(&nft_data) {
+                        // Attempt to deserialize the data inside DataDynamic to SubscriptionInfo
+                        if let Ok(sub_info) = from_json::<SubscriptionInfo>(&sub_info_dyn.items[0].data) {
+                            return Some(sub_info);
+                        }
+                    }
+                }
+                None
+            }).collect();
+
+            // Return the list of subscribers as binary data
+            to_json_binary(&subscribers)
         }
         Err(_) => return to_json_binary(&Vec::<SubscriptionInfo>::new())
     }
