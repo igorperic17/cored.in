@@ -5,7 +5,14 @@ import { Footer, Nav } from "../components";
 
 export const Root = () => {
   return (
-    <Box maxH="100%" w="100%" bg="brand.100" position="fixed" overflow="auto">
+    <Box
+      maxH="100%"
+      w="100%"
+      bg="brand.100"
+      position="fixed"
+      overflow="auto"
+      id="landing-root"
+    >
       <Flex direction="column" justify="start">
         <Nav />
         <Box as="main" zIndex="0">
