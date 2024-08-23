@@ -81,6 +81,11 @@ export interface CoredinReadOnlyInterface {
     pageSize: Uint64;
     wallet: string;
   }) => Promise<GetSubscriptionListResponse>;
+  getSubscriberCount: ({
+    wallet
+  }: {
+    wallet: string;
+  }) => Promise<Uint64>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -100,6 +105,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getSubscriptionInfo = this.getSubscriptionInfo.bind(this);
     this.getSubscribers = this.getSubscribers.bind(this);
     this.getSubscriptions = this.getSubscriptions.bind(this);
+    this.getSubscriberCount = this.getSubscriberCount.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -247,6 +253,17 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
       get_subscriptions: {
         page,
         page_size: pageSize,
+        wallet
+      }
+    });
+  };
+  getSubscriberCount = async ({
+    wallet
+  }: {
+    wallet: string;
+  }): Promise<Uint64> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_subscriber_count: {
         wallet
       }
     });

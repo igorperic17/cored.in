@@ -283,6 +283,14 @@ mod tests {
             check_subs(&bob, 0, 1, vec![]);
             check_subs(&bob, 0, 1000, vec![]);
 
+            // test subscriber count
+            let sub_count_msg = QueryMsg::GetSubscriberCount {
+                wallet: claire.address().to_string()
+            };
+            let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
+            let count = sub_count.unwrap().clone();
+            assert!(count == Uint64::from(0u64));
+
             // Bob subscribes to Alice
             let subscribe_msg = ExecuteMsg::Subscribe {
                 did: "alicedid".to_string(),
@@ -308,6 +316,12 @@ mod tests {
             // Claire should be on the second page when page_size is 1
             check_subs(&bob, 1, 1, vec!["alicedid".to_string()]);
             check_subs(&bob, 0, 1, vec!["clairedid".to_string()]);
+
+            // test subscriber count
+            let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
+            let count = sub_count.unwrap().clone();
+            println!("count: {:?}", count);
+            assert!(count == Uint64::from(1u64));
         });
     }
 

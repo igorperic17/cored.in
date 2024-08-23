@@ -98,6 +98,10 @@ pub enum QueryMsg {
     // return the list of subscriptions
     #[returns(GetSubscriptionListResponse)]
     GetSubscriptions { wallet: String, page: Uint64, page_size: Uint64 },
+
+    // return the subscriber count
+    #[returns(Uint64)]
+    GetSubscriberCount { wallet: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

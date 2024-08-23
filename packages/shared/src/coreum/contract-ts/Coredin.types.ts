@@ -95,6 +95,10 @@ export type QueryMsg = {
     page_size: Uint64;
     wallet: string;
   };
+} | {
+  get_subscriber_count: {
+    wallet: string;
+  };
 };
 export type Addr = string;
 export interface Config {

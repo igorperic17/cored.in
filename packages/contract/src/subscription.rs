@@ -9,7 +9,7 @@ use crate::state::{
 };
 use coreum_wasm_sdk::assetnft;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft::{self, NFTsResponse};
+use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 use cosmwasm_std::{
     coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
@@ -368,6 +368,21 @@ pub fn get_subscriptions(deps: Deps<CoreumQueries>, _env: Env, wallet: String, p
             return to_json_binary(&subscriptions);
         }
         Err(_) => return to_json_binary(&Vec::<SubscriptionInfo>::new())
+    }
+}
+
+pub fn get_subscriber_count(deps: Deps<CoreumQueries>, env: Env, wallet: String) -> StdResult<Binary> {
+    let class_id = generate_nft_class_id(env.clone(), wallet.clone());
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Supply {
+        class_id: class_id,
+    }).into();
+
+    let res = deps.querier.query::<SupplyResponse>(&request);
+    match res {
+        Ok(supply) => {
+            return to_json_binary(&Uint64::from(supply.amount));
+        }
+        Err(_) => return to_json_binary(&Uint64::zero())
     }
 }
 
