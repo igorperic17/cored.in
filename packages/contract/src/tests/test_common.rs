@@ -31,7 +31,7 @@ pub mod test_common {
 
         // init multiple accounts
         let accs = app
-                    .init_accounts(&coins( INITIAL_BALANCE, FEE_DENOM.to_string()), 3)
+                    .init_accounts(&coins( INITIAL_BALANCE, FEE_DENOM.to_string()), 5)
                     .unwrap();
         let admin = &accs.get(0).unwrap();
 

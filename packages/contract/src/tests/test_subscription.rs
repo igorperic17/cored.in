@@ -90,7 +90,6 @@ mod tests {
             };
 
             let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
-            println!("{:?}", is_sub);
             
             // expect that is_sub is false (still not subscribed)
             assert!(is_sub.is_ok() && !is_sub.unwrap());
@@ -182,6 +181,65 @@ mod tests {
         
     }
 
+    #[test]
+    fn subscriber_list_works() {
+        with_test_tube(InstantiateMsg::zero(), 
+        &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, _bank: Bank<CoreumTestApp>, _nft: NFT<CoreumTestApp>| {
+
+            // register actors
+            let alice = accounts.get(1).unwrap();
+            let bob = accounts.get(2).unwrap();
+            let claire = accounts.get(3).unwrap();
+
+            mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
+            mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+            mock_register_account(&wasm, &contract_addr, claire, "claire".to_string());
+
+            let check_subs = |wallet: &SigningAccount, page: u64, page_size: u64, expected_subs: Vec<String>| {
+                let sub_msg = QueryMsg::GetSubscriberList { 
+                    wallet: wallet.address().to_string(), 
+                    page: Uint64::from(page),
+                    page_size: Uint64::from(page_size)
+                };
+                let subs = wasm.query::<QueryMsg, Vec<String>>(&contract_addr, &sub_msg);
+                println!("subs: {:?}", subs);
+                println!("expected_subs: {:?}", expected_subs);
+                assert!(subs.is_ok() && subs.unwrap() == expected_subs);
+            };
+
+            // Alice should not have any subscribers
+            println!("Alice should not have any subscribers");
+            check_subs(&alice, 0, 10, vec![]);
+            check_subs(&alice, 2, 10, vec![]);
+            check_subs(&alice, 0, 1, vec![]);
+            check_subs(&alice, 0, 1000, vec![]);
+
+            // Bob subscribes to Alice
+            let subscribe_msg = ExecuteMsg::Subscribe {
+                did: "alicedid".to_string(),
+            };
+            let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+
+            // Alice should have Bob as a subscriber
+            println!("Alice should have Bob");
+            check_subs(&alice, 0, 10, vec![bob.address().to_string()]);
+            check_subs(&alice, 2, 10, vec![]); // Bob is on page 0
+            check_subs(&alice, 0, 1, vec![bob.address().to_string()]);
+            check_subs(&alice, 0, 1000, vec![bob.address().to_string()]);
+
+            // Claire subscribes to Alice
+            let subscribe_msg = ExecuteMsg::Subscribe {
+                did: "alicedid".to_string(),
+            };
+            let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &claire);
+
+            // Alice should have Bob and Claire as subscribers
+            check_subs(&alice, 0, 10, vec![claire.address().to_string(), bob.address().to_string()]);
+
+            // Claire should be on the second page when page_size is 1
+            check_subs(&alice, 1, 1, vec![bob.address().to_string()]);
+            check_subs(&alice, 0, 1, vec![claire.address().to_string()]);
+        });
+    }
+
 }
-
-

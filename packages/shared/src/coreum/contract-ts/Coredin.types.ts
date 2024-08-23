@@ -83,6 +83,12 @@ export type QueryMsg = {
     did: string;
     subscriber: string;
   };
+} | {
+  get_subscriber_list: {
+    page: Uint64;
+    page_size: Uint64;
+    wallet: string;
+  };
 };
 export type Addr = string;
 export interface Config {
@@ -111,6 +117,9 @@ export interface SubscriptionInfo {
 }
 export interface GetMerkleRootResponse {
   root?: string | null;
+}
+export interface GetSubscribersResponse {
+  subscribers: string[];
 }
 export interface GetSubscriptionInfoResponse {
   info?: SubscriptionInfo | null;

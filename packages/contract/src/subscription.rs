@@ -5,14 +5,14 @@ use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionInfoResponse;
 use crate::state::{
-    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP,
-    WALLET_PROFILE_MAP,
+    ProfileInfo, SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP
 };
 use coreum_wasm_sdk::assetnft;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft;
+use coreum_wasm_sdk::nft::{self, NFTsResponse};
+use coreum_wasm_sdk::pagination::PageRequest;
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Timestamp, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
@@ -148,17 +148,13 @@ pub fn subscribe(
         subscriber_did.clone().did,
         subscribed_to_wallet.wallet.to_string(),
     );
-    let valid_until = env
-        .block
-        .time
-        .plus_days(profile_info.subscription_duration_days.unwrap().u64());
     response = response.add_attribute("nft_id", nft_id.to_string());
     let mint_res = mint_nft(
         &deps,
         info.clone(),
         nft_class_id,
         nft_id,
-        Some(to_json_binary(&valid_until).unwrap()),
+        Some(to_json_binary(&subscription).unwrap()),
     );
     if mint_res.is_err() {
         return Err(ContractError::SubscriptionNFTMintingError {});
@@ -176,7 +172,7 @@ pub fn subscribe(
         .add_attribute("action", "subscribe")
         .add_attribute("subscribed_to_did", subscribed_to_wallet.did.clone())
         .add_attribute("subscribed_to_wallet", subscribed_to_wallet.wallet.clone())
-        .add_attribute("valid_until", valid_until.to_string())
+        .add_attribute("valid_until", subscription.valid_until.to_string())
         .add_attribute("subscriber", info.sender);
 
     // payout
@@ -307,8 +303,8 @@ pub fn is_subscriber(
             match nft.nft.data {
                 None => true,
                 Some(data) => {
-                    let expiration: Timestamp = from_json(&data)?;
-                    expiration.seconds() >= env.block.time.seconds()
+                    let sub_info: SubscriptionInfo = from_json(&data)?;
+                    sub_info.valid_until.seconds() >= env.block.time.seconds()
                 }
             }
         }
@@ -320,29 +316,34 @@ pub fn is_subscriber(
     return to_json_binary(&expiration_is_ok);
 }
 
-pub fn get_subscribers(_deps: Deps, _env: Env, _did: String, _page: Uint64) -> StdResult<Binary> {
-    // // issued NFTs will have IDs of the form {contract_address}-{profile_did}-{subscriber_did}
-    // let class_id = generate_nft_class_id(env.clone(), did.clone());
-    // let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
-    //     class_id: Some(class_id),
-    //     owner: None,
-    //     pagination: Some(PageRequest {
-    //         key: todo!(),
-    //         offset: Some(0u64),
-    //         limit: todo!(),
-    //         count_total: todo!(),
-    //         reverse: todo!(),
-    //     })
-    // }).into();
+pub fn get_subscribers(deps: Deps<CoreumQueries>, env: Env, wallet: String, page: Uint64, page_size: Uint64) -> StdResult<Binary> {
+    let class_id = generate_nft_class_id(env.clone(), wallet.clone());
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
+        class_id: Some(class_id),
+        owner: None,
+        pagination: Some(PageRequest {
+            key: None,
+            offset: Some(page.u64() * page_size.u64()),
+            limit: Some(page_size.u64()),
+            count_total: None,
+            reverse: Some(true),
+        })
+    }).into();
 
-    // let res = deps.querier.query::<NFTsResponse>(&request);
-    // // ^------- this fails with:
-    // // thread 'tests::subscription::tests::subscribe_mints_nft' panicked at src/tests/subscription.rs:664:84:
-    // // called `Result::unwrap()` on an `Err` value:
-    // //      QueryError { msg: "Error parsing into type coreum_wasm_sdk::nft::OwnerResponse: missing field `owner`: query wasm contract failed" }
-
-    // return to_json_binary(&res);
-    return to_json_binary(&true);
+    let res = deps.querier.query::<NFTsResponse>(&request);
+    match res {
+        Ok(nfts) => {
+            let subscribers: Vec<String> = nfts.nfts.iter().map(|nft| {
+                let nft_data = nft.data.clone().unwrap();
+                let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
+                let subscriber_wallet = DID_PROFILE_MAP
+                    .load(deps.storage, sub_info.subscriber).unwrap();
+                return subscriber_wallet.wallet.to_string();
+        }).collect();
+            return to_json_binary(&subscribers);
+        }
+        Err(_) => return to_json_binary(&Vec::<String>::new())
+    }
 }
 
 pub fn get_subscription_info(
