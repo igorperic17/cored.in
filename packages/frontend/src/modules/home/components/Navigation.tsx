@@ -76,7 +76,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               fontSize="1.375rem"
               fontWeight="600"
               color={
-                location.pathname === item.link && isLargerThanLg
+                location.pathname.includes(item.link) && isLargerThanLg
                   ? "brand.300"
                   : "brand.900"
               }
