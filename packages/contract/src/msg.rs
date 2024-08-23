@@ -92,8 +92,12 @@ pub enum QueryMsg {
     GetSubscriptionInfo { did: String, subscriber: String },
 
     // return the list of subscribers
-    #[returns(GetSubscribersResponse)]
-    GetSubscriberList { wallet: String, page: Uint64, page_size: Uint64 },
+    #[returns(GetSubscriptionListResponse)]
+    GetSubscribers { wallet: String, page: Uint64, page_size: Uint64 },
+
+    // return the list of subscriptions
+    #[returns(GetSubscriptionListResponse)]
+    GetSubscriptions { wallet: String, page: Uint64, page_size: Uint64 },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -112,7 +116,7 @@ pub struct GetSubscriptionInfoResponse {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct GetSubscribersResponse {
-    pub subscribers: Vec<String>, // list of subscriber's DIDs
+pub struct GetSubscriptionListResponse {
+    pub subscribers: Vec<SubscriptionInfo>, // list of subscriber's DIDs
 }
 

@@ -84,7 +84,13 @@ export type QueryMsg = {
     subscriber: string;
   };
 } | {
-  get_subscriber_list: {
+  get_subscribers: {
+    page: Uint64;
+    page_size: Uint64;
+    wallet: string;
+  };
+} | {
+  get_subscriptions: {
     page: Uint64;
     page_size: Uint64;
     wallet: string;
@@ -118,8 +124,8 @@ export interface SubscriptionInfo {
 export interface GetMerkleRootResponse {
   root?: string | null;
 }
-export interface GetSubscribersResponse {
-  subscribers: string[];
+export interface GetSubscriptionListResponse {
+  subscribers: SubscriptionInfo[];
 }
 export interface GetSubscriptionInfoResponse {
   info?: SubscriptionInfo | null;

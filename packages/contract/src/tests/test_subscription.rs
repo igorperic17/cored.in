@@ -3,6 +3,7 @@ mod tests {
     use coreum_test_tube::{Account, Bank, CoreumTestApp, Module, SigningAccount, Wasm, NFT};
     use crate::contract::FEE_DENOM;
     use crate::msg::{ExecuteMsg, InstantiateMsg, QueryMsg};
+    use crate::state::SubscriptionInfo;
     use crate::tests::test_common::test_common::{get_balance, mock_register_account, with_test_tube, INITIAL_BALANCE};
     use cosmwasm_std::{coins, Coin, Uint128, Uint64};
 
@@ -196,15 +197,18 @@ mod tests {
             mock_register_account(&wasm, &contract_addr, claire, "claire".to_string());
 
             let check_subs = |wallet: &SigningAccount, page: u64, page_size: u64, expected_subs: Vec<String>| {
-                let sub_msg = QueryMsg::GetSubscriberList { 
+                let sub_msg = QueryMsg::GetSubscribers { 
                     wallet: wallet.address().to_string(), 
                     page: Uint64::from(page),
                     page_size: Uint64::from(page_size)
                 };
-                let subs = wasm.query::<QueryMsg, Vec<String>>(&contract_addr, &sub_msg);
+                let subs = wasm.query::<QueryMsg, Vec<SubscriptionInfo>>(&contract_addr, &sub_msg);
                 println!("subs: {:?}", subs);
                 println!("expected_subs: {:?}", expected_subs);
-                assert!(subs.is_ok() && subs.unwrap() == expected_subs);
+
+                // extract the subscriber addresses
+                let subs_dids = subs.unwrap().iter().map(|sub| sub.subscriber.clone()).collect::<Vec<String>>();
+                assert!(subs_dids == expected_subs);
             };
 
             // Alice should not have any subscribers
@@ -222,10 +226,10 @@ mod tests {
 
             // Alice should have Bob as a subscriber
             println!("Alice should have Bob");
-            check_subs(&alice, 0, 10, vec![bob.address().to_string()]);
+            check_subs(&alice, 0, 10, vec!["bobdid".to_string()]);
             check_subs(&alice, 2, 10, vec![]); // Bob is on page 0
-            check_subs(&alice, 0, 1, vec![bob.address().to_string()]);
-            check_subs(&alice, 0, 1000, vec![bob.address().to_string()]);
+            check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
+            check_subs(&alice, 0, 1000, vec!["bobdid".to_string()]);
 
             // Claire subscribes to Alice
             let subscribe_msg = ExecuteMsg::Subscribe {
@@ -234,11 +238,76 @@ mod tests {
             let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &claire);
 
             // Alice should have Bob and Claire as subscribers
-            check_subs(&alice, 0, 10, vec![claire.address().to_string(), bob.address().to_string()]);
+            check_subs(&alice, 0, 10, vec!["clairedid".to_string(), "bobdid".to_string()]);
 
             // Claire should be on the second page when page_size is 1
-            check_subs(&alice, 1, 1, vec![bob.address().to_string()]);
-            check_subs(&alice, 0, 1, vec![claire.address().to_string()]);
+            check_subs(&alice, 1, 1, vec!["bobdid".to_string()]);
+            check_subs(&alice, 0, 1, vec!["clairedid".to_string()]);
+        });
+    }
+
+
+    #[test]
+    fn subscription_list_works() {
+        with_test_tube(InstantiateMsg::zero(), 
+        &|accounts: Vec<SigningAccount>, contract_addr: String, wasm: Wasm<CoreumTestApp>, _bank: Bank<CoreumTestApp>, _nft: NFT<CoreumTestApp>| {
+
+            // register actors
+            let alice = accounts.get(1).unwrap();
+            let bob = accounts.get(2).unwrap();
+            let claire = accounts.get(3).unwrap();
+
+            mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
+            mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
+            mock_register_account(&wasm, &contract_addr, claire, "claire".to_string());
+
+            let check_subs = |wallet: &SigningAccount, page: u64, page_size: u64, expected_subs: Vec<String>| {
+                let sub_msg = QueryMsg::GetSubscriptions {
+                    wallet: wallet.address().to_string(), 
+                    page: Uint64::from(page),
+                    page_size: Uint64::from(page_size)
+                };
+                let subs = wasm.query::<QueryMsg, Vec<SubscriptionInfo>>(&contract_addr, &sub_msg);
+                println!("subs: {:?}", subs);
+                println!("expected_subs: {:?}", expected_subs);
+
+                // extract the subscriber addresses
+                let subs_dids = subs.unwrap().iter().map(|sub| sub.subscribed_to.clone()).collect::<Vec<String>>();
+                assert!(subs_dids == expected_subs);
+            };
+
+            // Alice should not have any subscribers
+            println!("Bob should not have any subscriptions");
+            check_subs(&bob, 0, 10, vec![]);
+            check_subs(&bob, 2, 10, vec![]);
+            check_subs(&bob, 0, 1, vec![]);
+            check_subs(&bob, 0, 1000, vec![]);
+
+            // Bob subscribes to Alice
+            let subscribe_msg = ExecuteMsg::Subscribe {
+                did: "alicedid".to_string(),
+            };
+            let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+
+            // Alice should have Bob as a subscriber
+            println!("Bob should have Alice");
+            check_subs(&bob, 0, 10, vec!["alicedid".to_string()]);
+            check_subs(&bob, 2, 10, vec![]); // Bob is on page 0
+            check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
+            check_subs(&bob, 0, 1000, vec!["alicedid".to_string()]);
+
+            // Bob subscribes to Claire
+            let subscribe_msg = ExecuteMsg::Subscribe {
+                did: "clairedid".to_string(),
+            };
+            let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+
+            // Bob should have Alice and Claire as subscribers
+            check_subs(&bob, 0, 10, vec!["clairedid".to_string(), "alicedid".to_string()]);
+
+            // Claire should be on the second page when page_size is 1
+            check_subs(&bob, 1, 1, vec!["alicedid".to_string()]);
+            check_subs(&bob, 0, 1, vec!["clairedid".to_string()]);
         });
     }
 

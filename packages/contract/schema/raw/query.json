@@ -226,10 +226,39 @@
     {
       "type": "object",
       "required": [
-        "get_subscriber_list"
+        "get_subscribers"
       ],
       "properties": {
-        "get_subscriber_list": {
+        "get_subscribers": {
+          "type": "object",
+          "required": [
+            "page",
+            "page_size",
+            "wallet"
+          ],
+          "properties": {
+            "page": {
+              "$ref": "#/definitions/Uint64"
+            },
+            "page_size": {
+              "$ref": "#/definitions/Uint64"
+            },
+            "wallet": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "required": [
+        "get_subscriptions"
+      ],
+      "properties": {
+        "get_subscriptions": {
           "type": "object",
           "required": [
             "page",

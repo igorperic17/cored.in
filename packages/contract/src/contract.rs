@@ -12,7 +12,7 @@ use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
 use crate::state::{Config, ProfileInfo, CONFIG, CREDENTIAL, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP};
 use crate::subscription::{
-    get_subscribers, get_subscription_duration, get_subscription_info, get_subscription_price, is_subscriber, set_subscription, subscribe
+    get_subscribers, get_subscription_duration, get_subscription_info, get_subscription_price, get_subscriptions, is_subscriber, set_subscription, subscribe
 };
 
 use crate::merkle_tree::MerkleTree;
@@ -165,8 +165,12 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
         QueryMsg::GetSubscriptionInfo { did, subscriber } => {
             get_subscription_info(deps, env, did, subscriber)
         }
-        QueryMsg::GetSubscriberList { wallet, page, page_size } => {
+        QueryMsg::GetSubscribers { wallet, page, page_size } => {
             get_subscribers(deps, env, wallet, page, page_size)
+        }
+
+        QueryMsg::GetSubscriptions { wallet, page, page_size } => {
+            get_subscriptions(deps, env, wallet, page, page_size)
         }
     }
 }

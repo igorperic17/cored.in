@@ -333,16 +333,41 @@ pub fn get_subscribers(deps: Deps<CoreumQueries>, env: Env, wallet: String, page
     let res = deps.querier.query::<NFTsResponse>(&request);
     match res {
         Ok(nfts) => {
-            let subscribers: Vec<String> = nfts.nfts.iter().map(|nft| {
+            let subscribers: Vec<SubscriptionInfo> = nfts.nfts.iter().map(|nft| {
                 let nft_data = nft.data.clone().unwrap();
                 let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
-                let subscriber_wallet = DID_PROFILE_MAP
-                    .load(deps.storage, sub_info.subscriber).unwrap();
-                return subscriber_wallet.wallet.to_string();
+                return sub_info;
         }).collect();
             return to_json_binary(&subscribers);
         }
-        Err(_) => return to_json_binary(&Vec::<String>::new())
+        Err(_) => return to_json_binary(&Vec::<SubscriptionInfo>::new())
+    }
+}
+
+pub fn get_subscriptions(deps: Deps<CoreumQueries>, _env: Env, wallet: String, page: Uint64, page_size: Uint64) -> StdResult<Binary> {
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
+        class_id: None,
+        owner: Some(wallet),
+        pagination: Some(PageRequest {
+            key: None,
+            offset: Some(page.u64() * page_size.u64()),
+            limit: Some(page_size.u64()),
+            count_total: None,
+            reverse: Some(false),
+        })
+    }).into();
+
+    let res = deps.querier.query::<NFTsResponse>(&request);
+    match res {
+        Ok(nfts) => {
+            let subscriptions: Vec<SubscriptionInfo> = nfts.nfts.iter().map(|nft| {
+                let nft_data = nft.data.clone().unwrap();
+                let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
+                return sub_info;
+        }).collect();
+            return to_json_binary(&subscriptions);
+        }
+        Err(_) => return to_json_binary(&Vec::<SubscriptionInfo>::new())
     }
 }
 
