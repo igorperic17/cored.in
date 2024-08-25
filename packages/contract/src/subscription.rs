@@ -145,11 +145,12 @@ pub fn subscribe(
     // mint the subscription NFT
     let nft_class_id =
         generate_nft_class_id(env.clone(), subscribed_to_wallet.wallet.to_string().clone());
-    let nft_id = generate_nft_id(
-        env.clone(),
-        subscriber_did.clone().did,
-        subscribed_to_wallet.wallet.to_string(),
-    );
+    // let nft_id = generate_nft_id(
+    //     env.clone(),
+    //     subscriber_did.clone().did,
+    //     subscribed_to_wallet.wallet.to_string(),
+    // );
+    let nft_id = info.sender.to_string();
     response = response.add_attribute("nft_id", nft_id.to_string());
     let mint_res = mint_nft(
         &deps,
@@ -265,11 +266,12 @@ pub fn is_subscriber(
     // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
     let class_id = generate_nft_class_id(env.clone(), target_profile.wallet.to_string());
-    let nft_id = generate_nft_id(
-        env.clone(),
-        subscriber_profile.did,
-        target_profile.wallet.to_string(),
-    );
+    // let nft_id = generate_nft_id(
+    //     env.clone(),
+    //     subscriber_profile.did,
+    //     target_profile.wallet.to_string(),
+    // );
+    let nft_id = subscriber_wallet.clone();
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Owner {
         class_id: class_id.clone(),
         id: nft_id.clone(),
