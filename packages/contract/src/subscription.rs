@@ -3,16 +3,18 @@ use std::str::FromStr;
 use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
 use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
-use crate::msg::GetSubscriptionInfoResponse;
+use crate::msg::{GetSubscriptionInfoResponse, GetSubscriptionListResponse};
 use crate::state::{
-    ProfileInfo, SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP
+    ProfileInfo, SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP,
+    WALLET_PROFILE_MAP,
 };
 use coreum_wasm_sdk::assetnft;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env,
+    MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64,
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
@@ -316,7 +318,13 @@ pub fn is_subscriber(
     return to_json_binary(&expiration_is_ok);
 }
 
-pub fn get_subscribers(deps: Deps<CoreumQueries>, env: Env, wallet: String, page: Uint64, page_size: Uint64) -> StdResult<Binary> {
+pub fn get_subscribers(
+    deps: Deps<CoreumQueries>,
+    env: Env,
+    wallet: String,
+    page: Uint64,
+    page_size: Uint64,
+) -> StdResult<Binary> {
     let class_id = generate_nft_class_id(env.clone(), wallet.clone());
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
         class_id: Some(class_id),
@@ -327,24 +335,41 @@ pub fn get_subscribers(deps: Deps<CoreumQueries>, env: Env, wallet: String, page
             limit: Some(page_size.u64()),
             count_total: None,
             reverse: Some(true),
-        })
-    }).into();
+        }),
+    })
+    .into();
 
     let res = deps.querier.query::<NFTsResponse>(&request);
     match res {
         Ok(nfts) => {
-            let subscribers: Vec<SubscriptionInfo> = nfts.nfts.iter().map(|nft| {
-                let nft_data = nft.data.clone().unwrap();
-                let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
-                return sub_info;
-        }).collect();
-            return to_json_binary(&subscribers);
+            let subscribers: Vec<SubscriptionInfo> = nfts
+                .nfts
+                .iter()
+                .map(|nft| {
+                    let nft_data = nft.data.clone().unwrap();
+                    let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
+                    return sub_info;
+                })
+                .collect();
+            return to_json_binary(&GetSubscriptionListResponse {
+                subscribers: subscribers,
+            });
         }
-        Err(_) => return to_json_binary(&Vec::<SubscriptionInfo>::new())
+        Err(_) => {
+            return to_json_binary(&GetSubscriptionListResponse {
+                subscribers: Vec::<SubscriptionInfo>::new(),
+            })
+        }
     }
 }
 
-pub fn get_subscriptions(deps: Deps<CoreumQueries>, _env: Env, wallet: String, page: Uint64, page_size: Uint64) -> StdResult<Binary> {
+pub fn get_subscriptions(
+    deps: Deps<CoreumQueries>,
+    _env: Env,
+    wallet: String,
+    page: Uint64,
+    page_size: Uint64,
+) -> StdResult<Binary> {
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
         class_id: None,
         owner: Some(wallet),
@@ -354,35 +379,49 @@ pub fn get_subscriptions(deps: Deps<CoreumQueries>, _env: Env, wallet: String, p
             limit: Some(page_size.u64()),
             count_total: None,
             reverse: Some(false),
-        })
-    }).into();
+        }),
+    })
+    .into();
 
     let res = deps.querier.query::<NFTsResponse>(&request);
     match res {
         Ok(nfts) => {
-            let subscriptions: Vec<SubscriptionInfo> = nfts.nfts.iter().map(|nft| {
-                let nft_data = nft.data.clone().unwrap();
-                let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
-                return sub_info;
-        }).collect();
-            return to_json_binary(&subscriptions);
+            let subscriptions: Vec<SubscriptionInfo> = nfts
+                .nfts
+                .iter()
+                .map(|nft| {
+                    let nft_data = nft.data.clone().unwrap();
+                    let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
+                    return sub_info;
+                })
+                .collect();
+            return to_json_binary(&GetSubscriptionListResponse {
+                subscribers: subscriptions,
+            });
         }
-        Err(_) => return to_json_binary(&Vec::<SubscriptionInfo>::new())
+        Err(_) => {
+            return to_json_binary(&GetSubscriptionListResponse {
+                subscribers: Vec::<SubscriptionInfo>::new(),
+            })
+        }
     }
 }
 
-pub fn get_subscriber_count(deps: Deps<CoreumQueries>, env: Env, wallet: String) -> StdResult<Binary> {
+pub fn get_subscriber_count(
+    deps: Deps<CoreumQueries>,
+    env: Env,
+    wallet: String,
+) -> StdResult<Binary> {
     let class_id = generate_nft_class_id(env.clone(), wallet.clone());
-    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Supply {
-        class_id: class_id,
-    }).into();
+    let request: QueryRequest<CoreumQueries> =
+        CoreumQueries::NFT(nft::Query::Supply { class_id: class_id }).into();
 
     let res = deps.querier.query::<SupplyResponse>(&request);
     match res {
         Ok(supply) => {
             return to_json_binary(&Uint64::from(supply.amount));
         }
-        Err(_) => return to_json_binary(&Uint64::zero())
+        Err(_) => return to_json_binary(&Uint64::zero()),
     }
 }
 
