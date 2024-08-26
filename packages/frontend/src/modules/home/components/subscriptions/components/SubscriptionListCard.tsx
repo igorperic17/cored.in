@@ -3,16 +3,35 @@ import {
   Button,
   ButtonGroup,
   Flex,
+  Link,
   Text,
   VStack
 } from "@chakra-ui/react";
+import React, { useContext } from "react";
+import { useContractRead } from "@/hooks";
+import { CONTRACT_QUERIES } from "@/queries";
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { ROUTES } from "@/router/routes";
+import { Link as ReactRouterLink } from "react-router-dom";
 
-// type SubscriptionListCardProps = {
-//   username: string,
-//   expiratinDate:
-// }
+type SubscriptionListCardProps = {
+  profileDid: string;
+  expirationTimestamp: string;
+};
 
-export const SubscriptionListCard = () => {
+export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
+  profileDid,
+  expirationTimestamp
+}) => {
+  const coredinClient = useContext(CoredinClientContext);
+  const profileInfo = useContractRead(
+    CONTRACT_QUERIES.getInfoFromDid(coredinClient!, profileDid),
+    { enabled: !!coredinClient && !!profileDid }
+  );
+
+  const username = profileInfo.data?.did_info?.username;
+  const wallet = profileInfo?.data?.did_info?.wallet;
+
   return (
     <Flex
       as="li"
@@ -35,9 +54,7 @@ export const SubscriptionListCard = () => {
       }}
     >
       <Avatar
-        // name={issuer.username}
-        name="N"
-        // src={issuer.avatarUrl}
+        name={profileInfo.data?.did_info?.username}
         bg="brand.100"
         color="brand.500"
         border="1px solid #b0b0b0"
@@ -61,14 +78,27 @@ export const SubscriptionListCard = () => {
         overflow="hidden"
         maxW={{ base: "170px", sm: "300px" }}
       >
-        <Text
+        {wallet && (
+          <Link as={ReactRouterLink} to={ROUTES.USER.buildPath(wallet)}>
+            <Text
+              as="span"
+              textOverflow="ellipsis"
+              whiteSpace="nowrap"
+              overflow="hidden"
+            >
+              @{username}
+            </Text>
+          </Link>
+        )}
+        {/* <Text
           as="span"
           textOverflow="ellipsis"
           whiteSpace="nowrap"
           overflow="hidden"
         >
-          natalialeap1fghfghfjgfjgfjghjdtrjhg
-        </Text>
+          Subscribed to:
+          {info.subscribed_to}
+        </Text> */}
         <Text
           color="text.700"
           textOverflow="ellipsis"
@@ -77,11 +107,13 @@ export const SubscriptionListCard = () => {
           textStyle="sm"
         >
           Expires:
-          <Text as="span">{` 30.12.2024`}</Text>
+          <Text as="span">
+            {new Date(parseInt(expirationTimestamp) / 1000000).toLocaleString()}
+          </Text>
         </Text>
       </VStack>
 
-      <ButtonGroup
+      {/* <ButtonGroup
         display="flex"
         flexDir="column"
         ml="auto"
@@ -92,7 +124,7 @@ export const SubscriptionListCard = () => {
           Remove
         </Button>
         <Button>Renew</Button>
-      </ButtonGroup>
+      </ButtonGroup> */}
     </Flex>
   );
 };
