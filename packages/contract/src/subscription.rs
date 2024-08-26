@@ -5,12 +5,8 @@ use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::{GetSubscriptionInfoResponse, GetSubscriptionListResponse};
 use crate::state::{
-<<<<<<< HEAD
-    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP
-=======
     ProfileInfo, SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP,
     WALLET_PROFILE_MAP,
->>>>>>> 4aab8acbe1e929306ec9fc6ff5908ce5c86e4e4c
 };
 use coreum_wasm_sdk::assetnft;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
@@ -18,12 +14,7 @@ use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicItem, DataEditor, MsgMint};
 use cosmwasm_std::{
-<<<<<<< HEAD
     coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
-=======
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env,
-    MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64,
->>>>>>> 4aab8acbe1e929306ec9fc6ff5908ce5c86e4e4c
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
