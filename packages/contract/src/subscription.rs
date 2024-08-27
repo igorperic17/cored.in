@@ -15,7 +15,7 @@ use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 use coreum_wasm_sdk::shim::Any;
-use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicItem, DataEditor, MsgMint};
+use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicIndexedItem, DataDynamicItem, DataEditor, MsgMint, MsgUpdateData};
 use cosmwasm_std::{
     coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
 };
@@ -94,7 +94,7 @@ pub fn subscribe(
     }
 
     // convert the sender wallet to DID
-    let subscriber_did = WALLET_PROFILE_MAP
+    let subscriber_profile = WALLET_PROFILE_MAP
         .may_load(deps.storage, info.sender.to_string())?
         .ok_or(StdError::generic_err(format!(
             "Couldn't find the subscriber's DID for wallet {} in the contract registry",
@@ -109,99 +109,101 @@ pub fn subscribe(
             subscribe_to_did
         )))?;
 
-    // // make sure there's no existing valid subscription
-    // let subscription_key = subscriber_did.did.clone() + subscribe_to_did.as_str();
-    // let existing_sub = SUBSCRIPTION.load(deps.storage, subscription_key.clone());
-    // if existing_sub.is_ok() {
-    //     let existing_subscription = existing_sub.unwrap();
-    //     if existing_subscription.valid_until.seconds() > env.block.time.seconds() {
-    //         return Err(ContractError::ExistingSubscriptionFound {
-    //             subscription_info: existing_subscription,
-    //         });
-    //     }
-    // }
-
     // get the profile info for the subscribed_to DID
     let profile_info = DID_PROFILE_MAP
         .may_load(deps.storage, subscribe_to_did.clone())?
         .unwrap();
 
-    // store a single subscription info
-    let subscription = SubscriptionInfo {
-        subscriber: subscriber_did.did.clone(),
-        subscribed_to: subscribe_to_did.clone(),
-        valid_until: env.clone()
-            .block
-            .time
-            .plus_days(profile_info.subscription_duration_days.unwrap().u64()),
-        cost: price.clone(),
-    };
-
     // mint the subscription NFT
+    // doc ref:         https://docs.coreum.dev/docs/modules/coreum-non-fungible-token#interaction-with-nft-module-introducing-wnft-module
+    // example ref:     https://github.com/CoreumFoundation/coreum/blob/f349a68ed04a3fa6e1cf7fcd0430a46949e30f6f/integration-tests/contracts/modules/nft/src/contract.rs
     let nft_class_id =
         generate_nft_class_id(env.clone(), subscribed_to_wallet.wallet.to_string().clone());
-    // let nft_id = generate_nft_id(
-    //     env.clone(),
-    //     subscriber_did.clone().did,
-    //     subscribed_to_wallet.wallet.to_string(),
-    // );
-    let nft_id = info.sender.to_string();
-
-    // try getting existing subscription
-    let existing_subscription_res = get_subscription_info(deps.as_ref(), env.clone(), subscriber_did.did, subscribed_to_wallet.wallet.to_string());
-    if existing_subscription_res.is_ok() {
-        let existing_sub_info = from_json(&existing_subscription_res.unwrap());
-        if existing_sub_info.is_ok() {
-            let subscription: SubscriptionInfo = existing_sub_info.unwrap();
-            // just update the validity date
-            // subscription.valid_until = env
-            //     .block
-            //     .time
-            //     .plus_days(profile_info.subscription_duration_days.unwrap().u64());
-
-            // let nft_update_msg = CoreumMsg::AssetNFT(assetnft::Msg:: {
-            //     class_id: nft_class_id,
-            //     id: nft_id,
-            //     data: Some(to_json_binary(&subscription).unwrap()),
-            // });
-        }
-    };
-
-    // SUBSCRIPTION.save(deps.storage, subscription_key.clone(), &subscription)?;
-
-    // increment the subscription counter for the profile (have to do it in all 3 places, suboptimal?)
-    // profile_info.subscriber_count += Uint64::from(1u64);
-    // profile_storage(deps.storage)
-    //     .save(subscribe_to_did.as_bytes(), &profile_info)
-    //     .expect("Error incrementing subscriber count");
-
+    let nft_id = info.sender.to_string();// try getting existing subscription first
     response = response.add_attribute("nft_id", nft_id.to_string());
-    let mint_res = mint_nft(
-        &deps,
-        env,
-        info.clone(),
-        nft_class_id,
-        nft_id,
-        Some(to_json_binary(&subscription).unwrap()),
-    );
-    if mint_res.is_err() {
-        return Err(ContractError::SubscriptionNFTMintingError {});
+
+    let existing_subscription_res = get_subscription_info(
+        deps.as_ref(), 
+        env.clone(), 
+        subscribe_to_did.clone(), 
+        subscriber_profile.wallet.to_string()
+    )?;
+    let existing_subscription_res = from_json::<Option<SubscriptionInfo>>(&existing_subscription_res)?;
+    if let Some(existing_subscription_res) = existing_subscription_res {
+
+        // existing subscription found, update the validity date
+        let mut existing_subscription: SubscriptionInfo = existing_subscription_res.clone();
+
+        existing_subscription.valid_until = env
+            .block
+            .time
+            .plus_days(profile_info.subscription_duration_days.unwrap().u64());
+
+        let modify_data = MsgUpdateData {
+            sender: env.contract.address.to_string(),
+            class_id: nft_class_id.clone(),
+            id: nft_id.clone(),
+            items: [DataDynamicIndexedItem {
+                index: 0,
+                data: to_json_binary(&existing_subscription).unwrap().to_vec(),
+            }]
+            .to_vec(),
+        };
+        response = response.add_message(modify_data);
+        
     } else {
-        let sub_msg = mint_res.unwrap();
-        deps.api
-            .debug(format!("MINT NFT messages: {:?}", sub_msg).as_str());
+
+        // mint a new mutable subscription NFT
+        let subscription = SubscriptionInfo {
+            subscriber: subscriber_profile.did.clone(),
+            subscribed_to: subscribe_to_did.clone(),
+            valid_until: env.clone()
+                .block
+                .time
+                .plus_days(profile_info.subscription_duration_days.unwrap().u64()),
+            cost: price.clone(),
+        };
+
+        let data = to_json_binary(&subscription).unwrap();
+        let nft_data = Some( 
+            DataDynamic {
+                items: [
+                    DataDynamicItem {editors: [DataEditor::Admin as i32, DataEditor::Owner as i32].to_vec(),data: data.to_vec(),}
+                    ]
+                .to_vec(),
+            }
+            .to_any())
+        ;
+
+        let mint = MsgMint {
+            sender: env.contract.address.to_string(),
+            class_id: nft_class_id.clone(),
+            id: nft_id.clone(),
+            uri: String::new(),
+            uri_hash: String::new(),
+            data: nft_data,
+            recipient: info.sender.to_string(),
+        };
+    
+        let mint_bytes = mint.to_proto_bytes();
+    
+        let msg = CosmosMsg::Stargate {
+            type_url: mint.to_any().type_url,
+            value: Binary::from(mint_bytes),
+        };
         response = response
-            .add_submessages(sub_msg.messages)
-            .add_events(sub_msg.events)
-            .add_attributes(sub_msg.attributes);
+            .add_attribute("valid_until", subscription.valid_until.to_string())
+            .add_message(msg);
     }
+    
 
     response = response
         .add_attribute("action", "subscribe")
         .add_attribute("subscribed_to_did", subscribed_to_wallet.did.clone())
         .add_attribute("subscribed_to_wallet", subscribed_to_wallet.wallet.clone())
-        .add_attribute("valid_until", subscription.valid_until.to_string())
-        .add_attribute("subscriber", info.sender);
+        .add_attribute("subscriber", info.sender)
+        .add_attribute("nft_class_id", nft_class_id)
+        .add_attribute("nft_id", nft_id);
 
     // payout
     // deps.api.debug("Trying to pay the subscriber...");
@@ -229,64 +231,6 @@ pub fn subscribe(
     Ok(response)
 }
 
-// doc ref:         https://docs.coreum.dev/docs/modules/coreum-non-fungible-token#interaction-with-nft-module-introducing-wnft-module
-// example ref:     https://github.com/CoreumFoundation/coreum/blob/f349a68ed04a3fa6e1cf7fcd0430a46949e30f6f/integration-tests/contracts/modules/nft/src/contract.rs
-fn mint_nft(
-    _deps: &DepsMut<CoreumQueries>,
-    env: Env,
-    info: MessageInfo,
-    class_id: String,
-    nft_id: String,
-    // recipient_wallet: String, // if we need to mint into someone else's wallet in the future...
-    data: Option<Binary>,
-) -> Result<Response<CoreumMsg>, ContractError> {
-
-    let nft_data = data.map(|data| {
-        DataDynamic {
-            items: [
-                DataDynamicItem {editors: [DataEditor::Admin as i32, DataEditor::Owner as i32].to_vec(),data: data.to_vec(),}
-                ]
-            .to_vec(),
-        }
-        .to_any()
-    });
-
-    let mint = MsgMint {
-        sender: env.contract.address.to_string(),
-        class_id: class_id.clone(),
-        id: nft_id.clone(),
-        uri: String::new(),
-        uri_hash: String::new(),
-        data: nft_data,
-        recipient: info.sender.to_string(),
-    };
-
-    let mint_bytes = mint.to_proto_bytes();
-
-    let msg = CosmosMsg::Stargate {
-        type_url: mint.to_any().type_url,
-        value: Binary::from(mint_bytes),
-    };
-
-    // let msg = CoreumMsg::AssetNFT(assetnft::Msg::Mint {
-    //     class_id: class_id.clone(),
-    //     id: nft_id.clone(),
-    //     uri: None,
-    //     uri_hash: None,
-    //     data: data.clone(),
-    //     recipient: Some(info.sender.to_string()),
-    // });
-
-    // deps.api.debug(nft_id.as_str());
-    // println!("{}", nft_id);
-
-    Ok(Response::new()
-        .add_attribute("method", "mint_nft")
-        .add_attribute("class_id", class_id)
-        .add_attribute("nft_id", nft_id)
-        .add_message(msg))
-}
-
 pub fn is_subscriber(
     deps: Deps<CoreumQueries>,
     env: Env,
@@ -308,24 +252,9 @@ pub fn is_subscriber(
             subscriber_wallet
         )))?;
 
-    // old way, using internal contract storage
-    // let key = format!("{}{}", subscriber_profile.did, target_did); // Concatenate strings and store in a variable
-    // let subscriber_info = SUBSCRIPTION.may_load(deps.storage, key)?;
-
-    // // rely on chain internal state instead of the NFT data until minting is fixed
-    // let response = match subscriber_info.clone() {
-    //     None => false,
-    //     Some(sub_info) => sub_info.valid_until.seconds() >= env.block.time.seconds(),
-    // };
-
     // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
     let class_id = generate_nft_class_id(env.clone(), target_profile.wallet.to_string());
-    // let nft_id = generate_nft_id(
-    //     env.clone(),
-    //     subscriber_profile.did,
-    //     target_profile.wallet.to_string(),
-    // );
     let nft_id = subscriber_wallet.clone();
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Owner {
         class_id: class_id.clone(),
@@ -476,23 +405,43 @@ pub fn get_subscriber_count(
     }
 }
 
+// returns NFT with the subscription info or None if the subscription is not found
+// ignores the expiration date, meaning it will return the subscription even if it's expired
 pub fn get_subscription_info(
     deps: Deps<CoreumQueries>,
-    _env: Env,
-    did: String,
-    subscriber: String,
+    env: Env,
+    target_did: String,
+    subscriber_wallet: String,
 ) -> StdResult<Binary> {
-    let key = format!("{}{}", subscriber, did); // Concatenate strings and store in a variable
-    let subscriber_info = match SUBSCRIPTION.may_load(deps.storage, key) {
-        Ok(info) => info,
-        Err(_) => None,
-    };
 
-    let info_response: GetSubscriptionInfoResponse = GetSubscriptionInfoResponse {
-        info: subscriber_info,
-    };
+    let target_profile = DID_PROFILE_MAP
+        .may_load(deps.storage, target_did.clone())?
+        .ok_or(StdError::generic_err(format!(
+            "Couldn't find the subscriber's DID for wallet {} in the contract registry",
+            subscriber_wallet
+        )))?;
 
-    return to_json_binary(&info_response);
+    // the new way - check NFT ownership
+    // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
+    let class_id = generate_nft_class_id(env.clone(), target_profile.wallet.to_string());
+    let nft_id = subscriber_wallet.clone();
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFT {
+        class_id: class_id,
+        id: nft_id,
+    })
+    .into();
+    let res = deps.querier.query::<nft::NFTResponse>(&request);
+    match res {
+        Ok(nft_response) => {
+            // NFT found
+            let sub_info: SubscriptionInfo = nft_response.nft.into();
+            return to_json_binary(&sub_info);
+        }
+        // when NFT is not found query returns "{}"
+        // which can't be deserialized to NFTResponse struct
+        Err(_) => to_json_binary(&None::<Binary>),
+    }
+
 }
 
 // gets current subscription cost
