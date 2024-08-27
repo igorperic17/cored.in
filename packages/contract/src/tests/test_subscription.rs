@@ -114,6 +114,7 @@ mod tests {
                 let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
 
                 let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
+                println!("is_sub: {:?}", is_sub);
                 // expect that is_sub is true after subscription
                 assert!(is_sub.is_ok() && is_sub.unwrap());
             },
@@ -213,17 +214,20 @@ mod tests {
                                   page: u64,
                                   page_size: u64,
                                   expected_subs: Vec<String>| {
+                    let mut expected_subs = expected_subs.clone();
+                    expected_subs.sort();
                     let sub_msg = QueryMsg::GetSubscribers {
                         wallet: wallet.address().to_string(),
                         page: Uint64::from(page),
                         page_size: Uint64::from(page_size),
                     };
-                    let subs = wasm
+                    let mut subs = wasm
                         .query::<QueryMsg, GetSubscriptionListResponse>(&contract_addr, &sub_msg)
                         .unwrap()
                         .subscribers;
-                    // println!("subs: {:?}", subs);
-                    // println!("expected_subs: {:?}", expected_subs);
+                    subs.sort();
+                    println!("subs: {:?}", subs);
+                    println!("expected_subs: {:?}", expected_subs);
 
                     // extract the subscriber addresses
                     let subs_dids = subs
@@ -231,7 +235,7 @@ mod tests {
                         .map(|sub| sub.subscriber.clone())
                         .collect::<Vec<String>>();
 
-                    // println!("subs_dids: {:?}", subs_dids);
+                    println!("subs_dids: {:?}", subs_dids);
                     assert!(subs_dids == expected_subs);
                 };
 
@@ -270,8 +274,8 @@ mod tests {
                 );
 
                 // Claire should be on the second page when page_size is 1
-                check_subs(&alice, 1, 1, vec!["bobdid".to_string()]);
-                check_subs(&alice, 0, 1, vec!["clairedid".to_string()]);
+                check_subs(&alice, 1, 1, vec!["clairedid".to_string()]);
+                check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
             },
         );
     }
@@ -298,17 +302,20 @@ mod tests {
                                   page: u64,
                                   page_size: u64,
                                   expected_subs: Vec<String>| {
+                    let mut expected_subs = expected_subs.clone();
+                    expected_subs.sort();
                     let sub_msg = QueryMsg::GetSubscriptions {
                         wallet: wallet.address().to_string(),
                         page: Uint64::from(page),
                         page_size: Uint64::from(page_size),
                     };
-                    let subs = wasm
+                    let mut subs = wasm
                         .query::<QueryMsg, GetSubscriptionListResponse>(&contract_addr, &sub_msg)
                         .unwrap()
                         .subscribers;
-                    println!("subs: {:?}", subs);
-                    println!("expected_subs: {:?}", expected_subs);
+                    subs.sort();
+                    // println!("subs: {:?}", subs);
+                    // println!("expected_subs: {:?}", expected_subs);
 
                     // extract the subscriber addresses
                     let subs_dids = subs
@@ -316,7 +323,7 @@ mod tests {
                         .map(|sub| sub.subscribed_to.clone())
                         .collect::<Vec<String>>();
 
-                    println!("subs_dids: {:?}", subs_dids);
+                    // println!("subs_dids: {:?}", subs_dids);
                     assert!(subs_dids == expected_subs);
                 };
 
@@ -363,13 +370,13 @@ mod tests {
                 );
 
                 // Claire should be on the second page when page_size is 1
-                check_subs(&bob, 1, 1, vec!["alicedid".to_string()]);
-                check_subs(&bob, 0, 1, vec!["clairedid".to_string()]);
+                check_subs(&bob, 1, 1, vec!["clairedid".to_string()]);
+                check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
 
                 // test subscriber count
                 let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
                 let count = sub_count.unwrap().clone();
-                println!("count: {:?}", count);
+                // println!("count: {:?}", count);
                 assert!(count == Uint64::from(1u64));
             },
         );

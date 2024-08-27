@@ -9,9 +9,12 @@ use crate::state::{
     WALLET_PROFILE_MAP,
 };
 use coreum_wasm_sdk::assetnft;
+use prost::Message;
+// use prost::message::Message;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
+use coreum_wasm_sdk::shim::Any;
 use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicItem, DataEditor, MsgMint};
 use cosmwasm_std::{
     coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
@@ -226,6 +229,8 @@ pub fn subscribe(
     Ok(response)
 }
 
+// doc ref:         https://docs.coreum.dev/docs/modules/coreum-non-fungible-token#interaction-with-nft-module-introducing-wnft-module
+// example ref:     https://github.com/CoreumFoundation/coreum/blob/f349a68ed04a3fa6e1cf7fcd0430a46949e30f6f/integration-tests/contracts/modules/nft/src/contract.rs
 fn mint_nft(
     _deps: &DepsMut<CoreumQueries>,
     env: Env,
@@ -289,12 +294,12 @@ pub fn is_subscriber(
     subscriber_wallet: String,
 ) -> StdResult<Binary> {
     // convert the sender wallet to DID
-    let subscriber_profile = WALLET_PROFILE_MAP
-        .may_load(deps.storage, subscriber_wallet.clone())?
-        .ok_or(StdError::generic_err(format!(
-            "Couldn't find the subscriber's DID for wallet {} in the contract registry",
-            subscriber_wallet
-        )))?;
+    // let subscriber_profile = WALLET_PROFILE_MAP
+    //     .may_load(deps.storage, subscriber_wallet.clone())?
+    //     .ok_or(StdError::generic_err(format!(
+    //         "Couldn't find the subscriber's DID for wallet {} in the contract registry",
+    //         subscriber_wallet
+    //     )))?;
 
     let target_profile = DID_PROFILE_MAP
         .may_load(deps.storage, target_did.clone())?
@@ -352,35 +357,11 @@ pub fn is_subscriber(
 
     let res = deps.querier.query::<nft::NFTResponse>(&request);
     let expiration_is_ok = match res {
-        Ok(nft) => {
-            // Ensure the NFT has data
-            if let Some(nft_data) = nft.nft.data {
-                // Attempt to decode the data into DataDynamic structure
-                if let Ok(sub_info_dyn) = from_json::<DataDynamic>(&nft_data) {
-                    // Attempt to deserialize the data inside DataDynamic to SubscriptionInfo
-                    if let Ok(sub_info) = from_json::<SubscriptionInfo>(&sub_info_dyn.items[0].data) {
-                        let is_valid_sub = sub_info.valid_until.seconds() >= env.block.time.seconds();
-                        return to_json_binary(&is_valid_sub);
-                    } else {
-                        // there is data but it's not a subscription info - something is wrong
-                        return to_json_binary(&false);
-                    }
-                } else {
-                    // there is data but it's not a subscription info - something is wrong
-                    return to_json_binary(&false);
-                }
-            } else {
-                // future-proofing for when NFTs are minted without data (no subscription info)
-                return to_json_binary(&true);
-            }
-
+        Ok(nft_response) => {
             // // NFT found, check the expiration date
-            // match nft.nft.data {
-            //     None => true,
-            //     Some(data) => {
-            //         let sub_info: SubscriptionInfo = from_json(&data)?;
-            //     }
-            // }
+            let sub_info: SubscriptionInfo = nft_response.nft.into(); 
+            let is_valid_sub = sub_info.valid_until.seconds() >= env.block.time.seconds();
+            return to_json_binary(&is_valid_sub);
         }
         // when NFT is not found query returns "{}"
         // which can't be deserialized to NFTResponse struct
@@ -418,8 +399,7 @@ pub fn get_subscribers(
                 .nfts
                 .iter()
                 .map(|nft| {
-                    let nft_data = nft.data.clone().unwrap();
-                    let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
+                    let sub_info: SubscriptionInfo = nft.clone().into();
                     return sub_info;
                 })
                 .collect();
@@ -450,7 +430,7 @@ pub fn get_subscriptions(
             offset: Some(page.u64() * page_size.u64()),
             limit: Some(page_size.u64()),
             count_total: None,
-            reverse: Some(false),
+            reverse: Some(true),
         }),
     })
     .into();
@@ -462,8 +442,7 @@ pub fn get_subscriptions(
                 .nfts
                 .iter()
                 .map(|nft| {
-                    let nft_data = nft.data.clone().unwrap();
-                    let sub_info: SubscriptionInfo = from_json(&nft_data).unwrap();
+                    let sub_info: SubscriptionInfo = nft.clone().into();
                     return sub_info;
                 })
                 .collect();
