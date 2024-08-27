@@ -1,27 +1,13 @@
 use std::collections::LinkedList;
 use std::fmt::Display;
 
+use coreum_wasm_sdk::{nft::NFT, types::coreum::asset::nft::v1::DataDynamic};
 use cw_storage_plus::{Item, Map};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Coin, Decimal, Timestamp, Uint64};
-// use cosmwasm_storage::{
-//     bucket, bucket_read, singleton, singleton_read, Bucket, ReadonlyBucket, ReadonlySingleton,
-//     Singleton,
-// };
-
-// pub static CONFIG_KEY: &[u8] = b"config";
-// pub static DID_RESOLVER_KEY: &[u8] = b"didresolver";
-// pub static USERNAME_RESOLVER_KEY: &[u8] = b"usernameresolver"; // maps usernames to DIDs
-// pub static WALLET_RESOLVER_KEY: &[u8] = b"walletlresolver"; // maps wallet addresses to DIDs
-
-// pub static VC_MERKLE_RESOLVER_KEY: &[u8] = b"vcmerklelresolver"; // maps DIDs to Merkle root commitments
-
-// pub static PROFILE_INFO: &[u8] = b"profileinfo"; // stores top subscribers, subcription price, etc.
-// pub static SINGLE_SUBSCRIPTION: &[u8] = b"singlesub"; // stores info about a single (user -> subscriber) pair
-// pub static POST_KEY: &[u8] = b"postinfo"; // post info (includes optional bounty, creator tips, wheather accepted answer has been marked, claimed, etc)
-
+use cosmwasm_std::{from_json, Addr, Coin, Decimal, Timestamp, Uint64};
+use prost::Message;
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
     pub did_register_price: Option<Coin>,
@@ -36,18 +22,39 @@ pub const USERNAME_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("usernamepro
 
 pub const WALLET_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("walletprofile");
 
-pub const SUBSCRIPTION: Map<String, SubscriptionInfo> = Map::new("subscription");
-
 pub const CREDENTIAL: Map<String, String> = Map::new("credential");
 
 
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Eq)]
 pub struct SubscriptionInfo {
     // pub subscriber: Addr,
     pub subscriber: String,    // subscriber's DID
-    pub subscribed_to: String, // DID of the profile subscribet to
+    pub subscribed_to: String, // DID of the profile subscribed to
     pub valid_until: Timestamp,
     pub cost: Coin,
+}
+
+impl Ord for SubscriptionInfo {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // order by subscriber, break ties with subscribed_to
+        self.subscriber.cmp(&other.subscriber).then_with(|| self.subscribed_to.cmp(&other.subscribed_to))
+    }
+}
+
+impl PartialOrd for SubscriptionInfo {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        Some(self.cmp(other))
+    }
+}
+
+// helper trait imlementation to convert NFTResponse to SubscriptionInfo rapidly
+impl From<NFT> for SubscriptionInfo {
+    fn from(nft: NFT) -> Self {
+        let sub_info = DataDynamic::decode(nft.data.unwrap().as_slice()).unwrap();
+        let sub_info = from_json::<SubscriptionInfo>(&sub_info.items[0].data).unwrap();
+        sub_info
+    }
+    
 }
 
 impl Display for SubscriptionInfo {
