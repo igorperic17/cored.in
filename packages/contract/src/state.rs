@@ -22,8 +22,6 @@ pub const USERNAME_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("usernamepro
 
 pub const WALLET_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("walletprofile");
 
-pub const SUBSCRIPTION: Map<String, SubscriptionInfo> = Map::new("subscription");
-
 pub const CREDENTIAL: Map<String, String> = Map::new("credential");
 
 
@@ -47,7 +45,6 @@ impl PartialOrd for SubscriptionInfo {
     fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
         Some(self.cmp(other))
     }
-    
 }
 
 // helper trait imlementation to convert NFTResponse to SubscriptionInfo rapidly
@@ -56,27 +53,6 @@ impl From<NFT> for SubscriptionInfo {
         let sub_info = DataDynamic::decode(nft.data.unwrap().as_slice()).unwrap();
         let sub_info = from_json::<SubscriptionInfo>(&sub_info.items[0].data).unwrap();
         sub_info
-        // leaving this here for future reference
-        // if let Some(nft_data) = nft.nft.data {
-        //     // Attempt to decode the data into DataDynamic structure
-        //     // return Err(StdError::generic_err(format!("NFT data: {:?}", nft_data).to_string()));
-        //     if let Ok(sub_info_dyn) = DataDynamic::decode(nft_data.as_slice()) {
-        //         // Attempt to deserialize the data inside DataDynamic to SubscriptionInfo
-        //         let sub_info = from_json::<SubscriptionInfo>(&sub_info_dyn.items[0].data);
-        //         if let Ok(sub_info) = sub_info {
-        //             return sub_info;
-        //         } else {
-        //             // there is data but it's not a subscription info - something is wrong
-        //             return Err(StdError::generic_err("NFT data is not a SubscriptionInfo"));
-        //         }
-        //     } else {
-        //         // there is data but it's not a subscription info - something is wrong
-        //         return Err(StdError::generic_err("NFT data is not a DataDynamic"));
-        //     }
-        // } else {
-        //     // future-proofing for when NFTs are minted without data (no subscription info)
-        //     return Err(StdError::generic_err("NFT has no data"));
-        // }
     }
     
 }

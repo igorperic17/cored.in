@@ -113,7 +113,6 @@ mod tests {
                 let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
 
                 let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
-                
                 // expect that is_sub is true after subscription
                 assert!(is_sub.is_ok() && is_sub.unwrap());
             },
@@ -239,7 +238,6 @@ mod tests {
                 };
 
                 // Alice should not have any subscribers
-                println!("Alice should not have any subscribers");
                 check_subs(&alice, 0, 10, vec![]);
                 check_subs(&alice, 2, 10, vec![]);
                 check_subs(&alice, 0, 1, vec![]);
@@ -252,7 +250,6 @@ mod tests {
                 let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
 
                 // Alice should have Bob as a subscriber
-                println!("Alice should have Bob");
                 check_subs(&alice, 0, 10, vec!["bobdid".to_string()]);
                 check_subs(&alice, 2, 10, vec![]); // Bob is on page 0
                 check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
@@ -328,7 +325,6 @@ mod tests {
                 };
 
                 // Alice should not have any subscribers
-                println!("Bob should not have any subscriptions");
                 check_subs(&bob, 0, 10, vec![]);
                 check_subs(&bob, 2, 10, vec![]);
                 check_subs(&bob, 0, 1, vec![]);
@@ -349,7 +345,6 @@ mod tests {
                 let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
 
                 // Alice should have Bob as a subscriber
-                println!("Bob should have Alice");
                 check_subs(&bob, 0, 10, vec!["alicedid".to_string()]);
                 check_subs(&bob, 2, 10, vec![]); // Bob is on page 0
                 check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
