@@ -2,7 +2,6 @@
 mod tests {
     use crate::contract::FEE_DENOM;
     use crate::msg::{ExecuteMsg, GetSubscriptionListResponse, InstantiateMsg, QueryMsg};
-    use crate::state::SubscriptionInfo;
     use crate::tests::test_common::test_common::{
         get_balance, mock_register_account, with_test_tube, INITIAL_BALANCE,
     };
@@ -114,7 +113,7 @@ mod tests {
                 let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
 
                 let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
-                println!("is_sub: {:?}", is_sub);
+                
                 // expect that is_sub is true after subscription
                 assert!(is_sub.is_ok() && is_sub.unwrap());
             },
@@ -226,8 +225,8 @@ mod tests {
                         .unwrap()
                         .subscribers;
                     subs.sort();
-                    println!("subs: {:?}", subs);
-                    println!("expected_subs: {:?}", expected_subs);
+                    // println!("subs: {:?}", subs);
+                    // println!("expected_subs: {:?}", expected_subs);
 
                     // extract the subscriber addresses
                     let subs_dids = subs
@@ -235,7 +234,7 @@ mod tests {
                         .map(|sub| sub.subscriber.clone())
                         .collect::<Vec<String>>();
 
-                    println!("subs_dids: {:?}", subs_dids);
+                    // println!("subs_dids: {:?}", subs_dids);
                     assert!(subs_dids == expected_subs);
                 };
 
@@ -443,8 +442,6 @@ mod tests {
         };
         let sub_1 = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
         let sub_2 = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
-        println!("sub_1: {:?}", sub_1);
-        println!("sub_2: {:?}", sub_2);
         // expect no errors
         assert!(sub_1.is_ok() && sub_2.is_ok());
 

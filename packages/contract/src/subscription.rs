@@ -1,20 +1,19 @@
 use std::str::FromStr;
 
-use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
+use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id};
 use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
-use crate::msg::{GetSubscriptionInfoResponse, GetSubscriptionListResponse};
+use crate::msg::GetSubscriptionListResponse;
 use crate::state::{
-    ProfileInfo, SubscriptionInfo, CONFIG, DID_PROFILE_MAP, SUBSCRIPTION, USERNAME_PROFILE_MAP,
+    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, USERNAME_PROFILE_MAP,
     WALLET_PROFILE_MAP,
 };
-use coreum_wasm_sdk::assetnft;
-use prost::Message;
+// use prost::Message;
 // use prost::message::Message;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
-use coreum_wasm_sdk::shim::Any;
+// use coreum_wasm_sdk::shim::Any;
 use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicIndexedItem, DataDynamicItem, DataEditor, MsgMint, MsgUpdateData};
 use cosmwasm_std::{
     coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
@@ -237,13 +236,6 @@ pub fn is_subscriber(
     target_did: String,
     subscriber_wallet: String,
 ) -> StdResult<Binary> {
-    // convert the sender wallet to DID
-    // let subscriber_profile = WALLET_PROFILE_MAP
-    //     .may_load(deps.storage, subscriber_wallet.clone())?
-    //     .ok_or(StdError::generic_err(format!(
-    //         "Couldn't find the subscriber's DID for wallet {} in the contract registry",
-    //         subscriber_wallet
-    //     )))?;
 
     let target_profile = DID_PROFILE_MAP
         .may_load(deps.storage, target_did.clone())?
