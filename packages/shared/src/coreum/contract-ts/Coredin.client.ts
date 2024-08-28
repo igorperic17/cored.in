@@ -6,7 +6,7 @@
 
 import { CosmWasmClient, SigningCosmWasmClient, ExecuteResult } from "@cosmjs/cosmwasm-stargate";
 import { StdFee } from "@cosmjs/amino";
-import { Uint128, Decimal, InstantiateMsg, Coin, ExecuteMsg, Uint64, QueryMsg, Addr, Config, Timestamp, GetDIDResponse, ProfileInfo, SubscriptionInfo, GetMerkleRootResponse, GetSubscriptionListResponse, GetSubscriptionInfoResponse, Boolean } from "./Coredin.types";
+import { Uint128, Decimal, InstantiateMsg, Coin, ExecuteMsg, Uint64, QueryMsg, Addr, Config, Timestamp, GetDIDResponse, ProfileInfo, SubscriptionInfo, GetMerkleRootResponse, GetSubscriptionListResponse, NullableSubscriptionInfo, Boolean } from "./Coredin.types";
 export interface CoredinReadOnlyInterface {
   contractAddress: string;
   config: () => Promise<Config>;
@@ -62,7 +62,7 @@ export interface CoredinReadOnlyInterface {
   }: {
     did: string;
     subscriber: string;
-  }) => Promise<GetSubscriptionInfoResponse>;
+  }) => Promise<NullableSubscriptionInfo>;
   getSubscribers: ({
     page,
     pageSize,
@@ -215,7 +215,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
   }: {
     did: string;
     subscriber: string;
-  }): Promise<GetSubscriptionInfoResponse> => {
+  }): Promise<NullableSubscriptionInfo> => {
     return this.client.queryContractSmart(this.contractAddress, {
       get_subscription_info: {
         did,

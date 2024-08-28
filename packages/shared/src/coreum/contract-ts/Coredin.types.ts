@@ -133,7 +133,5 @@ export interface GetMerkleRootResponse {
 export interface GetSubscriptionListResponse {
   subscribers: SubscriptionInfo[];
 }
-export interface GetSubscriptionInfoResponse {
-  info?: SubscriptionInfo | null;
-}
+export type NullableSubscriptionInfo = SubscriptionInfo | null;
 export type Boolean = boolean;

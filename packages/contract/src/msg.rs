@@ -11,7 +11,7 @@ use crate::state::{Config, ProfileInfo, SubscriptionInfo};
 pub struct InstantiateMsg {
     pub purchase_price: Option<Coin>,
     pub transfer_price: Option<Coin>,
-    pub subscription_fee: Decimal
+    pub subscription_fee: Decimal,
 }
 
 impl InstantiateMsg {
@@ -19,17 +19,17 @@ impl InstantiateMsg {
         InstantiateMsg {
             purchase_price: None,
             transfer_price: None,
-            subscription_fee: Decimal::zero()
+            subscription_fee: Decimal::zero(),
         }
     }
 }
 
 impl Default for InstantiateMsg {
     fn default() -> Self {
-        Self { 
-            purchase_price: None, 
-            transfer_price: None, 
-            subscription_fee: Decimal::percent(5) 
+        Self {
+            purchase_price: None,
+            transfer_price: None,
+            subscription_fee: Decimal::percent(5),
         }
     }
 }
@@ -77,7 +77,10 @@ pub enum QueryMsg {
 
     // check if the user is a subscriber to the DID
     #[returns(bool)]
-    IsSubscriber { target_did: String, subscriber_wallet: String },
+    IsSubscriber {
+        target_did: String,
+        subscriber_wallet: String,
+    },
 
     // returns the subscription price for a profile
     #[returns(Coin)]
@@ -88,16 +91,24 @@ pub enum QueryMsg {
     GetSubscriptionDuration { did: String },
 
     // returns subscription info
-    #[returns(GetSubscriptionInfoResponse)]
+    #[returns(Option<SubscriptionInfo>)]
     GetSubscriptionInfo { did: String, subscriber: String },
 
     // return the list of subscribers
     #[returns(GetSubscriptionListResponse)]
-    GetSubscribers { wallet: String, page: Uint64, page_size: Uint64 },
+    GetSubscribers {
+        wallet: String,
+        page: Uint64,
+        page_size: Uint64,
+    },
 
     // return the list of subscriptions
     #[returns(GetSubscriptionListResponse)]
-    GetSubscriptions { wallet: String, page: Uint64, page_size: Uint64 },
+    GetSubscriptions {
+        wallet: String,
+        page: Uint64,
+        page_size: Uint64,
+    },
 
     // return the subscriber count
     #[returns(Uint64)]
@@ -123,4 +134,3 @@ pub struct GetSubscriptionInfoResponse {
 pub struct GetSubscriptionListResponse {
     pub subscribers: Vec<SubscriptionInfo>, // list of subscriber's DIDs
 }
-

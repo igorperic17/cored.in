@@ -2,6 +2,7 @@
 mod tests {
     use crate::contract::FEE_DENOM;
     use crate::msg::{ExecuteMsg, GetSubscriptionListResponse, InstantiateMsg, QueryMsg};
+    use crate::state::SubscriptionInfo;
     use crate::tests::test_common::test_common::{
         get_balance, mock_register_account, with_test_tube, INITIAL_BALANCE,
     };
@@ -115,6 +116,18 @@ mod tests {
                 let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
                 // expect that is_sub is true after subscription
                 assert!(is_sub.is_ok() && is_sub.unwrap());
+
+                // Check subscription info
+                let sub_info_msg = QueryMsg::GetSubscriptionInfo {
+                    did: "alicedid".to_string(),
+                    subscriber: bob.address().to_string(),
+                };
+
+                let sub_info =
+                    wasm.query::<QueryMsg, Option<SubscriptionInfo>>(&contract_addr, &sub_info_msg);
+                println!("sub_info: {:?}", sub_info);
+
+                assert!(sub_info.is_ok() && sub_info.unwrap().is_some());
             },
         );
     }
