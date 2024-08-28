@@ -271,8 +271,8 @@ mod tests {
 
                 // Claire should be on the second page when page_size is 1
                 // TODO: commenting due to the undeterministic behavior of the order of subscribers
-                // check_subs(&alice, 1, 1, vec!["clairedid".to_string()]);
-                // check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
+                check_subs(&alice, 1, 1, vec!["clairedid".to_string()]);
+                check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
             },
         );
     }
@@ -366,8 +366,8 @@ mod tests {
 
                 // Claire should be on the second page when page_size is 1
                 // TODO: commenting due to the undeterministic behavior of the order of subscribers
-                // check_subs(&bob, 1, 1, vec!["clairedid".to_string()]);
-                // check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
+                check_subs(&bob, 1, 1, vec!["clairedid".to_string()]);
+                check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
 
                 // test subscriber count
                 let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
