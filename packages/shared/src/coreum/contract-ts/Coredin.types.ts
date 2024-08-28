@@ -122,7 +122,9 @@ export interface ProfileInfo {
 export interface SubscriptionInfo {
   cost: Coin;
   subscribed_to: string;
+  subscribed_to_wallet: Addr;
   subscriber: string;
+  subscriber_wallet: Addr;
   valid_until: Timestamp;
 }
 export interface GetMerkleRootResponse {
