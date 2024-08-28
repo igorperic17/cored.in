@@ -24,10 +24,10 @@ pub const WALLET_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("walletprofile
 
 pub const CREDENTIAL: Map<String, String> = Map::new("credential");
 
-
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Eq)]
 pub struct SubscriptionInfo {
-    // pub subscriber: Addr,
+    pub subscriber_wallet: Addr,
+    pub subscribed_to_wallet: Addr,
     pub subscriber: String,    // subscriber's DID
     pub subscribed_to: String, // DID of the profile subscribed to
     pub valid_until: Timestamp,
@@ -37,7 +37,9 @@ pub struct SubscriptionInfo {
 impl Ord for SubscriptionInfo {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {
         // order by subscriber, break ties with subscribed_to
-        self.subscriber.cmp(&other.subscriber).then_with(|| self.subscribed_to.cmp(&other.subscribed_to))
+        self.subscriber
+            .cmp(&other.subscriber)
+            .then_with(|| self.subscribed_to.cmp(&other.subscribed_to))
     }
 }
 
@@ -54,7 +56,6 @@ impl From<NFT> for SubscriptionInfo {
         let sub_info = from_json::<SubscriptionInfo>(&sub_info.items[0].data).unwrap();
         sub_info
     }
-    
 }
 
 impl Display for SubscriptionInfo {
@@ -66,7 +67,6 @@ impl Display for SubscriptionInfo {
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct ProfileInfo {
-
     pub wallet: Addr,
     pub did: String,
     pub username: String,

@@ -5,8 +5,7 @@ use crate::contract::FEE_DENOM;
 use crate::error::ContractError;
 use crate::msg::GetSubscriptionListResponse;
 use crate::state::{
-    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, USERNAME_PROFILE_MAP,
-    WALLET_PROFILE_MAP,
+    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP,
 };
 // use prost::Message;
 // use prost::message::Message;
@@ -14,9 +13,12 @@ use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 // use coreum_wasm_sdk::shim::Any;
-use coreum_wasm_sdk::types::coreum::asset::nft::v1::{DataDynamic, DataDynamicIndexedItem, DataDynamicItem, DataEditor, MsgMint, MsgUpdateData};
+use coreum_wasm_sdk::types::coreum::asset::nft::v1::{
+    DataDynamic, DataDynamicIndexedItem, DataDynamicItem, DataEditor, MsgMint, MsgUpdateData,
+};
 use cosmwasm_std::{
-    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps, DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64
+    coin, coins, from_json, to_json_binary, BankMsg, Binary, Coin, CosmosMsg, Decimal, Deps,
+    DepsMut, Env, MessageInfo, QueryRequest, Response, StdError, StdResult, Uint128, Uint64,
 };
 
 // hash function used to map an arbitrary length string (i.e. DID) into a base64 string of length n
@@ -118,18 +120,18 @@ pub fn subscribe(
     // example ref:     https://github.com/CoreumFoundation/coreum/blob/f349a68ed04a3fa6e1cf7fcd0430a46949e30f6f/integration-tests/contracts/modules/nft/src/contract.rs
     let nft_class_id =
         generate_nft_class_id(env.clone(), subscribed_to_wallet.wallet.to_string().clone());
-    let nft_id = info.sender.to_string();// try getting existing subscription first
+    let nft_id = info.sender.to_string(); // try getting existing subscription first
     response = response.add_attribute("nft_id", nft_id.to_string());
 
     let existing_subscription_res = get_subscription_info(
-        deps.as_ref(), 
-        env.clone(), 
-        subscribe_to_did.clone(), 
-        subscriber_profile.wallet.to_string()
+        deps.as_ref(),
+        env.clone(),
+        subscribe_to_did.clone(),
+        subscriber_profile.wallet.to_string(),
     )?;
-    let existing_subscription_res = from_json::<Option<SubscriptionInfo>>(&existing_subscription_res)?;
+    let existing_subscription_res =
+        from_json::<Option<SubscriptionInfo>>(&existing_subscription_res)?;
     if let Some(existing_subscription_res) = existing_subscription_res {
-
         // existing subscription found, update the validity date
         let mut existing_subscription: SubscriptionInfo = existing_subscription_res.clone();
 
@@ -149,14 +151,15 @@ pub fn subscribe(
             .to_vec(),
         };
         response = response.add_message(modify_data);
-        
     } else {
-
         // mint a new mutable subscription NFT
         let subscription = SubscriptionInfo {
+            subscriber_wallet: subscriber_profile.wallet.clone(),
+            subscribed_to_wallet: subscribed_to_wallet.wallet.clone(),
             subscriber: subscriber_profile.did.clone(),
             subscribed_to: subscribe_to_did.clone(),
-            valid_until: env.clone()
+            valid_until: env
+                .clone()
                 .block
                 .time
                 .plus_days(profile_info.subscription_duration_days.unwrap().u64()),
@@ -164,15 +167,16 @@ pub fn subscribe(
         };
 
         let data = to_json_binary(&subscription).unwrap();
-        let nft_data = Some( 
+        let nft_data = Some(
             DataDynamic {
-                items: [
-                    DataDynamicItem {editors: [DataEditor::Admin as i32, DataEditor::Owner as i32].to_vec(),data: data.to_vec(),}
-                    ]
+                items: [DataDynamicItem {
+                    editors: [DataEditor::Admin as i32, DataEditor::Owner as i32].to_vec(),
+                    data: data.to_vec(),
+                }]
                 .to_vec(),
             }
-            .to_any())
-        ;
+            .to_any(),
+        );
 
         let mint = MsgMint {
             sender: env.contract.address.to_string(),
@@ -183,9 +187,9 @@ pub fn subscribe(
             data: nft_data,
             recipient: info.sender.to_string(),
         };
-    
+
         let mint_bytes = mint.to_proto_bytes();
-    
+
         let msg = CosmosMsg::Stargate {
             type_url: mint.to_any().type_url,
             value: Binary::from(mint_bytes),
@@ -194,7 +198,6 @@ pub fn subscribe(
             .add_attribute("valid_until", subscription.valid_until.to_string())
             .add_message(msg);
     }
-    
 
     response = response
         .add_attribute("action", "subscribe")
@@ -236,7 +239,6 @@ pub fn is_subscriber(
     target_did: String,
     subscriber_wallet: String,
 ) -> StdResult<Binary> {
-
     let target_profile = DID_PROFILE_MAP
         .may_load(deps.storage, target_did.clone())?
         .ok_or(StdError::generic_err(format!(
@@ -280,7 +282,7 @@ pub fn is_subscriber(
     let expiration_is_ok = match res {
         Ok(nft_response) => {
             // // NFT found, check the expiration date
-            let sub_info: SubscriptionInfo = nft_response.nft.into(); 
+            let sub_info: SubscriptionInfo = nft_response.nft.into();
             let is_valid_sub = sub_info.valid_until.seconds() >= env.block.time.seconds();
             return to_json_binary(&is_valid_sub);
         }
@@ -405,7 +407,6 @@ pub fn get_subscription_info(
     target_did: String,
     subscriber_wallet: String,
 ) -> StdResult<Binary> {
-
     let target_profile = DID_PROFILE_MAP
         .may_load(deps.storage, target_did.clone())?
         .ok_or(StdError::generic_err(format!(
@@ -433,7 +434,6 @@ pub fn get_subscription_info(
         // which can't be deserialized to NFTResponse struct
         Err(_) => to_json_binary(&None::<Binary>),
     }
-
 }
 
 // gets current subscription cost

@@ -92,7 +92,9 @@
       "required": [
         "cost",
         "subscribed_to",
+        "subscribed_to_wallet",
         "subscriber",
+        "subscriber_wallet",
         "valid_until"
       ],
       "properties": {
@@ -102,8 +104,14 @@
         "subscribed_to": {
           "type": "string"
         },
+        "subscribed_to_wallet": {
+          "$ref": "#/definitions/Addr"
+        },
         "subscriber": {
           "type": "string"
+        },
+        "subscriber_wallet": {
+          "$ref": "#/definitions/Addr"
         },
         "valid_until": {
           "$ref": "#/definitions/Timestamp"
