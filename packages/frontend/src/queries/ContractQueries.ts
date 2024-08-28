@@ -87,17 +87,17 @@ export const CONTRACT_QUERIES = {
   getSubscriptionInfo: (
     coredinClient: CoredinClient,
     profileDid: string,
-    subscriberDid: string
+    subscriberWallet: string
   ) => ({
     queryKey: [
       BaseServerStateKeys.CONTRACT_SUBSCRIPTION_INFO,
       profileDid,
-      subscriberDid
+      subscriberWallet
     ],
     queryFn: () =>
       coredinClient.getSubscriptionInfo({
         did: profileDid,
-        subscriber: subscriberDid
+        subscriber: subscriberWallet
       })
   })
 };

@@ -13,7 +13,7 @@ import {
   VisuallyHidden,
   useDisclosure
 } from "@chakra-ui/react";
-import { TESTNET_STAKING_DENOM, UserProfile } from "@coredin/shared";
+import { UserProfile } from "@coredin/shared";
 import { FaCheckDouble, FaPen } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
@@ -53,13 +53,10 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     CONTRACT_QUERIES.getSubscriptionInfo(
       coredinClient!,
       profileDid?.did_info?.did || "",
-      userDid?.did_info?.did || ""
+      userWallet
     ),
     {
-      enabled:
-        !!coredinClient &&
-        !!profileDid?.did_info?.did &&
-        !!userDid?.did_info?.did
+      enabled: !!coredinClient && !!profileDid?.did_info?.did
     }
   );
   const { data: subscriptionPrice } = useContractRead(
@@ -119,17 +116,13 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     }
   };
 
-  console.log(subscriptionInfo?.info?.valid_until);
-
   const subscriptionInfoValidUntil = new Date(
-    subscriptionInfo?.info?.valid_until
-      ? parseInt(subscriptionInfo.info.valid_until) / 1000000 // Contract timestamp in nanoseconds!
+    subscriptionInfo?.valid_until
+      ? parseInt(subscriptionInfo.valid_until) / 1000000 // Contract timestamp in nanoseconds!
       : Date.now() - 1
   );
 
-  console.log(subscriptionInfoValidUntil);
-
-  const isSubscribed = subscriptionInfo?.info?.valid_until
+  const isSubscribed = subscriptionInfo?.valid_until
     ? subscriptionInfoValidUntil > new Date()
     : false;
 
