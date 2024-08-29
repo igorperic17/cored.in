@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ArrayContains, IsNull, Repository } from "typeorm";
+import { Any, ArrayContains, IsNull, Repository } from "typeorm";
 import { Post } from "./post.entity";
 import {
   CreatePostDTO,
@@ -64,6 +64,30 @@ export class PostsService {
       await this.postRepository.find({
         relations: ["user"],
         where: { visibility: PostVisibility.PUBLIC, replyToPostId: IsNull() },
+        order: { createdAt: "DESC" }
+      })
+    ).map((post) => this.fromDb(post));
+  }
+
+  async getPublicAndSubscribedFeed(
+    requesterWallet: string
+  ): Promise<PostDTO[]> {
+    const allSubscriptions =
+      await this.coredinContractService.getAllSubscriptions(requesterWallet);
+    const subscribedWallets = allSubscriptions.map(
+      (subscription) => subscription.subscribed_to_wallet
+    );
+    return (
+      await this.postRepository.find({
+        relations: ["user"],
+        where: [
+          { visibility: PostVisibility.PUBLIC, replyToPostId: IsNull() },
+          {
+            creatorWallet: Any([...subscribedWallets, requesterWallet]),
+            visibility: PostVisibility.PRIVATE,
+            replyToPostId: IsNull()
+          }
+        ],
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));

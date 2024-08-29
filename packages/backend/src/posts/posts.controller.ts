@@ -11,8 +11,8 @@ export class PostsController {
   constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getPublicFeed() {
-    return this.postsService.getPublicFeed();
+  async getHomeFeed(@Req() req: AuthenticatedRequest) {
+    return this.postsService.getPublicAndSubscribedFeed(req.wallet);
   }
 
   @Get(":id")
