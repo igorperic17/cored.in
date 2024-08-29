@@ -7,12 +7,18 @@ use cosmwasm_std::{
 use cw_storage_plus::Map;
 use std::collections::LinkedList;
 
-use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_symbol};
+use crate::coin_helpers::{
+    assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_symbol,
+};
 use crate::error::ContractError;
 use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
-use crate::state::{Config, ProfileInfo, CONFIG, CREDENTIAL, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP};
+use crate::state::{
+    Config, ProfileInfo, CONFIG, CREDENTIAL, DID_PROFILE_MAP, USERNAME_PROFILE_MAP,
+    WALLET_PROFILE_MAP,
+};
 use crate::subscription::{
-    get_subscriber_count, get_subscribers, get_subscription_duration, get_subscription_info, get_subscription_price, get_subscriptions, is_subscriber, set_subscription, subscribe
+    get_subscriber_count, get_subscribers, get_subscription_duration, get_subscription_info,
+    get_subscription_price, get_subscriptions, is_subscriber, set_subscription, subscribe,
 };
 
 use crate::merkle_tree::MerkleTree;
@@ -23,21 +29,43 @@ const MAX_NAME_LENGTH: u64 = 64;
 // TODO: adjust this to "utestcore" when deploying the contract, so it works when deployed to testnet
 pub const FEE_DENOM: &str = "ucore";
 
+pub const NFT_CLASS_PREFIX: &str = "coredintestnet";
+
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
-    _env: Env,
+    env: Env,
     info: MessageInfo,
     msg: InstantiateMsg,
-) -> Result<Response, StdError> {
+) -> Result<Response<CoreumMsg>, StdError> {
     let config_state = Config {
         owner: info.sender,
         did_register_price: msg.purchase_price,
-        subscription_fee: msg.subscription_fee
+        subscription_fee: msg.subscription_fee,
     };
     CONFIG.save(deps.storage, &config_state)?;
 
-    Ok(Response::default())
+    // create an NFT class for this contract so all of the subscriptions are NFTs of this class
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
+    let class_id_clone = class_id.clone();
+    let symbol = generate_nft_symbol(env, &NFT_CLASS_PREFIX.to_string());
+    let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
+        name: class_id, // class = user's DID they just registered
+        symbol: symbol, // class = cropped DID
+        description: Some(
+            format!(
+                "Welcome to the main coredin contract with NFT class id {}",
+                class_id_clone
+            )
+            .to_string(),
+        ),
+        uri: None,
+        uri_hash: None,
+        data: None,                            //
+        features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
+        royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
+    });
+    Ok(Response::<CoreumMsg>::default().add_message(issue_class_msg))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
@@ -48,8 +76,12 @@ pub fn execute(
     msg: ExecuteMsg,
 ) -> Result<Response<CoreumMsg>, ContractError> {
     match msg {
-        ExecuteMsg::Register { did, username } => execute_register(deps.into_empty(), env, info, username, did),
-        ExecuteMsg::RemoveDID { did, username } => execute_remove(deps.into_empty(), env, info, username, did),
+        ExecuteMsg::Register { did, username } => {
+            execute_register(deps.into_empty(), env, info, username, did)
+        }
+        ExecuteMsg::RemoveDID { did, username } => {
+            execute_remove(deps.into_empty(), env, info, username, did)
+        }
         ExecuteMsg::UpdateCredentialMerkleRoot { did, root } => {
             execute_update_vc_root(deps.into_empty(), env, info, did, root)
         }
@@ -95,25 +127,7 @@ pub fn execute_register(
     USERNAME_PROFILE_MAP.save(deps.storage, user_profile.username.clone(), &user_profile)?;
     WALLET_PROFILE_MAP.save(deps.storage, user_profile.wallet.to_string(), &user_profile)?;
 
-    // create an NFT class for this DID
-    // so all of the subscription to this user is an NFT of this class
-    let class_id = generate_nft_class_id(env.clone(), user_profile.wallet.to_string());
-    let symbol = generate_nft_symbol(env, &user_profile.wallet.to_string());
-    let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
-        name: class_id, // class = user's DID they just registered
-        symbol: symbol,                       // class = cropped DID
-        description: Some(
-            format!("Subscribers of {} (DID: {})", user_profile.username, user_profile.did).to_string(),
-        ),
-        uri: None,
-        uri_hash: None,
-        data: None,                            //
-        features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
-        royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
-    });
-
-    Ok(Response::<CoreumMsg>::default()
-        .add_message(issue_class_msg))
+    Ok(Response::default())
 }
 
 pub fn execute_remove(
@@ -159,21 +173,26 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
             credential_hash,
             merkle_proofs,
         } => query_verify_credential(deps, env, did, credential_hash, merkle_proofs),
-        QueryMsg::IsSubscriber { target_did, subscriber_wallet } => is_subscriber(deps, env, target_did, subscriber_wallet),
+        QueryMsg::IsSubscriber {
+            target_did,
+            subscriber_wallet,
+        } => is_subscriber(deps, env, target_did, subscriber_wallet),
         QueryMsg::GetSubscriptionPrice { did } => get_subscription_price(deps, did),
         QueryMsg::GetSubscriptionDuration { did } => get_subscription_duration(deps, did),
         QueryMsg::GetSubscriptionInfo { did, subscriber } => {
             get_subscription_info(deps, env, did, subscriber)
         }
-        QueryMsg::GetSubscribers { wallet, page, page_size } => {
-            get_subscribers(deps, env, wallet, page, page_size)
-        }
-        QueryMsg::GetSubscriptions { wallet, page, page_size } => {
-            get_subscriptions(deps, env, wallet, page, page_size)
-        }
-        QueryMsg::GetSubscriberCount { wallet } => {
-            get_subscriber_count(deps, env, wallet)
-        }
+        QueryMsg::GetSubscribers {
+            wallet,
+            page,
+            page_size,
+        } => get_subscribers(deps, env, wallet, page, page_size),
+        QueryMsg::GetSubscriptions {
+            wallet,
+            page,
+            page_size,
+        } => get_subscriptions(deps, env, wallet, page, page_size),
+        QueryMsg::GetSubscriberCount { wallet } => get_subscriber_count(deps, env, wallet),
     }
 }
 
@@ -184,7 +203,6 @@ fn query_resolver(
     query_key: String,
     storage_resolver: ResolverFnPointer,
 ) -> StdResult<Binary> {
-
     // read the DID from an appropriate storage bucket
     let did_info = match storage_resolver.may_load(deps.storage, query_key) {
         Ok(info) => info,
@@ -215,7 +233,6 @@ fn query_verify_credential(
     credential_hash: String,
     merkle_proofs: LinkedList<String>,
 ) -> StdResult<Binary> {
-
     let stored_root = CREDENTIAL.may_load(deps.storage, did)?;
 
     if stored_root.is_none() {

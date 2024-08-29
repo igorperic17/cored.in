@@ -1,15 +1,20 @@
 use crate::error::ContractError;
 use cosmwasm_std::{Coin, Env};
 
-pub fn generate_nft_symbol(_env: Env, subscribe_to_wallet: &String) -> String {
+pub fn generate_nft_symbol(_env: Env, raw_string: &String) -> String {
     // Filter out invalid characters that don't match [a-zA-Z0-9/:._]
-    let filtered_symbol: String = subscribe_to_wallet
+    let filtered_symbol: String = raw_string
         .chars()
         .filter(|c| c.is_alphanumeric() || ['/', ':', '.', '_'].contains(c))
         .collect();
 
     // Prepend a letter if the first character is not alphabetic
-    let mut symbol = if !filtered_symbol.chars().next().unwrap_or('0').is_alphabetic() {
+    let mut symbol = if !filtered_symbol
+        .chars()
+        .next()
+        .unwrap_or('0')
+        .is_alphabetic()
+    {
         format!("A{}", filtered_symbol)
     } else {
         filtered_symbol
@@ -21,7 +26,7 @@ pub fn generate_nft_symbol(_env: Env, subscribe_to_wallet: &String) -> String {
     symbol
 }
 
-pub fn generate_nft_class_id(env: Env, subscribe_to_wallet_address: String) -> String {
+pub fn generate_nft_class_id(env: Env, prefix: String) -> String {
     // classID must match format [symbol]-[issuer-address]
     //      and must match this regex:
     // symbol in classID should be lowercase and must be unique in the contract
@@ -32,34 +37,32 @@ pub fn generate_nft_class_id(env: Env, subscribe_to_wallet_address: String) -> S
     // Concatenate the remaining parts of the address and wallet, filtering for valid characters
     let filtered_part = format!(
         "{}-{}",
-        // env.contract.address.to_string(),
-        generate_nft_symbol(env.clone(), &subscribe_to_wallet_address),
-        env.contract.address.to_string()
-        // subscribe_to_wallet_address
-    ).chars()
+        generate_nft_symbol(env.clone(), &prefix),
+        env.contract.address.to_string() // subscribe_to_wallet_address
+    )
+    .chars()
     .filter(|c| c.is_alphanumeric() || [':', '/', '.', '_', '-'].contains(c))
     .collect::<String>();
-    
+
     // Append the filtered part to the class ID
     class_id.push_str(&filtered_part);
 
     class_id
 }
 
-
-pub fn generate_nft_id(env: Env, subscriber_did: String, subscribe_to_wallet: String) -> String {
+pub fn generate_nft_id(
+    _env: Env,
+    subscriber_wallet: String,
+    subscribe_to_wallet: String,
+) -> String {
     let mut nft_id = String::new();
 
     // Concatenate characters from the input strings to form the rest of the NFT ID
-    nft_id.push_str(&format!(
-        "{}{}{}",
-        env.contract.address,
-        subscriber_did,
-        subscribe_to_wallet
-    ));
+    nft_id.push_str(&format!("{}{}", subscriber_wallet, subscribe_to_wallet));
 
     // Filter out any characters not allowed by the regex
-    nft_id = nft_id.chars()
+    nft_id = nft_id
+        .chars()
         .filter(|c| c.is_alphanumeric() || [':', '/', '.', '_', '-'].contains(c))
         .collect();
 
@@ -84,18 +87,26 @@ pub fn assert_sent_sufficient_coin(
     if let Some(required_coin) = required {
         let required_amount = required_coin.amount.u128();
         if required_amount > 0 {
-            let required_sent = sent.iter().find(|x| { x.denom == required_coin.denom });
+            let required_sent = sent.iter().find(|x| x.denom == required_coin.denom);
             match required_sent {
-                None => { return Err(ContractError::InsufficientFundsSend { sent: required_sent.cloned(), expected: Some(required_coin.clone()) } ) },
+                None => {
+                    return Err(ContractError::InsufficientFundsSend {
+                        sent: required_sent.cloned(),
+                        expected: Some(required_coin.clone()),
+                    })
+                }
                 Some(x) => {
                     if x.amount < required_coin.amount {
-                        return Err(ContractError::InsufficientFundsSend { sent: required_sent.cloned(), expected: Some(required_coin.clone()) } )
+                        return Err(ContractError::InsufficientFundsSend {
+                            sent: required_sent.cloned(),
+                            expected: Some(required_coin.clone()),
+                        });
                     }
                 }
             }
         }
     }
-    
+
     Ok(())
 }
 
@@ -113,13 +124,19 @@ mod test {
 
         match assert_sent_sufficient_coin(&[], Some(coin(5, "token"))) {
             Ok(()) => panic!("Should have raised insufficient funds error"),
-            Err(ContractError::InsufficientFundsSend { sent: _, expected: _  }) => {}
+            Err(ContractError::InsufficientFundsSend {
+                sent: _,
+                expected: _,
+            }) => {}
             Err(e) => panic!("Unexpected error: {:?}", e),
         };
 
         match assert_sent_sufficient_coin(&coins(10, "smokin"), Some(coin(5, "token"))) {
             Ok(()) => panic!("Should have raised insufficient funds error"),
-            Err(ContractError::InsufficientFundsSend { sent: _, expected: _ }) => {}
+            Err(ContractError::InsufficientFundsSend {
+                sent: _,
+                expected: _,
+            }) => {}
             Err(e) => panic!("Unexpected error: {:?}", e),
         };
 

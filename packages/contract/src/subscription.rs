@@ -1,9 +1,9 @@
 use std::str::FromStr;
 
-use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id};
-use crate::contract::FEE_DENOM;
+use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
+use crate::contract::{FEE_DENOM, NFT_CLASS_PREFIX};
 use crate::error::ContractError;
-use crate::msg::GetSubscriptionListResponse;
+use crate::msg::{GetSubscriptionInfoResponse, GetSubscriptionListResponse};
 use crate::state::{
     SubscriptionInfo, CONFIG, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP,
 };
@@ -118,9 +118,12 @@ pub fn subscribe(
     // mint the subscription NFT
     // doc ref:         https://docs.coreum.dev/docs/modules/coreum-non-fungible-token#interaction-with-nft-module-introducing-wnft-module
     // example ref:     https://github.com/CoreumFoundation/coreum/blob/f349a68ed04a3fa6e1cf7fcd0430a46949e30f6f/integration-tests/contracts/modules/nft/src/contract.rs
-    let nft_class_id =
-        generate_nft_class_id(env.clone(), subscribed_to_wallet.wallet.to_string().clone());
-    let nft_id = info.sender.to_string(); // try getting existing subscription first
+    let nft_class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
+    let nft_id = generate_nft_id(
+        env.clone(),
+        info.sender.to_string(),
+        subscribed_to_wallet.wallet.clone().to_string(),
+    ); // info.sender.to_string(); // try getting existing subscription first
     response = response.add_attribute("nft_id", nft_id.to_string());
 
     let existing_subscription_res = get_subscription_info(
@@ -248,8 +251,13 @@ pub fn is_subscriber(
 
     // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
-    let class_id = generate_nft_class_id(env.clone(), target_profile.wallet.to_string());
-    let nft_id = subscriber_wallet.clone();
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
+    // let nft_id = subscriber_wallet.clone();
+    let nft_id = generate_nft_id(
+        env.clone(),
+        subscriber_wallet.clone(),
+        target_profile.wallet.to_string(),
+    );
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Owner {
         class_id: class_id.clone(),
         id: nft_id.clone(),
@@ -301,7 +309,7 @@ pub fn get_subscribers(
     page: Uint64,
     page_size: Uint64,
 ) -> StdResult<Binary> {
-    let class_id = generate_nft_class_id(env.clone(), wallet.clone());
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
         class_id: Some(class_id),
         owner: None,
@@ -314,6 +322,7 @@ pub fn get_subscribers(
         }),
     })
     .into();
+    // TODO - this will actually send all subs for anyone!
 
     let res = deps.querier.query::<NFTsResponse>(&request);
     match res {
@@ -340,13 +349,14 @@ pub fn get_subscribers(
 
 pub fn get_subscriptions(
     deps: Deps<CoreumQueries>,
-    _env: Env,
+    env: Env,
     wallet: String,
     page: Uint64,
     page_size: Uint64,
 ) -> StdResult<Binary> {
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
-        class_id: None,
+        class_id: Some(class_id),
         owner: Some(wallet),
         pagination: Some(PageRequest {
             key: None,
@@ -386,7 +396,7 @@ pub fn get_subscriber_count(
     env: Env,
     wallet: String,
 ) -> StdResult<Binary> {
-    let class_id = generate_nft_class_id(env.clone(), wallet.clone());
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
     let request: QueryRequest<CoreumQueries> =
         CoreumQueries::NFT(nft::Query::Supply { class_id: class_id }).into();
 
@@ -416,8 +426,13 @@ pub fn get_subscription_info(
 
     // the new way - check NFT ownership
     // doc ref: https://github.com/CoreumFoundation/coreum-wasm-sdk/blob/main/src/nft.rs
-    let class_id = generate_nft_class_id(env.clone(), target_profile.wallet.to_string());
-    let nft_id = subscriber_wallet.clone();
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
+    // let nft_id = subscriber_wallet.clone();
+    let nft_id = generate_nft_id(
+        env.clone(),
+        subscriber_wallet.clone(),
+        target_profile.wallet.to_string(),
+    );
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFT {
         class_id: class_id,
         id: nft_id,
