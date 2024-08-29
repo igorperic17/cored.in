@@ -43,7 +43,13 @@ export const CONTRACT_QUERIES = {
         pageSize: PAGE_SIZE.toString()
       });
       console.log("res", res);
-      return res;
+      // return res;
+      // Quick hack filtering in the frontend since the contract is currently returning all subscribptions alltogether
+      return {
+        subscribers: res.subscribers.filter(
+          (sub) => sub.subscribed_to_wallet === wallet
+        )
+      };
     }
   }),
   getSubscriptions: (coredinClient: CoredinClient, wallet: string) => ({
