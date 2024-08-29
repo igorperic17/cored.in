@@ -1,36 +1,22 @@
-import {
-  Avatar,
-  Button,
-  ButtonGroup,
-  Flex,
-  Link,
-  Text,
-  VStack
-} from "@chakra-ui/react";
-import React, { useContext } from "react";
-import { useContractRead } from "@/hooks";
-import { CONTRACT_QUERIES } from "@/queries";
-import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { Avatar, Flex, Link, Text, VStack } from "@chakra-ui/react";
+import React from "react";
+import { useLoggedInServerState } from "@/hooks";
+import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 type SubscriptionListCardProps = {
-  profileDid: string;
+  profileWallet: string;
   expirationTimestamp: string;
 };
 
 export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
-  profileDid,
+  profileWallet,
   expirationTimestamp
 }) => {
-  const coredinClient = useContext(CoredinClientContext);
-  const profileInfo = useContractRead(
-    CONTRACT_QUERIES.getInfoFromDid(coredinClient!, profileDid),
-    { enabled: !!coredinClient && !!profileDid }
+  const { data: userProfile } = useLoggedInServerState(
+    USER_QUERIES.getUser(profileWallet)
   );
-
-  const username = profileInfo.data?.did_info?.username;
-  const wallet = profileInfo?.data?.did_info?.wallet;
 
   return (
     <Flex
@@ -54,21 +40,13 @@ export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
       }}
     >
       <Avatar
-        name={profileInfo.data?.did_info?.username}
+        src={userProfile?.avatarUrl}
+        name={userProfile?.username}
         bg="brand.100"
-        color="brand.500"
-        border="1px solid #b0b0b0"
+        color={userProfile?.avatarFallbackColor || "brand.500"}
+        border={userProfile?.avatarUrl || "1px solid #b0b0b0"}
         size="md"
       />
-      {/* Copied from Post Content */}
-      {/* <Avatar
-            name={post.creatorUsername}
-            src={post.creatorAvatar}
-            bg="brand.100"
-            color={post.creatorAvatarFallbackColor || "brand.500"}
-            border={post.creatorAvatar || "1px solid #b0b0b0"}
-            size="md"
-          /> */}
       <VStack
         align="start"
         spacing="0em"
@@ -78,15 +56,15 @@ export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
         overflow="hidden"
         maxW={{ base: "170px", sm: "300px" }}
       >
-        {wallet && (
-          <Link as={ReactRouterLink} to={ROUTES.USER.buildPath(wallet)}>
+        {userProfile?.username && (
+          <Link as={ReactRouterLink} to={ROUTES.USER.buildPath(profileWallet)}>
             <Text
               as="span"
               textOverflow="ellipsis"
               whiteSpace="nowrap"
               overflow="hidden"
             >
-              @{username}
+              @{userProfile.username}
             </Text>
           </Link>
         )}

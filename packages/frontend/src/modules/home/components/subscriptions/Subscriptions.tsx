@@ -1,8 +1,6 @@
 import {
-  Avatar,
   Box,
   Button,
-  Flex,
   Heading,
   Tab,
   TabList,
@@ -10,8 +8,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  VisuallyHidden,
-  VStack
+  VisuallyHidden
 } from "@chakra-ui/react";
 import { SubscriptionListCard } from "./components";
 import { useInfiniteQuery } from "@tanstack/react-query";
@@ -100,10 +97,6 @@ export const Subscriptions = () => {
   const allSubscriptions = subscriptions?.pages.flatMap(
     (page) => page.subscribers
   );
-  // console.log("subscribers", subscribers);
-  // console.log("subscriptions", subscriptions);
-  // console.log("allSubscribers", allSubscribers);
-  // console.log("allSubscriptions", allSubscriptions);
 
   return (
     <Box w="100%">
@@ -121,7 +114,7 @@ export const Subscriptions = () => {
               <SubscriptionListCard
                 key={`subscription-${i}`}
                 expirationTimestamp={info.valid_until}
-                profileDid={info.subscriber}
+                profileWallet={info.subscriber_wallet}
               />
             ))}
             {(!allSubscribers || allSubscribers?.length === 0) && (
@@ -149,7 +142,7 @@ export const Subscriptions = () => {
               <SubscriptionListCard
                 key={`subscription-${i}`}
                 expirationTimestamp={info.valid_until}
-                profileDid={info.subscribed_to}
+                profileWallet={info.subscribed_to_wallet}
               />
             ))}
             {(!allSubscriptions || allSubscriptions?.length === 0) && (
