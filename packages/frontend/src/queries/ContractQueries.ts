@@ -1,8 +1,7 @@
 import { BaseServerStateKeys } from "@/constants";
 import { CoredinClient } from "@coredin/shared";
 
-// TODO: increase page size after pagination is implemented
-const PAGE_SIZE = 2;
+const PAGE_SIZE = 10;
 
 export const CONTRACT_QUERIES = {
   getWalletDid: (coredinClient: CoredinClient, wallet: string) => ({

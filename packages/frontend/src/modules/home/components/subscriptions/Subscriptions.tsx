@@ -34,7 +34,6 @@ export const Subscriptions = () => {
     data: subscribers,
     fetchNextPage: fetchNextSubscribersPage,
     isFetching: isFetchingSubscribers,
-    isFetchingNextPage: isFetchingNextSubscribersPage,
     hasNextPage: hasNextSubscribersPage
   } = useInfiniteQuery({
     ...subscribersQuery,
@@ -57,7 +56,6 @@ export const Subscriptions = () => {
     data: subscriptions,
     fetchNextPage: fetchNextSubscriptionsPage,
     isFetching: isFetchingSubscriptions,
-    isFetchingNextPage: isFetchingNextSubscriptionsPage,
     hasNextPage: hasNextSubscriptionsPage
   } = useInfiniteQuery({
     ...subscriptionsQuery,
@@ -76,22 +74,27 @@ export const Subscriptions = () => {
     }
   });
 
+  // Automatically fetch all paginated subscribers
   useEffect(() => {
-    if (address && coredinClient) {
-      console.log(
-        "Fetching subscribers and subscriptions",
-        address,
-        coredinClient,
-        subscribers,
-        isFetchingSubscribers,
-        subscriptions,
-        isFetchingSubscriptions
-      );
-      if (!subscribers && !isFetchingSubscribers) fetchNextSubscribersPage();
-      if (!subscriptions && !isFetchingSubscriptions)
-        fetchNextSubscriptionsPage();
-    }
-  }, [address, coredinClient]);
+    if (
+      address &&
+      coredinClient &&
+      !isFetchingSubscribers &&
+      hasNextSubscribersPage
+    )
+      fetchNextSubscribersPage();
+  }, [address, coredinClient, subscribers]);
+
+  // Automatically fetch all paginated subscriptions
+  useEffect(() => {
+    if (
+      address &&
+      coredinClient &&
+      !isFetchingSubscriptions &&
+      hasNextSubscriptionsPage
+    )
+      fetchNextSubscriptionsPage();
+  }, [address, coredinClient, subscriptions]);
 
   const allSubscribers = subscribers?.pages.flatMap((page) => page.subscribers);
   const allSubscriptions = subscriptions?.pages.flatMap(
@@ -124,7 +127,7 @@ export const Subscriptions = () => {
                 </Text>
               </Box>
             )}
-            <Button
+            {/* <Button
               onClick={() => fetchNextSubscribersPage()}
               isDisabled={
                 !hasNextSubscribersPage || isFetchingNextSubscribersPage
@@ -135,7 +138,7 @@ export const Subscriptions = () => {
                 : hasNextSubscribersPage
                   ? "Load More"
                   : "Nothing more to load"}
-            </Button>
+            </Button> */}
           </TabPanel>
           <TabPanel>
             {(allSubscriptions || []).map((info, i) => (
@@ -152,7 +155,7 @@ export const Subscriptions = () => {
                 </Text>
               </Box>
             )}
-            <Button
+            {/* <Button
               onClick={() => fetchNextSubscriptionsPage()}
               isDisabled={
                 !hasNextSubscriptionsPage || isFetchingNextSubscriptionsPage
@@ -163,7 +166,7 @@ export const Subscriptions = () => {
                 : hasNextSubscriptionsPage
                   ? "Load More"
                   : "Nothing more to load"}
-            </Button>
+            </Button> */}
           </TabPanel>
         </TabPanels>
       </Tabs>
