@@ -23,7 +23,9 @@ import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
 import { SubscriptionModal } from ".";
 import { useContractRead, useCustomToast } from "@/hooks";
-import { CONTRACT_QUERIES } from "@/queries";
+import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
+import { useQueryClient } from "@tanstack/react-query";
+import { BaseServerStateKeys } from "@/constants";
 
 type UserHeaderProps = {
   userProfile: UserProfile;
@@ -41,12 +43,10 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   const coredinClient = useContext(CoredinClientContext);
   const { successToast, errorToast } = useCustomToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const [isSubscribing, setIsSubscribing] = useState(false);
+  const queryClient = useQueryClient();
   const { data: profileDid } = useContractRead(
     CONTRACT_QUERIES.getWalletDid(coredinClient!, profileWallet),
-    { enabled: !!coredinClient }
-  );
-  const { data: userDid } = useContractRead(
-    CONTRACT_QUERIES.getWalletDid(coredinClient!, userWallet),
     { enabled: !!coredinClient }
   );
   const { data: subscriptionInfo, refetch } = useContractRead(
@@ -75,8 +75,6 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
 
-  const [isSubscribing, setIsSubscribing] = useState(false);
-
   const handleSubscribe = () => {
     console.log("Subscribing to", profileDid?.did_info?.did);
     if (coredinClient && subscriptionPrice && profileDid?.did_info) {
@@ -92,6 +90,15 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
         )
         .then(() => {
           refetch();
+          queryClient.invalidateQueries({
+            queryKey: [BaseServerStateKeys.USER_FEED]
+          });
+          queryClient.invalidateQueries({
+            queryKey: [BaseServerStateKeys.FEED]
+          });
+          queryClient.invalidateQueries({
+            queryKey: USER_QUERIES.getUser(userWallet).queryKey
+          });
           successToast(`Subscribed to ${userProfile.username}`);
         })
         .catch((error) => {
