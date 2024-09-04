@@ -20,6 +20,9 @@ export const ROUTES = {
       }
     }
   },
+  MESSAGES: {
+    path: "/messages"
+  },
   CREDENTIALS: {
     path: "/credentials",
     REQUEST: {

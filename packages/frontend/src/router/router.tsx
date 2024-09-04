@@ -17,6 +17,7 @@ import { RequestCredentialPage } from "@/modules/home/views/RequestCredential.pa
 import CredentialsPage from "@/modules/home/views/Credentials.page";
 import { IncomingRequestsPage } from "@/modules/home/views/IncomingRequests.page";
 import SubscriptionsPage from "@/modules/home/views/Subscriptions.page";
+import MessagesPage from "@/modules/home/views/Messages.page";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +77,17 @@ export const router = createBrowserRouter([
       {
         path: ROUTES.USER.POST.path,
         element: <PostPage />
+      }
+    ]
+  },
+  {
+    path: ROUTES.MESSAGES.path,
+    element: <HomeRoot />,
+    errorElement: <ResourceNotFoundPage />,
+    children: [
+      {
+        index: true,
+        element: <MessagesPage />
       }
     ]
   },

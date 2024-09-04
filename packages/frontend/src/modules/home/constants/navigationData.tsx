@@ -17,7 +17,7 @@ export const navigationData = (wallet: string) => [
   {
     title: "messages",
     icon: FaPaperPlane,
-    link: "#"
+    link: ROUTES.MESSAGES.path
   },
   {
     title: "credentials",
