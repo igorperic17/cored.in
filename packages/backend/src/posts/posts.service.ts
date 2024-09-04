@@ -153,7 +153,7 @@ export class PostsService {
     ).map((post) => this.fromDb(post));
   }
 
-  async getDirectPosts(wallet: string) {
+  async getPostsWithRecipients(wallet: string) {
     return await this.postRepository.find({
       relations: ["user"],
       where: [
