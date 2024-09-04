@@ -13,5 +13,9 @@ export const FEED_QUERIES = {
   getUserFeed: (user: string) => ({
     queryKey: [BaseServerStateKeys.USER_FEED, user],
     queryFn: () => feedService.getUserFeed(user)
+  }),
+  getMessages: () => ({
+    queryKey: [BaseServerStateKeys.MESSAGES_FEED],
+    queryFn: () => feedService.getMessageFeed()
   })
 };

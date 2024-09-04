@@ -12,6 +12,10 @@ export class FeedService {
     return this.http.get("posts");
   }
 
+  async getMessageFeed(): Promise<PostDTO[]> {
+    return this.http.get("posts/messages");
+  }
+
   async getUserFeed(user: string): Promise<PostDTO[]> {
     return this.http.get("posts/user/" + user);
   }
