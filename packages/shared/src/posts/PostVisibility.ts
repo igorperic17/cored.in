@@ -1,4 +1,5 @@
 export enum PostVisibility {
   PUBLIC = "public",
-  PRIVATE = "private"
+  PRIVATE = "private",
+  RECIPIENTS = "recipients"
 }

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { CoredinQueryClient } from "@coredin/shared";
 
-const PAGE_SIZE = 1;
+const PAGE_SIZE = 20;
 
 export class CoredinContractService {
   constructor(private readonly coredinQueryClient: CoredinQueryClient) {}

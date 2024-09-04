@@ -15,6 +15,11 @@ export class PostsController {
     return this.postsService.getPublicAndSubscribedFeed(req.wallet);
   }
 
+  @Get("messages")
+  async getMessagesFeed(@Req() req: AuthenticatedRequest) {
+    return this.postsService.getPublicAndSubscribedFeed(req.wallet);
+  }
+
   @Get(":id")
   async getPost(
     @Req() req: AuthenticatedRequest,
