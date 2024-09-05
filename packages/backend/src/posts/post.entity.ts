@@ -57,7 +57,8 @@ export class Post {
   visibility: PostVisibility;
 
   @Column("varchar", { array: true, default: [] })
-  recipients: string[];
+  @Index()
+  recipientWallets: string[];
 
   @Column({ default: 0 })
   likes: number;

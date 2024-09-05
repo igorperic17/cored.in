@@ -5,12 +5,14 @@ import { PostsController } from "./posts.controller";
 import { Post } from "./post.entity";
 import { PostsService } from "./posts.service";
 import { CoreumModule } from "@/coreum/app/coreum.module";
+import { UserModule } from "@/user/user.module";
 
 @Module({
   imports: [
     AuthenticationModule,
     CoreumModule,
-    TypeOrmModule.forFeature([Post])
+    TypeOrmModule.forFeature([Post]),
+    UserModule
   ],
   providers: [PostsService],
   controllers: [PostsController],

@@ -2,6 +2,7 @@ import { tags } from "typia";
 import { CredentialDTO, HexColor, PhotoUrl, ShortString } from "..";
 
 export interface PublicUserProfile {
+  wallet: string;
   username: ShortString;
   avatarUrl?: PhotoUrl;
   avatarFallbackColor?: HexColor;

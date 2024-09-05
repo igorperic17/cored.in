@@ -21,12 +21,15 @@ import {
 } from "@coredin/shared";
 import { User } from "@/user/user.entity";
 import { CoredinContractService } from "@/coreum/services";
+import { UserService } from "@/user/user.service";
 
 @Injectable()
 export class PostsService {
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
+    @Inject(UserService)
+    private readonly userService: UserService,
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
   ) {}
@@ -47,7 +50,7 @@ export class PostsService {
         {
           id,
           visibility: PostVisibility.RECIPIENTS,
-          recipients: ArrayContains([requester]) // Recipients post where requester is recipient
+          recipientWallets: ArrayContains([requester]) // Recipients post where requester is recipient
         }
       ];
       const isSubscribed = await this.coredinContractService.isWalletSubscribed(
@@ -153,8 +156,8 @@ export class PostsService {
     ).map((post) => this.fromDb(post));
   }
 
-  async getPostsWithRecipients(wallet: string) {
-    return await this.postRepository.find({
+  async getPostsWithRecipients(wallet: string): Promise<PostDTO[]> {
+    const posts = await this.postRepository.find({
       relations: ["user"],
       where: [
         {
@@ -165,15 +168,46 @@ export class PostsService {
         {
           replyToPostId: IsNull(),
           visibility: PostVisibility.RECIPIENTS,
-          recipients: ArrayContains([wallet])
+          recipientWallets: ArrayContains([wallet])
         }
       ],
       order: { createdAt: "DESC" }
     });
+
+    const recipients = await this.userService.getPublicProfileList(
+      posts.map((post) => post.recipientWallets).flat()
+    );
+
+    // TODO - eventually we could just have one query to get all posts and recipients
+    // const query = this.postRepository
+    //   .createQueryBuilder("post")
+    //   .leftJoinAndSelect(User, "user", "post.creatorWallet = user.wallet")
+    //   // .leftJoinAndSelect(
+    //   //   User,
+    //   //   "recipients",
+    //   //   "ANY(post.recipientWallets) = user.wallet"
+    //   // )
+    //   .where(
+    //     '"replyToPostId" = NULL AND visibility = :visibility AND (post.creatorWallet = :wallet OR post.recipientWallets @> ARRAY[:wallet])',
+    //     { wallet, visibility: PostVisibility.RECIPIENTS }
+    //   )
+    //   .orderBy("post.createdAt", "DESC")
+    //   .getMany();
+
+    return posts.map((post) => {
+      return {
+        ...this.fromDb(post),
+        recipients: recipients.filter((recipient) =>
+          post.recipientWallets.includes(recipient.wallet)
+        )
+      };
+    });
   }
 
   async create(wallet: string, data: CreatePostDTO) {
-    if (data.recipients && data.recipients.length > 0) {
+    // TODO - if data.replyToPostId is set, check if it exists and if current user is allowed to view it!
+
+    if (data.recipientWallets && data.recipientWallets.length > 0) {
       if (data.visibility !== PostVisibility.RECIPIENTS || data.replyToPostId) {
         throw new BadRequestException(
           "Recipients can only be set for recipient visibility posts"
@@ -183,7 +217,7 @@ export class PostsService {
       const allSubscriptions = (
         await this.coredinContractService.getAllSubscriptions(wallet)
       ).map((subscription) => subscription.subscribed_to_wallet);
-      const invalidRecipients = data.recipients.filter(
+      const invalidRecipients = data.recipientWallets.filter(
         (recipient) => !allSubscriptions.includes(recipient)
       );
       if (invalidRecipients.length > 0) {
@@ -195,7 +229,7 @@ export class PostsService {
 
     if (
       data.visibility === PostVisibility.RECIPIENTS &&
-      (!data.recipients || data.recipients.length === 0)
+      (!data.recipientWallets || data.recipientWallets.length === 0)
     ) {
       throw new BadRequestException(
         "Recipients must be set for recipient visibility posts"
@@ -259,6 +293,7 @@ export class PostsService {
   }
 
   private fromDb(post: Post): PostDTO {
+    console.dir(post, { depth: 10 });
     return {
       id: post.id,
       creatorWallet: post.creatorWallet,

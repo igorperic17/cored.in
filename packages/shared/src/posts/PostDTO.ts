@@ -1,3 +1,4 @@
+import { PublicUserProfile } from "@/user";
 import { PostVisibility } from "./PostVisibility";
 
 export type PostDTO = {
@@ -11,4 +12,5 @@ export type PostDTO = {
   createdAt: string;
   likes: number;
   replyToPostId?: number;
+  recipients?: PublicUserProfile[];
 };

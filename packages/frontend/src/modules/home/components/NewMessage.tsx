@@ -25,7 +25,7 @@ export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
   const queryClient = useQueryClient();
   const coredinClient = useContext(CoredinClientContext);
   const [postContent, setPostContent] = useState("");
-  const [recipients, setRecipients] = useState<string[]>([]);
+  const [recipientWallets, setRecipientWallets] = useState<string[]>([]);
   const { mutateAsync, isPending } = useMutableServerState(
     FEED_MUTATIONS.publish()
   );
@@ -76,16 +76,16 @@ export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
     const post: CreatePostDTO = {
       text: postContent,
       visibility: PostVisibility.RECIPIENTS,
-      recipients
+      recipientWallets
     };
     await mutateAsync({ post });
     await queryClient.invalidateQueries({
       queryKey: replyToPostId
         ? [BaseServerStateKeys.POST] // todo - handle single post refresh!
-        : [BaseServerStateKeys.FEED]
+        : [BaseServerStateKeys.MESSAGES_FEED]
     });
     setPostContent("");
-    setRecipients([]);
+    setRecipientWallets([]);
   };
 
   return (
@@ -96,9 +96,12 @@ export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
           setPostContent={setPostContent}
           handlePost={handlePost}
           isLoading={isPending}
-          recipients={recipients}
-          setRecipients={setRecipients}
+          recipients={recipientWallets}
+          setRecipients={setRecipientWallets}
           userProfile={userProfile}
+          subscriptions={
+            subscriptions?.pages.flatMap((page) => page.subscribers) || []
+          }
         />
       )}
     </>

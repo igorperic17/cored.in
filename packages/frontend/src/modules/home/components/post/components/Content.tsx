@@ -1,6 +1,6 @@
-import { Flex, Box, Text, VStack, Link } from "@chakra-ui/layout";
+import { Flex, Box, Text, VStack, Link, HStack } from "@chakra-ui/layout";
 import React, { useRef } from "react";
-import { PostDTO } from "@coredin/shared";
+import { PostDTO, PostVisibility } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
 import {
   AlertDialog,
@@ -90,6 +90,24 @@ export const Content: React.FC<PostContentProps> = ({
                 </Text>
               </Box>
             </Link>
+            {post.visibility === PostVisibility.RECIPIENTS && (
+              <HStack>
+                <Text as="span" color="text.700" textStyle="sm">
+                  {`Recipient: ${post.recipients?.map((recipient) => recipient.username).join(", ")}`}
+                </Text>
+                {post.recipients?.map((recipient) => (
+                  <Avatar
+                    key={recipient.wallet}
+                    name={recipient.username}
+                    src={recipient.avatarUrl}
+                    bg="brand.100"
+                    color={recipient.avatarFallbackColor || "brand.500"}
+                    border={recipient.avatarUrl || "1px solid #b0b0b0"}
+                    size={{ base: "sm", sm: "md" }}
+                  />
+                ))}
+              </HStack>
+            )}
             {showOptions && (
               <Menu offset={[-105, -10]}>
                 <MenuButton

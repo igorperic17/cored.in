@@ -53,20 +53,17 @@ export class UserService {
       where: { wallet }
     });
     if (user) {
-      return Effect.succeed({
-        username: user.username || "no_username",
-        avatarUrl: user.avatarUrl,
-        avatarFallbackColor: user.avatarFallbackColor,
-        backgroundColor: user.backgroundColor,
-        bio: user.bio,
-        issuerDid: user.issuerDid,
-        did: "",
-        likedPosts: [],
-        credentials: []
-      });
+      return Effect.succeed(this.adaptforPublicVisibililty(user));
     }
 
     return Effect.fail(new NotFoundError());
+  }
+
+  async getPublicProfileList(wallets: string[]): Promise<UserProfile[]> {
+    const users = await this.userRepository.find({
+      where: { wallet: In(wallets) }
+    });
+    return users.map((user) => this.adaptforPublicVisibililty(user));
   }
 
   async getPrivate(
@@ -98,6 +95,7 @@ export class UserService {
         await this.walletService.getVCs(wallet)
       );
       return Effect.succeed({
+        wallet: user.wallet,
         username: user.username || "no_username",
         did: did?.did || "",
         likedPosts: user.likedPosts,
@@ -158,7 +156,7 @@ export class UserService {
       where: { issuerDid: Not(IsNull()) }
     });
 
-    return issuers.map((issuer) => this.adaptPrivateProfile(issuer));
+    return issuers.map((issuer) => this.adaptforPublicVisibililty(issuer));
   }
 
   private async adaptCredentials(
@@ -187,11 +185,12 @@ export class UserService {
     }));
   }
 
-  private adaptPrivateProfile(user: User): UserProfile {
+  private adaptforPublicVisibililty(user: User): UserProfile {
     return {
+      wallet: user.wallet,
       username: user.username || "no_username",
       did: "",
-      likedPosts: user.likedPosts,
+      likedPosts: [],
       avatarUrl: user.avatarUrl,
       avatarFallbackColor: user.avatarFallbackColor,
       backgroundColor: user.backgroundColor,
