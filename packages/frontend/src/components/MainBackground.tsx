@@ -10,7 +10,7 @@ export const MainBackground = () => {
     <Box
       w="100%"
       maxW="1920px"
-      h="100vh"
+      h="100dvh"
       filter="blur(14px) saturate(0%) opacity(35%)"
       //   border="5px solid red"
       position="fixed"
