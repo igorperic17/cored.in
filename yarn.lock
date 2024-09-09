@@ -2523,6 +2523,7 @@ __metadata:
     react-dom: "npm:^18.3.1"
     react-icons: "npm:^4.12.0"
     react-router-dom: "npm:^6.25.1"
+    react-sticky-box: "npm:^2.0.5"
     react-textarea-autosize: "npm:^8.5.3"
     typescript: "npm:^5.5.4"
     util: "npm:^0.12.5"
@@ -20031,6 +20032,15 @@ __metadata:
   peerDependencies:
     react: ^16.8.0 || ^17.0.0-rc.1 || ^18.0.0
   checksum: 10/e78b03fe0404d62993f3b2df0910e987f09ca14231da5d976095a8520e32c4a7125da8391e443b4d6b11c51b73a7ec9b6ab99fcbf54ce8e074da5d9e53df5f16
+  languageName: node
+  linkType: hard
+
+"react-sticky-box@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "react-sticky-box@npm:2.0.5"
+  peerDependencies:
+    react: ">=16.8.0"
+  checksum: 10/bbea1e125973dc76b8fb8888583cabd81c16647f9acae74ce8d07642629dfd49ba1df1bbacb095db8d735feb5e73663ae478074f1ddfe6097c106c2eab5bf406
   languageName: node
   linkType: hard
 
