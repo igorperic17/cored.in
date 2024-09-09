@@ -47,10 +47,12 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       w="100%"
       position={{ base: "fixed", lg: "static" }}
       bottom={{ base: "0", lg: "" }}
+      left="0"
       layerStyle="cardBox"
       borderBottomRadius={{ base: "0", lg: "1em" }}
       pl={{ base: "0", lg: "2em" }}
       zIndex="1"
+      py={{ base: "0.5em", lg: "1.5em" }}
       // border="1px solid red"
     >
       <Grid

@@ -11,7 +11,7 @@ import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
 import {
   Box,
-  Flex,
+  Grid,
   Link,
   VStack,
   useMediaQuery,
@@ -26,6 +26,7 @@ import {
   useLocation
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
+import StickyBox from "react-sticky-box";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -49,70 +50,70 @@ export const HomeRoot = () => {
 
   return (
     <Box
-      maxH="100%"
       w="100%"
+      maxW="1920px"
+      mx="auto"
       bg="brand.100"
-      position="fixed"
-      overflow="auto"
-      // border="5px solid green"
+      position="relative"
+      zIndex="0"
     >
       {!isLargerThanLg && userProfile && (
         <Header username={userProfile.username} />
       )}
 
-      <Flex
-        justify="center"
-        align="start"
-        gap="1.25em"
-        maxW="1300px"
-        mx="auto"
-        p="1em"
+      <Grid
+        pt="1.5em"
+        pb={{ base: "4.5em", lg: "1.5em" }}
+        px={{ base: "0.5em", sm: "1em", md: "2.5em" }}
+        templateColumns={{
+          base: "100%",
+          lg: "minmax(300px, 20%) minmax(600px, 50%)"
+        }}
+        gap="3%"
+        // border="1px solid green"
+        alignItems="flex-start" // important for the StickyBox to work
       >
         {isLargerThanLg ? (
-          <VStack spacing="1.25em" w="24%" position="sticky" top="1em">
-            <Box layerStyle="cardBox" p="2em" w="100%">
-              <Link
-                as={ReactRouterLink}
-                to={ROUTES.ROOT.path}
-                _hover={{ textDecoration: "none" }}
-                aria-label="Main page."
-              >
-                <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
-              </Link>
-            </Box>
-            <Navigation wallet={chainContext.address || ""} />
-            <UserSignOut />
-          </VStack>
+          <StickyBox offsetTop={24} offsetBottom={24}>
+            <VStack
+              spacing="1.25em"
+              // border="1px solid red"
+              //
+            >
+              <Box layerStyle="cardBox" p="2em" w="100%">
+                <Link
+                  as={ReactRouterLink}
+                  to={ROUTES.ROOT.path}
+                  _hover={{ textDecoration: "none" }}
+                  aria-label="Main page."
+                >
+                  <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
+                </Link>
+              </Box>
+              <Navigation wallet={chainContext.address || ""} />
+              <UserSignOut />
+              <VStack spacing="1.25em" as="aside">
+                <VStack
+                  h="max-content"
+                  layerStyle="cardBox"
+                  px="2em"
+                  spacing="2em"
+                >
+                  <DisclaimerText />
+                  <SocialMedia size="2rem" gap="2.25em" color="text.400" />
+                </VStack>
+              </VStack>
+            </VStack>
+          </StickyBox>
         ) : (
           <Navigation wallet={chainContext.address || ""} />
         )}
 
-        <Box
-          as="main"
-          flex="1"
-          w="52%"
-          maxW={{ base: "600px", lg: "none" }}
-          mx="auto"
-          mb={{ base: "6em", lg: "2em" }}
-        >
+        <Box as="main">
           <Outlet />
           <ScrollRestoration />
         </Box>
-        {isLargerThanLg && (
-          <VStack
-            spacing="1.25em"
-            w="24%"
-            as="aside"
-            position="sticky"
-            top="1em"
-          >
-            <VStack h="max-content" layerStyle="cardBox" px="2em" spacing="2em">
-              <DisclaimerText />
-              <SocialMedia size="2rem" gap="2.25em" color="text.400" />
-            </VStack>
-          </VStack>
-        )}
-      </Flex>
+      </Grid>
       <MainBackground />
     </Box>
   );
