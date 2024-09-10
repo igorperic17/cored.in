@@ -80,7 +80,7 @@ export const Content: React.FC<PostContentProps> = ({
             >
               <Box
                 maxW={{ base: "190px" }}
-                textOverflow={"ellipsis"}
+                textOverflow="ellipsis"
                 whiteSpace="nowrap"
                 overflow="hidden"
               >
@@ -185,7 +185,7 @@ export const Content: React.FC<PostContentProps> = ({
           <Text color="brand.900" textStyle="sm" wordBreak="break-word">
             {post.text}
           </Text>
-          {/* to add dateTime later */}
+          {/* TODO: to add dateTime later */}
           <Text as="time" dateTime="" color="text.700" textStyle="sm">
             {new Date(post.createdAt).toLocaleTimeString()}
             <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">

@@ -4,6 +4,7 @@ export * from "./post";
 export * from "./NewPost";
 export * from "./NewMessage";
 export * from "./NewMessageModal";
+export * from "./MessagePreviewCard";
 export * from "./Navigation";
 export * from "./UserSignOut";
 export * from "./UserHeader";
