@@ -10,6 +10,7 @@ import {
   ArrayContains,
   FindOptionsWhere,
   IsNull,
+  Not,
   Repository
 } from "typeorm";
 import { Post } from "./post.entity";
@@ -158,7 +159,11 @@ export class PostsService {
     return (
       await this.postRepository.find({
         relations: ["user"],
-        where: { creatorWallet, replyToPostId: IsNull() },
+        where: {
+          creatorWallet,
+          replyToPostId: IsNull(),
+          visibility: Not(PostVisibility.RECIPIENTS)
+        },
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));
