@@ -12,7 +12,7 @@ const MessagesPage = () => {
       <VisuallyHidden>
         <Heading as="h1">Home page, message feed</Heading>
       </VisuallyHidden>
-      <NewMessage />
+      {/* <NewMessage /> */}
       <Box layerStyle="cardBox" py="1em" w="100%">
         <Feed posts={messages || []} />
       </Box>

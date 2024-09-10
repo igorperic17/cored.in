@@ -90,6 +90,7 @@ export const Content: React.FC<PostContentProps> = ({
                 </Text>
               </Box>
             </Link>
+            {/* ! */}
             {post.visibility === PostVisibility.RECIPIENTS && (
               <HStack>
                 <Text as="span" color="text.700" textStyle="sm">

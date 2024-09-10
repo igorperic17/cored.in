@@ -1,5 +1,9 @@
 import { BaseServerStateKeys } from "@/constants";
-import { useLoggedInServerState, useMutableServerState } from "@/hooks";
+import {
+  useCustomToast,
+  useLoggedInServerState,
+  useMutableServerState
+} from "@/hooks";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import {
   CreatePostDTO,
@@ -16,16 +20,26 @@ import {
 import { useChain } from "@cosmos-kit/react";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { NewMessageModal, NewMessageModalProps } from ".";
 
 export type NewMessageProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  toUsername: string;
   replyToPostId?: number;
+  recipientWallet: string;
 };
 
-export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
+export const NewMessage: React.FC<NewMessageProps> = ({
+  replyToPostId,
+  isOpen,
+  onClose,
+  toUsername,
+  recipientWallet
+}) => {
   const queryClient = useQueryClient();
   const coredinClient = useContext(CoredinClientContext);
   const [postContent, setPostContent] = useState("");
-  const [recipientWallets, setRecipientWallets] = useState<string[]>([]);
   const { mutateAsync, isPending } = useMutableServerState(
     FEED_MUTATIONS.publish()
   );
@@ -38,6 +52,7 @@ export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
     coredinClient!,
     address!
   );
+  const { successToast, errorToast } = useCustomToast();
 
   const {
     data: subscriptions,
@@ -72,11 +87,12 @@ export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
       fetchNextSubscriptionsPage();
   }, [address, coredinClient, subscriptions]);
 
-  const handlePost = async () => {
+  const handleMessage = async () => {
+    console.log(postContent);
     const post: CreatePostDTO = {
       text: postContent,
       visibility: PostVisibility.RECIPIENTS,
-      recipientWallets
+      recipientWallets: [recipientWallet]
     };
     await mutateAsync({ post });
     await queryClient.invalidateQueries({
@@ -85,23 +101,32 @@ export const NewMessage: React.FC<NewMessageProps> = ({ replyToPostId }) => {
         : [BaseServerStateKeys.MESSAGES_FEED]
     });
     setPostContent("");
-    setRecipientWallets([]);
+    onClose();
+    successToast("Message sent");
   };
 
   return (
     <>
       {userProfile && (
-        <NewMessageContent
+        // <NewMessageContent
+        //   postContent={postContent}
+        //   setPostContent={setPostContent}
+        //   handlePost={handlePost}
+        //   isLoading={isPending}
+        //   recipients={recipientWallets}
+        //   setRecipients={setRecipientWallets}
+        //   userProfile={userProfile}
+        //   subscriptions={
+        //     subscriptions?.pages.flatMap((page) => page.subscribers) || []
+        //   }
+        // />
+        <NewMessageModal
+          isOpen={isOpen}
+          onClose={onClose}
+          toUsername={toUsername}
           postContent={postContent}
           setPostContent={setPostContent}
-          handlePost={handlePost}
-          isLoading={isPending}
-          recipients={recipientWallets}
-          setRecipients={setRecipientWallets}
-          userProfile={userProfile}
-          subscriptions={
-            subscriptions?.pages.flatMap((page) => page.subscribers) || []
-          }
+          handleMessage={handleMessage}
         />
       )}
     </>

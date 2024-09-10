@@ -36,6 +36,8 @@ export const NewMessageContent: FC<NewMessageProps> = ({
 }) => {
   // const { isOpen, onOpen, onClose } = useDisclosure();
 
+  // CURRENTLY NOT USED BY NATALIA
+
   return (
     <Flex
       direction="column"

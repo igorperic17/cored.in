@@ -3,6 +3,7 @@ export * from "./Feed";
 export * from "./post";
 export * from "./NewPost";
 export * from "./NewMessage";
+export * from "./NewMessageModal";
 export * from "./Navigation";
 export * from "./UserSignOut";
 export * from "./UserHeader";

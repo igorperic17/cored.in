@@ -1,4 +1,4 @@
-import { Box, Text, VStack } from "@chakra-ui/react";
+import { Box, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { Post } from "../components";
 import { useLoggedInServerState } from "@/hooks";

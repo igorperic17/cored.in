@@ -21,7 +21,7 @@ import React, { useContext, useState } from "react";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
-import { SubscriptionModal } from ".";
+import { NewMessage, NewMessageModal, SubscriptionModal } from ".";
 import { useContractRead, useCustomToast } from "@/hooks";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import { useQueryClient } from "@tanstack/react-query";
@@ -239,12 +239,32 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           )}
 
         {isSubscribed && (
-          <HStack>
-            <Icon as={FaCheckDouble} color="brand.500" />
-            <Text as="span" textStyle="sm" color="brand.500">
-              Subscribed until {subscriptionInfoValidUntil.toLocaleString()}
-            </Text>
-          </HStack>
+          <Flex
+            justify="space-between"
+            direction={{ base: "column-reverse", sm: "row" }}
+            gap="1em"
+          >
+            <HStack>
+              <Icon as={FaCheckDouble} color="brand.500" />
+              <Text as="span" textStyle="sm" color="brand.500">
+                Subscribed until {subscriptionInfoValidUntil.toLocaleString()}
+              </Text>
+            </HStack>
+            <Button variant="primary" onClick={onOpen}>
+              New message
+            </Button>
+            {/* <NewMessageModal
+              isOpen={isOpen}
+              onClose={onClose}
+              toUsername={userProfile.username}
+            /> */}
+            <NewMessage
+              isOpen={isOpen}
+              onClose={onClose}
+              toUsername={userProfile.username}
+              recipientWallet={profileWallet}
+            />
+          </Flex>
         )}
       </Flex>
     </Box>
