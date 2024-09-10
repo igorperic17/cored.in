@@ -57,7 +57,11 @@ export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
         maxW={{ base: "170px", sm: "300px" }}
       >
         {userProfile?.username && (
-          <Link as={ReactRouterLink} to={ROUTES.USER.buildPath(profileWallet)}>
+          <Link
+            as={ReactRouterLink}
+            to={ROUTES.USER.buildPath(profileWallet)}
+            _hover={{ textDecoration: "none" }}
+          >
             <Text
               as="span"
               textOverflow="ellipsis"
