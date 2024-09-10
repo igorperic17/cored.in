@@ -198,7 +198,7 @@ export class PostsService {
           recipientWallets: ArrayContains([requesterWallet])
         }
       ],
-      order: { createdAt: "DESC" }
+      order: { lastReplyDate: "DESC", createdAt: "DESC" }
     });
 
     const recipients = await this.userService.getPublicProfileList(
@@ -276,7 +276,8 @@ export class PostsService {
           unreadByWallets: [
             ...parentPost.recipientWallets,
             parentPost.creatorWallet
-          ].filter((wallet) => wallet !== requesterWallet)
+          ].filter((wallet) => wallet !== requesterWallet),
+          lastReplyDate: new Date()
         }
       );
     }
@@ -284,6 +285,7 @@ export class PostsService {
     return await this.postRepository.insert({
       creatorWallet: requesterWallet,
       createdAt: new Date(),
+      lastReplyDate: new Date(),
       unreadByWallets: data.recipientWallets,
       ...data
     });
@@ -349,6 +351,7 @@ export class PostsService {
       visibility: post.visibility,
       text: post.text,
       createdAt: post.createdAt.toISOString(),
+      lastReplyDate: post.lastReplyDate?.toISOString(),
       likes: post.likes,
       replyToPostId: post.replyToPostId,
       unread: requesterWallet

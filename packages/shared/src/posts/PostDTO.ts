@@ -14,4 +14,5 @@ export type PostDTO = {
   replyToPostId?: number;
   recipients?: PublicUserProfile[];
   unread?: boolean;
+  lastReplyDate?: string;
 };

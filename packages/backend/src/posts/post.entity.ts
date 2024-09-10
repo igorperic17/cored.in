@@ -49,6 +49,9 @@ export class Post {
   @Column()
   createdAt: Date;
 
+  @Column({ nullable: true })
+  lastReplyDate?: Date;
+
   @Column({
     type: "enum",
     enum: PostVisibility
