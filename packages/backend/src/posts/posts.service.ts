@@ -38,7 +38,7 @@ export class PostsService {
   async get(
     id: number,
     creatorWallet: string,
-    requester: string
+    requesterWallet: string
   ): Promise<PostDetailDTO> {
     let postWithReplies = await this.getWithRelations([
       { id, visibility: PostVisibility.PUBLIC, creatorWallet }
@@ -47,16 +47,20 @@ export class PostsService {
     // If public not found, look for recipient posts or private post if requester is subscriber
     if (!postWithReplies) {
       const conditions = [
-        { id, visibility: PostVisibility.RECIPIENTS, creatorWallet: requester }, // Recipients post created by requester used
         {
           id,
           visibility: PostVisibility.RECIPIENTS,
-          recipientWallets: ArrayContains([requester]) // Recipients post where requester is recipient
+          creatorWallet: requesterWallet
+        }, // Recipients post created by requester used
+        {
+          id,
+          visibility: PostVisibility.RECIPIENTS,
+          recipientWallets: ArrayContains([requesterWallet]) // Recipients post where requester is recipient
         }
       ];
       const isSubscribed = await this.coredinContractService.isWalletSubscribed(
         creatorWallet,
-        requester
+        requesterWallet
       );
       if (isSubscribed) {
         conditions.push({
@@ -79,12 +83,22 @@ export class PostsService {
           )
         : [];
 
+    if (postWithReplies.unreadByWallets.includes(requesterWallet)) {
+      await this.postRepository.update(
+        { id: postWithReplies.id },
+        {
+          unreadByWallets: () =>
+            `array_remove("unreadByWallets", '${requesterWallet}')`
+        }
+      );
+    }
+
     return {
       ...this.fromDb(postWithReplies),
       parent: postWithReplies.parent
         ? this.fromDb(postWithReplies.parent)
         : undefined,
-      replies: postWithReplies.replies.map(this.fromDb),
+      replies: postWithReplies.replies.map((reply) => this.fromDb(reply)),
       recipients
     };
   }
@@ -169,19 +183,19 @@ export class PostsService {
     ).map((post) => this.fromDb(post));
   }
 
-  async getPostsWithRecipients(wallet: string): Promise<PostDTO[]> {
+  async getPostsWithRecipients(requesterWallet: string): Promise<PostDTO[]> {
     const posts = await this.postRepository.find({
       relations: ["user"],
       where: [
         {
-          creatorWallet: wallet,
+          creatorWallet: requesterWallet,
           replyToPostId: IsNull(),
           visibility: PostVisibility.RECIPIENTS
         },
         {
           replyToPostId: IsNull(),
           visibility: PostVisibility.RECIPIENTS,
-          recipientWallets: ArrayContains([wallet])
+          recipientWallets: ArrayContains([requesterWallet])
         }
       ],
       order: { createdAt: "DESC" }
@@ -209,7 +223,7 @@ export class PostsService {
 
     return posts.map((post) => {
       return {
-        ...this.fromDb(post),
+        ...this.fromDb(post, requesterWallet),
         recipients: recipients.filter((recipient) =>
           post.recipientWallets.includes(recipient.wallet)
         )
@@ -217,8 +231,14 @@ export class PostsService {
     });
   }
 
-  async create(wallet: string, data: CreatePostDTO) {
-    // TODO - if data.replyToPostId is set, check if it exists and if current user is allowed to view it!
+  async create(requesterWallet: string, data: CreatePostDTO) {
+    let parentPost: Post | undefined;
+    if (data.replyToPostId) {
+      parentPost = await this.validateReplyAndGetParentPost(
+        data.replyToPostId,
+        requesterWallet
+      );
+    }
 
     if (data.recipientWallets && data.recipientWallets.length > 0) {
       if (data.visibility !== PostVisibility.RECIPIENTS || data.replyToPostId) {
@@ -228,7 +248,7 @@ export class PostsService {
       }
 
       const allSubscriptions = (
-        await this.coredinContractService.getAllSubscriptions(wallet)
+        await this.coredinContractService.getAllSubscriptions(requesterWallet)
       ).map((subscription) => subscription.subscribed_to_wallet);
       const invalidRecipients = data.recipientWallets.filter(
         (recipient) => !allSubscriptions.includes(recipient)
@@ -249,10 +269,22 @@ export class PostsService {
       );
     }
 
-    // Attention: using insert won't trigger cascades, relations, etc..
+    if (data.replyToPostId && parentPost) {
+      await this.postRepository.update(
+        { id: data.replyToPostId },
+        {
+          unreadByWallets: [
+            ...parentPost.recipientWallets,
+            parentPost.creatorWallet
+          ].filter((wallet) => wallet !== requesterWallet)
+        }
+      );
+    }
+
     return await this.postRepository.insert({
-      creatorWallet: wallet,
+      creatorWallet: requesterWallet,
       createdAt: new Date(),
+      unreadByWallets: data.recipientWallets,
       ...data
     });
   }
@@ -298,6 +330,7 @@ export class PostsService {
   }
 
   private async getWithRelations(where: FindOptionsWhere<Post>[]) {
+    console.log("getWithRelations where", where);
     return await this.postRepository.findOne({
       relations: ["user", "parent", "parent.user", "replies", "replies.user"],
       where,
@@ -305,7 +338,7 @@ export class PostsService {
     });
   }
 
-  private fromDb(post: Post): PostDTO {
+  private fromDb(post: Post, requesterWallet?: string): PostDTO {
     console.dir(post, { depth: 10 });
     return {
       id: post.id,
@@ -317,7 +350,87 @@ export class PostsService {
       text: post.text,
       createdAt: post.createdAt.toISOString(),
       likes: post.likes,
-      replyToPostId: post.replyToPostId
+      replyToPostId: post.replyToPostId,
+      unread: requesterWallet
+        ? post.unreadByWallets.includes(requesterWallet)
+        : undefined
     };
+  }
+
+  private async validateReplyAndGetParentPost(
+    parentPostId: number,
+    requesterWallet: string
+  ): Promise<Post> {
+    const post = await this.postRepository.findOne({
+      where: {
+        id: parentPostId
+      }
+    });
+    if (!post) {
+      console.error("Parent post not found", parentPostId, requesterWallet);
+      throw new BadRequestException("Post not found");
+    }
+
+    // Private posts can only be replied to by the creator or subscribers
+    if (
+      post.visibility === PostVisibility.PRIVATE &&
+      post.creatorWallet !== requesterWallet
+    ) {
+      const isSubscribed = await this.coredinContractService.isWalletSubscribed(
+        post.creatorWallet,
+        requesterWallet
+      );
+      if (!isSubscribed) {
+        console.error(
+          "Trying to post a reply to a private non subscribed profile",
+          parentPostId,
+          requesterWallet
+        );
+
+        throw new BadRequestException("Post not found");
+      }
+    }
+
+    // Recipients posts can only be replied to by the creator or recipients
+    if (
+      post.visibility === PostVisibility.RECIPIENTS &&
+      post.creatorWallet !== requesterWallet &&
+      !post.recipientWallets.includes(requesterWallet)
+    ) {
+      console.error(
+        "Trying to post a reply to a post where requester is not a recipient",
+        parentPostId,
+        requesterWallet
+      );
+      if (!post.recipientWallets.includes(requesterWallet)) {
+        throw new BadRequestException("Post not found");
+      }
+    }
+
+    // Only creators that are still subscribed to a given profile can reply to their posts
+    if (
+      post.visibility === PostVisibility.RECIPIENTS &&
+      post.creatorWallet === requesterWallet
+    ) {
+      for (const recipient of post.recipientWallets) {
+        const isSubscribed =
+          await this.coredinContractService.isWalletSubscribed(
+            recipient,
+            requesterWallet
+          );
+        if (!isSubscribed) {
+          console.error(
+            "Trying to post a reply to a recipients posts by the creator which is no longer subscribed",
+            parentPostId,
+            post.recipientWallets,
+            requesterWallet
+          );
+
+          throw new BadRequestException("Post not found");
+        }
+      }
+    }
+
+    return post;
   }
 }

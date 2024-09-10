@@ -60,6 +60,10 @@ export class Post {
   @Index()
   recipientWallets: string[];
 
+  @Column("varchar", { array: true, default: [] })
+  @Index()
+  unreadByWallets: string[];
+
   @Column({ default: 0 })
   likes: number;
 

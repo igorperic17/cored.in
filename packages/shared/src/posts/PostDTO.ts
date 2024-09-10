@@ -13,4 +13,5 @@ export type PostDTO = {
   likes: number;
   replyToPostId?: number;
   recipients?: PublicUserProfile[];
+  unread?: boolean;
 };
