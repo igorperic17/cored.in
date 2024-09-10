@@ -71,12 +71,20 @@ export class PostsService {
       throw new NotFoundException("Post not found");
     }
 
+    const recipients =
+      postWithReplies.recipientWallets.length > 0
+        ? await this.userService.getPublicProfileList(
+            postWithReplies.recipientWallets
+          )
+        : [];
+
     return {
       ...this.fromDb(postWithReplies),
       parent: postWithReplies.parent
         ? this.fromDb(postWithReplies.parent)
         : undefined,
-      replies: postWithReplies.replies.map(this.fromDb)
+      replies: postWithReplies.replies.map(this.fromDb),
+      recipients
     };
   }
 
