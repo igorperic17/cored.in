@@ -25,6 +25,7 @@ import { DisclaimerText, SocialMedia } from "@/components";
 import { useLoggedInServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { CredentialRequestStatus } from "@coredin/shared";
+import { FEED_QUERIES } from "@/queries/FeedQueries";
 
 type NavigationProps = {
   wallet: string;
@@ -38,8 +39,12 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
   );
   const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: pendingRequests } = useLoggedInServerState(
-    ISSUER_QUERIES.getRequests(CredentialRequestStatus?.PENDING || "PENDING")
+    ISSUER_QUERIES.getRequests(CredentialRequestStatus.PENDING)
   );
+  const { data: messages } = useLoggedInServerState(FEED_QUERIES.getMessages());
+
+  const unreadMessages =
+    messages?.filter((message) => message.unread).length || 0;
 
   return (
     <Box
@@ -115,8 +120,23 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                       position={{ base: "absolute", lg: "static" }}
                       top={{ base: "-4px" }}
                       right={{ base: "8px", sm: "16px", md: "30px" }}
-                    ></Box>
+                    />
                   )}
+                {item.title === "messages" && unreadMessages > 0 && (
+                  <Box
+                    bg="brand.300"
+                    w="7px"
+                    h="7px"
+                    borderRadius="50%"
+                    alignSelf="start"
+                    ml="-0.25em"
+                    position={{ base: "absolute", lg: "static" }}
+                    top={{ base: "-4px" }}
+                    right={{ base: "8px", sm: "16px", md: "30px" }}
+                  >
+                    {unreadMessages}
+                  </Box>
+                )}
               </HStack>
             </Link>
           </Flex>
