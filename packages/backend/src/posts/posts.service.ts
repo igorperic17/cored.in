@@ -44,7 +44,7 @@ export class PostsService {
       { id, visibility: PostVisibility.PUBLIC, creatorWallet }
     ]);
 
-    // If public not found, look for recipient posts or private post if requester is subscriber
+    // If public not found, look for recipient posts
     if (!postWithReplies) {
       const conditions = [
         {
@@ -58,18 +58,24 @@ export class PostsService {
           recipientWallets: ArrayContains([requesterWallet]) // Recipients post where requester is recipient
         }
       ];
+      postWithReplies = await this.getWithRelations(conditions);
+    }
+
+    // If still not found, look for private post if requester is subscriber
+    if (!postWithReplies) {
       const isSubscribed = await this.coredinContractService.isWalletSubscribed(
         creatorWallet,
         requesterWallet
       );
       if (isSubscribed) {
-        conditions.push({
-          id,
-          visibility: PostVisibility.PRIVATE,
-          creatorWallet
-        });
+        postWithReplies = await this.getWithRelations([
+          {
+            id,
+            visibility: PostVisibility.PRIVATE,
+            creatorWallet
+          }
+        ]);
       }
-      postWithReplies = await this.getWithRelations(conditions);
     }
 
     if (!postWithReplies) {
@@ -98,7 +104,10 @@ export class PostsService {
       parent: postWithReplies.parent
         ? this.fromDb(postWithReplies.parent)
         : undefined,
-      replies: postWithReplies.replies.map((reply) => this.fromDb(reply)),
+      // TODO - sort by createdAt in query, it requires using QueryBuilder
+      replies: postWithReplies.replies
+        .map((reply) => this.fromDb(reply))
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
       recipients
     };
   }
