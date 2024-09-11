@@ -1,8 +1,9 @@
 import { ROUTES } from "@/router/routes";
-import { Avatar, Flex, Link, Text } from "@chakra-ui/react";
+import { Avatar, Flex, Icon, Link, Text } from "@chakra-ui/react";
 import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { FC } from "react";
+import { FaDownLong, FaUpLong } from "react-icons/fa6";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 type MessagePreviewCardProps = {
@@ -42,7 +43,8 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
       >
         <Flex
           gap={{ base: "0.75em", sm: "1.125em" }}
-          // border="1px solid red"
+          position="relative"
+          //   border="1px solid red"
           //
         >
           <Avatar
@@ -73,9 +75,9 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
           />
           <Flex
             direction="column"
-            //   border="1px solid red"
+            // border="1px solid red"
             w="100%"
-            maxW="82%"
+
             //
           >
             <Text as="span" color="brand.900" textStyle="md">
@@ -90,10 +92,23 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
+              maxW="75%"
             >
               {initialMessage.text}
             </Text>
           </Flex>
+          <Icon
+            as={isInitialisedByMe ? FaUpLong : FaDownLong}
+            aria-label={
+              isInitialisedByMe
+                ? "You initialised this chat."
+                : "Your subscriber initialised this chat."
+            }
+            color="brand.200"
+            position="absolute"
+            top="0"
+            right="0"
+          />
         </Flex>
         <Text
           as="time"
