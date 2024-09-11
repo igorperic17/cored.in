@@ -113,7 +113,11 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
         </Link>
         <Link
           as={ReactRouterLink}
-          to={ROUTES.USER.buildPath(message.recipients?.[0].wallet)}
+          to={
+            isInitialisedByMe
+              ? ROUTES.USER.buildPath(message.recipients?.[0].wallet)
+              : ROUTES.USER.buildPath(message.creatorWallet)
+          }
           _hover={{ textDecoration: "none" }}
         >
           <HStack justifySelf="center">
