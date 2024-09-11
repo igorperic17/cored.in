@@ -29,9 +29,17 @@ export const NewMessageModal: FC<NewMessageModalProps> = ({
   handleMessage
 }) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl" isCentered>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        onClose();
+        setPostContent("");
+      }}
+      size="xl"
+      isCentered
+    >
       <ModalOverlay />
-      <ModalContent>
+      <ModalContent p="0">
         <ModalHeader>New message to {toUsername}</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
@@ -39,7 +47,7 @@ export const NewMessageModal: FC<NewMessageModalProps> = ({
             placeholder="Enter your message here"
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
-            minH="250px"
+            minH="50vh"
             variant="unstyled"
             borderRadius="0.5em"
             p="0.5em"
