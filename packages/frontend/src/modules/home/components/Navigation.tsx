@@ -41,7 +41,10 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
   const { data: pendingRequests } = useLoggedInServerState(
     ISSUER_QUERIES.getRequests(CredentialRequestStatus.PENDING)
   );
-  const { data: messages } = useLoggedInServerState(FEED_QUERIES.getMessages());
+  const { data: messages } = useLoggedInServerState(
+    FEED_QUERIES.getMessages(),
+    { refetchInterval: 10000 }
+  );
 
   const unreadMessages =
     messages?.filter((message) => message.unread).length || 0;
