@@ -101,6 +101,7 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
           color="text.700"
           textStyle="sm"
           ml={{ base: "3.125em", sm: "4.125em" }}
+          userSelect="none"
         >
           {new Date(initialMessage.createdAt).toLocaleTimeString()}
           <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">

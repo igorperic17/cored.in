@@ -186,7 +186,13 @@ export const Content: React.FC<PostContentProps> = ({
             {post.text}
           </Text>
           {/* TODO: to add dateTime later */}
-          <Text as="time" dateTime="" color="text.700" textStyle="sm">
+          <Text
+            as="time"
+            dateTime=""
+            color="text.700"
+            textStyle="sm"
+            userSelect="none"
+          >
             {new Date(post.createdAt).toLocaleTimeString()}
             <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
               {"    •    "}
