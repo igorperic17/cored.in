@@ -1,17 +1,48 @@
 import { AutoResizeTextarea } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { ArrowBackIcon } from "@chakra-ui/icons";
-import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
-import { FC, useState } from "react";
-import { Link as ReactRouterLink, useParams } from "react-router-dom";
+import {
+  AlertDialog,
+  AlertDialogBody,
+  AlertDialogContent,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogOverlay,
+  Avatar,
+  Button,
+  Flex,
+  HStack,
+  Icon,
+  IconButton,
+  Link,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
+  Text,
+  useDisclosure
+} from "@chakra-ui/react";
+import { FC, useRef, useState } from "react";
+import {
+  Link as ReactRouterLink,
+  redirect,
+  useNavigate,
+  useParams
+} from "react-router-dom";
 import { ChatMessage } from ".";
-import { FaArrowUp } from "react-icons/fa6";
+import { FaArrowUp, FaEllipsis, FaTrash } from "react-icons/fa6";
 import { useChatScroll } from "../hooks";
-import { CreatePostDTO, PostDetailDTO, PostVisibility } from "@coredin/shared";
+import {
+  CreatePostDTO,
+  PostDetailDTO,
+  PostVisibility,
+  TESTNET_CHAIN_NAME
+} from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
-import { useMutableServerState } from "@/hooks";
+import { useCustomToast, useMutableServerState } from "@/hooks";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { BaseServerStateKeys } from "@/constants";
+import { useChain } from "@cosmos-kit/react";
 
 type ChatProps = {
   chatWithUsername: string;
@@ -27,12 +58,19 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
   const { mutateAsync, isPending } = useMutableServerState(
     FEED_MUTATIONS.publish()
   );
+  const { mutateAsync: deletePost, isPending: isDeleting } =
+    useMutableServerState(FEED_MUTATIONS.deletePost());
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const cancelRef = useRef(null);
+  const { successToast } = useCustomToast();
+  const navigate = useNavigate();
+
+  const showOptions = message.creatorWallet === chainContext.address;
 
   console.log("conversation", conversation);
 
   const handleSendMessage = async () => {
-    console.log("newMessage", newMessage);
-    console.log("message", message);
     const post: CreatePostDTO = {
       text: newMessage,
       visibility: PostVisibility.PRIVATE,
@@ -43,6 +81,15 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
       queryKey: [BaseServerStateKeys.POST]
     });
     setNewMessage("");
+  };
+
+  const handleDelete = async () => {
+    console.log("message id", message.id);
+    await deletePost({ postId: message.id }).then(() => {
+      queryClient.invalidateQueries();
+    });
+    navigate(ROUTES.MESSAGES.path);
+    successToast("Message deleted successfully");
   };
 
   return (
@@ -67,8 +114,86 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
           //   to={ROUTES.USER.buildPath} // TODO: add user path
           _hover={{ textDecoration: "none" }}
         >
-          <Text as="span">{chatWithUsername}</Text>
+          <HStack>
+            <Avatar
+              // name={post.creatorUsername}
+              // src={post.creatorAvatar}
+              // bg="brand.100"
+              // color={post.creatorAvatarFallbackColor || "brand.500"}
+              // border={post.creatorAvatar || "1px solid #b0b0b0"}
+              size={{ base: "xs", sm: "sm" }}
+            />
+            <Text as="span" textStyle="sm">
+              {chatWithUsername}
+            </Text>
+          </HStack>
         </Link>
+        {showOptions && (
+          <Menu offset={[-105, -10]}>
+            <MenuButton
+              as={IconButton}
+              variant="empty"
+              color="text.700"
+              aria-label="See menu."
+              icon={<FaEllipsis fontSize="1.5rem" />}
+              size="lg"
+              isLoading={isDeleting}
+            />
+            <MenuList>
+              <MenuItem onClick={onOpen} icon={<FaTrash color="red" />}>
+                <Text as="span" color="red">
+                  Delete
+                </Text>
+              </MenuItem>
+            </MenuList>
+          </Menu>
+        )}
+        <AlertDialog
+          isOpen={isOpen}
+          leastDestructiveRef={cancelRef}
+          onClose={onClose}
+          motionPreset="slideInBottom"
+          isCentered
+          closeOnEsc
+          closeOnOverlayClick
+        >
+          <AlertDialogOverlay>
+            <AlertDialogContent>
+              <AlertDialogHeader
+                fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+                fontWeight="700"
+                textTransform="uppercase"
+              >
+                Delete message
+              </AlertDialogHeader>
+
+              <AlertDialogBody>
+                <Text>
+                  Are you sure? You can't undo this action afterwards.
+                </Text>
+              </AlertDialogBody>
+
+              <AlertDialogFooter>
+                <Button
+                  ref={cancelRef}
+                  onClick={onClose}
+                  variant="empty"
+                  color="text.700"
+                >
+                  Cancel
+                </Button>
+                <Button
+                  variant="primary"
+                  bg="brand.400"
+                  onClick={handleDelete}
+                  ml="1.5em"
+                >
+                  Delete
+                </Button>
+              </AlertDialogFooter>
+            </AlertDialogContent>
+          </AlertDialogOverlay>
+        </AlertDialog>
       </Flex>
       <Flex
         ref={ref}
