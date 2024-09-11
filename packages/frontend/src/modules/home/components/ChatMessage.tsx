@@ -38,6 +38,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
         color={isMyOwnMessage ? "brand.100" : "brand.900"}
         textStyle="sm"
         fontSize={{ base: "0.75rem", lg: "0.875rem" }}
+        userSelect="none"
       >
         {new Date(createdAt).toLocaleTimeString()}
         <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">

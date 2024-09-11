@@ -2,12 +2,16 @@ import { AutoResizeTextarea } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import { Button, Flex, Icon, Link, Text } from "@chakra-ui/react";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Link as ReactRouterLink, useParams } from "react-router-dom";
 import { ChatMessage } from ".";
 import { FaArrowUp } from "react-icons/fa6";
 import { useChatScroll } from "../hooks";
-import { PostDetailDTO } from "@coredin/shared";
+import { CreatePostDTO, PostDetailDTO, PostVisibility } from "@coredin/shared";
+import { useQueryClient } from "@tanstack/react-query";
+import { useMutableServerState } from "@/hooks";
+import { FEED_MUTATIONS } from "@/queries/FeedMutations";
+import { BaseServerStateKeys } from "@/constants";
 
 type ChatProps = {
   chatWithUsername: string;
@@ -18,8 +22,28 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
   const conversation = [message, ...message.replies];
   const ref = useChatScroll(conversation);
   const { wallet } = useParams();
+  const [newMessage, setNewMessage] = useState("");
+  const queryClient = useQueryClient();
+  const { mutateAsync, isPending } = useMutableServerState(
+    FEED_MUTATIONS.publish()
+  );
 
   console.log("conversation", conversation);
+
+  const handleSendMessage = async () => {
+    console.log("newMessage", newMessage);
+    console.log("message", message);
+    const post: CreatePostDTO = {
+      text: newMessage,
+      visibility: PostVisibility.PRIVATE,
+      replyToPostId: message.id
+    };
+    await mutateAsync({ post });
+    await queryClient.invalidateQueries({
+      queryKey: [BaseServerStateKeys.POST]
+    });
+    setNewMessage("");
+  };
 
   return (
     <Flex
@@ -71,14 +95,18 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
         // border="1px solid green"
         //
       >
-        <AutoResizeTextarea maxH="160px" />
+        <AutoResizeTextarea
+          maxH="160px"
+          value={newMessage}
+          onChange={(e) => setNewMessage(e.target.value)}
+        />
         <Button
           variant="primary"
           size="sm"
           h="100%"
-          // onClick={handlePost}
-          // isLoading={isLoading}
-          // isDisabled={!postContent}
+          onClick={handleSendMessage}
+          isLoading={isPending}
+          isDisabled={!newMessage}
           aria-label="post"
           px="0"
         >
