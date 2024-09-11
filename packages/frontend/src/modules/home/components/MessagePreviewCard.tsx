@@ -27,8 +27,9 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
         gap="0.5em"
         direction="column"
         py="1em"
-        //   border="2px solid"
-        //   borderColor="brand.300"
+        border={
+          initialMessage.unread ? "2px solid #00AA54" : "1px solid #E6E6E6"
+        }
         layerStyle="cardBox"
         _hover={{
           bg: "text.100"
