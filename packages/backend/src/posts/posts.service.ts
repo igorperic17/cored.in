@@ -341,7 +341,6 @@ export class PostsService {
   }
 
   private async getWithRelations(where: FindOptionsWhere<Post>[]) {
-    console.log("getWithRelations where", where);
     return await this.postRepository.findOne({
       relations: ["user", "parent", "parent.user", "replies", "replies.user"],
       where,
@@ -350,7 +349,6 @@ export class PostsService {
   }
 
   private fromDb(post: Post, requesterWallet?: string): PostDTO {
-    console.dir(post, { depth: 10 });
     return {
       id: post.id,
       creatorWallet: post.creatorWallet,
