@@ -49,6 +49,8 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
   const unreadMessages =
     messages?.filter((message) => message.unread).length || 0;
 
+  const isPostPage = location.pathname.includes("posts");
+
   return (
     <Box
       as="nav"
@@ -86,7 +88,9 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
               fontSize="1.375rem"
               fontWeight="600"
               color={
-                location.pathname.includes(item.link) && isLargerThanLg
+                location.pathname.includes(item.link) &&
+                isLargerThanLg &&
+                !isPostPage
                   ? "brand.300"
                   : "brand.900"
               }
