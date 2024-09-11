@@ -9,6 +9,7 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Avatar,
+  Box,
   Button,
   Flex,
   HStack,
@@ -25,7 +26,6 @@ import {
 import { FC, useRef, useState } from "react";
 import {
   Link as ReactRouterLink,
-  redirect,
   useNavigate,
   useParams
 } from "react-router-dom";
@@ -67,6 +67,8 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
   const navigate = useNavigate();
 
   const showOptions = message.creatorWallet === chainContext.address;
+
+  const isInitialisedByMe = message.creatorWallet === chainContext.address;
 
   console.log("conversation", conversation);
 
@@ -111,20 +113,40 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
         </Link>
         <Link
           as={ReactRouterLink}
-          //   to={ROUTES.USER.buildPath} // TODO: add user path
+          to={ROUTES.USER.buildPath(message.recipients?.[0].wallet)}
           _hover={{ textDecoration: "none" }}
         >
-          <HStack>
+          <HStack justifySelf="center">
             <Avatar
-              // name={post.creatorUsername}
-              // src={post.creatorAvatar}
-              // bg="brand.100"
-              // color={post.creatorAvatarFallbackColor || "brand.500"}
-              // border={post.creatorAvatar || "1px solid #b0b0b0"}
+              name={
+                isInitialisedByMe
+                  ? message.recipients?.[0].username
+                  : message.creatorUsername
+              }
+              src={
+                isInitialisedByMe
+                  ? message.recipients?.[0].avatarUrl
+                  : message.creatorAvatar
+              }
+              bg="brand.100"
+              color={
+                isInitialisedByMe
+                  ? message.recipients?.[0].creatorFallbackColor
+                  : message.creatorAvatarFallbackColor || "brand.500"
+              }
+              border={
+                !isInitialisedByMe && message.creatorAvatar
+                  ? "none"
+                  : isInitialisedByMe && message.recipients?.[0].avatarUrl
+                    ? "none"
+                    : "1px solid #b0b0b0"
+              }
               size={{ base: "xs", sm: "sm" }}
             />
             <Text as="span" textStyle="sm">
-              {chatWithUsername}
+              {isInitialisedByMe
+                ? message.recipients?.[0].username
+                : message.creatorUsername}
             </Text>
           </HStack>
         </Link>

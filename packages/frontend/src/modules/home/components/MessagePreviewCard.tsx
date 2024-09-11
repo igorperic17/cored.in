@@ -1,6 +1,7 @@
 import { ROUTES } from "@/router/routes";
 import { Avatar, Flex, Link, Text } from "@chakra-ui/react";
-import { PostDTO } from "@coredin/shared";
+import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { useChain } from "@cosmos-kit/react";
 import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
@@ -11,10 +12,14 @@ type MessagePreviewCardProps = {
 export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
   initialMessage
 }) => {
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
   const messageUrl = ROUTES.USER.POST.buildPath(
     initialMessage.creatorWallet,
     initialMessage.id
   );
+
+  const isInitialisedByMe =
+    initialMessage.creatorWallet === chainContext.address;
 
   return (
     <Link
@@ -41,11 +46,29 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
           //
         >
           <Avatar
-            name={initialMessage.creatorUsername}
-            src={initialMessage.creatorAvatar}
+            name={
+              isInitialisedByMe
+                ? initialMessage.recipients?.[0].username
+                : initialMessage.creatorUsername
+            }
+            src={
+              isInitialisedByMe
+                ? initialMessage.recipients?.[0].avatarUrl
+                : initialMessage.creatorAvatar
+            }
             bg="brand.100"
-            color={initialMessage.creatorAvatarFallbackColor || "brand.500"}
-            border={initialMessage.creatorAvatar || "1px solid #b0b0b0"}
+            color={
+              isInitialisedByMe
+                ? initialMessage.recipients?.[0].creatorFallbackColor
+                : initialMessage.creatorAvatarFallbackColor || "brand.500"
+            }
+            border={
+              isInitialisedByMe
+                ? initialMessage.recipients?.[0].avatarUrl
+                : initialMessage.creatorWallet !== chainContext.address
+                  ? initialMessage.creatorAvatar
+                  : "1px solid #b0b0b0"
+            }
             size={{ base: "sm", sm: "md" }}
           />
           <Flex
@@ -56,7 +79,9 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
             //
           >
             <Text as="span" color="brand.900" textStyle="md">
-              {initialMessage.creatorUsername}
+              {isInitialisedByMe
+                ? initialMessage.recipients?.[0].username
+                : initialMessage.creatorUsername}
             </Text>
             <Text
               color="brand.900"
