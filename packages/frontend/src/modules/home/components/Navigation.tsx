@@ -135,9 +135,20 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
                     ml="-0.25em"
                     position={{ base: "absolute", lg: "static" }}
                     top={{ base: "-4px" }}
-                    right={{ base: "8px", sm: "16px", md: "30px" }}
+                    right={{ base: "4%", sm: "12%", md: "30px" }}
+                    aria-label={`${unreadMessages} new messages.`}
                   >
-                    {unreadMessages}
+                    {/* {isLargerThanLg && (
+                      <Text
+                        as="span"
+                        color="brand.100"
+                        fontSize="0.5rem"
+                        mt="-1em"
+                        border="1px solid red"
+                      >
+                        {unreadMessages}
+                      </Text>
+                    )} */}
                   </Box>
                 )}
               </HStack>
