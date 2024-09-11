@@ -104,7 +104,7 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
                 ? "You initialised this chat."
                 : "Your subscriber initialised this chat."
             }
-            color="brand.200"
+            color={isInitialisedByMe ? "brand.300" : "brand.200"}
             position="absolute"
             top="0"
             right="0"
