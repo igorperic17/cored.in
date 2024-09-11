@@ -1,6 +1,6 @@
 import { Box, Text } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
-import { Post } from "../components";
+import { Chat, Post } from "../components";
 import { useLoggedInServerState } from "@/hooks";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 
@@ -16,9 +16,15 @@ export const PostPage = () => {
   console.log(postDetail);
 
   return (
-    <Box layerStyle="cardBox">
-      {postDetail && <Post post={postDetail} />}
-      {!postDetail && <Text>Post not found...</Text>}
-    </Box>
+    <>
+      {postDetail?.recipients && postDetail.recipients.length > 0 ? (
+        <Chat chatWithUsername={"username"} message={postDetail} />
+      ) : (
+        <Box layerStyle="cardBox">
+          {postDetail && <Post post={postDetail} />}
+          {!postDetail && <Text>Post not found...</Text>}
+        </Box>
+      )}
+    </>
   );
 };

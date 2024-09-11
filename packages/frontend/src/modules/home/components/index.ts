@@ -5,6 +5,8 @@ export * from "./NewPost";
 export * from "./NewMessage";
 export * from "./NewMessageModal";
 export * from "./MessagePreviewCard";
+export * from "./Chat";
+export * from "./ChatMessage";
 export * from "./Navigation";
 export * from "./UserSignOut";
 export * from "./UserHeader";

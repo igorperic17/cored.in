@@ -8,7 +8,6 @@ const MessagesPage = () => {
 
   return (
     <VStack spacing="0.5em" w="100%" layerStyle="cardBox">
-      {/* <VisuallyHidden> */}
       <Heading
         as="h1"
         fontFamily="body"
@@ -26,7 +25,7 @@ const MessagesPage = () => {
               w="100%"
               key={`message-${message.creatorUsername}-${message.createdAt}`}
             >
-              <MessagePreviewCard lastMessage={message} />
+              <MessagePreviewCard initialMessage={message} />
             </Box>
           ))}
       </VStack>

@@ -12,15 +12,10 @@ import {
 } from "@coredin/shared";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { useContext, useEffect, useState } from "react";
-import {
-  NewMessageContent,
-  NewPostContent,
-  NewReplyContent
-} from "./post/components";
 import { useChain } from "@cosmos-kit/react";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { NewMessageModal, NewMessageModalProps } from ".";
+import { NewMessageModal } from ".";
 
 export type NewMessageProps = {
   isOpen: boolean;
@@ -107,19 +102,7 @@ export const NewMessage: React.FC<NewMessageProps> = ({
 
   return (
     <>
-      {userProfile && (
-        // <NewMessageContent
-        //   postContent={postContent}
-        //   setPostContent={setPostContent}
-        //   handlePost={handlePost}
-        //   isLoading={isPending}
-        //   recipients={recipientWallets}
-        //   setRecipients={setRecipientWallets}
-        //   userProfile={userProfile}
-        //   subscriptions={
-        //     subscriptions?.pages.flatMap((page) => page.subscribers) || []
-        //   }
-        // />
+      {userProfile && isOpen && (
         <NewMessageModal
           isOpen={isOpen}
           onClose={onClose}

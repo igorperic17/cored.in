@@ -21,7 +21,7 @@ import React, { useContext, useState } from "react";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
-import { NewMessage, NewMessageModal, SubscriptionModal } from ".";
+import { NewMessage, SubscriptionModal } from ".";
 import { useContractRead, useCustomToast } from "@/hooks";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import { useQueryClient } from "@tanstack/react-query";
