@@ -23,7 +23,7 @@ export const ChatMessage: FC<ChatMessageProps> = ({
       borderBottomRightRadius={isMyOwnMessage ? "0" : ""}
       maxW="80%"
       alignSelf={isMyOwnMessage ? "end" : "start"}
-      mt="auto"
+      //   mt="auto"
     >
       <Text
         lineHeight="1.25"
