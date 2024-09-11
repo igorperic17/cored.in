@@ -8,12 +8,12 @@ export const PostPage = () => {
   const { wallet, id } = useParams();
   const { data: postDetail, isLoading: isDetailLoading } =
     useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0"), wallet!), {
-      enabled: !!id && !!wallet
+      enabled: !!id && !!wallet,
+      refetchInterval: 5000
     });
   if (!id || !wallet) {
     return "This post does not exist.";
   }
-  console.log(postDetail);
 
   return (
     <>
@@ -22,7 +22,7 @@ export const PostPage = () => {
       ) : (
         <Box layerStyle="cardBox">
           {postDetail && <Post post={postDetail} />}
-          {!postDetail && <Text>Post not found...</Text>}
+          {!postDetail && <Text>Not found...</Text>}
         </Box>
       )}
     </>
