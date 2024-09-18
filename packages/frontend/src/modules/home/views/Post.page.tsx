@@ -10,10 +10,16 @@ export const PostPage = () => {
     useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0"), wallet!), {
       enabled: !!id && !!wallet
     });
+
+  const { data: messages } = useLoggedInServerState(
+    FEED_QUERIES.get(parseInt(id || "0"), wallet!),
+    { refetchInterval: 1000 }
+  );
+
   if (!id || !wallet) {
     return "This post does not exist.";
   }
-  console.log(postDetail);
+  // console.log(postDetail);
 
   return (
     <>
