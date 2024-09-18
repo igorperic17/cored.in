@@ -98,11 +98,9 @@ export const Chat: FC<ChatProps> = ({ message }) => {
     subscriptionInfo?.valid_until
       ? parseInt(subscriptionInfo.valid_until) / 1000000 // Contract timestamp in nanoseconds!
       : Date.now() - 1
-  ).toLocaleString();
+  );
 
-  const hasActiveSubscription =
-    subscriptionInfo &&
-    parseInt(subscriptionInfo.valid_until) / 1000000 > Date.now() - 1;
+  const hasActiveSubscription = subscriptionInfoValidUntil > new Date();
 
   const handleSendMessage = async () => {
     const post: CreatePostDTO = {
@@ -197,8 +195,8 @@ export const Chat: FC<ChatProps> = ({ message }) => {
             hasArrow
             label={
               creatorIsTheLoggedInUser
-                ? `Your subscription expires on ${subscriptionInfoValidUntil}`
-                : `This user's subscription expires on ${subscriptionInfoValidUntil}`
+                ? `Your subscription expires on ${subscriptionInfoValidUntil.toLocaleString()}`
+                : `This user's subscription expires on ${subscriptionInfoValidUntil.toLocaleString()}`
             }
             isOpen={isTooltipOpen}
             //
