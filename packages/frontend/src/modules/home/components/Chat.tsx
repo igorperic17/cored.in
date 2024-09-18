@@ -1,6 +1,6 @@
 import { AutoResizeTextarea } from "@/components";
 import { ROUTES } from "@/router/routes";
-import { ArrowBackIcon } from "@chakra-ui/icons";
+import { ArrowBackIcon, InfoOutlineIcon } from "@chakra-ui/icons";
 import {
   AlertDialog,
   AlertDialogBody,
@@ -20,9 +20,10 @@ import {
   MenuItem,
   MenuList,
   Text,
+  Tooltip,
   useDisclosure
 } from "@chakra-ui/react";
-import { FC, useRef, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ChatMessage } from ".";
 import { FaArrowUp, FaEllipsis, FaTrash } from "react-icons/fa6";
@@ -34,10 +35,16 @@ import {
   TESTNET_CHAIN_NAME
 } from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
-import { useCustomToast, useMutableServerState } from "@/hooks";
+import {
+  useContractRead,
+  useCustomToast,
+  useMutableServerState
+} from "@/hooks";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { BaseServerStateKeys } from "@/constants";
 import { useChain } from "@cosmos-kit/react";
+import { CONTRACT_QUERIES } from "@/queries";
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 
 type ChatProps = {
   message: PostDetailDTO;
@@ -54,6 +61,29 @@ export const Chat: FC<ChatProps> = ({ message }) => {
   const { mutateAsync: deletePost, isPending: isDeleting } =
     useMutableServerState(FEED_MUTATIONS.deletePost());
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isTooltipOpen,
+    onOpen: onTooltipOpen,
+    onClose: onTooltipClose
+  } = useDisclosure();
+  const coredinClient = useContext(CoredinClientContext);
+  const { data: profileDid } = useContractRead(
+    CONTRACT_QUERIES.getWalletDid(
+      coredinClient!,
+      message.recipients?.[0].wallet
+    ),
+    { enabled: !!coredinClient }
+  );
+  const { data: subscriptionInfo, refetch } = useContractRead(
+    CONTRACT_QUERIES.getSubscriptionInfo(
+      coredinClient!,
+      profileDid?.did_info?.did || "",
+      message.creatorWallet
+    ),
+    {
+      enabled: !!coredinClient && !!profileDid?.did_info?.did
+    }
+  );
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const cancelRef = useRef(null);
   const { successToast } = useCustomToast();
@@ -61,6 +91,14 @@ export const Chat: FC<ChatProps> = ({ message }) => {
 
   const creatorIsTheLoggedInUser =
     message.creatorWallet === chainContext.address;
+
+  const subscriptionInfoValidUntil = new Date(
+    subscriptionInfo?.valid_until
+      ? parseInt(subscriptionInfo.valid_until) / 1000000 // Contract timestamp in nanoseconds!
+      : Date.now() - 1
+  ).toLocaleString();
+
+  // const hasSubscription =
 
   const handleSendMessage = async () => {
     const post: CreatePostDTO = {
@@ -83,7 +121,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
     navigate(ROUTES.MESSAGES.path);
     successToast("Message deleted successfully");
   };
-
+  console.log("message", message);
   return (
     <Flex
       layerStyle="cardBox"
@@ -93,7 +131,12 @@ export const Chat: FC<ChatProps> = ({ message }) => {
       h={{ base: "72dvh", sm: "78dvh", lg: "91vh" }}
       //   border="1px solid red"
     >
-      <Flex justify="space-between" align="center">
+      <Flex
+        justify="space-between"
+        align="center"
+        // border="1px solid black"
+        //
+      >
         <Link
           as={ReactRouterLink}
           to={ROUTES.MESSAGES.path}
@@ -101,50 +144,74 @@ export const Chat: FC<ChatProps> = ({ message }) => {
         >
           <Icon as={ArrowBackIcon} />
         </Link>
-        <Link
-          as={ReactRouterLink}
-          to={
-            creatorIsTheLoggedInUser
-              ? ROUTES.USER.buildPath(message.recipients?.[0].wallet)
-              : ROUTES.USER.buildPath(message.creatorWallet)
-          }
-          _hover={{ textDecoration: "none" }}
-        >
-          <HStack justifySelf="center">
-            <Avatar
-              name={
-                creatorIsTheLoggedInUser
-                  ? message.recipients?.[0].username
-                  : message.creatorUsername
-              }
-              src={
-                creatorIsTheLoggedInUser
-                  ? message.recipients?.[0].avatarUrl
-                  : message.creatorAvatar
-              }
-              bg="brand.100"
-              color={
-                creatorIsTheLoggedInUser
-                  ? message.recipients?.[0].creatorFallbackColor
-                  : message.creatorAvatarFallbackColor || "brand.500"
-              }
-              border={
-                !creatorIsTheLoggedInUser && message.creatorAvatar
-                  ? "none"
-                  : creatorIsTheLoggedInUser &&
-                      message.recipients?.[0].avatarUrl
+        <HStack spacing="0.5em">
+          <Link
+            as={ReactRouterLink}
+            to={
+              creatorIsTheLoggedInUser
+                ? ROUTES.USER.buildPath(message.recipients?.[0].wallet)
+                : ROUTES.USER.buildPath(message.creatorWallet)
+            }
+            _hover={{ textDecoration: "none" }}
+          >
+            <HStack>
+              <Avatar
+                name={
+                  creatorIsTheLoggedInUser
+                    ? message.recipients?.[0].username
+                    : message.creatorUsername
+                }
+                src={
+                  creatorIsTheLoggedInUser
+                    ? message.recipients?.[0].avatarUrl
+                    : message.creatorAvatar
+                }
+                bg="brand.100"
+                color={
+                  creatorIsTheLoggedInUser
+                    ? message.recipients?.[0].creatorFallbackColor
+                    : message.creatorAvatarFallbackColor || "brand.500"
+                }
+                border={
+                  !creatorIsTheLoggedInUser && message.creatorAvatar
                     ? "none"
-                    : "1px solid #b0b0b0"
-              }
-              size={{ base: "xs", sm: "sm" }}
+                    : creatorIsTheLoggedInUser &&
+                        message.recipients?.[0].avatarUrl
+                      ? "none"
+                      : "1px solid #b0b0b0"
+                }
+                size={{ base: "xs", sm: "sm" }}
+              />
+              <Text as="span" textStyle="sm">
+                {creatorIsTheLoggedInUser
+                  ? message.recipients?.[0].username
+                  : message.creatorUsername}
+              </Text>
+            </HStack>
+          </Link>
+          <Tooltip
+            hasArrow
+            label={
+              creatorIsTheLoggedInUser
+                ? `Your subscription expires on ${subscriptionInfoValidUntil}`
+                : `This user's subscription expires on ${subscriptionInfoValidUntil}`
+            }
+            isOpen={isTooltipOpen}
+            //
+          >
+            <Button
+              as={InfoOutlineIcon}
+              aria-label="Show info about this chat."
+              variant="empty"
+              color="brand.200"
+              _hover={{ color: "brand.200" }}
+              size={{ base: "0.875rem", lg: "1rem" }} // === textStyle="sm"
+              onMouseEnter={onTooltipOpen}
+              onMouseLeave={onTooltipClose}
+              onClick={onTooltipOpen}
             />
-            <Text as="span" textStyle="sm">
-              {creatorIsTheLoggedInUser
-                ? message.recipients?.[0].username
-                : message.creatorUsername}
-            </Text>
-          </HStack>
-        </Link>
+          </Tooltip>
+        </HStack>
         {creatorIsTheLoggedInUser && (
           <Menu offset={[-105, -10]}>
             <MenuButton
@@ -154,6 +221,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
               aria-label="See menu."
               icon={<FaEllipsis fontSize="1.5rem" />}
               size="lg"
+              h="24px"
               isLoading={isDeleting}
             />
             <MenuList>
