@@ -2526,6 +2526,7 @@ __metadata:
     react-sticky-box: "npm:^2.0.5"
     react-textarea-autosize: "npm:^8.5.3"
     typescript: "npm:^5.5.4"
+    use-sound: "npm:^4.0.3"
     util: "npm:^0.12.5"
     vite: "npm:^5.3.4"
     vite-plugin-node-polyfills: "npm:^0.22.0"
@@ -15628,6 +15629,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"howler@npm:^2.1.3":
+  version: 2.2.4
+  resolution: "howler@npm:2.2.4"
+  checksum: 10/e4177f6581ede99fdec68c2dc16a01e74ed3e4f3b28d4804030246f74f15a50311bd3d4d332a6e968a296e6bae1d0a8c8703e8e22d98ef8f5a3299e545e2fe55
+  languageName: node
+  linkType: hard
+
 "html-escaper@npm:^2.0.0":
   version: 2.0.2
   resolution: "html-escaper@npm:2.0.2"
@@ -22517,6 +22525,17 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10/ec99e31aefeb880f6dc4d02cb19a01d123364954f857811470ece32872f70d6c3eadbe4d073770706a9b7db6136f2a9fbf1bb803e07fbb21e936a47479281690
+  languageName: node
+  linkType: hard
+
+"use-sound@npm:^4.0.3":
+  version: 4.0.3
+  resolution: "use-sound@npm:4.0.3"
+  dependencies:
+    howler: "npm:^2.1.3"
+  peerDependencies:
+    react: ">=16.8"
+  checksum: 10/58636b27f9314677409ad0ee989085c6fcc027b2892800c489ca6822383318929ca3aceb486049bea4d49a2af6b4edcfee0caed1a45d8e1140328f3a00d7ab40
   languageName: node
   linkType: hard
 

@@ -51,6 +51,7 @@
     "react-router-dom": "^6.25.1",
     "react-sticky-box": "^2.0.5",
     "react-textarea-autosize": "^8.5.3",
+    "use-sound": "^4.0.3",
     "util": "^0.12.5",
     "vite-plugin-node-polyfills": "^0.22.0"
   },

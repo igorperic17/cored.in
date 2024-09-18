@@ -25,7 +25,7 @@ import {
   Tooltip,
   useDisclosure
 } from "@chakra-ui/react";
-import { FC, useContext, useRef, useState } from "react";
+import { FC, useContext, useEffect, useRef, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ChatMessage } from ".";
 import { FaArrowUp, FaEllipsis, FaTrash } from "react-icons/fa6";
@@ -47,6 +47,8 @@ import { BaseServerStateKeys } from "@/constants";
 import { useChain } from "@cosmos-kit/react";
 import { CONTRACT_QUERIES } from "@/queries";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import useSound from "use-sound";
+import woodSfx from "@/assets/sounds/wood-cracking-1.mp3";
 
 type ChatProps = {
   message: PostDetailDTO;
@@ -89,7 +91,9 @@ export const Chat: FC<ChatProps> = ({ message }) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const cancelRef = useRef(null);
   const { successToast } = useCustomToast();
+  const [lastNotifiedMessageId, setLastNotifiedMessageId] = useState<number>(0);
   const navigate = useNavigate();
+  const [playNotification] = useSound(woodSfx);
 
   const creatorIsTheLoggedInUser =
     message.creatorWallet === chainContext.address;
@@ -124,6 +128,19 @@ export const Chat: FC<ChatProps> = ({ message }) => {
     successToast("Message deleted successfully");
   };
   console.log("message", message);
+
+  useEffect(() => {
+    const lastMessage = conversation.at(-1);
+    if (!lastMessage) return;
+    if (
+      lastMessage.id !== lastNotifiedMessageId &&
+      lastMessage.creatorWallet !== chainContext.address
+    ) {
+      playNotification();
+      setLastNotifiedMessageId(lastMessage.id);
+    }
+  }, [conversation.at(-1)?.id]);
+
   return (
     <Flex
       layerStyle="cardBox"
