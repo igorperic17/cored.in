@@ -43,6 +43,11 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   const coredinClient = useContext(CoredinClientContext);
   const { successToast, errorToast } = useCustomToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {
+    isOpen: isTooltipOpen,
+    onOpen: onTooltipOpen,
+    onClose: onTooltipClose
+  } = useDisclosure();
   const [isSubscribing, setIsSubscribing] = useState(false);
   const queryClient = useQueryClient();
   const { data: profileDid } = useContractRead(
@@ -188,8 +193,19 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             {`@${userProfile.username}`}
           </Text>
           {userProfile.issuerDid && (
-            <Tooltip hasArrow label={`${userProfile.issuerDid}`} maxW="500px">
-              <Badge variant="verified">Issuer</Badge>
+            <Tooltip
+              hasArrow
+              label={`${userProfile.issuerDid}`}
+              maxW="500px"
+              isOpen={isTooltipOpen}
+            >
+              <Badge
+                variant="verified"
+                onMouseEnter={onTooltipOpen}
+                onMouseLeave={onTooltipClose}
+              >
+                Issuer
+              </Badge>
             </Tooltip>
           )}
         </HStack>
