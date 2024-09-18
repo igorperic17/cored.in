@@ -9,7 +9,9 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Avatar,
+  Box,
   Button,
+  Center,
   Flex,
   HStack,
   Icon,
@@ -23,7 +25,7 @@ import {
   Tooltip,
   useDisclosure
 } from "@chakra-ui/react";
-import { FC, useContext, useEffect, useRef, useState } from "react";
+import { FC, useContext, useRef, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ChatMessage } from ".";
 import { FaArrowUp, FaEllipsis, FaTrash } from "react-icons/fa6";
@@ -98,7 +100,9 @@ export const Chat: FC<ChatProps> = ({ message }) => {
       : Date.now() - 1
   ).toLocaleString();
 
-  // const hasSubscription =
+  const hasActiveSubscription =
+    subscriptionInfo &&
+    parseInt(subscriptionInfo.valid_until) / 1000000 > Date.now() - 1;
 
   const handleSendMessage = async () => {
     const post: CreatePostDTO = {
@@ -300,29 +304,49 @@ export const Chat: FC<ChatProps> = ({ message }) => {
           />
         ))}
       </Flex>
-      <Flex
-        gap="0.75em"
-        // border="1px solid green"
-        //
-      >
-        <AutoResizeTextarea
-          maxH="160px"
-          value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
-        />
-        <Button
-          variant="primary"
-          size="sm"
-          h="100%"
-          onClick={handleSendMessage}
-          isLoading={isPending}
-          isDisabled={!newMessage}
-          aria-label="post"
-          px="0"
+      {hasActiveSubscription ? (
+        <Flex
+          gap="0.75em"
+          // border="1px solid green"
+          //
         >
-          <Icon as={FaArrowUp} />
-        </Button>
-      </Flex>
+          <AutoResizeTextarea
+            maxH="160px"
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+          />
+          <Button
+            variant="primary"
+            size="sm"
+            h="100%"
+            onClick={handleSendMessage}
+            isLoading={isPending}
+            isDisabled={!newMessage}
+            aria-label="post"
+            px="0"
+          >
+            <Icon as={FaArrowUp} />
+          </Button>
+        </Flex>
+      ) : (
+        <Center
+          flexDirection="column"
+          gap="0.5em"
+          bg="brand.400"
+          borderRadius="1em"
+          textAlign="center"
+          px="1em"
+          py="1em"
+        >
+          <Text color="brand.100" textStyle="md">
+            There is no active subscription
+          </Text>
+          <Text color="brand.900" textStyle="sm">
+            Subscribe to this user's profile to be able to send a message in
+            this chat
+          </Text>
+        </Center>
+      )}
     </Flex>
   );
 };
