@@ -10,6 +10,7 @@ import React, { useEffect } from "react";
 import { Content } from "./components";
 import { NewPost } from "../NewPost";
 import { useParams } from "react-router-dom";
+import { BaseServerStateKeys } from "@/constants";
 
 export type PostProps = {
   post: PostDTO;
@@ -27,7 +28,9 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { data: userProfile } = useLoggedInServerState(
     USER_QUERIES.getUser(chainContext.address || ""),
-    { enabled: !!chainContext.address }
+    {
+      enabled: !!chainContext.address
+    }
   );
 
   const [isLiked, setIsLiked] = React.useState(
@@ -49,7 +52,15 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
 
   const handleLike = () => {
     like({ postId: post.id, liked: !isLiked }).then(() => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({
+        queryKey: [BaseServerStateKeys.FEED]
+      });
+      queryClient.invalidateQueries({
+        queryKey: [BaseServerStateKeys.POST]
+      });
+      // queryClient.invalidateQueries({
+      //   queryKey: [BaseServerStateKeys.USER]
+      // });
     });
     setIsLiked((prev) => !prev);
   };

@@ -1,5 +1,5 @@
 import { ROUTES } from "@/router/routes";
-import { Button, Flex, IconButton } from "@chakra-ui/react";
+import { Box, Button, Flex, IconButton } from "@chakra-ui/react";
 import { FC } from "react";
 import {
   FaHeart,
@@ -63,7 +63,9 @@ export const ActionBar: FC<PostActionBarProps> = ({
         onClick={handleLike}
         // isLoading={isLiking}
       >
-        {post.likes}
+        <Box as="span" opacity={isLiking ? 0 : 1} transition={"opacity 2s"}>
+          {post.likes}
+        </Box>
       </Button>
       <IconButton
         icon={<FaRegComment fontSize="1.25rem" />}
