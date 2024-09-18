@@ -9,7 +9,6 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Avatar,
-  Box,
   Button,
   Flex,
   HStack,
@@ -24,11 +23,7 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { FC, useRef, useState } from "react";
-import {
-  Link as ReactRouterLink,
-  useNavigate,
-  useParams
-} from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ChatMessage } from ".";
 import { FaArrowUp, FaEllipsis, FaTrash } from "react-icons/fa6";
 import { useChatScroll } from "../hooks";
@@ -45,14 +40,12 @@ import { BaseServerStateKeys } from "@/constants";
 import { useChain } from "@cosmos-kit/react";
 
 type ChatProps = {
-  chatWithUsername: string;
   message: PostDetailDTO;
 };
 
-export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
+export const Chat: FC<ChatProps> = ({ message }) => {
   const conversation = [message, ...message.replies];
   const ref = useChatScroll(conversation);
-  const { wallet } = useParams();
   const [newMessage, setNewMessage] = useState("");
   const queryClient = useQueryClient();
   const { mutateAsync, isPending } = useMutableServerState(
@@ -68,8 +61,6 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
 
   const creatorIsTheLoggedInUser =
     message.creatorWallet === chainContext.address;
-
-  // console.log("conversation", conversation);
 
   const handleSendMessage = async () => {
     const post: CreatePostDTO = {

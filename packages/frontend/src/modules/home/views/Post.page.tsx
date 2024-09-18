@@ -18,7 +18,7 @@ export const PostPage = () => {
   return (
     <>
       {postDetail?.recipients && postDetail.recipients.length > 0 ? (
-        <Chat chatWithUsername={"username"} message={postDetail} />
+        <Chat message={postDetail} />
       ) : (
         <Box layerStyle="cardBox">
           {postDetail && <Post post={postDetail} />}
