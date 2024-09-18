@@ -236,7 +236,9 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
           <ChatMessage
             key={message.id}
             messageText={message.text}
-            isMyOwnMessage={message.creatorWallet === wallet ? true : false}
+            isMyOwnMessage={
+              message.creatorWallet === chainContext.address ? true : false
+            }
             createdAt={message.createdAt}
           />
         ))}
