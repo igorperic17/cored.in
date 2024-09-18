@@ -215,7 +215,6 @@ export const Chat: FC<ChatProps> = ({ message }) => {
               size={{ base: "0.875rem", lg: "1rem" }} // === textStyle="sm"
               onMouseEnter={onTooltipOpen}
               onMouseLeave={onTooltipClose}
-              onClick={onTooltipOpen}
             />
           </Tooltip>
         </HStack>
