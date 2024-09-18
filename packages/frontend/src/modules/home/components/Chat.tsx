@@ -47,8 +47,6 @@ import { BaseServerStateKeys } from "@/constants";
 import { useChain } from "@cosmos-kit/react";
 import { CONTRACT_QUERIES } from "@/queries";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import useSound from "use-sound";
-import NotificationSound from "@/assets/sounds/coredin-notification-long-pop.mp3";
 
 type ChatProps = {
   message: PostDetailDTO;
@@ -91,9 +89,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const cancelRef = useRef(null);
   const { successToast } = useCustomToast();
-  const [lastNotifiedMessageId, setLastNotifiedMessageId] = useState<number>(0);
   const navigate = useNavigate();
-  const [playNotification] = useSound(NotificationSound);
 
   const creatorIsTheLoggedInUser =
     message.creatorWallet === chainContext.address;
@@ -128,18 +124,6 @@ export const Chat: FC<ChatProps> = ({ message }) => {
     successToast("Message deleted successfully");
   };
   console.log("message", message);
-
-  useEffect(() => {
-    const lastMessage = conversation.at(-1);
-    if (!lastMessage) return;
-    if (
-      lastMessage.id !== lastNotifiedMessageId &&
-      lastMessage.creatorWallet !== chainContext.address
-    ) {
-      playNotification();
-      setLastNotifiedMessageId(lastMessage.id);
-    }
-  }, [conversation.at(-1)?.id]);
 
   return (
     <Flex
