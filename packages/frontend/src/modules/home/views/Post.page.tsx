@@ -8,13 +8,10 @@ export const PostPage = () => {
   const { wallet, id } = useParams();
   const { data: postDetail, isLoading: isDetailLoading } =
     useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0"), wallet!), {
-      enabled: !!id && !!wallet
+      enabled: !!id && !!wallet,
+      refetchInterval: 4000,
+      refetchIntervalInBackground: true
     });
-
-  const { data: messages } = useLoggedInServerState(
-    FEED_QUERIES.get(parseInt(id || "0"), wallet!),
-    { refetchInterval: 1000 }
-  );
 
   if (!id || !wallet) {
     return "This post does not exist.";
