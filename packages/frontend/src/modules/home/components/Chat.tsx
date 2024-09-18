@@ -48,7 +48,7 @@ import { useChain } from "@cosmos-kit/react";
 import { CONTRACT_QUERIES } from "@/queries";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import useSound from "use-sound";
-import woodSfx from "@/assets/sounds/wood-cracking-1.mp3";
+import NotificationSound from "@/assets/sounds/coredin-notification-long-pop.mp3";
 
 type ChatProps = {
   message: PostDetailDTO;
@@ -93,7 +93,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
   const { successToast } = useCustomToast();
   const [lastNotifiedMessageId, setLastNotifiedMessageId] = useState<number>(0);
   const navigate = useNavigate();
-  const [playNotification] = useSound(woodSfx);
+  const [playNotification] = useSound(NotificationSound);
 
   const creatorIsTheLoggedInUser =
     message.creatorWallet === chainContext.address;
