@@ -1,6 +1,5 @@
 import {
   Box,
-  Flex,
   Heading,
   Step,
   StepDescription,
@@ -25,7 +24,7 @@ import {
 
 export const Roadmap = () => {
   const { activeStep } = useSteps({
-    index: 2,
+    index: 3,
     count: ROADMAP_STEPS.length
   });
 
