@@ -18,6 +18,7 @@ export type NewMessageModalProps = {
   postContent: string;
   setPostContent: Dispatch<SetStateAction<string>>;
   handleMessage: () => Promise<void>;
+  isLoading: boolean;
 };
 
 export const NewMessageModal: FC<NewMessageModalProps> = ({
@@ -26,7 +27,8 @@ export const NewMessageModal: FC<NewMessageModalProps> = ({
   toUsername,
   postContent,
   setPostContent,
-  handleMessage
+  handleMessage,
+  isLoading
 }) => {
   return (
     <Modal
@@ -64,7 +66,12 @@ export const NewMessageModal: FC<NewMessageModalProps> = ({
           >
             Close
           </Button>
-          <Button variant="primary" size="sm" onClick={handleMessage}>
+          <Button
+            variant="primary"
+            size="sm"
+            onClick={handleMessage}
+            isLoading={isLoading}
+          >
             Send
           </Button>
         </ModalFooter>

@@ -110,6 +110,7 @@ export const NewMessage: React.FC<NewMessageProps> = ({
           postContent={postContent}
           setPostContent={setPostContent}
           handleMessage={handleMessage}
+          isLoading={isPending}
         />
       )}
     </>
