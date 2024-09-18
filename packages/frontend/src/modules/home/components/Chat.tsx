@@ -194,9 +194,13 @@ export const Chat: FC<ChatProps> = ({ message }) => {
           <Tooltip
             hasArrow
             label={
-              creatorIsTheLoggedInUser
-                ? `Your subscription expires on ${subscriptionInfoValidUntil.toLocaleString()}`
-                : `This user's subscription expires on ${subscriptionInfoValidUntil.toLocaleString()}`
+              hasActiveSubscription
+                ? creatorIsTheLoggedInUser
+                  ? `Your subscription expires on ${subscriptionInfoValidUntil.toLocaleString()}`
+                  : `This user's subscription expires on ${subscriptionInfoValidUntil.toLocaleString()}`
+                : creatorIsTheLoggedInUser
+                  ? `Your subscription expired on ${subscriptionInfoValidUntil.toLocaleString()}`
+                  : `This user's subscription expired on ${subscriptionInfoValidUntil.toLocaleString()}`
             }
             isOpen={isTooltipOpen}
             //
