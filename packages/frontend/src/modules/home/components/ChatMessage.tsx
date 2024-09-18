@@ -3,7 +3,7 @@ import { FC } from "react";
 
 type ChatMessageProps = {
   messageText: string;
-  isMyOwnMessage?: boolean;
+  isMyOwnMessage: boolean;
   createdAt: string;
 };
 

@@ -66,11 +66,10 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
   const { successToast } = useCustomToast();
   const navigate = useNavigate();
 
-  const showOptions = message.creatorWallet === chainContext.address;
+  const creatorIsTheLoggedInUser =
+    message.creatorWallet === chainContext.address;
 
-  const isInitialisedByMe = message.creatorWallet === chainContext.address;
-
-  console.log("conversation", conversation);
+  // console.log("conversation", conversation);
 
   const handleSendMessage = async () => {
     const post: CreatePostDTO = {
@@ -114,7 +113,7 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
         <Link
           as={ReactRouterLink}
           to={
-            isInitialisedByMe
+            creatorIsTheLoggedInUser
               ? ROUTES.USER.buildPath(message.recipients?.[0].wallet)
               : ROUTES.USER.buildPath(message.creatorWallet)
           }
@@ -123,38 +122,39 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
           <HStack justifySelf="center">
             <Avatar
               name={
-                isInitialisedByMe
+                creatorIsTheLoggedInUser
                   ? message.recipients?.[0].username
                   : message.creatorUsername
               }
               src={
-                isInitialisedByMe
+                creatorIsTheLoggedInUser
                   ? message.recipients?.[0].avatarUrl
                   : message.creatorAvatar
               }
               bg="brand.100"
               color={
-                isInitialisedByMe
+                creatorIsTheLoggedInUser
                   ? message.recipients?.[0].creatorFallbackColor
                   : message.creatorAvatarFallbackColor || "brand.500"
               }
               border={
-                !isInitialisedByMe && message.creatorAvatar
+                !creatorIsTheLoggedInUser && message.creatorAvatar
                   ? "none"
-                  : isInitialisedByMe && message.recipients?.[0].avatarUrl
+                  : creatorIsTheLoggedInUser &&
+                      message.recipients?.[0].avatarUrl
                     ? "none"
                     : "1px solid #b0b0b0"
               }
               size={{ base: "xs", sm: "sm" }}
             />
             <Text as="span" textStyle="sm">
-              {isInitialisedByMe
+              {creatorIsTheLoggedInUser
                 ? message.recipients?.[0].username
                 : message.creatorUsername}
             </Text>
           </HStack>
         </Link>
-        {showOptions && (
+        {creatorIsTheLoggedInUser && (
           <Menu offset={[-105, -10]}>
             <MenuButton
               as={IconButton}
@@ -232,14 +232,12 @@ export const Chat: FC<ChatProps> = ({ chatWithUsername, message }) => {
         h="100%"
         overflow="auto"
       >
-        {conversation.map((message) => (
+        {conversation.map((chatMessage) => (
           <ChatMessage
-            key={message.id}
-            messageText={message.text}
-            isMyOwnMessage={
-              message.creatorWallet === chainContext.address ? true : false
-            }
-            createdAt={message.createdAt}
+            key={chatMessage.id}
+            messageText={chatMessage.text}
+            isMyOwnMessage={chatMessage.creatorWallet === chainContext.address}
+            createdAt={chatMessage.createdAt}
           />
         ))}
       </Flex>
