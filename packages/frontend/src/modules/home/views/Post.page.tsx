@@ -9,7 +9,7 @@ export const PostPage = () => {
   const { data: postDetail, isLoading: isDetailLoading } =
     useLoggedInServerState(FEED_QUERIES.get(parseInt(id || "0"), wallet!), {
       enabled: !!id && !!wallet,
-      refetchInterval: 4000,
+      refetchInterval: 5000,
       refetchIntervalInBackground: true
     });
 

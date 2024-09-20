@@ -26,6 +26,9 @@ import { useLoggedInServerState } from "@/hooks";
 import { ISSUER_QUERIES } from "@/queries/IssuerQueries";
 import { CredentialRequestStatus } from "@coredin/shared";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
+import { useState, useEffect } from "react";
+import useSound from "use-sound";
+import NotificationSound from "@/assets/sounds/coredin-notification-long-pop.mp3";
 
 type NavigationProps = {
   wallet: string;
@@ -43,13 +46,26 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
   );
   const { data: messages } = useLoggedInServerState(
     FEED_QUERIES.getMessages(),
-    { refetchInterval: 10000 }
+    { refetchInterval: 5000, refetchIntervalInBackground: true }
   );
 
   const unreadMessages =
     messages?.filter((message) => message.unread).length || 0;
 
   const isPostPage = location.pathname.includes("posts");
+  const [lastNotifiedMessageId, setLastNotifiedMessageId] = useState<number>(0);
+  const [playNotification] = useSound(NotificationSound);
+
+  useEffect(() => {
+    const lastUnreadMessage = messages
+      ?.filter((message) => message.unread)
+      .at(-1);
+    if (!lastUnreadMessage) return;
+    if (lastUnreadMessage.id !== lastNotifiedMessageId) {
+      playNotification();
+      setLastNotifiedMessageId(lastUnreadMessage.id);
+    }
+  }, [JSON.stringify(messages)]);
 
   return (
     <Box

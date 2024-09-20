@@ -9,6 +9,8 @@ import { useQueryClient } from "@tanstack/react-query";
 import React, { useEffect } from "react";
 import { Content } from "./components";
 import { NewPost } from "../NewPost";
+import { useParams } from "react-router-dom";
+import { BaseServerStateKeys } from "@/constants";
 
 export type PostProps = {
   post: PostDTO;
@@ -26,14 +28,19 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { data: userProfile } = useLoggedInServerState(
     USER_QUERIES.getUser(chainContext.address || ""),
-    { enabled: !!chainContext.address }
+    {
+      enabled: !!chainContext.address
+    }
   );
 
   const [isLiked, setIsLiked] = React.useState(
     userProfile?.likedPosts.includes(post.id) || false
   );
 
-  const [opened, setOpened] = React.useState(isParent ?? false);
+  const { id: postId } = useParams();
+  const [opened, setOpened] = React.useState(
+    isParent ?? Number(postId) === post.id ?? false
+  );
   const { data: postDetail, isLoading: isDetailLoading } =
     useLoggedInServerState(FEED_QUERIES.get(post.id, post.creatorWallet), {
       enabled: opened
@@ -45,7 +52,15 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
 
   const handleLike = () => {
     like({ postId: post.id, liked: !isLiked }).then(() => {
-      queryClient.invalidateQueries();
+      queryClient.invalidateQueries({
+        queryKey: [BaseServerStateKeys.FEED]
+      });
+      queryClient.invalidateQueries({
+        queryKey: [BaseServerStateKeys.POST]
+      });
+      // queryClient.invalidateQueries({
+      //   queryKey: [BaseServerStateKeys.USER]
+      // });
     });
     setIsLiked((prev) => !prev);
   };
@@ -87,8 +102,6 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
           isDetailLoading={isDetailLoading}
           handleComment={handleComment}
           handleLike={handleLike}
-          // isParent={true}
-          // TODO - add ActionBar and revise this part
         />
       )}
       {postDetail && !postDetail.parent && post.replyToPostId && (
