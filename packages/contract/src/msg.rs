@@ -110,9 +110,13 @@ pub enum QueryMsg {
         page_size: Uint64,
     },
 
-    // return the subscriber count
+    // return the number of subscribers for a profile
     #[returns(Uint64)]
     GetSubscriberCount { wallet: String },
+
+    // return the number of profiles a wallet is subscribed to
+    #[returns(Uint64)]
+    GetSubscriptionCount { wallet: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

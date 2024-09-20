@@ -382,11 +382,26 @@ mod tests {
                 check_subs(&bob, 1, 1, vec!["clairedid".to_string()]);
                 check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
 
-                // test Claire's subscriber count
-                let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
+                //  Bob should have 2 subscriptions
+                let sub_count_msg_bob = QueryMsg::GetSubscriptionCount {
+                    wallet: bob.address().to_string(),
+                };
+                let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_bob);
                 let count = sub_count.unwrap().clone();
-                println!("count: {:?}", count);
-                assert!(count == Uint64::from(1u64));
+                println!("Bob's subscriber count: {:?}", count);
+                assert!(
+                    count == Uint64::from(2u64),
+                    "Bob should have exactly 2 subscribers (Alice and Claire)"
+                );
+
+                // Check Claire's subscriber count
+                let sub_count_msg_claire = QueryMsg::GetSubscriberCount {
+                    wallet: claire.address().to_string(),
+                };
+                let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_claire);
+                let count = sub_count.unwrap().clone();
+                println!("Claire's subscriber count: {:?}", count);
+                assert!(count == Uint64::from(1u64), "Claire should have 1 subscriber (Bob)");
             },
         );
     }

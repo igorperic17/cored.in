@@ -10,7 +10,7 @@ use crate::state::{
 // use prost::Message;
 // use prost::message::Message;
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft::{self, NFTsResponse, SupplyResponse};
+use coreum_wasm_sdk::nft::{self, BalanceResponse, NFTsResponse, SupplyResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 // use coreum_wasm_sdk::shim::Any;
 use coreum_wasm_sdk::types::coreum::asset::nft::v1::{
@@ -183,12 +183,14 @@ pub fn subscribe(
 
         let mint = MsgMint {
             sender: env.contract.address.to_string(),
+            // would be nice to mint to the subscriber, but then the sender address is the subscriber's wallet
+            // sender: ,
             class_id: nft_class_id.clone(),
             id: nft_id.clone(),
             uri: String::new(),
             uri_hash: String::new(),
             data: nft_data,
-            recipient: info.sender.to_string(),
+            recipient: subscriber_profile.wallet.to_string(),
         };
 
         let mint_bytes = mint.to_proto_bytes();
@@ -212,8 +214,8 @@ pub fn subscribe(
 
     // payout
     // deps.api.debug("Trying to pay the subscriber...");
-    let contact_config = CONFIG.load(deps.storage).unwrap();
-    let sub_fee_percentage = contact_config.subscription_fee;
+    let contract_config = CONFIG.load(deps.storage).unwrap();
+    let sub_fee_percentage = contract_config.subscription_fee;
 
     let cored_in_commission = sub_fee_percentage
         .checked_mul(Decimal::from_str(price.amount.to_string().as_str())?)
@@ -391,6 +393,7 @@ pub fn get_subscriptions(
     }
 }
 
+// how many profiles have subscribed to the wallet
 pub fn get_subscriber_count(
     deps: Deps<CoreumQueries>,
     env: Env,
@@ -400,21 +403,52 @@ pub fn get_subscriber_count(
     let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
         class_id: Some(class_id),
-        owner: Some(wallet),
+        owner: None,
         pagination: Some(PageRequest {
             key: None,
-            offset: None,
+            offset: Some(0),
             limit: Some(1),
             count_total: Some(true),
-            reverse: Some(true),
+            reverse: None,
         }),
     })
     .into();
 
     let res = deps.querier.query::<NFTsResponse>(&request);
+    // return to_json_binary(&res.unwrap().pagination.total);
+
     match res {
         Ok(nfts) => {
             let total_count: Uint64 = nfts.pagination.total.unwrap().into();
+            return to_json_binary(&total_count);
+        }
+        Err(_) => {
+            return to_json_binary(&Uint64::zero());
+        }
+    }
+}
+
+// how many profiles is the wallet subscribed to
+pub fn get_subscription_count(
+    deps: Deps<CoreumQueries>,
+    env: Env,
+    wallet: String,
+) -> StdResult<Binary> {
+    
+    // https://full-node.testnet-1.coreum.dev:1317/#/Query/GithubComCoreumFoundationCoreumV4XNftBalance
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Balance {
+        class_id,
+        owner: wallet
+    })
+    .into();
+
+    let res = deps.querier.query::<BalanceResponse>(&request);
+    // return to_json_binary(&res.unwrap().pagination.total);
+
+    match res {
+        Ok(balance) => {
+            let total_count: Uint64 = balance.amount.into();
             return to_json_binary(&total_count);
         }
         Err(_) => {

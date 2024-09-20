@@ -17,8 +17,7 @@ use crate::state::{
     WALLET_PROFILE_MAP,
 };
 use crate::subscription::{
-    get_subscriber_count, get_subscribers, get_subscription_duration, get_subscription_info,
-    get_subscription_price, get_subscriptions, is_subscriber, set_subscription, subscribe,
+    get_subscriber_count, get_subscribers, get_subscription_count, get_subscription_duration, get_subscription_info, get_subscription_price, get_subscriptions, is_subscriber, set_subscription, subscribe
 };
 
 use crate::merkle_tree::MerkleTree;
@@ -47,15 +46,14 @@ pub fn instantiate(
 
     // create an NFT class for this contract so all of the subscriptions are NFTs of this class
     let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
-    let class_id_clone = class_id.clone();
     let symbol = generate_nft_symbol(env, &NFT_CLASS_PREFIX.to_string());
     let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
-        name: class_id, // class = user's DID they just registered
+        name: class_id.clone(), // class = user's DID they just registered
         symbol: symbol, // class = cropped DID
         description: Some(
             format!(
                 "Welcome to the main coredin contract with NFT class id {}",
-                class_id_clone
+                class_id
             )
             .to_string(),
         ),
@@ -193,6 +191,7 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
             page_size,
         } => get_subscriptions(deps, env, wallet, page, page_size),
         QueryMsg::GetSubscriberCount { wallet } => get_subscriber_count(deps, env, wallet),
+        QueryMsg::GetSubscriptionCount { wallet } => get_subscription_count(deps, env, wallet),
     }
 }
 
