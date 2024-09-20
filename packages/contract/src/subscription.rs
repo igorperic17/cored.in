@@ -292,7 +292,7 @@ pub fn is_subscriber(
             // // NFT found, check the expiration date
             let sub_info: SubscriptionInfo = nft_response.nft.into();
             let is_valid_sub = sub_info.valid_until.seconds() >= env.block.time.seconds();
-            return to_json_binary(&is_valid_sub);
+            is_valid_sub
         }
         // when NFT is not found query returns "{}"
         // which can't be deserialized to NFTResponse struct
@@ -396,16 +396,30 @@ pub fn get_subscriber_count(
     env: Env,
     wallet: String,
 ) -> StdResult<Binary> {
+    // use count_total from NFTs query to count all NFTs for the wallet
     let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
-    let request: QueryRequest<CoreumQueries> =
-        CoreumQueries::NFT(nft::Query::Supply { class_id: class_id }).into();
+    let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::NFTs {
+        class_id: Some(class_id),
+        owner: Some(wallet),
+        pagination: Some(PageRequest {
+            key: None,
+            offset: None,
+            limit: Some(1),
+            count_total: Some(true),
+            reverse: Some(true),
+        }),
+    })
+    .into();
 
-    let res = deps.querier.query::<SupplyResponse>(&request);
+    let res = deps.querier.query::<NFTsResponse>(&request);
     match res {
-        Ok(supply) => {
-            return to_json_binary(&Uint64::from(supply.amount));
+        Ok(nfts) => {
+            let total_count: Uint64 = nfts.pagination.total.unwrap().into();
+            return to_json_binary(&total_count);
         }
-        Err(_) => return to_json_binary(&Uint64::zero()),
+        Err(_) => {
+            return to_json_binary(&Uint64::zero());
+        }
     }
 }
 

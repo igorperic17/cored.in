@@ -125,7 +125,7 @@ mod tests {
 
                 let sub_info =
                     wasm.query::<QueryMsg, Option<SubscriptionInfo>>(&contract_addr, &sub_info_msg);
-                println!("sub_info: {:?}", sub_info);
+                // println!("sub_info: {:?}", sub_info);
 
                 assert!(sub_info.is_ok() && sub_info.unwrap().is_some());
             },
@@ -382,10 +382,10 @@ mod tests {
                 check_subs(&bob, 1, 1, vec!["clairedid".to_string()]);
                 check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
 
-                // test subscriber count
+                // test Claire's subscriber count
                 let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
                 let count = sub_count.unwrap().clone();
-                // println!("count: {:?}", count);
+                println!("count: {:?}", count);
                 assert!(count == Uint64::from(1u64));
             },
         );

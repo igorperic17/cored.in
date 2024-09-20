@@ -8,6 +8,7 @@ pub mod test_common {
 
     use crate::contract::FEE_DENOM;
     use crate::msg::{ExecuteMsg, InstantiateMsg};
+    use std::cmp::Ordering;
     use std::str::FromStr;
 
     use coreum_test_tube::{Account, Bank, CoreumTestApp, Module, SigningAccount, Wasm, NFT};
@@ -30,9 +31,22 @@ pub mod test_common {
         let nft = NFT::new(&app);
 
         // init multiple accounts
-        let accs = app
+        let mut accs = app
                     .init_accounts(&coins( INITIAL_BALANCE, FEE_DENOM.to_string()), 5)
                     .unwrap();
+        // sort accounts by address in ascending order, so the test-tube accounts are deterministic in NFT logic
+        accs.sort_by(|a, b| 
+            match a.address().to_string() < b.address().to_string() {
+                true => Ordering::Greater,
+                false => {
+                    if a.address().to_string() > b.address().to_string() {
+                        Ordering::Less
+                    } else {
+                        Ordering::Equal
+                    }
+                }
+            }
+        );        
         let admin = &accs.get(0).unwrap();
 
         // Store compiled wasm code on the appchain and retrieve its code id
