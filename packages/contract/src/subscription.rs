@@ -154,6 +154,8 @@ pub fn subscribe(
             .to_vec(),
         };
         response = response.add_message(modify_data);
+
+        // TODO: add updating of the other NFT here (the one for the target wallet)
     } else {
         // mint a new mutable subscription NFT
         let subscription = SubscriptionInfo {
