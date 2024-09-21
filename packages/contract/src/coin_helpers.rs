@@ -1,9 +1,15 @@
 use crate::error::ContractError;
 use cosmwasm_std::{Coin, Env};
 
-pub fn generate_nft_symbol(_env: Env, raw_string: &String) -> String {
+pub fn generate_nft_symbol(_env: Env, raw_string: &String, suffix: Option<String>) -> String {
+    // concat the suffix if it exists
+    let mut symbol = raw_string.clone();
+    if let Some(suffix) = suffix {
+        symbol.push_str(&suffix);
+    }
+
     // Filter out invalid characters that don't match [a-zA-Z0-9/:._]
-    let filtered_symbol: String = raw_string
+    let filtered_symbol: String = symbol
         .chars()
         .filter(|c| c.is_alphanumeric() || ['/', ':', '.', '_'].contains(c))
         .collect();
@@ -26,7 +32,7 @@ pub fn generate_nft_symbol(_env: Env, raw_string: &String) -> String {
     symbol
 }
 
-pub fn generate_nft_class_id(env: Env, prefix: String) -> String {
+pub fn generate_nft_class_id(env: Env, prefix: String, suffix: Option<String>) -> String {
     // classID must match format [symbol]-[issuer-address]
     //      and must match this regex:
     // symbol in classID should be lowercase and must be unique in the contract
@@ -37,8 +43,8 @@ pub fn generate_nft_class_id(env: Env, prefix: String) -> String {
     // Concatenate the remaining parts of the address and wallet, filtering for valid characters
     let filtered_part = format!(
         "{}-{}",
-        generate_nft_symbol(env.clone(), &prefix),
-        env.contract.address.to_string() // subscribe_to_wallet_address
+        generate_nft_symbol(env.clone(), &prefix, suffix),
+        env.contract.address.to_string()
     )
     .chars()
     .filter(|c| c.is_alphanumeric() || [':', '/', '.', '_', '-'].contains(c))

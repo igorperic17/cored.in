@@ -29,6 +29,7 @@ const MAX_NAME_LENGTH: u64 = 64;
 pub const FEE_DENOM: &str = "ucore";
 
 pub const NFT_CLASS_PREFIX: &str = "coredintestnet";
+pub const NFT_CLASS_SUFFIX_PROFILE: &str = "p";
 
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
@@ -44,9 +45,9 @@ pub fn instantiate(
     };
     CONFIG.save(deps.storage, &config_state)?;
 
-    // create an NFT class for this contract so all of the subscriptions are NFTs of this class
-    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string());
-    let symbol = generate_nft_symbol(env, &NFT_CLASS_PREFIX.to_string());
+    // create an NFT class for subscriptions (owners are subscribers)
+    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string(), None);
+    let symbol = generate_nft_symbol(env.clone(), &NFT_CLASS_PREFIX.to_string(), None);
     let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
         name: class_id.clone(), // class = user's DID they just registered
         symbol: symbol, // class = cropped DID
@@ -63,7 +64,29 @@ pub fn instantiate(
         features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
         royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
     });
-    Ok(Response::<CoreumMsg>::default().add_message(issue_class_msg))
+
+    // create an NFT class for subcriptions (owners are profiles users subscribe to)
+    let class_id_profile = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string(), Some(NFT_CLASS_SUFFIX_PROFILE.to_string()));
+    let symbol_profile = generate_nft_symbol(env, &NFT_CLASS_PREFIX.to_string(), Some(NFT_CLASS_SUFFIX_PROFILE.to_string()));
+    let issue_class_msg_profiles = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
+        name: class_id_profile.clone(), // class = user's DID they just registered
+        symbol: symbol_profile, // class = cropped DID
+        description: Some(
+            format!(
+                "Welcome to the main coredin contract with NFT class id {}",
+                class_id_profile
+            )
+            .to_string(),
+        ),
+        uri: None,
+        uri_hash: None,
+        data: None,
+        features: Some(vec![DISABLE_SENDING]), // subscription NFTs are soul-bound tokens (SBTs)
+        royalty_rate: Some("0".to_string()), // built-in royalties disabled for now, revenue model is externally managed
+    });
+    Ok(Response::<CoreumMsg>::default()
+        .add_message(issue_class_msg)
+        .add_message(issue_class_msg_profiles))
 }
 
 #[cfg_attr(not(feature = "library"), entry_point)]
