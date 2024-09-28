@@ -3,14 +3,11 @@ use std::str::FromStr;
 use crate::coin_helpers::{assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_id};
 use crate::contract::{FEE_DENOM, NFT_CLASS_PREFIX, NFT_CLASS_SUFFIX_PROFILE};
 use crate::error::ContractError;
-use crate::msg::{GetSubscriptionInfoResponse, GetSubscriptionListResponse};
-use crate::state::{
-    SubscriptionInfo, CONFIG, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP,
-};
-// use prost::Message;
-// use prost::message::Message;
+use crate::models::subscription_info::SubscriptionInfo;
+use crate::msg::GetSubscriptionListResponse;
+use crate::state::{CONFIG, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP};
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
-use coreum_wasm_sdk::nft::{self, BalanceResponse, NFTsResponse, SupplyResponse};
+use coreum_wasm_sdk::nft::{self, BalanceResponse, NFTsResponse};
 use coreum_wasm_sdk::pagination::PageRequest;
 // use coreum_wasm_sdk::shim::Any;
 use coreum_wasm_sdk::types::coreum::asset::nft::v1::{
@@ -199,7 +196,11 @@ pub fn subscribe(
         };
 
         // mint the NFT for the subscribed_to wallet
-        let nft_class_id_profile = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string(), Some(NFT_CLASS_SUFFIX_PROFILE.to_string()));
+        let nft_class_id_profile = generate_nft_class_id(
+            env.clone(),
+            NFT_CLASS_PREFIX.to_string(),
+            Some(NFT_CLASS_SUFFIX_PROFILE.to_string()),
+        );
         let mint_profile = MsgMint {
             sender: env.contract.address.to_string(),
             class_id: nft_class_id_profile.clone(),
@@ -214,7 +215,6 @@ pub fn subscribe(
             type_url: mint_profile.to_any().type_url,
             value: Binary::from(mint_bytes),
         };
-
 
         response = response
             .add_attribute("valid_until", subscription.valid_until.to_string())
@@ -325,7 +325,7 @@ pub fn is_subscriber(
 pub fn get_subscribers(
     deps: Deps<CoreumQueries>,
     env: Env,
-    wallet: String,
+    _wallet: String,
     page: Uint64,
     page_size: Uint64,
 ) -> StdResult<Binary> {
@@ -418,10 +418,14 @@ pub fn get_subscriber_count(
     wallet: String,
 ) -> StdResult<Binary> {
     // https://full-node.testnet-1.coreum.dev:1317/#/Query/GithubComCoreumFoundationCoreumV4XNftBalance
-    let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string(), Some(NFT_CLASS_SUFFIX_PROFILE.to_string()));
+    let class_id = generate_nft_class_id(
+        env.clone(),
+        NFT_CLASS_PREFIX.to_string(),
+        Some(NFT_CLASS_SUFFIX_PROFILE.to_string()),
+    );
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Balance {
         class_id,
-        owner: wallet
+        owner: wallet,
     })
     .into();
 
@@ -445,12 +449,11 @@ pub fn get_subscription_count(
     env: Env,
     wallet: String,
 ) -> StdResult<Binary> {
-    
     // https://full-node.testnet-1.coreum.dev:1317/#/Query/GithubComCoreumFoundationCoreumV4XNftBalance
     let class_id = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string(), None);
     let request: QueryRequest<CoreumQueries> = CoreumQueries::NFT(nft::Query::Balance {
         class_id,
-        owner: wallet
+        owner: wallet,
     })
     .into();
 

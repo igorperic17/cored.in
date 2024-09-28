@@ -1,8 +1,8 @@
 #[cfg(test)]
 mod tests {
     use crate::contract::FEE_DENOM;
+    use crate::models::subscription_info::SubscriptionInfo;
     use crate::msg::{ExecuteMsg, GetSubscriptionListResponse, InstantiateMsg, QueryMsg};
-    use crate::state::SubscriptionInfo;
     use crate::tests::test_common::test_common::{
         get_balance, mock_register_account, with_test_tube, INITIAL_BALANCE,
     };
@@ -398,10 +398,14 @@ mod tests {
                 let sub_count_msg_claire = QueryMsg::GetSubscriberCount {
                     wallet: claire.address().to_string(),
                 };
-                let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_claire);
+                let sub_count =
+                    wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_claire);
                 let count = sub_count.unwrap().clone();
                 println!("Claire's subscriber count: {:?}", count);
-                assert!(count == Uint64::from(1u64), "Claire should have 1 subscriber (Bob)");
+                assert!(
+                    count == Uint64::from(1u64),
+                    "Claire should have 1 subscriber (Bob)"
+                );
             },
         );
     }

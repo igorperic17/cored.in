@@ -5,7 +5,10 @@ use cosmwasm_std::{Coin, Decimal, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use crate::state::{Config, ProfileInfo, SubscriptionInfo};
+use crate::{
+    models::subscription_info::SubscriptionInfo,
+    state::{Config, ProfileInfo},
+};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {

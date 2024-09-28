@@ -17,7 +17,9 @@ use crate::state::{
     WALLET_PROFILE_MAP,
 };
 use crate::subscription::{
-    get_subscriber_count, get_subscribers, get_subscription_count, get_subscription_duration, get_subscription_info, get_subscription_price, get_subscriptions, is_subscriber, set_subscription, subscribe
+    get_subscriber_count, get_subscribers, get_subscription_count, get_subscription_duration,
+    get_subscription_info, get_subscription_price, get_subscriptions, is_subscriber,
+    set_subscription, subscribe,
 };
 
 use crate::merkle_tree::MerkleTree;
@@ -50,7 +52,7 @@ pub fn instantiate(
     let symbol = generate_nft_symbol(env.clone(), &NFT_CLASS_PREFIX.to_string(), None);
     let issue_class_msg = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
         name: class_id.clone(), // class = user's DID they just registered
-        symbol: symbol, // class = cropped DID
+        symbol: symbol,         // class = cropped DID
         description: Some(
             format!(
                 "Welcome to the main coredin contract with NFT class id {}",
@@ -66,11 +68,19 @@ pub fn instantiate(
     });
 
     // create an NFT class for subcriptions (owners are profiles users subscribe to)
-    let class_id_profile = generate_nft_class_id(env.clone(), NFT_CLASS_PREFIX.to_string(), Some(NFT_CLASS_SUFFIX_PROFILE.to_string()));
-    let symbol_profile = generate_nft_symbol(env, &NFT_CLASS_PREFIX.to_string(), Some(NFT_CLASS_SUFFIX_PROFILE.to_string()));
+    let class_id_profile = generate_nft_class_id(
+        env.clone(),
+        NFT_CLASS_PREFIX.to_string(),
+        Some(NFT_CLASS_SUFFIX_PROFILE.to_string()),
+    );
+    let symbol_profile = generate_nft_symbol(
+        env,
+        &NFT_CLASS_PREFIX.to_string(),
+        Some(NFT_CLASS_SUFFIX_PROFILE.to_string()),
+    );
     let issue_class_msg_profiles = CoreumMsg::AssetNFT(assetnft::Msg::IssueClass {
         name: class_id_profile.clone(), // class = user's DID they just registered
-        symbol: symbol_profile, // class = cropped DID
+        symbol: symbol_profile,         // class = cropped DID
         description: Some(
             format!(
                 "Welcome to the main coredin contract with NFT class id {}",
@@ -115,7 +125,7 @@ pub fn execute(
 
 pub fn execute_register(
     deps: DepsMut,
-    env: Env,
+    _env: Env,
     info: MessageInfo,
     username: String,
     did: String,
