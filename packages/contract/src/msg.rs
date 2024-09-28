@@ -53,6 +53,9 @@ pub enum ExecuteMsg {
     SetSubscription { price: Coin, duration: Uint64 },
     // subscribe to a DID
     Subscribe { did: DID },
+
+    // tip the author of a post
+    TipPostAuthor { post_id: String },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, QueryResponses)]

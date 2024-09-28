@@ -41,4 +41,10 @@ pub enum ContractError {
 
     #[error("A valid subscription exists: {subscription_info}")]
     ExistingSubscriptionFound { subscription_info: SubscriptionInfo },
+
+    #[error("No funds sent")]
+    NoFunds {},
+
+    #[error("Post not found (id {id})")]
+    PostNotFound { id: String },
 }

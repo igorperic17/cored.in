@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 
 use cosmwasm_std::{Addr, Coin, Decimal};
 
-use crate::models::profile_info::ProfileInfo;
+use crate::models::{post::PostInfo, profile_info::ProfileInfo};
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
@@ -21,3 +21,5 @@ pub const USERNAME_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("usernamepro
 pub const WALLET_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("walletprofile");
 
 pub const CREDENTIAL: Map<String, String> = Map::new("credential");
+
+pub const POST: Map<String, PostInfo> = Map::new("post");

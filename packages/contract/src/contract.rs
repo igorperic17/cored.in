@@ -24,6 +24,7 @@ use crate::subscription::{
 };
 
 use crate::merkle_tree::MerkleTree;
+use crate::tip::tip_post_author;
 
 const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
@@ -121,6 +122,10 @@ pub fn execute(
             set_subscription(deps.into_empty(), info, price, duration)
         }
         ExecuteMsg::Subscribe { did } => subscribe(deps, env, info, did),
+
+        ExecuteMsg::TipPostAuthor { post_id } => {
+            tip_post_author(deps.into_empty(), env, info, post_id)
+        }
     }
 }
 

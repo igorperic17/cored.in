@@ -1,11 +1,8 @@
 use crate::models::did::DID;
-use cw_storage_plus::Map;
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use cosmwasm_std::{Addr, Coin, Timestamp};
-
-pub const POST: Map<String, PostInfo> = Map::new("post");
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Eq)]
 pub enum PostType {

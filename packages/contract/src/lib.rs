@@ -8,6 +8,7 @@ pub mod merkle_tree;
 pub mod msg;
 pub mod state;
 pub mod subscription;
+pub mod tip;
 
 pub mod models {
     pub mod did;
