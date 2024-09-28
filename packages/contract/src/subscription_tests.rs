@@ -1,13 +1,14 @@
 #[cfg(test)]
 mod tests {
     use crate::contract::FEE_DENOM;
+    use crate::models::did::DID;
     use crate::models::subscription_info::SubscriptionInfo;
     use crate::msg::{ExecuteMsg, GetSubscriptionListResponse, InstantiateMsg, QueryMsg};
-    use crate::tests::test_common::test_common::{
+    use crate::test_helpers::test_helpers::{
         get_balance, mock_register_account, with_test_tube, INITIAL_BALANCE,
     };
     use coreum_test_tube::{Account, Bank, CoreumTestApp, Module, SigningAccount, Wasm, NFT};
-    use cosmwasm_std::{coins, Coin, Uint128, Uint64};
+    use cosmwasm_std::{coins, Addr, Coin, Uint128, Uint64};
 
     #[test]
     fn subscribe_payout_owner() {
@@ -31,33 +32,26 @@ mod tests {
                     price: Coin::new(bob_sub_price.u128(), FEE_DENOM),
                     duration: Uint64::one(),
                 };
-                wasm.execute(&contract_addr, &set_sub_price_msg, &[], &bob)
+                wasm.execute(&contract_addr, &set_sub_price_msg, &[], bob)
                     .unwrap();
 
                 // now try "free" subscription (Bob subscribes to Alice)
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "alicedid".to_string(),
+                    did: DID::new("did:cored:alicedid".to_string()).unwrap(),
                 };
 
                 let alice_balance_before = get_balance(&bank, alice);
                 let _ = wasm
-                    .execute::<ExecuteMsg>(
-                        &contract_addr,
-                        &subscribe_msg,
-                        // &coins(10_000_000_000, FEE_DENOM.to_string()),
-                        &[],
-                        &bob,
-                    )
+                    .execute::<ExecuteMsg>(&contract_addr, &subscribe_msg, &[], bob)
                     .unwrap();
-                // let tx_gas_cost = Uint128::from(res.gas_info.gas_used);
 
-                // confirm Alice did not get got paid (subscription is free)
+                // confirm Alice did not get paid (subscription is free)
                 let alice_balance_after = get_balance(&bank, alice);
-                assert!(alice_balance_before == alice_balance_after);
+                assert_eq!(alice_balance_before, alice_balance_after);
 
                 // now try "paid" subscription (Alice subscribes to Bob)
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "bobdid".to_string(),
+                    did: DID::new("did:cored:bobdid".to_string()).unwrap(),
                 };
 
                 let bob_balance_before = get_balance(&bank, bob);
@@ -65,16 +59,14 @@ mod tests {
                     .execute::<ExecuteMsg>(
                         &contract_addr,
                         &subscribe_msg,
-                        &coins(bob_sub_price.u128(), FEE_DENOM.to_string()),
-                        // &[],
-                        &alice,
+                        &coins(bob_sub_price.u128(), FEE_DENOM),
+                        alice,
                     )
                     .unwrap();
-                // let tx_gas_cost = Uint128::from(res.gas_info.gas_used);
 
-                // confirm Alice did not get got paid (subscription is free)
+                // confirm Bob got paid
                 let bob_balance_after = get_balance(&bank, bob);
-                assert!(bob_balance_before + bob_sub_price == bob_balance_after);
+                assert_eq!(bob_balance_before + bob_sub_price, bob_balance_after);
             },
         );
     }
@@ -96,10 +88,10 @@ mod tests {
                 mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
 
                 // query the contract's is_subscriber function
-                // which relies on the existance of the NFT
+                // which relies on the existence of the NFT
                 let is_sub_msg = QueryMsg::IsSubscriber {
-                    target_did: "alicedid".to_string(),
-                    subscriber_wallet: bob.address().to_string(),
+                    target_did: DID::new("did:cored:alicedid".to_string()).unwrap(),
+                    subscriber_wallet: Addr::unchecked(bob.address().to_string()),
                 };
 
                 let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
@@ -109,9 +101,9 @@ mod tests {
 
                 // Bob subscribes to Alice
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "alicedid".to_string(),
+                    did: DID::new("did:cored:alicedid".to_string()).unwrap(),
                 };
-                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
 
                 let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
                 // expect that is_sub is true after subscription
@@ -119,13 +111,12 @@ mod tests {
 
                 // Check subscription info
                 let sub_info_msg = QueryMsg::GetSubscriptionInfo {
-                    did: "alicedid".to_string(),
-                    subscriber: bob.address().to_string(),
+                    did: DID::new("did:cored:alicedid".to_string()).unwrap(),
+                    subscriber: Addr::unchecked(bob.address().to_string()),
                 };
 
                 let sub_info =
                     wasm.query::<QueryMsg, Option<SubscriptionInfo>>(&contract_addr, &sub_info_msg);
-                // println!("sub_info: {:?}", sub_info);
 
                 assert!(sub_info.is_ok() && sub_info.unwrap().is_some());
             },
@@ -137,19 +128,19 @@ mod tests {
         // Create new Coreum appchain instance.
         let app = CoreumTestApp::new();
 
-        // `Wasm` is the module we use to interact with cosmwasm releated logic on the appchain
+        // `Wasm` is the module we use to interact with cosmwasm related logic on the appchain
         let wasm = Wasm::new(&app);
 
         // init multiple accounts
         let accs = app
-            .init_accounts(&coins(INITIAL_BALANCE, FEE_DENOM.to_string()), 3)
+            .init_accounts(&coins(INITIAL_BALANCE, FEE_DENOM), 3)
             .unwrap();
-        let admin = &accs.get(0).unwrap();
+        let admin = &accs[0];
 
         // Store compiled wasm code on the appchain and retrieve its code id
         let wasm_byte_code = std::fs::read("./artifacts/coredin.wasm").unwrap();
         let code_id = wasm
-            .store_code(&wasm_byte_code, None, &admin)
+            .store_code(&wasm_byte_code, None, admin)
             .unwrap()
             .data
             .code_id;
@@ -160,10 +151,9 @@ mod tests {
                 code_id,
                 &InstantiateMsg::zero(),
                 Some(admin.address().as_str()),
-                "cored.in".into(),
-                // &coins(100_000_000_000, FEE_DENOM.to_string()),
+                Some("cored.in"),
                 &[],
-                &admin,
+                admin,
             )
             .unwrap()
             .data
@@ -172,24 +162,24 @@ mod tests {
         //// Bob subscribes to Alice
 
         // register actors
-        let alice = accs.get(1).unwrap();
-        let bob = accs.get(2).unwrap();
+        let alice = &accs[1];
+        let bob = &accs[2];
 
         mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
         mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
 
         // query the contract's is_subscriber function
-        // which relies on the existance of the NFT
+        // which relies on the existence of the NFT
         let is_sub_msg = QueryMsg::IsSubscriber {
-            target_did: "alicedid".to_string(),
-            subscriber_wallet: bob.address().to_string(),
+            target_did: DID::new("did:cored:alicedid".to_string()).unwrap(),
+            subscriber_wallet: Addr::unchecked(bob.address().to_string()),
         };
 
         // Bob subscribes to Alice
         let subscribe_msg = ExecuteMsg::Subscribe {
-            did: "alicedid".to_string(),
+            did: DID::new("did:cored:alicedid".to_string()).unwrap(),
         };
-        let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+        let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
 
         let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
         // expect that is_sub is true after subscription
@@ -228,7 +218,7 @@ mod tests {
                     let mut expected_subs = expected_subs.clone();
                     expected_subs.sort();
                     let sub_msg = QueryMsg::GetSubscribers {
-                        wallet: wallet.address().to_string(),
+                        wallet: Addr::unchecked(wallet.address().to_string()),
                         page: Uint64::from(page),
                         page_size: Uint64::from(page_size),
                     };
@@ -237,55 +227,86 @@ mod tests {
                         .unwrap()
                         .subscribers;
                     subs.sort();
-                    // println!("subs: {:?}", subs);
-                    // println!("expected_subs: {:?}", expected_subs);
 
                     // extract the subscriber addresses
                     let subs_dids = subs
                         .iter()
-                        .map(|sub| sub.subscriber.clone())
+                        .map(|sub| sub.subscriber.to_string())
                         .collect::<Vec<String>>();
 
-                    // println!("subs_dids: {:?}", subs_dids);
-                    assert!(subs_dids == expected_subs);
+                    assert_eq!(subs_dids, expected_subs);
                 };
 
                 // Alice should not have any subscribers
-                check_subs(&alice, 0, 10, vec![]);
-                check_subs(&alice, 2, 10, vec![]);
-                check_subs(&alice, 0, 1, vec![]);
-                check_subs(&alice, 0, 1000, vec![]);
+                check_subs(alice, 0, 10, vec![]);
+                check_subs(alice, 2, 10, vec![]);
+                check_subs(alice, 0, 1, vec![]);
+                check_subs(alice, 0, 1000, vec![]);
 
                 // Bob subscribes to Alice
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "alicedid".to_string(),
+                    did: DID::new("did:cored:alicedid".to_string()).unwrap(),
                 };
-                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
 
                 // Alice should have Bob as a subscriber
-                check_subs(&alice, 0, 10, vec!["bobdid".to_string()]);
-                check_subs(&alice, 2, 10, vec![]); // Bob is on page 0
-                check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
-                check_subs(&alice, 0, 1000, vec!["bobdid".to_string()]);
+                check_subs(alice, 0, 10, vec!["did:cored:bobdid".to_string()]);
+                check_subs(alice, 2, 10, vec![]); // Bob is on page 0
+                check_subs(alice, 0, 1, vec!["did:cored:bobdid".to_string()]);
+                check_subs(alice, 0, 1000, vec!["did:cored:bobdid".to_string()]);
 
                 // Claire subscribes to Alice
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "alicedid".to_string(),
+                    did: DID::new("did:cored:alicedid".to_string()).unwrap(),
                 };
-                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &claire);
+                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], claire);
 
                 // Alice should have Bob and Claire as subscribers
                 check_subs(
-                    &alice,
+                    alice,
                     0,
                     10,
-                    vec!["clairedid".to_string(), "bobdid".to_string()],
+                    vec![
+                        "did:cored:clairedid".to_string(),
+                        "did:cored:bobdid".to_string(),
+                    ],
                 );
 
-                // Claire should be on the second page when page_size is 1
-                // TODO: commenting due to the undeterministic behavior of the order of subscribers
-                check_subs(&alice, 1, 1, vec!["clairedid".to_string()]);
-                check_subs(&alice, 0, 1, vec!["bobdid".to_string()]);
+                // Check individual pages when page_size is 1
+                let page_0 = wasm
+                    .query::<QueryMsg, GetSubscriptionListResponse>(
+                        &contract_addr,
+                        &QueryMsg::GetSubscribers {
+                            wallet: Addr::unchecked(alice.address().to_string()),
+                            page: Uint64::from(0u64),
+                            page_size: Uint64::from(1u64),
+                        },
+                    )
+                    .unwrap()
+                    .subscribers;
+                let page_1 = wasm
+                    .query::<QueryMsg, GetSubscriptionListResponse>(
+                        &contract_addr,
+                        &QueryMsg::GetSubscribers {
+                            wallet: Addr::unchecked(alice.address().to_string()),
+                            page: Uint64::from(1u64),
+                            page_size: Uint64::from(1u64),
+                        },
+                    )
+                    .unwrap()
+                    .subscribers;
+
+                assert_eq!(page_0.len(), 1);
+                assert_eq!(page_1.len(), 1);
+                assert_ne!(page_0[0].subscriber, page_1[0].subscriber);
+                assert!(
+                    page_0[0].subscriber.to_string() == "did:cored:bobdid"
+                        || page_0[0].subscriber.to_string() == "did:cored:clairedid"
+                );
+                assert!(
+                    page_1[0].subscriber.to_string() == "did:cored:bobdid"
+                        || page_1[0].subscriber.to_string() == "did:cored:clairedid"
+                );
             },
         );
     }
@@ -315,7 +336,7 @@ mod tests {
                     let mut expected_subs = expected_subs.clone();
                     expected_subs.sort();
                     let sub_msg = QueryMsg::GetSubscriptions {
-                        wallet: wallet.address().to_string(),
+                        wallet: Addr::unchecked(wallet.address().to_string()),
                         page: Uint64::from(page),
                         page_size: Uint64::from(page_size),
                     };
@@ -324,86 +345,88 @@ mod tests {
                         .unwrap()
                         .subscribers;
                     subs.sort();
-                    // println!("subs: {:?}", subs);
-                    // println!("expected_subs: {:?}", expected_subs);
 
                     // extract the subscriber addresses
                     let subs_dids = subs
                         .iter()
-                        .map(|sub| sub.subscribed_to.clone())
+                        .map(|sub| sub.subscribed_to.to_string())
                         .collect::<Vec<String>>();
 
-                    // println!("subs_dids: {:?}", subs_dids);
-                    assert!(subs_dids == expected_subs);
+                    assert_eq!(subs_dids, expected_subs);
                 };
 
-                // Alice should not have any subscribers
-                check_subs(&bob, 0, 10, vec![]);
-                check_subs(&bob, 2, 10, vec![]);
-                check_subs(&bob, 0, 1, vec![]);
-                check_subs(&bob, 0, 1000, vec![]);
+                // Bob should not have any subscriptions
+                check_subs(bob, 0, 10, vec![]);
+                check_subs(bob, 2, 10, vec![]);
+                check_subs(bob, 0, 1, vec![]);
+                check_subs(bob, 0, 1000, vec![]);
 
                 // test subscriber count
                 let sub_count_msg = QueryMsg::GetSubscriberCount {
-                    wallet: claire.address().to_string(),
+                    wallet: Addr::unchecked(claire.address().to_string()),
                 };
                 let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg);
-                let count = sub_count.unwrap().clone();
-                assert!(count == Uint64::from(0u64));
+                let count = sub_count.unwrap();
+                assert_eq!(count, Uint64::from(0u64));
 
                 // Bob subscribes to Alice
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "alicedid".to_string(),
+                    did: DID::new("did:cored:alicedid".to_string()).unwrap(),
                 };
-                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
 
-                // Alice should have Bob as a subscriber
-                check_subs(&bob, 0, 10, vec!["alicedid".to_string()]);
-                check_subs(&bob, 2, 10, vec![]); // Bob is on page 0
-                check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
-                check_subs(&bob, 0, 1000, vec!["alicedid".to_string()]);
+                // Bob should have Alice as a subscription
+                check_subs(bob, 0, 10, vec!["did:cored:alicedid".to_string()]);
+                check_subs(bob, 2, 10, vec![]); // Alice is on page 0
+                check_subs(bob, 0, 1, vec!["did:cored:alicedid".to_string()]);
+                check_subs(bob, 0, 1000, vec!["did:cored:alicedid".to_string()]);
 
                 // Bob subscribes to Claire
                 let subscribe_msg = ExecuteMsg::Subscribe {
-                    did: "clairedid".to_string(),
+                    did: DID::new("did:cored:clairedid".to_string()).unwrap(),
                 };
-                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+                let _ = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
 
-                // Bob should have Alice and Claire as subscribers
+                // Bob should have Alice and Claire as subscriptions
                 check_subs(
-                    &bob,
+                    bob,
                     0,
                     10,
-                    vec!["clairedid".to_string(), "alicedid".to_string()],
+                    vec![
+                        "did:cored:clairedid".to_string(),
+                        "did:cored:alicedid".to_string(),
+                    ],
                 );
 
                 // Claire should be on the second page when page_size is 1
                 // TODO: commenting due to the undeterministic behavior of the order of subscribers
-                check_subs(&bob, 1, 1, vec!["clairedid".to_string()]);
-                check_subs(&bob, 0, 1, vec!["alicedid".to_string()]);
+                check_subs(bob, 1, 1, vec!["did:cored:clairedid".to_string()]);
+                check_subs(bob, 0, 1, vec!["did:cored:alicedid".to_string()]);
 
                 //  Bob should have 2 subscriptions
                 let sub_count_msg_bob = QueryMsg::GetSubscriptionCount {
-                    wallet: bob.address().to_string(),
+                    wallet: Addr::unchecked(bob.address().to_string()),
                 };
                 let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_bob);
-                let count = sub_count.unwrap().clone();
-                println!("Bob's subscriber count: {:?}", count);
-                assert!(
-                    count == Uint64::from(2u64),
-                    "Bob should have exactly 2 subscribers (Alice and Claire)"
+                let count = sub_count.unwrap();
+                println!("Bob's subscription count: {:?}", count);
+                assert_eq!(
+                    count,
+                    Uint64::from(2u64),
+                    "Bob should have exactly 2 subscriptions (Alice and Claire)"
                 );
 
                 // Check Claire's subscriber count
                 let sub_count_msg_claire = QueryMsg::GetSubscriberCount {
-                    wallet: claire.address().to_string(),
+                    wallet: Addr::unchecked(claire.address().to_string()),
                 };
                 let sub_count =
                     wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_claire);
-                let count = sub_count.unwrap().clone();
+                let count = sub_count.unwrap();
                 println!("Claire's subscriber count: {:?}", count);
-                assert!(
-                    count == Uint64::from(1u64),
+                assert_eq!(
+                    count,
+                    Uint64::from(1u64),
                     "Claire should have 1 subscriber (Bob)"
                 );
             },
@@ -420,14 +443,14 @@ mod tests {
 
         // init multiple accounts
         let accs = app
-            .init_accounts(&coins(INITIAL_BALANCE, FEE_DENOM.to_string()), 3)
+            .init_accounts(&coins(INITIAL_BALANCE, FEE_DENOM), 3)
             .unwrap();
-        let admin = &accs.get(0).unwrap();
+        let admin = &accs[0];
 
         // Store compiled wasm code on the appchain and retrieve its code id
         let wasm_byte_code = std::fs::read("./artifacts/coredin.wasm").unwrap();
         let code_id = wasm
-            .store_code(&wasm_byte_code, None, &admin)
+            .store_code(&wasm_byte_code, None, admin)
             .unwrap()
             .data
             .code_id;
@@ -438,10 +461,9 @@ mod tests {
                 code_id,
                 &InstantiateMsg::zero(),
                 Some(admin.address().as_str()),
-                "cored.in".into(),
-                // &coins(100_000_000_000, FEE_DENOM.to_string()),
+                Some("cored.in"),
                 &[],
-                &admin,
+                admin,
             )
             .unwrap()
             .data
@@ -450,8 +472,8 @@ mod tests {
         //// Bob subscribes to Alice
 
         // register actors
-        let alice = accs.get(1).unwrap();
-        let bob = accs.get(2).unwrap();
+        let alice = &accs[1];
+        let bob = &accs[2];
 
         mock_register_account(&wasm, &contract_addr, alice, "alice".to_string());
         mock_register_account(&wasm, &contract_addr, bob, "bob".to_string());
@@ -459,16 +481,16 @@ mod tests {
         // query the contract's is_subscriber function
         // which relies on the existance of the NFT
         let is_sub_msg = QueryMsg::IsSubscriber {
-            target_did: "alicedid".to_string(),
-            subscriber_wallet: bob.address().to_string(),
+            target_did: DID::new("did:cored:alicedid".to_string()).unwrap(),
+            subscriber_wallet: Addr::unchecked(bob.address().to_string()),
         };
 
         // Bob subscribes to Alice twice in a row
         let subscribe_msg = ExecuteMsg::Subscribe {
-            did: "alicedid".to_string(),
+            did: DID::new("did:cored:alicedid".to_string()).unwrap(),
         };
-        let sub_1 = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
-        let sub_2 = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+        let sub_1 = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
+        let sub_2 = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
         // expect no errors
         assert!(sub_1.is_ok() && sub_2.is_ok());
 
@@ -484,7 +506,7 @@ mod tests {
         assert!(is_sub.is_ok() && !is_sub.unwrap());
 
         // subscribe again
-        let sub_3 = wasm.execute(&contract_addr, &subscribe_msg, &[], &bob);
+        let sub_3 = wasm.execute(&contract_addr, &subscribe_msg, &[], bob);
         // expect that is_sub is true after the third subscription
         let is_sub = wasm.query::<QueryMsg, bool>(&contract_addr, &is_sub_msg);
         assert!(sub_3.is_ok() && is_sub.is_ok() && is_sub.unwrap());

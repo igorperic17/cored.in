@@ -6,18 +6,17 @@ pub mod dao;
 pub mod error;
 pub mod merkle_tree;
 pub mod msg;
-pub mod post;
 pub mod state;
 pub mod subscription;
 
 pub mod models {
     pub mod did;
+    pub mod post;
+    pub mod profile_info;
     pub mod subscription_info;
 }
 
 #[cfg(test)]
-mod tests {
-    mod test_common;
-    mod test_merkle_tree;
-    mod test_subscription;
-}
+mod subscription_tests;
+#[cfg(test)]
+mod test_helpers;

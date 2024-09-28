@@ -13,8 +13,10 @@ pub enum PostType {
     Microblog,
     // message to another user
     Message(DID),
-    // mandatory bounty (includes 10% collateral)
-    Gig(Coin),
+    // a paid gig
+    //      gig bounty vault (includes 10% collateral to be returned to the poster)
+    //      stake vault (total amount of stakes from responders)
+    Gig(Coin, Coin),
 }
 // stores the economic/financial aspects of a post
 // content and editable metadata are stored in the backend on purpose
@@ -26,5 +28,5 @@ pub struct PostInfo {
     pub author: Addr,
     pub post_type: PostType,
     pub created_on: Timestamp,
-    pub vault: Coin, // storing tips and submission stakes
+    pub vault: Coin, // storing submission stakes
 }

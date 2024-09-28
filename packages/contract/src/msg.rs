@@ -1,13 +1,13 @@
 use std::collections::LinkedList;
 
 use cosmwasm_schema::QueryResponses;
-use cosmwasm_std::{Coin, Decimal, Uint64};
+use cosmwasm_std::{Addr, Coin, Decimal, Uint64};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    models::subscription_info::SubscriptionInfo,
-    state::{Config, ProfileInfo},
+    models::{did::DID, profile_info::ProfileInfo, subscription_info::SubscriptionInfo},
+    state::Config,
 };
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
@@ -41,18 +41,18 @@ impl Default for InstantiateMsg {
 #[serde(rename_all = "snake_case")]
 pub enum ExecuteMsg {
     // register DID and username with the sender's account
-    Register { did: String, username: String },
+    Register { did: DID, username: String },
     // remove the registered DID/username from the signing wallet
     // TODO: remove this before going public?
-    RemoveDID { did: String, username: String },
+    RemoveDID { did: DID, username: String },
     // register DID and username with the sender's account
-    UpdateCredentialMerkleRoot { did: String, root: String },
+    UpdateCredentialMerkleRoot { did: DID, root: String },
     // set subscription price for a DID
     // this sets only the multiplierfor, final price = number of subscribers * multiplier
     // defualt value = 1
     SetSubscription { price: Coin, duration: Uint64 },
     // subscribe to a DID
-    Subscribe { did: String },
+    Subscribe { did: DID },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, QueryResponses)]
@@ -62,18 +62,18 @@ pub enum QueryMsg {
     Config {},
 
     #[returns(GetDIDResponse)]
-    GetWalletDID { wallet: String },
+    GetWalletDID { wallet: Addr },
     #[returns(GetDIDResponse)]
     GetUsernameDID { username: String },
     #[returns(GetDIDResponse)]
-    GetDID { did: String },
+    GetDID { did: DID },
     #[returns(GetMerkleRootResponse)]
-    GetMerkleRoot { did: String },
+    GetMerkleRoot { did: DID },
 
     // verify if the the provided credential is in the set of VCs for given DID
     #[returns(bool)]
     VerifyCredential {
-        did: String,
+        did: DID,
         credential_hash: String,
         merkle_proofs: LinkedList<String>,
     },
@@ -81,26 +81,26 @@ pub enum QueryMsg {
     // check if the user is a subscriber to the DID
     #[returns(bool)]
     IsSubscriber {
-        target_did: String,
-        subscriber_wallet: String,
+        target_did: DID,
+        subscriber_wallet: Addr,
     },
 
     // returns the subscription price for a profile
     #[returns(Coin)]
-    GetSubscriptionPrice { did: String },
+    GetSubscriptionPrice { did: DID },
 
     // returns the subscription price for a profile
     #[returns(Uint64)]
-    GetSubscriptionDuration { did: String },
+    GetSubscriptionDuration { did: DID },
 
     // returns subscription info
     #[returns(Option<SubscriptionInfo>)]
-    GetSubscriptionInfo { did: String, subscriber: String },
+    GetSubscriptionInfo { did: DID, subscriber: Addr },
 
     // return the list of subscribers
     #[returns(GetSubscriptionListResponse)]
     GetSubscribers {
-        wallet: String,
+        wallet: Addr,
         page: Uint64,
         page_size: Uint64,
     },
@@ -108,18 +108,18 @@ pub enum QueryMsg {
     // return the list of subscriptions
     #[returns(GetSubscriptionListResponse)]
     GetSubscriptions {
-        wallet: String,
+        wallet: Addr,
         page: Uint64,
         page_size: Uint64,
     },
 
     // return the number of subscribers for a profile
     #[returns(Uint64)]
-    GetSubscriberCount { wallet: String },
+    GetSubscriberCount { wallet: Addr },
 
     // return the number of profiles a wallet is subscribed to
     #[returns(Uint64)]
-    GetSubscriptionCount { wallet: String },
+    GetSubscriptionCount { wallet: Addr },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

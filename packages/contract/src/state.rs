@@ -1,12 +1,10 @@
-use std::collections::LinkedList;
-
 use cw_storage_plus::{Item, Map};
 use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
-use cosmwasm_std::{Addr, Coin, Decimal, Uint64};
+use cosmwasm_std::{Addr, Coin, Decimal};
 
-use crate::models::subscription_info::SubscriptionInfo;
+use crate::models::profile_info::ProfileInfo;
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct Config {
@@ -23,15 +21,3 @@ pub const USERNAME_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("usernamepro
 pub const WALLET_PROFILE_MAP: Map<String, ProfileInfo> = Map::new("walletprofile");
 
 pub const CREDENTIAL: Map<String, String> = Map::new("credential");
-
-#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
-pub struct ProfileInfo {
-    pub wallet: Addr,
-    pub did: String,
-    pub username: String,
-
-    pub subscription_price: Option<Coin>, // multiplier, if not set, defaults to zero
-    pub subscription_duration_days: Option<Uint64>, // number of days the subscription is valid for the price, defaults to 7
-    pub top_subscribers: LinkedList<SubscriptionInfo>, // max 10 subscribers due to the gas limits
-    pub subscriber_count: Uint64, // future proof to accommodate estimeted user base :)
-}

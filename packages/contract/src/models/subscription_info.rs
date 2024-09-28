@@ -7,12 +7,14 @@ use serde::{Deserialize, Serialize};
 use cosmwasm_std::{from_json, Addr, Coin, Timestamp};
 use prost::Message;
 
+use super::did::DID;
+
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, Eq)]
 pub struct SubscriptionInfo {
     pub subscriber_wallet: Addr,
     pub subscribed_to_wallet: Addr,
-    pub subscriber: String,    // subscriber's DID
-    pub subscribed_to: String, // DID of the profile subscribed to
+    pub subscriber: DID,    // subscriber's DID
+    pub subscribed_to: DID, // DID of the profile subscribed to
     pub valid_until: Timestamp,
     pub cost: Coin,
 }
