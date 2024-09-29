@@ -17,17 +17,17 @@ export interface Coin {
 }
 export type ExecuteMsg = {
   register: {
-    did: string;
+    did: DID;
     username: string;
   };
 } | {
   remove_d_i_d: {
-    did: string;
+    did: DID;
     username: string;
   };
 } | {
   update_credential_merkle_root: {
-    did: string;
+    did: DID;
     root: string;
   };
 } | {
@@ -37,15 +37,22 @@ export type ExecuteMsg = {
   };
 } | {
   subscribe: {
-    did: string;
+    did: DID;
+  };
+} | {
+  tip_post_author: {
+    post_id: string;
   };
 };
 export type Uint64 = string;
+export interface DID {
+  value: string;
+}
 export type QueryMsg = {
   config: {};
 } | {
   get_wallet_d_i_d: {
-    wallet: string;
+    wallet: Addr;
   };
 } | {
   get_username_d_i_d: {
@@ -53,51 +60,55 @@ export type QueryMsg = {
   };
 } | {
   get_d_i_d: {
-    did: string;
+    did: DID;
   };
 } | {
   get_merkle_root: {
-    did: string;
+    did: DID;
   };
 } | {
   verify_credential: {
     credential_hash: string;
-    did: string;
+    did: DID;
     merkle_proofs: string[];
   };
 } | {
   is_subscriber: {
-    subscriber_wallet: string;
-    target_did: string;
+    subscriber_wallet: Addr;
+    target_did: DID;
   };
 } | {
   get_subscription_price: {
-    did: string;
+    did: DID;
   };
 } | {
   get_subscription_duration: {
-    did: string;
+    did: DID;
   };
 } | {
   get_subscription_info: {
-    did: string;
-    subscriber: string;
+    did: DID;
+    subscriber: Addr;
   };
 } | {
   get_subscribers: {
     page: Uint64;
     page_size: Uint64;
-    wallet: string;
+    wallet: Addr;
   };
 } | {
   get_subscriptions: {
     page: Uint64;
     page_size: Uint64;
-    wallet: string;
+    wallet: Addr;
   };
 } | {
   get_subscriber_count: {
-    wallet: string;
+    wallet: Addr;
+  };
+} | {
+  get_subscription_count: {
+    wallet: Addr;
   };
 };
 export type Addr = string;
@@ -111,7 +122,7 @@ export interface GetDIDResponse {
   did_info?: ProfileInfo | null;
 }
 export interface ProfileInfo {
-  did: string;
+  did: DID;
   subscriber_count: Uint64;
   subscription_duration_days?: Uint64 | null;
   subscription_price?: Coin | null;
@@ -121,9 +132,9 @@ export interface ProfileInfo {
 }
 export interface SubscriptionInfo {
   cost: Coin;
-  subscribed_to: string;
+  subscribed_to: DID;
   subscribed_to_wallet: Addr;
-  subscriber: string;
+  subscriber: DID;
   subscriber_wallet: Addr;
   valid_until: Timestamp;
 }

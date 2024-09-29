@@ -80,7 +80,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               },
               "username": {
                 "type": "string"
@@ -105,7 +105,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               },
               "username": {
                 "type": "string"
@@ -130,7 +130,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               },
               "root": {
                 "type": "string"
@@ -179,6 +179,27 @@
             ],
             "properties": {
               "did": {
+                "$ref": "#/definitions/DID"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "tip_post_author"
+        ],
+        "properties": {
+          "tip_post_author": {
+            "type": "object",
+            "required": [
+              "post_id"
+            ],
+            "properties": {
+              "post_id": {
                 "type": "string"
               }
             },
@@ -200,6 +221,18 @@
             "$ref": "#/definitions/Uint128"
           },
           "denom": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "DID": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
             "type": "string"
           }
         },
@@ -245,7 +278,7 @@
             ],
             "properties": {
               "wallet": {
-                "type": "string"
+                "$ref": "#/definitions/Addr"
               }
             },
             "additionalProperties": false
@@ -287,7 +320,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               }
             },
             "additionalProperties": false
@@ -308,7 +341,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               }
             },
             "additionalProperties": false
@@ -334,7 +367,7 @@
                 "type": "string"
               },
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               },
               "merkle_proofs": {
                 "type": "array",
@@ -362,10 +395,10 @@
             ],
             "properties": {
               "subscriber_wallet": {
-                "type": "string"
+                "$ref": "#/definitions/Addr"
               },
               "target_did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               }
             },
             "additionalProperties": false
@@ -386,7 +419,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               }
             },
             "additionalProperties": false
@@ -407,7 +440,7 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               }
             },
             "additionalProperties": false
@@ -429,10 +462,10 @@
             ],
             "properties": {
               "did": {
-                "type": "string"
+                "$ref": "#/definitions/DID"
               },
               "subscriber": {
-                "type": "string"
+                "$ref": "#/definitions/Addr"
               }
             },
             "additionalProperties": false
@@ -461,7 +494,7 @@
                 "$ref": "#/definitions/Uint64"
               },
               "wallet": {
-                "type": "string"
+                "$ref": "#/definitions/Addr"
               }
             },
             "additionalProperties": false
@@ -490,7 +523,7 @@
                 "$ref": "#/definitions/Uint64"
               },
               "wallet": {
-                "type": "string"
+                "$ref": "#/definitions/Addr"
               }
             },
             "additionalProperties": false
@@ -511,7 +544,28 @@
             ],
             "properties": {
               "wallet": {
-                "type": "string"
+                "$ref": "#/definitions/Addr"
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        "additionalProperties": false
+      },
+      {
+        "type": "object",
+        "required": [
+          "get_subscription_count"
+        ],
+        "properties": {
+          "get_subscription_count": {
+            "type": "object",
+            "required": [
+              "wallet"
+            ],
+            "properties": {
+              "wallet": {
+                "$ref": "#/definitions/Addr"
               }
             },
             "additionalProperties": false
@@ -521,6 +575,22 @@
       }
     ],
     "definitions": {
+      "Addr": {
+        "description": "A human readable address.\n\nIn Cosmos, this is typically bech32 encoded. But for multi-chain smart contracts no assumptions should be made other than being UTF-8 encoded and of reasonable length.\n\nThis type represents a validated address. It can be created in the following ways 1. Use `Addr::unchecked(input)` 2. Use `let checked: Addr = deps.api.addr_validate(input)?` 3. Use `let checked: Addr = deps.api.addr_humanize(canonical_addr)?` 4. Deserialize from JSON. This must only be done from JSON that was validated before such as a contract's state. `Addr` must not be used in messages sent by the user because this would result in unvalidated instances.\n\nThis type is immutable. If you really need to mutate it (Really? Are you sure?), create a mutable copy using `let mut mutable = Addr::to_string()` and operate on that `String` instance.",
+        "type": "string"
+      },
+      "DID": {
+        "type": "object",
+        "required": [
+          "value"
+        ],
+        "properties": {
+          "value": {
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
       "Uint64": {
         "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
         "type": "string"
@@ -626,6 +696,18 @@
           },
           "additionalProperties": false
         },
+        "DID": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "ProfileInfo": {
           "type": "object",
           "required": [
@@ -637,7 +719,7 @@
           ],
           "properties": {
             "did": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_count": {
               "$ref": "#/definitions/Uint64"
@@ -692,13 +774,13 @@
               "$ref": "#/definitions/Coin"
             },
             "subscribed_to": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscribed_to_wallet": {
               "$ref": "#/definitions/Addr"
             },
             "subscriber": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_wallet": {
               "$ref": "#/definitions/Addr"
@@ -784,6 +866,18 @@
           },
           "additionalProperties": false
         },
+        "DID": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "SubscriptionInfo": {
           "type": "object",
           "required": [
@@ -799,13 +893,13 @@
               "$ref": "#/definitions/Coin"
             },
             "subscribed_to": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscribed_to_wallet": {
               "$ref": "#/definitions/Addr"
             },
             "subscriber": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_wallet": {
               "$ref": "#/definitions/Addr"
@@ -833,6 +927,12 @@
           "type": "string"
         }
       }
+    },
+    "get_subscription_count": {
+      "$schema": "http://json-schema.org/draft-07/schema#",
+      "title": "Uint64",
+      "description": "A thin wrapper around u64 that is using strings for JSON encoding/decoding, such that the full u64 range can be used for clients that convert JSON numbers to floats, like JavaScript and jq.\n\n# Examples\n\nUse `from` to create instances of this and `u64` to get the value out:\n\n``` # use cosmwasm_std::Uint64; let a = Uint64::from(42u64); assert_eq!(a.u64(), 42);\n\nlet b = Uint64::from(70u32); assert_eq!(b.u64(), 70); ```",
+      "type": "string"
     },
     "get_subscription_duration": {
       "$schema": "http://json-schema.org/draft-07/schema#",
@@ -872,6 +972,18 @@
           },
           "additionalProperties": false
         },
+        "DID": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "SubscriptionInfo": {
           "type": "object",
           "required": [
@@ -887,13 +999,13 @@
               "$ref": "#/definitions/Coin"
             },
             "subscribed_to": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscribed_to_wallet": {
               "$ref": "#/definitions/Addr"
             },
             "subscriber": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_wallet": {
               "$ref": "#/definitions/Addr"
@@ -983,6 +1095,18 @@
           },
           "additionalProperties": false
         },
+        "DID": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "SubscriptionInfo": {
           "type": "object",
           "required": [
@@ -998,13 +1122,13 @@
               "$ref": "#/definitions/Coin"
             },
             "subscribed_to": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscribed_to_wallet": {
               "$ref": "#/definitions/Addr"
             },
             "subscriber": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_wallet": {
               "$ref": "#/definitions/Addr"
@@ -1071,6 +1195,18 @@
           },
           "additionalProperties": false
         },
+        "DID": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "ProfileInfo": {
           "type": "object",
           "required": [
@@ -1082,7 +1218,7 @@
           ],
           "properties": {
             "did": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_count": {
               "$ref": "#/definitions/Uint64"
@@ -1137,13 +1273,13 @@
               "$ref": "#/definitions/Coin"
             },
             "subscribed_to": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscribed_to_wallet": {
               "$ref": "#/definitions/Addr"
             },
             "subscriber": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_wallet": {
               "$ref": "#/definitions/Addr"
@@ -1210,6 +1346,18 @@
           },
           "additionalProperties": false
         },
+        "DID": {
+          "type": "object",
+          "required": [
+            "value"
+          ],
+          "properties": {
+            "value": {
+              "type": "string"
+            }
+          },
+          "additionalProperties": false
+        },
         "ProfileInfo": {
           "type": "object",
           "required": [
@@ -1221,7 +1369,7 @@
           ],
           "properties": {
             "did": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_count": {
               "$ref": "#/definitions/Uint64"
@@ -1276,13 +1424,13 @@
               "$ref": "#/definitions/Coin"
             },
             "subscribed_to": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscribed_to_wallet": {
               "$ref": "#/definitions/Addr"
             },
             "subscriber": {
-              "type": "string"
+              "$ref": "#/definitions/DID"
             },
             "subscriber_wallet": {
               "$ref": "#/definitions/Addr"

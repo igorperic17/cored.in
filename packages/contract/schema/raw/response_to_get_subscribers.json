@@ -35,6 +35,18 @@
       },
       "additionalProperties": false
     },
+    "DID": {
+      "type": "object",
+      "required": [
+        "value"
+      ],
+      "properties": {
+        "value": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": false
+    },
     "SubscriptionInfo": {
       "type": "object",
       "required": [
@@ -50,13 +62,13 @@
           "$ref": "#/definitions/Coin"
         },
         "subscribed_to": {
-          "type": "string"
+          "$ref": "#/definitions/DID"
         },
         "subscribed_to_wallet": {
           "$ref": "#/definitions/Addr"
         },
         "subscriber": {
-          "type": "string"
+          "$ref": "#/definitions/DID"
         },
         "subscriber_wallet": {
           "$ref": "#/definitions/Addr"
