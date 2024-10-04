@@ -6,7 +6,9 @@ use schemars::JsonSchema;
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    models::{did::DID, profile_info::ProfileInfo, subscription_info::SubscriptionInfo},
+    models::{
+        did::DID, post::PostInfo, profile_info::ProfileInfo, subscription_info::SubscriptionInfo,
+    },
     state::Config,
 };
 
@@ -55,7 +57,7 @@ pub enum ExecuteMsg {
     Subscribe { did: DID },
 
     // tip the author of a post
-    TipPostAuthor { post_id: String },
+    TipPostAuthor { post_info: PostInfo },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema, QueryResponses)]

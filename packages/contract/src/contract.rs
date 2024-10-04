@@ -123,8 +123,8 @@ pub fn execute(
         }
         ExecuteMsg::Subscribe { did } => subscribe(deps, env, info, did),
 
-        ExecuteMsg::TipPostAuthor { post_id } => {
-            tip_post_author(deps.into_empty(), env, info, post_id)
+        ExecuteMsg::TipPostAuthor { post_info } => {
+            tip_post_author(deps.into_empty(), env, info, post_info)
         }
     }
 }
