@@ -36,7 +36,6 @@
     "@ethersproject/keccak256": "^5.7.0",
     "@fontsource-variable/public-sans": "^5.1.0",
     "@interchain-ui/react": "^1.25.1",
-    "@leapwallet/cosmos-social-login-capsule-provider": "^0.0.41",
     "@leapwallet/cosmos-social-login-capsule-provider-ui": "^0.0.58",
     "@tanstack/react-query": "^5.56.2",
     "axios": "^1.7.7",
