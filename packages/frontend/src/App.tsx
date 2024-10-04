@@ -5,66 +5,38 @@ import { ChainProvider } from "@cosmos-kit/react";
 import { wallets as keplrWallets } from "@cosmos-kit/keplr-extension";
 import { wallets as leapWallets } from "@cosmos-kit/leap";
 import { wallets as cosmostationWallets } from "@cosmos-kit/cosmostation";
+import { wallets as capsuleWallets } from "@cosmos-kit/leap-capsule-social-login";
 import { assets, chain } from "chain-registry/testnet/coreumtestnet";
 import CoredinClientContextProvider from "./contexts/CoredinClientContextProvider";
-import { lazy, Suspense, useEffect, useState } from "react";
 import { MainWalletBase } from "@cosmos-kit/core";
-// import { CustomCapsuleModalView } from "@leapwallet/cosmos-social-login-capsule-provider-ui";
-import {
-  CapsuleProvider,
-  OAuthMethod
-} from "@leapwallet/cosmos-social-login-capsule-provider";
-import { Box } from "@chakra-ui/react";
-import "@leapwallet/cosmos-social-login-capsule-provider-ui/styles.css";
-
-const options = {
-  env: import.meta.env.VITE_CAPSULE_ENV,
-  apiKey: import.meta.env.VITE_CAPSULE_API_KEY,
-  opts: {
-    emailPrimaryColor: "#ff5733",
-    homepageUrl: "https://cored.in",
-    portalTheme: {
-      backgroundColor: "#ffffff",
-      foregroundColor: "#ff5733"
-      // borderRadius: "lg"
-    }
-  }
-};
-
-// Create a new CapsuleProvider instance with the options
-const capsuleProvider = new CapsuleProvider(options);
 
 function App() {
   const queryClient = new QueryClient();
 
-  const defaultWallets: MainWalletBase[] = [
+  const wallets: MainWalletBase[] = [
     ...keplrWallets,
     ...leapWallets,
-    ...cosmostationWallets
+    ...cosmostationWallets,
+    ...capsuleWallets
   ];
-  const [wallets, setWallets] = useState<MainWalletBase[]>(defaultWallets);
-  const [loadingWallets, setLoadingWallet] = useState<boolean>(false);
+  // const [wallets, setWallets] = useState<MainWalletBase[]>(defaultWallets);
+  // const [loadingWallets, setLoadingWallet] = useState<boolean>(false);
 
-  useEffect(() => {
-    setLoadingWallet(true);
-    import("@cosmos-kit/leap-capsule-social-login")
-      .then((CapsuleModule) => {
-        return CapsuleModule.wallets;
-      })
-      .then((leapSocialLogin) => {
-        setWallets([
-          ...keplrWallets,
-          ...leapWallets,
-          ...cosmostationWallets,
-          ...(leapSocialLogin as any[])
-        ]);
-        setLoadingWallet(false);
-      });
-  }, []);
+  // useEffect(() => {
+  //   setLoadingWallet(true);
+  //   import("@cosmos-kit/leap-capsule-social-login")
+  //     .then((CapsuleModule) => {
+  //       return CapsuleModule.wallets;
+  //     })
+  //     .then((leapSocialLogin) => {
+  //       setWallets([...defaultWallets, ...leapSocialLogin]);
+  //       setLoadingWallet(false);
+  //     });
+  // }, []);
 
-  if (loadingWallets) {
-    return <>Loading...</>;
-  }
+  // if (loadingWallets) {
+  //   return <Spinner />;
+  // }
 
   return (
     <>
@@ -87,7 +59,7 @@ function App() {
           }
         }}
         throwErrors={false}
-        subscribeConnectEvents={false}
+        subscribeConnectEvents={true}
         defaultNameService={"stargaze"}
         endpointOptions={{
           isLazy: true,
