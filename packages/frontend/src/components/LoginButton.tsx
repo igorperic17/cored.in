@@ -171,7 +171,11 @@ export const LoginButton: FC<LoginButtonProps> = ({
                           wallet.walletInfo.name === "leap-capsule-social-login"
                             ? () => {
                                 onClose();
-                                window.openCapsuleModal();
+                                // Add a small delay to avoid both modals rendering at same time and getting the focus error in the console
+                                setTimeout(
+                                  () => window.openCapsuleModal(),
+                                  300
+                                );
                               }
                             : () => wallet.connect()
                         }
