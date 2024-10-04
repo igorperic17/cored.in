@@ -35,10 +35,34 @@ export const useAuth = () => {
           walletAddress,
           message
         );
+
+        // Type from CosmJS
+        // export interface StdSignature {
+        //   readonly pub_key: Pubkey;
+        //   readonly signature: string;
+        // }
+        // Return type from leap
+        // {
+        //   pub_key: Pubkey;
+        //   signature: {
+        //     signature: {
+        //       signature: "actual signature"
+        //       pub_key: Pubkey;
+        //     },
+        //     signed: {...}
+        //   }
+        // }
+
+        const pub_key = signedMessage.pub_key.value;
+        const signature =
+          chainContext.wallet?.name === "leap-capsule-social-login"
+            ? (signedMessage as any).signature.signature.signature
+            : signedMessage.signature;
+
         const token = await authService.authenticate(
           walletAddress,
-          signedMessage.pub_key.value,
-          signedMessage.signature,
+          pub_key,
+          signature,
           expiration
         );
         const authKey = getAuthKey(walletAddress);
