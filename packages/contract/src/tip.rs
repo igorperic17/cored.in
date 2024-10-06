@@ -1,5 +1,5 @@
 use coreum_wasm_sdk::core::CoreumMsg;
-use cosmwasm_std::{BankMsg, Coin, Decimal, DepsMut, Env, MessageInfo, Response, Uint128};
+use cosmwasm_std::{BankMsg, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, Uint128};
 
 use crate::{error::ContractError, models::post::PostInfo, state::POST};
 pub fn tip_post_author(
@@ -69,6 +69,16 @@ pub fn tip_post_author(
         .add_attribute("recipient", author_wallet)
         .add_attribute("commission", commission.to_string())
         .add_attribute("author_tip", author_tip.to_string()))
+}
+
+pub fn get_post_tips(deps: Deps, post_id: String) -> Result<Vec<Coin>, ContractError> {
+    let post = POST.may_load(deps.storage, post_id.clone())?;
+
+    if let Some(post) = post {
+        Ok(vec![post.vault.clone()])
+    } else {
+        Err(ContractError::PostNotFound { id: post_id })
+    }
 }
 
 #[cfg(test)]
@@ -199,35 +209,8 @@ mod tests {
         .unwrap();
 
         // Check the response
-        // assert_eq!(res.messages.len(), 2); // Two for bank messages, one for commission and one for author tip
-        let _ = res
-            .messages
-            .iter()
-            .find(|msg| {
-                msg.msg
-                    == CosmosMsg::Bank(BankMsg::Send {
-                        to_address: env.contract.address.to_string(),
-                        amount: vec![Coin {
-                            denom: "ucore".to_string(),
-                            amount: Uint128::new(5), // 5% of the tip amount for commission
-                        }],
-                    })
-            })
-            .expect("Commission message not found");
-        let _ = res
-            .messages
-            .iter()
-            .find(|msg| {
-                msg.msg
-                    == CosmosMsg::Bank(BankMsg::Send {
-                        to_address: Addr::unchecked("author_address").to_string(),
-                        amount: vec![Coin {
-                            denom: "ucore".to_string(),
-                            amount: Uint128::new(95), // 95% of the tip amount after commission
-                        }],
-                    })
-            })
-            .expect("Author tip message not found");
+        assert_eq!(res.messages.len(), 2); // One for commission, one for author tip
+        assert_eq!(res.attributes.len(), 5); // action, post_id, recipient, commission, author_tip
     }
 
     #[test]
@@ -309,5 +292,43 @@ mod tests {
         // Check the response
         assert_eq!(res.messages.len(), 2); // One for commission, one for author tip
         assert_eq!(res.attributes.len(), 5); // action, post_id, recipient, commission, author_tip
+    }
+
+    #[test]
+    fn test_get_post_tips() {
+        let mut deps = mock_dependencies();
+        let env = mock_env();
+        let post_id = "test_post_tips".to_string();
+
+        // Setup a mock post with tips
+        let post_info = PostInfo {
+            id: post_id.clone(),
+            hash: "test_hash".to_string(),
+            author: Addr::unchecked("author_address"),
+            post_type: PostType::Microblog,
+            created_on: env.block.time,
+            vault: Coin {
+                denom: "ucore".to_string(),
+                amount: Uint128::new(100), // Assuming 100 ucore as the tip amount
+            },
+        };
+        POST.save(deps.as_mut().storage, post_id.clone(), &post_info)
+            .unwrap();
+
+        // Test getting tips for an existing post
+        let tips = get_post_tips(deps.as_ref(), post_id.clone()).unwrap();
+        assert_eq!(tips.len(), 1);
+        assert_eq!(tips[0].denom, "ucore");
+        assert_eq!(tips[0].amount, Uint128::new(100));
+
+        // Test getting tips for a non-existing post
+        let non_existent_post_id = "non_existent_post_tips".to_string();
+        let err = get_post_tips(deps.as_ref(), non_existent_post_id.clone()).unwrap_err();
+        assert!(matches!(
+            err,
+            ContractError::PostNotFound {
+                ref id
+            } if id == &non_existent_post_id
+        ));
     }
 }

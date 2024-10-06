@@ -409,7 +409,7 @@ mod tests {
                 };
                 let sub_count = wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_bob);
                 let count = sub_count.unwrap();
-                println!("Bob's subscription count: {:?}", count);
+
                 assert_eq!(
                     count,
                     Uint64::from(2u64),
@@ -423,7 +423,7 @@ mod tests {
                 let sub_count =
                     wasm.query::<QueryMsg, Uint64>(&contract_addr, &sub_count_msg_claire);
                 let count = sub_count.unwrap();
-                println!("Claire's subscriber count: {:?}", count);
+
                 assert_eq!(
                     count,
                     Uint64::from(1u64),
