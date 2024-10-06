@@ -19,7 +19,7 @@ import { Link as ReactRouterLink } from "react-router-dom";
 export const UserSignOut = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { needsAuth } = useAuth();
-  const { data: userProfile, isLoading } = useLoggedInServerState(
+  const { data: userProfile } = useLoggedInServerState(
     USER_QUERIES.getUser(chainContext.address || "", needsAuth),
     {
       enabled: !!chainContext.address
@@ -39,7 +39,7 @@ export const UserSignOut = () => {
 
   const copyDid = () => {
     if (walletDid?.did_info) {
-      navigator.clipboard.writeText(walletDid.did_info.did);
+      navigator.clipboard.writeText(walletDid.did_info.did.value);
       successToast("DID copied to clipboard");
     }
   };

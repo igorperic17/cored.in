@@ -9,7 +9,6 @@ import {
   AlertDialogHeader,
   AlertDialogOverlay,
   Avatar,
-  Box,
   Button,
   Center,
   Flex,
@@ -25,7 +24,7 @@ import {
   Tooltip,
   useDisclosure
 } from "@chakra-ui/react";
-import { FC, useContext, useEffect, useRef, useState } from "react";
+import { FC, useContext, useRef, useState } from "react";
 import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 import { ChatMessage } from ".";
 import { FaArrowUp, FaEllipsis, FaTrash } from "react-icons/fa6";
@@ -76,10 +75,10 @@ export const Chat: FC<ChatProps> = ({ message }) => {
     ),
     { enabled: !!coredinClient }
   );
-  const { data: subscriptionInfo, refetch } = useContractRead(
+  const { data: subscriptionInfo } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionInfo(
       coredinClient!,
-      profileDid?.did_info?.did || "",
+      profileDid!.did_info!.did,
       message.creatorWallet
     ),
     {
@@ -132,13 +131,13 @@ export const Chat: FC<ChatProps> = ({ message }) => {
       direction="column"
       gap="1em"
       h={{ base: "72dvh", sm: "78dvh", lg: "91vh" }}
-      //   border="1px solid red"
+    //   border="1px solid red"
     >
       <Flex
         justify="space-between"
         align="center"
-        // border="1px solid black"
-        //
+      // border="1px solid black"
+      //
       >
         <Link
           as={ReactRouterLink}
@@ -179,7 +178,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
                   !creatorIsTheLoggedInUser && message.creatorAvatar
                     ? "none"
                     : creatorIsTheLoggedInUser &&
-                        message.recipients?.[0].avatarUrl
+                      message.recipients?.[0].avatarUrl
                       ? "none"
                       : "1px solid #b0b0b0"
                 }
@@ -204,7 +203,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
                   : `This user's subscription expired on ${subscriptionInfoValidUntil.toLocaleString()}`
             }
             isOpen={isTooltipOpen}
-            //
+          //
           >
             <Button
               as={InfoOutlineIcon}
@@ -309,8 +308,8 @@ export const Chat: FC<ChatProps> = ({ message }) => {
       {hasActiveSubscription ? (
         <Flex
           gap="0.75em"
-          // border="1px solid green"
-          //
+        // border="1px solid green"
+        //
         >
           <AutoResizeTextarea
             maxH="160px"

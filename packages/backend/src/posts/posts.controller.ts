@@ -66,12 +66,12 @@ export class PostsController {
   async tip(
     @TypedParam("id") id: number,
     @Req() req: AuthenticatedRequest,
-    @TypedBody() { amount }: { amount: number }
+    @TypedBody() { tipAmount }: { tipAmount: number }
   ) {
 
     // TODO - handle relevant return type and potential errors
-    if (amount <= 0) return;
+    if (tipAmount <= 0) return;
 
-    return await this.postsService.updateTip(id, amount);
+    return await this.postsService.updateTip(id, tipAmount);
   }
 }

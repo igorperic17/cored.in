@@ -60,6 +60,10 @@ export const Profile = () => {
     } else {
       setOnchainProfile(null);
     }
+
+    console.log('On chain DID...', onchainProfile?.did);
+    console.log('userProfile DID...', userProfile?.did);
+    console.log('userProfile DID...', userProfile?.did);
   };
 
   useEffect(updateOnchainProfile, [
@@ -75,10 +79,11 @@ export const Profile = () => {
       usernameInput.length > 2
     ) {
       setIsRegistering(true);
+      console.log("Contract address...", coredinClient?.contractAddress);
       console.log("Registering profile onchain...", userProfile.did);
       coredinClient
         ?.register({
-          did: userProfile.did,
+          did: userProfile.did!,
           username: usernameInput
         })
         .then((result) => {
@@ -117,9 +122,9 @@ export const Profile = () => {
       {!chainContext.address && <RequireWalletConnection />}
       {!isLoadingContract &&
         userProfile &&
-        (!onchainProfile || onchainProfile?.did !== userProfile.did) && (
+        (!onchainProfile || onchainProfile?.did.value !== userProfile.did?.value) && (
           <NotRegisteredProfile
-            did={userProfile.did}
+            did={userProfile.did!}
             handleChangeUserName={handleChangeUserName}
             usernameInput={usernameInput}
             registerProfile={registerProfile}
@@ -129,7 +134,7 @@ export const Profile = () => {
       {onchainProfile &&
         chainContext.isWalletConnected &&
         userProfile &&
-        onchainProfile.did === userProfile.did && (
+        onchainProfile.did.value === userProfile.did?.value && (
           <Navigate
             to={
               queryParams.get("redirect") ??

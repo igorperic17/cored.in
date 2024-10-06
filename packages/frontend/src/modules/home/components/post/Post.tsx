@@ -110,10 +110,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     // TODO: perform on-chain transaction, continue after successfull confirmation
 
     await tipPost({ postId: post.id, tipAmount: tipAmount }).then(() => {
-      queryClient.invalidateQueries({
-        // TODO: is this right or we should invalidate more?
-        queryKey: [BaseServerStateKeys.TIP_POST]
-      });
+      queryClient.invalidateQueries();
     });
   };
 

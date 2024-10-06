@@ -24,7 +24,7 @@ fi
 
 echo "Deploying the contract to $COREUM_CHAIN_ID_ARGS..."
 RES=$(cored tx wasm store artifacts/coredin.wasm \
-    --from my_local_dev_wallet --gas auto --gas-adjustment 1.3 -y -b block --output json $COREUM_NODE_ARGS $COREUM_CHAIN_ID_ARGS)
+    --from my_local_dev_wallet --gas auto --gas-adjustment 1.5 -y -b block --output json $COREUM_NODE_ARGS $COREUM_CHAIN_ID_ARGS)
 
 if [ $? -ne 0 ]; then
     echo "Error: Contract deployment failed." >&2
@@ -42,7 +42,7 @@ echo "Success! The new contract code ID is: $CODE_ID"
 # At this point, the contract still has no address, it will get it after initializing
 echo "Initializing the contract..."
 INIT="{\"purchase_price\":{\"amount\":\"0\",\"denom\":\"$COREUM_DENOM\"}, \"subscription_fee\": \"0.05\"}"
-INIT_RES=$(cored tx wasm instantiate $CODE_ID "$INIT" --from my_local_dev_wallet --label "cored.in" -b block -y --no-admin --output json  $COREUM_NODE_ARGS $COREUM_CHAIN_ID_ARGS)
+INIT_RES=$(cored tx wasm instantiate $CODE_ID "$INIT" --from my_local_dev_wallet --gas auto --gas-adjustment 1.5  --label "cored.in" -b block -y --no-admin --output json  $COREUM_NODE_ARGS $COREUM_CHAIN_ID_ARGS)
 
 if [ $? -ne 0 ]; then
     echo "Error: Contract initialization failed." >&2

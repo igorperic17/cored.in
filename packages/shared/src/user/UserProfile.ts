@@ -1,5 +1,5 @@
 import { tags } from "typia";
-import { CredentialDTO, HexColor, PhotoUrl, ShortString } from "..";
+import { CredentialDTO, DID, HexColor, PhotoUrl, ShortString } from "..";
 
 export interface PublicUserProfile {
   wallet: string;
@@ -12,7 +12,7 @@ export interface PublicUserProfile {
 }
 
 export interface UserProfile extends PublicUserProfile {
-  did: string;
+  did?: DID;
   likedPosts: number[];
   credentials: CredentialDTO[];
   // credentialsMerkleRoot: string;

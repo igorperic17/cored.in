@@ -117,7 +117,6 @@ export const ActionBar: FC<PostActionBarProps> = ({
           leftIcon={<Icon as={PiHandCoins} fontSize="1.55rem" />}
           onClick={handleTip}
           mr="4"
-        // isLoading={isLiking}
         >
           <Box as="span" transition={"opacity 2s"}>
             {post.tips ? `${post.tips.toFixed(2)}` : "0.00"}
