@@ -33,7 +33,7 @@ export class PostsService {
     private readonly userService: UserService,
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
-  ) {}
+  ) { }
 
   async get(
     id: number,
@@ -85,8 +85,8 @@ export class PostsService {
     const recipients =
       postWithReplies.recipientWallets.length > 0
         ? await this.userService.getPublicProfileList(
-            postWithReplies.recipientWallets
-          )
+          postWithReplies.recipientWallets
+        )
         : [];
 
     if (postWithReplies.unreadByWallets.includes(requesterWallet)) {
@@ -340,6 +340,22 @@ export class PostsService {
     );
   }
 
+
+  async updateTip(postId: number, amount: number) {
+    return await this.postRepository.manager.transaction(
+      "SERIALIZABLE",
+      async (transactionalEntityManager) => {
+        await transactionalEntityManager.update(
+          Post,
+          { id: postId },
+          {
+            tips: () => `tips + ${amount}`
+          }
+        );
+      }
+    );
+  }
+
   private async getWithRelations(where: FindOptionsWhere<Post>[]) {
     return await this.postRepository.findOne({
       relations: ["user", "parent", "parent.user", "replies", "replies.user"],
@@ -347,13 +363,13 @@ export class PostsService {
       order: { createdAt: "DESC" }
     });
   }
-
   private fromDb(post: Post, requesterWallet?: string): PostDTO {
     return {
       id: post.id,
       creatorWallet: post.creatorWallet,
       creatorUsername: post.user.username,
       creatorAvatar: post.user.avatarUrl,
+      tips: post.tips,
       creatorAvatarFallbackColor: post.user.avatarFallbackColor,
       visibility: post.visibility,
       text: post.text,

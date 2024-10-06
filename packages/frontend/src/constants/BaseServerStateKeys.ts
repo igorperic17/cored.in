@@ -8,6 +8,7 @@ export enum BaseServerStateKeys {
   POST = "post",
   LIKE_POST = "like_post",
   DELETE_POST = "delete_post",
+  TIP_POST = "tip_post",
   DELETE_CREDENTIAL = "delete_credential",
   ISSUERS = "issuers",
   REQUEST_CREDENTIAL = "request_credential",

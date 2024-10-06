@@ -70,6 +70,9 @@ export class Post {
   @Column({ default: 0 })
   likes: number;
 
+  @Column({ default: 0 })
+  tips: number;
+
   @Column({ nullable: true })
   @Index()
   replyToPostId: number;

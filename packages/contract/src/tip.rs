@@ -85,7 +85,7 @@ pub fn get_post_tips(deps: Deps, post_id: String) -> Result<Vec<Coin>, ContractE
 mod tests {
     use cosmwasm_std::{
         testing::{mock_dependencies, mock_env, mock_info},
-        Addr, CosmosMsg, Uint128,
+        Addr, Uint128,
     };
 
     use super::*;

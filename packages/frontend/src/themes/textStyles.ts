@@ -1,6 +1,6 @@
 export const textStyles = {
   xs: {
-    fontSize: { base: "0.7rem", lg: "0.875rem" },
+    fontSize: { base: "0.775rem", lg: "0.775rem" },
     lineHeight: { base: "1.375", lg: "1.5" }
   },
   sm: {

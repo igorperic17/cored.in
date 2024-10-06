@@ -2,7 +2,7 @@ import { HttpService } from "@/services";
 import { CreatePostDTO, PostDTO, PostDetailDTO } from "@coredin/shared";
 
 export class FeedService {
-  constructor(private readonly http: HttpService) {}
+  constructor(private readonly http: HttpService) { }
 
   async get(id: number, creator: string): Promise<PostDetailDTO> {
     return this.http.get("posts/" + id + "?creator=" + creator);
@@ -30,5 +30,9 @@ export class FeedService {
 
   async deletePost(postId: number): Promise<void> {
     return this.http.delete("posts/" + postId);
+  }
+
+  async tipPost(postId: number, tipAmount: number): Promise<void> {
+    return this.http.post("posts/" + postId + `/tip`, { tipAmount });
   }
 }
