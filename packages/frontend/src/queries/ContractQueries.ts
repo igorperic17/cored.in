@@ -96,7 +96,7 @@ export const CONTRACT_QUERIES = {
   ) => ({
     queryKey: [
       BaseServerStateKeys.CONTRACT_SUBSCRIPTION_INFO,
-      profileDid.value,
+      profileDid?.value,
       subscriberWallet
     ],
     queryFn: () =>

@@ -57,7 +57,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   const { data: subscriptionInfo, refetch } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionInfo(
       coredinClient!,
-      profileDid!.did_info!.did,
+      profileDid?.did_info?.did ?? { value: "" },
       userWallet
     ),
     {
@@ -67,7 +67,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   const { data: subscriptionPrice } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionPrice(
       coredinClient!,
-      profileDid!.did_info!.did
+      profileDid?.did_info?.did ?? { value: "" }
     ),
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
@@ -75,7 +75,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
   const { data: subscriptionDays } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionDuration(
       coredinClient!,
-      profileDid!.did_info!.did
+      profileDid?.did_info?.did ?? { value: "" }
     ),
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
