@@ -3,3 +3,4 @@ export { Content } from "./Content";
 export { NewPostContent } from "./NewPostContent";
 export { NewReplyContent } from "./NewReplyContent";
 export { NewMessageContent } from "./NewMessageContent";
+export { TippingModal } from "./TippingModal";
