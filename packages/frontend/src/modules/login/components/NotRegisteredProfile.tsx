@@ -54,7 +54,9 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
   };
 
   useEffect(() => {
-    getBalance();
+    const interval = setInterval(getBalance, 5000);
+
+    return () => clearInterval(interval);
   }, [chainContext.address]);
 
   return (
