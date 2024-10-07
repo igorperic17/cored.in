@@ -11,7 +11,12 @@ pub fn tip_post_author(
     let key = post_info.id.clone();
     let post = POST.may_load(deps.storage, key.clone())?;
 
-    let post_info = if let Some(post_info) = post {
+    // Ensure there's a payment sent
+    if info.clone().funds.is_empty() {
+        return Err(ContractError::NoFunds {});
+    }
+
+    let mut post_info = if let Some(post_info) = post {
         post_info
     } else {
         // If post is not found, create a new post on the chain
@@ -27,16 +32,10 @@ pub fn tip_post_author(
                 amount: Uint128::zero(),
             },
         };
-        POST.save(deps.storage, key.clone(), &new_post_info)?;
         new_post_info
     };
 
-    let author_wallet = post_info.author;
-
-    // Ensure there's a payment sent
-    if info.clone().funds.is_empty() {
-        return Err(ContractError::NoFunds {});
-    }
+    let author_wallet = post_info.author.clone();
 
     // Calculate 5% commission
     let commission_rate = Decimal::percent(5);
@@ -60,6 +59,9 @@ pub fn tip_post_author(
             amount: author_tip,
         }],
     };
+
+    post_info.vault.amount += author_tip;
+    POST.save(deps.storage, key.clone(), &post_info)?;
 
     Ok(Response::new()
         .add_message(commission_msg)
