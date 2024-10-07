@@ -9,15 +9,17 @@ import {
 } from "../constants";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
+import { useQueryClient } from "@tanstack/react-query";
 
 const loginExpirationMarginMs = 5 * 60 * 1000; // 5 minutes
 
 export const useAuth = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
-  const walletAddress = chainContext.address ?? "";
-
+  const queryClient = useQueryClient();
   const [needsAuth, setNeedsAuth] = useState(false);
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  const walletAddress = chainContext.address ?? "";
 
   const authenticate = useCallback(async () => {
     if (isAuthenticating) {
@@ -69,6 +71,7 @@ export const useAuth = () => {
         persistentStorageService.save(authKey, token);
 
         setNeedsAuth(false);
+        queryClient.invalidateQueries();
       } catch (e) {
         console.error(e);
       }
