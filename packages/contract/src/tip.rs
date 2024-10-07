@@ -1,7 +1,7 @@
 use coreum_wasm_sdk::core::CoreumMsg;
 use cosmwasm_std::{BankMsg, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, Uint128};
 
-use crate::{error::ContractError, models::post::PostInfo, state::POST};
+use crate::{contract::FEE_DENOM, error::ContractError, models::post::PostInfo, state::POST};
 pub fn tip_post_author(
     deps: DepsMut,
     env: Env,
@@ -23,7 +23,7 @@ pub fn tip_post_author(
             post_type: post_info.post_type,
             created_on: post_info.created_on,
             vault: Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: Uint128::zero(),
             },
         };
@@ -107,7 +107,7 @@ mod tests {
             post_type: PostType::Microblog,
             created_on: env.block.time,
             vault: Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: Uint128::zero(),
             },
         };
@@ -119,7 +119,7 @@ mod tests {
         let info = mock_info(
             tipper.as_str(),
             &[Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: tip_amount,
             }],
         );
@@ -155,7 +155,7 @@ mod tests {
             post_type: PostType::Microblog,
             created_on: env.block.time,
             vault: Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: Uint128::zero(),
             },
         };
@@ -184,7 +184,7 @@ mod tests {
         let info = mock_info(
             tipper.as_str(),
             &[Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: tip_amount,
             }],
         );
@@ -201,7 +201,7 @@ mod tests {
                 post_type: PostType::Microblog,
                 created_on: env.block.time,
                 vault: Coin {
-                    denom: "ucore".to_string(),
+                    denom: FEE_DENOM.to_string(),
                     amount: Uint128::zero(),
                 },
             },
@@ -228,7 +228,7 @@ mod tests {
             post_type: PostType::Microblog,
             created_on: env.block.time,
             vault: Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: Uint128::zero(),
             },
         };
@@ -240,7 +240,7 @@ mod tests {
         let info = mock_info(
             tipper.as_str(),
             &[Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: tip_amount,
             }],
         );
@@ -265,7 +265,7 @@ mod tests {
         let info = mock_info(
             tipper.as_str(),
             &[Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: tip_amount,
             }],
         );
@@ -282,7 +282,7 @@ mod tests {
                 post_type: PostType::Microblog,
                 created_on: env.block.time,
                 vault: Coin {
-                    denom: "ucore".to_string(),
+                    denom: FEE_DENOM.to_string(),
                     amount: Uint128::zero(),
                 },
             },
@@ -308,7 +308,7 @@ mod tests {
             post_type: PostType::Microblog,
             created_on: env.block.time,
             vault: Coin {
-                denom: "ucore".to_string(),
+                denom: FEE_DENOM.to_string(),
                 amount: Uint128::new(100), // Assuming 100 ucore as the tip amount
             },
         };
@@ -318,7 +318,7 @@ mod tests {
         // Test getting tips for an existing post
         let tips = get_post_tips(deps.as_ref(), post_id.clone()).unwrap();
         assert_eq!(tips.len(), 1);
-        assert_eq!(tips[0].denom, "ucore");
+        assert_eq!(tips[0].denom, FEE_DENOM.to_string());
         assert_eq!(tips[0].amount, Uint128::new(100));
 
         // Test getting tips for a non-existing post

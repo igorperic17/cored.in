@@ -84,14 +84,15 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     console.log("Subscribing to", profileDid?.did_info?.did);
     if (coredinClient && subscriptionPrice && profileDid?.did_info) {
       setIsSubscribing(true);
+      console.log('price', subscriptionPrice);
       coredinClient
         .subscribe(
           {
-            did: profileDid?.did_info?.did || ""
+            did: profileDid?.did_info?.did || { value: "" }
           },
           "auto",
           undefined,
-          [subscriptionPrice]
+          (subscriptionPrice.amount === "0" ? [] : [subscriptionPrice])
         )
         .then(() => {
           refetch();

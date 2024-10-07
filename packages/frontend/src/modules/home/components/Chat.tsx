@@ -78,7 +78,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
   const { data: subscriptionInfo } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionInfo(
       coredinClient!,
-      profileDid!.did_info!.did,
+      profileDid?.did_info?.did ?? { value: "" },
       message.creatorWallet
     ),
     {

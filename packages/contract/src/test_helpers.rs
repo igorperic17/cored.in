@@ -17,6 +17,9 @@ pub mod test_helpers {
     // initial balance of all accounts in test tube
     pub const INITIAL_BALANCE: u128 = 100_000_000_000;
 
+    // Create a new account with initial funds and one without initial funds
+    // use coreum_test_tube::runner::app::FEE_DENOM;
+
     // function pointer is invoked when mock env is set to execute test defined in the injected function
     // signature: (app, accounts, contract_addr, code_id, wasm)
     pub fn with_test_tube(

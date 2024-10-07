@@ -78,7 +78,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
             mt="0.5em"
             wordBreak="break-all"
           >
-            {did.value}
+            {did?.value}
           </Text>
         </Heading>
         <FormControl as="form">
