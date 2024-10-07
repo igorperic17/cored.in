@@ -9,25 +9,33 @@ const sizes = defineStyle({
     fontSize: { base: "0.75em", md: "0.875rem" },
     borderRadius: "0.375em",
     py: "0.25em",
-    px: "0.5em"
+    px: "0.5em",
+    h: "auto",
+    w: "auto"
   },
   sm: {
     fontSize: { base: "0.875rem", md: "1rem" },
     borderRadius: "0.375em",
     px: "1.5em",
-    py: "0.5em"
+    py: "0.5em",
+    h: "auto",
+    w: "auto"
   },
   md: {
     fontSize: { base: "1rem", md: "1.125rem" },
     px: "1.5em",
     py: "0.5em",
-    borderRadius: "0.375em"
+    borderRadius: "0.375em",
+    h: "auto",
+    w: "auto"
   },
   xl: {
     fontSize: "2rem",
     px: "1.5em",
     py: "0.5em",
-    borderRadius: "2em"
+    borderRadius: "2em",
+    h: "auto",
+    w: "auto"
   }
 });
 
@@ -56,6 +64,39 @@ const primary = defineStyle({
   }
 });
 
+const secondary = defineStyle({
+  bg: "transparent",
+  border: "1px solid",
+  borderColor: "brand.500",
+  color: "brand.500",
+  fontWeight: "500",
+  _hover: {
+    bg: "transparent",
+    borderColor: "brand.300",
+    color: "brand.300",
+    _disabled: {
+      bg: "transparent",
+      borderColor: "brand.900",
+      color: "brand.900"
+    },
+    _loading: {
+      bg: "transparent",
+      borderColor: "brand.900",
+      color: "brand.900"
+    }
+  },
+  _loading: {
+    bg: "transparent",
+    borderColor: "brand.900",
+    color: "brand.900"
+  },
+  _disabled: {
+    bg: "transparent",
+    borderColor: "brand.900",
+    color: "brand.900"
+  }
+});
+
 const empty = defineStyle({
   border: "none",
   borderRadius: "0",
@@ -72,5 +113,5 @@ const empty = defineStyle({
 export const buttonTheme = defineStyleConfig({
   baseStyle,
   sizes,
-  variants: { primary, empty }
+  variants: { primary, secondary, empty }
 });

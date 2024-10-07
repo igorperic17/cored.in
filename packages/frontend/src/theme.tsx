@@ -73,7 +73,8 @@ const styles = {
       scrollBehavior: "smooth"
     },
     a: {
-      textUnderlineOffset: "0.5em"
+      textUnderlineOffset: "0.25em",
+      _hover: { color: "brand.300" }
     },
     p: {}
   }
