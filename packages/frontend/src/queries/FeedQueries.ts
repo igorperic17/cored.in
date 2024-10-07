@@ -6,9 +6,10 @@ export const FEED_QUERIES = {
     queryKey: [BaseServerStateKeys.POST, postId.toString(), creator],
     queryFn: () => feedService.get(postId, creator)
   }),
-  getFeed: (needsAuth: boolean) => ({
-    queryKey: [BaseServerStateKeys.FEED, needsAuth.toString()],
-    queryFn: () => feedService.getFeed()
+  getFeed: () => ({
+    queryKey: [BaseServerStateKeys.FEED],
+    queryFn: ({ pageParam }: { pageParam: number }) =>
+      feedService.getFeed(pageParam)
   }),
   getUserFeed: (user: string) => ({
     queryKey: [BaseServerStateKeys.USER_FEED, user],

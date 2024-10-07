@@ -24,6 +24,8 @@ import { User } from "@/user/user.entity";
 import { CoredinContractService } from "@/coreum/services";
 import { UserService } from "@/user/user.service";
 
+const PAGE_SIZE = 10;
+
 @Injectable()
 export class PostsService {
   constructor(
@@ -33,7 +35,7 @@ export class PostsService {
     private readonly userService: UserService,
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
-  ) { }
+  ) {}
 
   async get(
     id: number,
@@ -85,8 +87,8 @@ export class PostsService {
     const recipients =
       postWithReplies.recipientWallets.length > 0
         ? await this.userService.getPublicProfileList(
-          postWithReplies.recipientWallets
-        )
+            postWithReplies.recipientWallets
+          )
         : [];
 
     if (postWithReplies.unreadByWallets.includes(requesterWallet)) {
@@ -112,21 +114,23 @@ export class PostsService {
     };
   }
 
-  async getPublicFeed(): Promise<PostDTO[]> {
-    return (
-      await this.postRepository.find({
-        relations: ["user"],
-        where: {
-          visibility: PostVisibility.PUBLIC,
-          replyToPostId: IsNull()
-        },
-        order: { createdAt: "DESC" }
-      })
-    ).map((post) => this.fromDb(post));
-  }
+  // Not in use anymore, replaced by getPublicAndSubscribed
+  // async getPublicFeed(): Promise<PostDTO[]> {
+  //   return (
+  //     await this.postRepository.find({
+  //       relations: ["user"],
+  //       where: {
+  //         visibility: PostVisibility.PUBLIC,
+  //         replyToPostId: IsNull()
+  //       },
+  //       order: { createdAt: "DESC" }
+  //     })
+  //   ).map((post) => this.fromDb(post));
+  // }
 
   async getPublicAndSubscribedFeed(
-    requesterWallet: string
+    requesterWallet: string,
+    page: number
   ): Promise<PostDTO[]> {
     const allSubscriptions =
       await this.coredinContractService.getAllSubscriptions(requesterWallet);
@@ -147,7 +151,9 @@ export class PostsService {
             replyToPostId: IsNull()
           }
         ],
-        order: { createdAt: "DESC" }
+        order: { createdAt: "DESC" },
+        take: PAGE_SIZE,
+        skip: PAGE_SIZE * (page - 1)
       })
     ).map((post) => this.fromDb(post));
   }
@@ -345,7 +351,6 @@ export class PostsService {
       }
     );
   }
-
 
   async updateTip(postId: number, amount: number) {
     return await this.postRepository.manager.transaction(

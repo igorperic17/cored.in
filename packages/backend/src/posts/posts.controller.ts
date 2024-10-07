@@ -8,11 +8,17 @@ import { CreatePostDTO } from "@coredin/shared";
 @Controller("posts")
 @UseGuards(LoggedIn)
 export class PostsController {
-  constructor(private readonly postsService: PostsService) { }
+  constructor(private readonly postsService: PostsService) {}
 
   @Get()
-  async getHomeFeed(@Req() req: AuthenticatedRequest) {
-    return this.postsService.getPublicAndSubscribedFeed(req.wallet);
+  async getHomeFeed(
+    @Req() req: AuthenticatedRequest,
+    @TypedQuery() params: { page: number }
+  ) {
+    return this.postsService.getPublicAndSubscribedFeed(
+      req.wallet,
+      params.page
+    );
   }
 
   @Get("messages")
@@ -68,7 +74,6 @@ export class PostsController {
     @Req() req: AuthenticatedRequest,
     @TypedBody() { tipAmount }: { tipAmount: number }
   ) {
-
     // TODO - handle relevant return type and potential errors
     if (tipAmount <= 0) return;
 
