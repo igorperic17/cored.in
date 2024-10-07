@@ -48,11 +48,13 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
     );
 
     // TODO - REVIEW DECIMALS AFTER TESTNET, utestcore has 6 decimals!
-    setBalance(parseInt(coin.amount) / 1000000);
+    setBalance(Number((BigInt(coin.amount) * 1000000n) / 1000000n) / 1000000);
   };
+
   useEffect(() => {
     getBalance();
   }, [chainContext.address]);
+
   return (
     <HStack
       w="100%"
@@ -85,7 +87,6 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
           <VisuallyHidden>
             <FormLabel as="label">Enter a username</FormLabel>
           </VisuallyHidden>
-
           <Input
             variant="flushed"
             placeholder="Enter desired username"
