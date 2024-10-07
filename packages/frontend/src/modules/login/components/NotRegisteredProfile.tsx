@@ -3,6 +3,7 @@ import { CopyIcon } from "@chakra-ui/icons";
 import {
   Box,
   Button,
+  Center,
   Flex,
   FormControl,
   FormLabel,
@@ -10,11 +11,16 @@ import {
   Heading,
   Input,
   Link,
+  Spinner,
   Text,
   VStack,
   VisuallyHidden
 } from "@chakra-ui/react";
-import { DID, TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
+import {
+  DID,
+  TESTNET_CHAIN_NAME,
+  TESTNET_STAKING_DENOM
+} from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 
@@ -35,11 +41,13 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
 }) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const [balance, setBalance] = useState(0);
+  const [isBalanceLoaded, setIsBalanceLoaded] = useState(false);
   const { successToast } = useCustomToast();
 
   const getBalance = async () => {
     if (!chainContext.address) {
       setBalance(0);
+      setIsBalanceLoaded(false);
       return;
     }
 
@@ -51,6 +59,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
 
     // TODO - REVIEW DECIMALS AFTER TESTNET, utestcore has 6 decimals!
     setBalance(Number((BigInt(coin.amount) * 1000000n) / 1000000n) / 1000000);
+    setIsBalanceLoaded(true);
   };
 
   useEffect(() => {
@@ -58,6 +67,14 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
 
     return () => clearInterval(interval);
   }, [chainContext.address]);
+
+  if (!isBalanceLoaded) {
+    return (
+      <Center mt="32px">
+        <Spinner size="xl" color="brand.500" />
+      </Center>
+    );
+  }
 
   return (
     <HStack
@@ -117,7 +134,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
                 isExternal
                 aria-label={`Link to coreum faucet.`}
                 color="brand.500"
-              // border="1px solid red"
+                // border="1px solid red"
               >
                 Go to the Faucet
               </Link>
