@@ -1,5 +1,6 @@
 import {
   Button,
+  ButtonProps,
   Img,
   Link,
   Modal,
@@ -22,7 +23,7 @@ import { ConnectedWalletKey } from "@/constants";
 import { ROUTES } from "@/router/routes";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-interface LoginButtonProps {
+interface LoginButtonProps extends ButtonProps {
   variant: "primary" | "empty";
   size?: "sm" | "md";
   signInText: string;
@@ -72,8 +73,12 @@ export const LoginButton: FC<LoginButtonProps> = ({
             _hover={{ textDecoration: "none" }}
             color="brand.500"
             fontSize={{ base: "0.85rem", md: "1rem" }}
+            maxW={{ base: "12ch", sm: "none" }}
+            textOverflow="ellipsis"
+            whiteSpace="nowrap"
+            overflow="hidden"
           >
-            @{username}
+            {username}
           </Link>
         )}
         <Button
