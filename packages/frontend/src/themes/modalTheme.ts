@@ -1,5 +1,5 @@
 import { modalAnatomy } from "@chakra-ui/anatomy";
-import { createMultiStyleConfigHelpers, defineStyle } from "@chakra-ui/react";
+import { createMultiStyleConfigHelpers } from "@chakra-ui/react";
 
 const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(modalAnatomy.keys);
@@ -12,10 +12,9 @@ const baseStyle = definePartsStyle({
   dialog: {
     py: "1em",
     px: "1em",
-    bg: "#FFFFFFBF",
+    bg: "#F1F1F0", // === "background.100"
     borderRadius: "1em",
     border: "1px solid #E6E6E6",
-    backdropFilter: "blur(12px)",
     color: "brand.900"
   },
   overlay: {
