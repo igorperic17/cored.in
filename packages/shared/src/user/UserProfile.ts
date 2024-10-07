@@ -1,9 +1,11 @@
 import { tags } from "typia";
 import { CredentialDTO, DID, HexColor, PhotoUrl, ShortString } from "..";
+import { SkillTag } from "@/tags";
 
 export interface PublicUserProfile {
   wallet: string;
   username: ShortString;
+  skillTags: SkillTag[];
   avatarUrl?: PhotoUrl;
   avatarFallbackColor?: HexColor;
   backgroundColor?: HexColor;

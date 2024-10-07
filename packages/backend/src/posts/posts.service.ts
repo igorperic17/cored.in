@@ -116,7 +116,10 @@ export class PostsService {
     return (
       await this.postRepository.find({
         relations: ["user"],
-        where: { visibility: PostVisibility.PUBLIC, replyToPostId: IsNull() },
+        where: {
+          visibility: PostVisibility.PUBLIC,
+          replyToPostId: IsNull()
+        },
         order: { createdAt: "DESC" }
       })
     ).map((post) => this.fromDb(post));
@@ -134,7 +137,10 @@ export class PostsService {
       await this.postRepository.find({
         relations: ["user"],
         where: [
-          { visibility: PostVisibility.PUBLIC, replyToPostId: IsNull() },
+          {
+            visibility: PostVisibility.PUBLIC,
+            replyToPostId: IsNull()
+          },
           {
             creatorWallet: Any([...subscribedWallets, requesterWallet]),
             visibility: PostVisibility.PRIVATE,
@@ -376,7 +382,10 @@ export class PostsService {
       createdAt: post.createdAt.toISOString(),
       lastReplyDate: post.lastReplyDate?.toISOString(),
       likes: post.likes,
+      skillTags: post.skillTags,
       replyToPostId: post.replyToPostId,
+      requestType: post.requestType,
+      requestExpiration: post.requestExpiration,
       unread: requesterWallet
         ? post.unreadByWallets.includes(requesterWallet)
         : undefined

@@ -67,6 +67,10 @@ export class User {
   @Column("int", { array: true, default: {} })
   likedPosts: number[];
 
+  @Column("varchar", { array: true, default: [] })
+  @Index()
+  skillTags: string[];
+
   @Column({
     nullable: true
   })

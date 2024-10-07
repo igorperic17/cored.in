@@ -1,5 +1,5 @@
 import { User } from "@/user/user.entity";
-import { PostVisibility } from "@coredin/shared";
+import { PostVisibility, PostRequestType, DateString } from "@coredin/shared";
 import {
   Entity,
   Column,
@@ -58,6 +58,22 @@ export class Post {
   })
   @Index()
   visibility: PostVisibility;
+
+  @Column({
+    type: "enum",
+    enum: PostRequestType,
+    nullable: true
+  })
+  @Index()
+  requestType: PostRequestType;
+
+  @Column({ nullable: true })
+  @Index()
+  requestExpiration?: DateString;
+
+  @Column("varchar", { array: true, default: [] })
+  @Index()
+  skillTags: string[];
 
   @Column("varchar", { array: true, default: [] })
   @Index()
