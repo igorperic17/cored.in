@@ -7,14 +7,13 @@ import {
   DrawerFooter,
   DrawerCloseButton,
   Link,
-  Text,
+  // Text,
   Flex,
-  useColorMode,
+  // useColorMode,
   useMediaQuery,
-  Img
 } from "@chakra-ui/react";
 import { Link as ReactRouterLink } from "react-router-dom";
-import Logo from "@/assets/Logo.png";
+// import Logo from "@/assets/Logo.png";
 
 export interface BurguerMenuProps {
   isOpen: boolean;
@@ -22,21 +21,21 @@ export interface BurguerMenuProps {
 }
 
 export const BurguerMenu: FC<BurguerMenuProps> = ({ isOpen, onClose }) => {
-  const { colorMode, toggleColorMode } = useColorMode();
+  // const { colorMode, toggleColorMode } = useColorMode();
   const [isLargerThanLG] = useMediaQuery("(min-width: 62em)");
 
-  const ComingSoonBadge = (
-    <Text
-      ml={2}
-      fontSize="xs"
-      color="headingGrey"
-      bg="bglight"
-      px={2}
-      borderRadius="md"
-    >
-      Coming Soon
-    </Text>
-  );
+  // const ComingSoonBadge = (
+  //   <Text
+  //     ml={2}
+  //     fontSize="xs"
+  //     color="headingGrey"
+  //     bg="bglight"
+  //     px={2}
+  //     borderRadius="md"
+  //   >
+  //     Coming Soon
+  //   </Text>
+  // );
 
   return (
     <>

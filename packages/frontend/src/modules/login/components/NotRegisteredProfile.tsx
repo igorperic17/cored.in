@@ -14,12 +14,12 @@ import {
   VStack,
   VisuallyHidden
 } from "@chakra-ui/react";
-import { TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
+import { DID, TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 
 interface ProfileRegistrationProps {
-  did: string;
+  did: DID;
   handleChangeUserName: (e: ChangeEvent<HTMLInputElement>) => void;
   usernameInput: string;
   registerProfile: () => void;
@@ -112,6 +112,15 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
                   </Button>
                 </>
               )}
+              <Link
+                href={"https://docs.coreum.dev/docs/tools/faucet"}
+                isExternal
+                aria-label={`Link to coreum faucet.`}
+                color="brand.500"
+              // border="1px solid red"
+              >
+                Go to the Faucet
+              </Link>
             </VStack>
             <Box as="li" layerStyle="cardBox">
               <Text color="brand.900" textAlign="center">
@@ -162,7 +171,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
               mt="0.5em"
               wordBreak="break-all"
             >
-              {did}
+              {did?.value}
             </Text>
           </Heading>
           <FormControl>

@@ -26,7 +26,7 @@ export class UserService {
     private readonly issuerService: WaltIdIssuerService,
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
-  ) {}
+  ) { }
 
   async getPublicOrPrivate(
     requesterWallet: string,
@@ -97,7 +97,7 @@ export class UserService {
       return Effect.succeed({
         wallet: user.wallet,
         username: user.username || "no_username",
-        did: did?.did || "",
+        did: { value: did!.did },
         likedPosts: user.likedPosts,
         avatarUrl: user.avatarUrl,
         avatarFallbackColor: user.avatarFallbackColor,
@@ -189,7 +189,7 @@ export class UserService {
     return {
       wallet: user.wallet,
       username: user.username || "no_username",
-      did: "",
+      did: undefined,
       likedPosts: [],
       avatarUrl: user.avatarUrl,
       avatarFallbackColor: user.avatarFallbackColor,

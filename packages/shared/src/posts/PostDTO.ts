@@ -15,4 +15,5 @@ export type PostDTO = {
   recipients?: PublicUserProfile[];
   unread?: boolean;
   lastReplyDate?: string;
+  tips: number; // assume the coin is the native CORE coin
 };

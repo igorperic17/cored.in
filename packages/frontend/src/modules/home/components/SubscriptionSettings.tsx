@@ -30,14 +30,14 @@ export const SubscriptionSettings = () => {
   const { data: subscriptionPrice } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionPrice(
       coredinClient!,
-      profileDid?.did_info?.did || ""
+      profileDid?.did_info?.did ?? { value: "" }
     ),
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );
   const { data: subscriptionDays } = useContractRead(
     CONTRACT_QUERIES.getSubscriptionDuration(
       coredinClient!,
-      profileDid?.did_info?.did || ""
+      profileDid?.did_info?.did ?? { value: "" }
     ),
     { enabled: !!coredinClient && !!profileDid?.did_info?.did }
   );

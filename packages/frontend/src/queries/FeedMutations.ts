@@ -16,5 +16,10 @@ export const FEED_MUTATIONS = {
     mutationKey: [BaseServerStateKeys.DELETE_POST],
     mutationFn: ({ postId }: { postId: number }) =>
       feedService.deletePost(postId)
+  }),
+  tipPost: () => ({
+    mutationKey: [BaseServerStateKeys.TIP_POST],
+    mutationFn: ({ postId, tipAmount }: { postId: number, tipAmount: number }) =>
+      feedService.tipPost(postId, tipAmount)
   })
 };

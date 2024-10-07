@@ -51,7 +51,7 @@ export const RegisteredProfile: FC<Partial<ProfileInfo>> = ({
           mt="0.5em"
           wordBreak="break-all"
         >
-          {did}
+          {did?.value}
         </Text>
       </Heading>
     </VStack>

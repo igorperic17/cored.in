@@ -1,5 +1,5 @@
 use crate::error::ContractError;
-use cosmwasm_std::{Coin, Env};
+use cosmwasm_std::{Addr, Coin, Env};
 
 pub fn generate_nft_symbol(_env: Env, raw_string: &String, suffix: Option<String>) -> String {
     // concat the suffix if it exists
@@ -56,15 +56,15 @@ pub fn generate_nft_class_id(env: Env, prefix: String, suffix: Option<String>) -
     class_id
 }
 
-pub fn generate_nft_id(
-    _env: Env,
-    subscriber_wallet: String,
-    subscribe_to_wallet: String,
-) -> String {
+pub fn generate_nft_id(_env: Env, subscriber_wallet: Addr, subscribe_to_wallet: Addr) -> String {
     let mut nft_id = String::new();
 
     // Concatenate characters from the input strings to form the rest of the NFT ID
-    nft_id.push_str(&format!("{}{}", subscriber_wallet, subscribe_to_wallet));
+    nft_id.push_str(&format!(
+        "{}{}",
+        subscriber_wallet.to_string(),
+        subscribe_to_wallet.to_string()
+    ));
 
     // Filter out any characters not allowed by the regex
     nft_id = nft_id

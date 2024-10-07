@@ -8,7 +8,7 @@ import { CreatePostDTO } from "@coredin/shared";
 @Controller("posts")
 @UseGuards(LoggedIn)
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(private readonly postsService: PostsService) { }
 
   @Get()
   async getHomeFeed(@Req() req: AuthenticatedRequest) {
@@ -60,5 +60,18 @@ export class PostsController {
   ) {
     // TODO - handle relevant return type and potential errors
     return await this.postsService.updateLikedPost(req.wallet, id, liked);
+  }
+
+  @TypedRoute.Post(":id/tip")
+  async tip(
+    @TypedParam("id") id: number,
+    @Req() req: AuthenticatedRequest,
+    @TypedBody() { tipAmount }: { tipAmount: number }
+  ) {
+
+    // TODO - handle relevant return type and potential errors
+    if (tipAmount <= 0) return;
+
+    return await this.postsService.updateTip(id, tipAmount);
   }
 }

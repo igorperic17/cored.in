@@ -17,7 +17,7 @@ export class IssuersService {
     private readonly waltIdWalletService: WaltIdWalletService,
     @Inject(WaltIdIssuerService)
     private readonly waltIdIssuerService: WaltIdIssuerService
-  ) {}
+  ) { }
 
   async createRequest(
     requesterWallet: string,
@@ -35,7 +35,7 @@ export class IssuersService {
     }
     const res = await this.requestsRepo.insert({
       requesterWallet,
-      requesterDid: contractRequesterInfo.did_info?.did,
+      requesterDid: contractRequesterInfo.did_info?.did.value,
       requestedIssuerDid,
       request,
       createdAt: new Date(),

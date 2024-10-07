@@ -126,11 +126,11 @@ const UserPage = () => {
         sections={
           tree
             ? getSections(userProfile?.credentials || []).map((section) => ({
-                ...section,
-                profileWallet: wallet,
-                tree,
-                showEdit: isOwnProfile
-              }))
+              ...section,
+              profileWallet: wallet,
+              tree,
+              showEdit: isOwnProfile
+            }))
             : []
         }
         profileWallet={wallet}

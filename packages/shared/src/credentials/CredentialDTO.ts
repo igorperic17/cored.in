@@ -1,8 +1,9 @@
+import { DID } from "@/coreum/contract-ts";
 import { CredentialType } from "./CredentialTypes";
 
 export type CredentialDTO = {
   id: string;
-  subjectDid: string;
+  subjectDid: DID;
   type: CredentialType;
   title: string;
   establishment: string;
