@@ -90,7 +90,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
       <VisuallyHidden>
         <Heading as="h1">Get started</Heading>
       </VisuallyHidden>
-      {balance > 1 ? (
+      {balance < 1 ? (
         <VStack spacing="2em">
           <Heading as="h2" color="brand.900">
             Get CORE tokens to register
