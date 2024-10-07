@@ -56,6 +56,39 @@ const primary = defineStyle({
   }
 });
 
+const secondary = defineStyle({
+  bg: "transparent",
+  border: "1px solid",
+  borderColor: "brand.500",
+  color: "brand.500",
+  fontWeight: "500",
+  _hover: {
+    bg: "transparent",
+    borderColor: "brand.300",
+    color: "brand.300",
+    _disabled: {
+      bg: "transparent",
+      borderColor: "brand.900",
+      color: "brand.900"
+    },
+    _loading: {
+      bg: "transparent",
+      borderColor: "brand.900",
+      color: "brand.900"
+    }
+  },
+  _loading: {
+    bg: "transparent",
+    borderColor: "brand.900",
+    color: "brand.900"
+  },
+  _disabled: {
+    bg: "transparent",
+    borderColor: "brand.900",
+    color: "brand.900"
+  }
+});
+
 const empty = defineStyle({
   border: "none",
   borderRadius: "0",
@@ -72,5 +105,5 @@ const empty = defineStyle({
 export const buttonTheme = defineStyleConfig({
   baseStyle,
   sizes,
-  variants: { primary, empty }
+  variants: { primary, secondary, empty }
 });
