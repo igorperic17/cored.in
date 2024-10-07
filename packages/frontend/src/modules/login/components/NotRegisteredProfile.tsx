@@ -90,10 +90,10 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
       <VisuallyHidden>
         <Heading as="h1">Get started</Heading>
       </VisuallyHidden>
-      {balance < 1 ? (
+      {balance > 1 ? (
         <VStack spacing="2em">
           <Heading as="h2" color="brand.900">
-            Get CORE tokens to begin
+            Get CORE tokens to register
           </Heading>
           <Flex as="ol" direction="column" gap="0.5em">
             <VStack as="li" spacing="1em" layerStyle="cardBox" px="1.5em">
@@ -129,15 +129,6 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
                   </Button>
                 </>
               )}
-              <Link
-                href={"https://docs.coreum.dev/docs/tools/faucet"}
-                isExternal
-                aria-label={`Link to coreum faucet.`}
-                color="brand.500"
-                // border="1px solid red"
-              >
-                Go to the Faucet
-              </Link>
             </VStack>
             <Box as="li" layerStyle="cardBox">
               <Text color="brand.900" textAlign="center">
