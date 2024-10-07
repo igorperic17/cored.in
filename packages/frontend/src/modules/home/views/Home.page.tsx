@@ -12,6 +12,8 @@ import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 
+const SCROLL_FETCH_DELAY_MS = 200;
+
 const HomePage = () => {
   const {
     data: posts,
@@ -34,12 +36,20 @@ const HomePage = () => {
     }
   });
 
+  let timeoutId: string | number | NodeJS.Timeout | undefined;
+
   const checkInView = () => {
+    clearTimeout(timeoutId);
     const element = document.querySelector(`#home-feed`);
     if (element) {
       const rect = element.getBoundingClientRect();
       if (rect.bottom < window.innerHeight && !isFetchingNextPage) {
-        fetchNextPage();
+        return new Promise(
+          () =>
+            (timeoutId = setTimeout(async () => {
+              fetchNextPage();
+            }, SCROLL_FETCH_DELAY_MS))
+        );
       }
     }
   };
