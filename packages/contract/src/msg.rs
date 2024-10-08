@@ -125,6 +125,10 @@ pub enum QueryMsg {
     // return the number of profiles a wallet is subscribed to
     #[returns(Uint64)]
     GetSubscriptionCount { wallet: Addr },
+
+    // return the total amount of tips for a post
+    #[returns(Uint64)]
+    GetPostTips { post_id: Uint64 },
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]

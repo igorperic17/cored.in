@@ -116,7 +116,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         [tipCoins]
       );
 
-      await tipPost({ postId: post.id, tipAmount: tipAmount });
+      await tipPost({ postId: post.id });
       
       queryClient.invalidateQueries();
       return true;

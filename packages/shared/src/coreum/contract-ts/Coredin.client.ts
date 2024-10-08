@@ -91,6 +91,11 @@ export interface CoredinReadOnlyInterface {
   }: {
     wallet: Addr;
   }) => Promise<Uint64>;
+  getPostTips: ({
+    postId
+  }: {
+    postId: Uint64;
+  }) => Promise<Uint64>;
 }
 export class CoredinQueryClient implements CoredinReadOnlyInterface {
   client: CosmWasmClient;
@@ -112,6 +117,7 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     this.getSubscriptions = this.getSubscriptions.bind(this);
     this.getSubscriberCount = this.getSubscriberCount.bind(this);
     this.getSubscriptionCount = this.getSubscriptionCount.bind(this);
+    this.getPostTips = this.getPostTips.bind(this);
   }
   config = async (): Promise<Config> => {
     return this.client.queryContractSmart(this.contractAddress, {
@@ -282,6 +288,17 @@ export class CoredinQueryClient implements CoredinReadOnlyInterface {
     return this.client.queryContractSmart(this.contractAddress, {
       get_subscription_count: {
         wallet
+      }
+    });
+  };
+  getPostTips = async ({
+    postId
+  }: {
+    postId: Uint64;
+  }): Promise<Uint64> => {
+    return this.client.queryContractSmart(this.contractAddress, {
+      get_post_tips: {
+        post_id: postId
       }
     });
   };

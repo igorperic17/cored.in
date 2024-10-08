@@ -19,7 +19,7 @@ export const FEED_MUTATIONS = {
   }),
   tipPost: () => ({
     mutationKey: [BaseServerStateKeys.TIP_POST],
-    mutationFn: ({ postId, tipAmount }: { postId: number, tipAmount: number }) =>
-      feedService.tipPost(postId, tipAmount)
+    mutationFn: ({ postId }: { postId: number }) =>
+      feedService.tipPost(postId)
   })
 };

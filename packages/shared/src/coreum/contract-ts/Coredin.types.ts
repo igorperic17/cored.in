@@ -125,6 +125,10 @@ export type QueryMsg = {
   get_subscription_count: {
     wallet: Addr;
   };
+} | {
+  get_post_tips: {
+    post_id: Uint64;
+  };
 };
 export interface Config {
   did_register_price?: Coin | null;

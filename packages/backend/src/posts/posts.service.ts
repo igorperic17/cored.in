@@ -21,7 +21,7 @@ import {
   PostVisibility
 } from "@coredin/shared";
 import { User } from "@/user/user.entity";
-import { CoredinContractService } from "@/coreum/services";
+import { CoredinContractService, CoredinSignerService } from "@/coreum/services";
 import { UserService } from "@/user/user.service";
 
 const PAGE_SIZE = 10;
@@ -352,7 +352,15 @@ export class PostsService {
     );
   }
 
-  async updateTip(postId: number, amount: number) {
+  async updateTip(postId: number) {
+    const post = await this.postRepository.findOne({ where: { id: postId } });
+    if (!post) {
+      throw new Error('Post not found');
+    }
+
+    const currentTips = await this.coredinContractService.(post.walletAddress);
+    const amount = currentTips.tips || 0;
+    
     return await this.postRepository.manager.transaction(
       "SERIALIZABLE",
       async (transactionalEntityManager) => {

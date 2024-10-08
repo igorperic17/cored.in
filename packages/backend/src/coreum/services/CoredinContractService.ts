@@ -71,6 +71,19 @@ export class CoredinContractService {
     }
   }
 
+  async getPostTips(postId: string) {
+    try {
+      const res = await this.coredinQueryClient.getPostTips({
+        postId
+      });
+      console.log("getPostTips result:", res);
+      return res;
+    } catch (e: any) {
+      console.error("Error fetching post tips: ", e, postId);
+      return { tips: [] };
+    }
+  }
+
   // async isSubscribed(profileDid: string, subscriberDid: string) {
   //   return this.coredinQueryClient.isSubscriber({
   //     did: profileDid,

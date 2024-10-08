@@ -32,7 +32,7 @@ export class FeedService {
     return this.http.delete("posts/" + postId);
   }
 
-  async tipPost(postId: number, tipAmount: number): Promise<void> {
-    return this.http.post("posts/" + postId + `/tip`, { tipAmount });
+  async tipPost(postId: number): Promise<void> {
+    return this.http.post("posts/" + postId + `/tip`, {});
   }
 }

@@ -1,5 +1,5 @@
 use coreum_wasm_sdk::core::CoreumMsg;
-use cosmwasm_std::{BankMsg, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, Uint128};
+use cosmwasm_std::{to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64};
 
 use crate::{contract::FEE_DENOM, error::ContractError, models::post::PostInfo, state::POST};
 pub fn tip_post_author(
@@ -73,13 +73,13 @@ pub fn tip_post_author(
         .add_attribute("author_tip", author_tip.to_string()))
 }
 
-pub fn get_post_tips(deps: Deps, post_id: String) -> Result<Vec<Coin>, ContractError> {
-    let post = POST.may_load(deps.storage, post_id.clone())?;
+pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
+    let post = POST.may_load(deps.storage, post_id.clone().to_string())?;
 
     if let Some(post) = post {
-        Ok(vec![post.vault.clone()])
+        Ok(to_json_binary(&vec![post.vault.clone()])?)
     } else {
-        Err(ContractError::PostNotFound { id: post_id })
+        Err(StdError::not_found(format!("Post with id {} not found", post_id)))
     }
 }
 

@@ -24,7 +24,7 @@ use crate::subscription::{
 };
 
 use crate::merkle_tree::MerkleTree;
-use crate::tip::tip_post_author;
+use crate::tip::{get_post_tips, tip_post_author};
 
 const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
@@ -205,7 +205,6 @@ pub fn execute_remove(
 
     Ok(Response::<CoreumMsg>::default())
 }
-
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Binary> {
     match msg {
@@ -247,6 +246,7 @@ pub fn query(deps: Deps<CoreumQueries>, env: Env, msg: QueryMsg) -> StdResult<Bi
         } => get_subscriptions(deps, env, wallet, page, page_size),
         QueryMsg::GetSubscriberCount { wallet } => get_subscriber_count(deps, env, wallet),
         QueryMsg::GetSubscriptionCount { wallet } => get_subscription_count(deps, env, wallet),
+        QueryMsg::GetPostTips { post_id } => get_post_tips(deps.into_empty(), post_id),
     }
 }
 
