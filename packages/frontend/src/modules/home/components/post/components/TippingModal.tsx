@@ -1,3 +1,4 @@
+import { useCustomToast } from "@/hooks";
 import { formElementBorderStyles } from "@/themes";
 import {
   Button,
@@ -14,7 +15,6 @@ import {
   ModalHeader,
   ModalOverlay,
   Text,
-  useToast
 } from "@chakra-ui/react";
 import { FC, useState } from "react";
 
@@ -34,7 +34,7 @@ export const TippingModal: FC<TippingModalProps> = ({
   setIsTipModalOpen
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const toast = useToast();
+  const {successToast, errorToast } = useCustomToast();
 
   const onTip = async () => {
     setIsLoading(true);
@@ -42,29 +42,13 @@ export const TippingModal: FC<TippingModalProps> = ({
       const success = await handleTip();
       if (success) {
         setIsTipModalOpen(false);
-        toast({
-          title: "Tip sent successfully",
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
+        successToast("Tip sent successfully");
       } else {
-        toast({
-          title: "Failed to send tip",
-          status: "error",
-          duration: 3000,
-          isClosable: true,
-        });
+        errorToast("Failed to send tip");
       }
     } catch (error) {
       console.error("Error sending tip:", error);
-      toast({
-        title: "An error occurred",
-        description: "Please try again later",
-        status: "error",
-        duration: 3000,
-        isClosable: true,
-      });
+      errorToast("An error occurred");
     } finally {
       setIsLoading(false);
     }

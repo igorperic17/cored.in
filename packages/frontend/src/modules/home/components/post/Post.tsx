@@ -94,10 +94,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   };
 
   const handleTip = async (): Promise<boolean> => {
-    console.log('Tip amount:', tipAmount);
-    console.log('Tip denom:', TESTNET_FEE_DENOM);
-    let tipCoins = coin(tipAmount * 1_000_000, TESTNET_FEE_DENOM);
-    console.log('Tip coins:', tipCoins);
+    let tipCoins = coin((tipAmount * 1.05) * 1_000_000, TESTNET_FEE_DENOM);
     
     const postInfo: PostInfo = {
       id: post.id.toString(),
