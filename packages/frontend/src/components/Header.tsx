@@ -21,7 +21,7 @@ export const Header: FC<HeaderProps> = ({ username }) => {
       <Flex
         justify="space-between"
         alignItems="center"
-        gap="3em"
+        gap="1.5em"
         maxW="1840px"
         mx="auto"
         bg="#FFFFFFBF"

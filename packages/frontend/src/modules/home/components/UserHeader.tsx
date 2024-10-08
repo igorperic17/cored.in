@@ -8,6 +8,7 @@ import {
   Heading,
   Icon,
   Link,
+  Tag,
   Text,
   Tooltip,
   VisuallyHidden,
@@ -84,7 +85,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
     console.log("Subscribing to", profileDid?.did_info?.did);
     if (coredinClient && subscriptionPrice && profileDid?.did_info) {
       setIsSubscribing(true);
-      console.log('price', subscriptionPrice);
+      console.log("price", subscriptionPrice);
       coredinClient
         .subscribe(
           {
@@ -92,7 +93,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           },
           "auto",
           undefined,
-          (subscriptionPrice.amount === "0" ? [] : [subscriptionPrice])
+          subscriptionPrice.amount === "0" ? [] : [subscriptionPrice]
         )
         .then(() => {
           refetch();
@@ -229,6 +230,14 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
         <Text textStyle="sm" wordBreak="break-word">
           {userProfile.bio}
         </Text>
+
+        <Flex gap="0.5em" flexWrap="wrap">
+          {userProfile.skillTags.map((skill) => (
+            <Tag key={skill} variant="primary" size="md">
+              {skill}
+            </Tag>
+          ))}
+        </Flex>
 
         {!isOwnProfile &&
           !isSubscribed &&

@@ -8,6 +8,7 @@ export { badgeTheme } from "./badgeTheme";
 export { checkboxTheme } from "./checkboxTheme";
 export { modalTheme } from "./modalTheme";
 export { radioTheme } from "./radioTheme";
+export { tagTheme } from "./tagTheme";
 export { tooltipTheme } from "./tooltipTheme";
 export { layerStyles } from "./layerStyles";
 export { textStyles } from "./textStyles";

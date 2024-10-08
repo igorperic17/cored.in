@@ -12,6 +12,7 @@ import {
   selectTheme,
   stepperTheme,
   tabsTheme,
+  tagTheme,
   textStyles,
   tooltipTheme
 } from "./themes";
@@ -91,6 +92,7 @@ const components = {
   Select: selectTheme,
   Stepper: stepperTheme,
   Tabs: tabsTheme,
+  Tag: tagTheme,
   Tooltip: tooltipTheme
 };
 
