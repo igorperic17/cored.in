@@ -77,6 +77,6 @@ export class PostsController {
     // TODO - handle relevant return type and potential errors
     if (tipAmount <= 0) return;
 
-    return await this.postsService.updateTip(id, tipAmount);
+    return await this.postsService.updateTip(id);
   }
 }

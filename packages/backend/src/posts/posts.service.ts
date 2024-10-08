@@ -358,8 +358,8 @@ export class PostsService {
       throw new Error('Post not found');
     }
 
-    const currentTips = await this.coredinContractService.(post.walletAddress);
-    const amount = currentTips.tips || 0;
+    const currentTips = await this.coredinContractService.getPostTips(post.id.toString());
+    const amount = Number(currentTips);
     
     return await this.postRepository.manager.transaction(
       "SERIALIZABLE",
@@ -368,7 +368,7 @@ export class PostsService {
           Post,
           { id: postId },
           {
-            tips: () => `tips + ${amount}`
+            tips: () => `${amount}`
           }
         );
       }
