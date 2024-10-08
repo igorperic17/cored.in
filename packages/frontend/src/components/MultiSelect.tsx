@@ -1,7 +1,8 @@
 import { formElementBorderStyles } from "@/themes";
 import { SkillTag } from "@coredin/shared";
-import { Select } from "chakra-react-select";
+import { chakraComponents, Select } from "chakra-react-select";
 import { FC } from "react";
+import { FaPlus } from "react-icons/fa6";
 
 type MultiSelectProps = {
   options: SkillTag[];
@@ -31,12 +32,19 @@ export const MultiSelect: FC<MultiSelectProps> = ({
       chakraStyles={{
         dropdownIndicator: (provided, state) => ({
           ...provided,
-          color: "brand.100",
-          backgroundColor: "brand.500",
+          color: state.selectProps.menuIsOpen ? "brand.900" : "brand.100",
+          backgroundColor: state.selectProps.menuIsOpen
+            ? "brand.200"
+            : "brand.500",
+          _hover: {
+            backgroundColor: "brand.200",
+            color: "brand.900"
+          },
           cursor: "pointer",
+          transitionDuration: "normal",
           "> svg": {
             transitionDuration: "normal",
-            transform: `rotate(${state.selectProps.menuIsOpen ? -180 : 0}deg)`
+            transform: `rotate(${state.selectProps.menuIsOpen ? -45 : 0}deg)`
           }
         }),
         control: (provided) => ({
@@ -51,7 +59,6 @@ export const MultiSelect: FC<MultiSelectProps> = ({
           borderRadius: "2em",
           px: "1em",
           py: "0.25em"
-          // backgroundColor: "brand.500"
         }),
         multiValueRemove: (provided) => ({
           ...provided,
@@ -67,6 +74,13 @@ export const MultiSelect: FC<MultiSelectProps> = ({
           fontSize: { base: "0.875rem", lg: "1rem" },
           color: "text.700"
         })
+      }}
+      components={{
+        DropdownIndicator: (props) => (
+          <chakraComponents.DropdownIndicator {...props}>
+            <FaPlus />
+          </chakraComponents.DropdownIndicator>
+        )
       }}
       {...props}
     />
