@@ -18,7 +18,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
   return (
     <Select
       focusBorderColor="brand.200"
-      menuPlacement="auto"
+      menuPlacement="top"
       options={options.map((option) => ({ label: option, value: option }))}
       value={value.map((tag) => ({ label: tag, value: tag }))}
       isMulti={true}
@@ -39,7 +39,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
         control: (provided) => ({
           ...provided,
           ...formElementBorderStyles,
-          fontSize: "1em"
+          fontSize: { base: "1em", md: "1.25em" }
         }),
         multiValue: (provided) => ({
           ...provided,
