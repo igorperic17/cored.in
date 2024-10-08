@@ -1,4 +1,4 @@
-import { AutoResizeTextarea } from "@/components";
+import { AutoResizeTextarea, MultiSelect } from "@/components";
 import {
   useCustomToast,
   useLoggedInServerState,
@@ -18,6 +18,7 @@ import {
   Input
 } from "@chakra-ui/react";
 import {
+  SkillTag,
   SkillTags,
   TESTNET_CHAIN_NAME,
   UpdateProfileDTO
@@ -164,24 +165,17 @@ export const ProfileSettings = () => {
       </FormControl>
       <FormControl>
         <FormLabel>Skills</FormLabel>
-        <Select
-          {...formElementBorderStyles}
-          menuPlacement="auto"
-          options={SkillTags.map((tag) => ({ label: tag, value: tag }))}
-          value={settings.skillTags?.map((tag) => ({ label: tag, value: tag }))}
-          isMulti
+        <MultiSelect
+          options={[...SkillTags]}
+          value={settings.skillTags || []}
           onChange={(newSkills) =>
             setSettings({
               ...settings,
-              skillTags: newSkills ? newSkills.map((skill) => skill.value) : []
+              skillTags: newSkills
+                ? newSkills.map((skill: any) => skill.value)
+                : []
             })
           }
-          // chakraStyles={{
-          //   menuList: (provided) => ({
-          //     ...provided,
-          //     minHeight: "350px"
-          //   })
-          // }}
         />
       </FormControl>
       <Button
