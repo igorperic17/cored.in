@@ -77,7 +77,7 @@ pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
     let post = POST.may_load(deps.storage, post_id.clone().to_string())?;
 
     if let Some(post) = post {
-        Ok(to_json_binary(&vec![post.vault.clone()])?)
+        Ok(to_json_binary(&post.vault.amount)?)
     } else {
         Err(StdError::not_found(format!("Post with id {} not found", post_id)))
     }

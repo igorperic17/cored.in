@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { CoredinQueryClient } from "@coredin/shared";
+import { CoredinQueryClient, Uint64 } from "@coredin/shared";
+import { Coin } from "@cosmjs/proto-signing";
 
 const PAGE_SIZE = 20;
 
@@ -71,16 +72,16 @@ export class CoredinContractService {
     }
   }
 
-  async getPostTips(postId: string) {
+  async getPostTips(postId: number) {
     try {
       const res = await this.coredinQueryClient.getPostTips({
-        postId
+        postId: postId.toString()
       });
       console.log("getPostTips result:", res);
       return res;
     } catch (e: any) {
       console.error("Error fetching post tips: ", e, postId);
-      return { tips: [] };
+      return "0";
     }
   }
 

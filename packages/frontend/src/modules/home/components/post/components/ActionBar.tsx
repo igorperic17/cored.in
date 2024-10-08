@@ -119,7 +119,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
           mr="4"
         >
           <Box as="span" transition={"opacity 2s"}>
-            {post.tips ? `${post.tips.toFixed(2)}` : "0.00"}
+            {post.tips ? `${(post.tips / 1000000.0).toFixed(2)}` : "0.00"}
           </Box>
         </Button>
       </Flex>
