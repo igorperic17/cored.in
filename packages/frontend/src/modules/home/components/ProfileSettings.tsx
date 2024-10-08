@@ -179,6 +179,7 @@ export const ProfileSettings = () => {
                 : []
             })
           }
+          placeholder="Select skills"
         />
       </FormControl>
       <Button
