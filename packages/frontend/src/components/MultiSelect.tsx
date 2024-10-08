@@ -7,24 +7,27 @@ type MultiSelectProps = {
   options: SkillTag[];
   value: SkillTag[];
   onChange: (value: any) => void;
+  placeholder: string;
 };
 
 export const MultiSelect: FC<MultiSelectProps> = ({
   options,
   value,
   onChange,
+  placeholder,
   ...props
 }) => {
   return (
     <Select
       focusBorderColor="brand.200"
-      menuPlacement="auto"
+      menuPlacement="top"
       options={options.map((option) => ({ label: option, value: option }))}
       value={value.map((tag) => ({ label: tag, value: tag }))}
       isMulti={true}
       onChange={onChange}
       isClearable={false}
       isSearchable={true}
+      placeholder={placeholder}
       chakraStyles={{
         dropdownIndicator: (provided, state) => ({
           ...provided,
@@ -39,7 +42,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
         control: (provided) => ({
           ...provided,
           ...formElementBorderStyles,
-          fontSize: "1em"
+          fontSize: { base: "1rem", md: "1.25rem" }
         }),
         multiValue: (provided) => ({
           ...provided,
@@ -52,18 +55,18 @@ export const MultiSelect: FC<MultiSelectProps> = ({
         }),
         multiValueRemove: (provided) => ({
           ...provided,
-          fontSize: "1.125em",
+          fontSize: "1.125rem",
           color: "brand.900"
         }),
         multiValueLabel: (provided) => ({
           ...provided,
           px: "0"
+        }),
+        placeholder: (provided) => ({
+          ...provided,
+          fontSize: { base: "0.875rem", lg: "1rem" },
+          color: "text.700"
         })
-
-        // menuList: (provided) => ({
-        //   ...provided,
-        //   minHeight: "350px"
-        // })
       }}
       {...props}
     />
