@@ -18,14 +18,12 @@ import {
   Input
 } from "@chakra-ui/react";
 import {
-  SkillTag,
   SkillTags,
   TESTNET_CHAIN_NAME,
   UpdateProfileDTO
 } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useEffect, useState } from "react";
-import { Select } from "chakra-react-select";
 
 export const ProfileSettings = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -64,8 +62,6 @@ export const ProfileSettings = () => {
       successToast("Saved successfully");
     });
   };
-
-  console.log("skills", settings.skillTags);
 
   return (
     <VStack spacing="2.5em" align="start">
@@ -145,6 +141,7 @@ export const ProfileSettings = () => {
             Enter only letters and numbers. Maximum length: 16 characters
           </FormHelperText>
         </FormControl> */}
+
       <FormControl>
         <FormLabel
           fontSize={{ base: "1.25rem", lg: "1.5rem" }}
@@ -163,8 +160,14 @@ export const ProfileSettings = () => {
           Maximum length: 250 characters
         </FormHelperText>
       </FormControl>
+
       <FormControl>
-        <FormLabel>Skills</FormLabel>
+        <FormLabel
+          fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+          fontWeight="700"
+        >
+          Skills
+        </FormLabel>
         <MultiSelect
           options={[...SkillTags]}
           value={settings.skillTags || []}
