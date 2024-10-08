@@ -15,7 +15,8 @@ import {
   Heading,
   Text,
   useTheme,
-  Input
+  Input,
+  Link
 } from "@chakra-ui/react";
 import {
   SkillTags,
@@ -181,6 +182,18 @@ export const ProfileSettings = () => {
           }
           placeholder="Select skills"
         />
+        <FormHelperText color="text.700">
+          If you don't see the skill you want to add, please suggest one to us
+          on{" "}
+          <Link
+            href="https://discord.gg/fhsyaEJ5VZ"
+            isExternal
+            textDecoration="underline"
+          >
+            Discord
+          </Link>
+          .
+        </FormHelperText>
       </FormControl>
       <Button
         variant="primary"
