@@ -15,7 +15,7 @@ import {
   Select,
   VStack
 } from "@chakra-ui/react";
-import { TESTNET_CHAIN_NAME, TESTNET_STAKING_DENOM } from "@coredin/shared";
+import { TESTNET_CHAIN_NAME, TESTNET_FEE_DENOM } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useContext, useEffect, useState } from "react";
 
@@ -80,7 +80,7 @@ export const SubscriptionSettings = () => {
         .setSubscription({
           price: {
             amount: subscriptionSettings.price,
-            denom: TESTNET_STAKING_DENOM
+            denom: TESTNET_FEE_DENOM
           },
           duration: subscriptionSettings.durationDays.toString()
         })

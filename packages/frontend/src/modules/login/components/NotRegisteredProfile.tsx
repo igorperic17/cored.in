@@ -16,11 +16,7 @@ import {
   VStack,
   VisuallyHidden
 } from "@chakra-ui/react";
-import {
-  DID,
-  TESTNET_CHAIN_NAME,
-  TESTNET_STAKING_DENOM
-} from "@coredin/shared";
+import { DID, TESTNET_CHAIN_NAME, TESTNET_FEE_DENOM } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { ChangeEvent, FC, useEffect, useState } from "react";
 
@@ -54,7 +50,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
     const client = await chainContext.getCosmWasmClient();
     const coin = await client.getBalance(
       chainContext.address,
-      TESTNET_STAKING_DENOM
+      TESTNET_FEE_DENOM
     );
 
     // TODO - REVIEW DECIMALS AFTER TESTNET, utestcore has 6 decimals!
