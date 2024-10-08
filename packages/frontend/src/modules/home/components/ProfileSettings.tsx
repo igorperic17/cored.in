@@ -17,9 +17,14 @@ import {
   useTheme,
   Input
 } from "@chakra-ui/react";
-import { TESTNET_CHAIN_NAME, UpdateProfileDTO } from "@coredin/shared";
+import {
+  SkillTags,
+  TESTNET_CHAIN_NAME,
+  UpdateProfileDTO
+} from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useEffect, useState } from "react";
+import { Select } from "chakra-react-select";
 
 export const ProfileSettings = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -33,7 +38,8 @@ export const ProfileSettings = () => {
     avatarUrl: userProfile?.avatarUrl || "",
     avatarFallbackColor: userProfile?.avatarFallbackColor || "#7F02FE",
     backgroundColor: userProfile?.backgroundColor || "#FBB030",
-    bio: userProfile?.bio || ""
+    bio: userProfile?.bio || "",
+    skillTags: userProfile?.skillTags || []
   });
 
   useEffect(() => {
@@ -41,7 +47,8 @@ export const ProfileSettings = () => {
       avatarUrl: userProfile?.avatarUrl || "",
       avatarFallbackColor: userProfile?.avatarFallbackColor || "#7F02FE",
       backgroundColor: userProfile?.backgroundColor || "#FBB030",
-      bio: userProfile?.bio || ""
+      bio: userProfile?.bio || "",
+      skillTags: userProfile?.skillTags || []
     });
   }, [userProfile]);
 
@@ -56,6 +63,8 @@ export const ProfileSettings = () => {
       successToast("Saved successfully");
     });
   };
+
+  console.log("skills", settings.skillTags);
 
   return (
     <VStack spacing="2.5em" align="start">
@@ -152,6 +161,28 @@ export const ProfileSettings = () => {
         <FormHelperText color="text.700">
           Maximum length: 250 characters
         </FormHelperText>
+      </FormControl>
+      <FormControl>
+        <FormLabel>Skills</FormLabel>
+        <Select
+          {...formElementBorderStyles}
+          menuPlacement="auto"
+          options={SkillTags.map((tag) => ({ label: tag, value: tag }))}
+          value={settings.skillTags?.map((tag) => ({ label: tag, value: tag }))}
+          isMulti
+          onChange={(newSkills) =>
+            setSettings({
+              ...settings,
+              skillTags: newSkills ? newSkills.map((skill) => skill.value) : []
+            })
+          }
+          // chakraStyles={{
+          //   menuList: (provided) => ({
+          //     ...provided,
+          //     minHeight: "350px"
+          //   })
+          // }}
+        />
       </FormControl>
       <Button
         variant="primary"
