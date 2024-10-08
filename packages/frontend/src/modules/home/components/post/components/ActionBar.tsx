@@ -1,8 +1,12 @@
 import { ROUTES } from "@/router/routes";
 import {
-  Box, Button, Flex, IconButton, Center,
+  Box,
+  Button,
+  Flex,
+  IconButton,
+  Center,
   Icon,
-  HStack,
+  HStack
 } from "@chakra-ui/react";
 
 import { FC } from "react";
@@ -55,9 +59,8 @@ export const ActionBar: FC<PostActionBarProps> = ({
         w="100%"
         ml="auto"
         justify="space-between"
-      // border="1px solid red"
+        // border="1px solid red"
       >
-
         <HStack spacing="1rem">
           <Button
             variant="empty"
@@ -73,9 +76,9 @@ export const ActionBar: FC<PostActionBarProps> = ({
               )
             }
             onClick={handleLike}
-          // isLoading={isLiking}
+            // isLoading={isLiking}
           >
-            <Box as="span" opacity={isLiking ? 0 : 1} transition={"opacity 2s"}>
+            <Box as="span" opacity={isLiking ? 0 : 1} transition={"opacity 1s"}>
               {post.likes}
             </Box>
           </Button>
@@ -123,7 +126,6 @@ export const ActionBar: FC<PostActionBarProps> = ({
           </Box>
         </Button>
       </Flex>
-
     </>
   );
 };
