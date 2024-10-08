@@ -128,6 +128,8 @@ export const SubscriptionSettings = () => {
               color="brand.900"
               bg="text.300"
               border="1px solid #141413"
+              borderTopRightRadius="1.125em"
+              borderBottomRightRadius="1.125em"
             >
               CORE
             </InputRightAddon>

@@ -131,13 +131,13 @@ export const Chat: FC<ChatProps> = ({ message }) => {
       direction="column"
       gap="1em"
       h={{ base: "72dvh", sm: "78dvh", lg: "91vh" }}
-    //   border="1px solid red"
+      //   border="1px solid red"
     >
       <Flex
         justify="space-between"
         align="center"
-      // border="1px solid black"
-      //
+        // border="1px solid black"
+        //
       >
         <Link
           as={ReactRouterLink}
@@ -178,7 +178,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
                   !creatorIsTheLoggedInUser && message.creatorAvatar
                     ? "none"
                     : creatorIsTheLoggedInUser &&
-                      message.recipients?.[0].avatarUrl
+                        message.recipients?.[0].avatarUrl
                       ? "none"
                       : "1px solid #b0b0b0"
                 }
@@ -192,7 +192,6 @@ export const Chat: FC<ChatProps> = ({ message }) => {
             </HStack>
           </Link>
           <Tooltip
-            hasArrow
             label={
               hasActiveSubscription
                 ? creatorIsTheLoggedInUser
@@ -203,7 +202,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
                   : `This user's subscription expired on ${subscriptionInfoValidUntil.toLocaleString()}`
             }
             isOpen={isTooltipOpen}
-          //
+            //
           >
             <Button
               as={InfoOutlineIcon}
@@ -308,8 +307,8 @@ export const Chat: FC<ChatProps> = ({ message }) => {
       {hasActiveSubscription ? (
         <Flex
           gap="0.75em"
-        // border="1px solid green"
-        //
+          // border="1px solid green"
+          //
         >
           <AutoResizeTextarea
             maxH="160px"
@@ -334,7 +333,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
           flexDirection="column"
           gap="0.5em"
           bg="brand.400"
-          borderRadius="1em"
+          borderRadius="1.125em"
           textAlign="center"
           px="1em"
           py="1em"

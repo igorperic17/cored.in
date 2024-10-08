@@ -267,7 +267,7 @@ export const RequestCredential = () => {
               tabIndex={0}
               aria-expanded="false"
               bg="transparent"
-              borderRadius="0.375rem"
+              borderRadius="1.125rem"
               color="brand.900"
               textTransform="none"
               fontWeight="400"

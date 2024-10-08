@@ -50,7 +50,8 @@ export const MultiSelect: FC<MultiSelectProps> = ({
         control: (provided) => ({
           ...provided,
           ...formElementBorderStyles,
-          fontSize: { base: "1rem", md: "1.25rem" }
+          fontSize: { base: "1rem", md: "1.25rem" },
+          borderRadius: "1.125em"
         }),
         multiValue: (provided) => ({
           ...provided,
@@ -58,7 +59,8 @@ export const MultiSelect: FC<MultiSelectProps> = ({
           color: "brand.900",
           borderRadius: "2em",
           px: "1em",
-          py: "0.25em"
+          py: "0.25em",
+          mr: "0"
         }),
         multiValueRemove: (provided) => ({
           ...provided,
@@ -72,7 +74,14 @@ export const MultiSelect: FC<MultiSelectProps> = ({
         placeholder: (provided) => ({
           ...provided,
           fontSize: { base: "0.875rem", lg: "1rem" },
-          color: "text.700"
+          color: "text.700",
+          ml: "0.75em"
+        }),
+        valueContainer: (provided) => ({
+          ...provided,
+          px: "0.25em",
+          py: "0.25em",
+          gap: "0.125em"
         })
       }}
       components={{

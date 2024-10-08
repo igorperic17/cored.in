@@ -17,7 +17,7 @@ const sizes = {
 const baseStyle = definePartsStyle({
   tab: {
     bg: "transparent",
-    borderTopRadius: "1em",
+    borderTopRadius: "1.125em",
     borderBottom: "1px solid #E6E6E6",
     _selected: {
       color: "brand.500",
@@ -40,7 +40,7 @@ const baseStyle = definePartsStyle({
     border: "1px solid #E6E6E6",
     borderTop: "0",
     borderTopRadius: "0",
-    borderBottomRadius: "1em",
+    borderBottomRadius: "1.125em",
     bg: "#FFFFFFBF",
     backdropFilter: "blur(12px)"
   }

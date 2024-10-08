@@ -33,7 +33,6 @@ export const NewReplyContent: FC<NewContentProps> = ({
         value={postContent}
         onChange={(e) => setPostContent(e.target.value)}
         variant="unstyled"
-        borderRadius="0.5em"
         p="0.5em"
         minH="unset"
         placeholder="Add your comment"

@@ -27,7 +27,7 @@ export const Header: FC<HeaderProps> = ({ username }) => {
         bg="#FFFFFFBF"
         backdropFilter="blur(12px)"
         border="1px solid #E7E7E740"
-        borderRadius="1em"
+        borderRadius="1.125em"
         boxShadow="
           5px 4px 14px 0px #1414130D,
           18px 17px 25px 0px #1414130A,

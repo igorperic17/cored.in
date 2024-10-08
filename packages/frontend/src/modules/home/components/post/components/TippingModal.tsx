@@ -14,7 +14,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text,
+  Text
 } from "@chakra-ui/react";
 import { FC, useState } from "react";
 
@@ -34,7 +34,7 @@ export const TippingModal: FC<TippingModalProps> = ({
   setIsTipModalOpen
 }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const {successToast, errorToast } = useCustomToast();
+  const { successToast, errorToast } = useCustomToast();
 
   const onTip = async () => {
     setIsLoading(true);
@@ -81,6 +81,8 @@ export const TippingModal: FC<TippingModalProps> = ({
                 color="brand.900"
                 bg="text.300"
                 border="1px solid #141413"
+                borderTopRightRadius="1.125em"
+                borderBottomRightRadius="1.125em"
               >
                 CORE
               </InputRightAddon>
@@ -89,9 +91,7 @@ export const TippingModal: FC<TippingModalProps> = ({
           <Text mt="2em" textStyle="sm">
             Author gets%:
             <Text as="span" fontWeight="700" ml="1em">
-              {tipAmount
-                ? `${tipAmount.toFixed(2)} CORE`
-                : "0.00 CORE"}
+              {tipAmount ? `${tipAmount.toFixed(2)} CORE` : "0.00 CORE"}
             </Text>
           </Text>
           <Text mt="1" textStyle="sm">

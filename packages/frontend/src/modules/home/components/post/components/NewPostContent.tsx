@@ -67,7 +67,6 @@ export const NewPostContent: FC<NewContentProps> = ({
           value={postContent}
           onChange={(e) => setPostContent(e.target.value)}
           variant="unstyled"
-          borderRadius="0.5em"
           p="0.5em"
         />
       </Flex>

@@ -10,6 +10,7 @@ const baseStyle = definePartsStyle({
     fontFamily: "body",
     fontSize: { base: "0.875rem", lg: "1rem" },
     textAlign: "start",
+    borderRadius: "1.125em",
     option: {
       background: "brand.100"
     }

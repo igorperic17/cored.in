@@ -1,5 +1,5 @@
 import { Flex, Box, Text, VStack, Link, HStack } from "@chakra-ui/layout";
-import React, { useRef, useState } from "react";
+import React, { useRef } from "react";
 import { PostDTO, PostVisibility } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
 import {
@@ -12,9 +12,9 @@ import {
   Avatar,
   Button,
   IconButton,
-  useDisclosure,
+  useDisclosure
 } from "@chakra-ui/react";
-import { FaEllipsis, FaTrash, FaCoins } from "react-icons/fa6";
+import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
@@ -54,7 +54,7 @@ export const Content: React.FC<PostContentProps> = ({
       <Flex
         gap={{ base: "0.75em", sm: "1.125em" }}
         w="100%"
-      // border="1px solid red"
+        // border="1px solid red"
       >
         <VStack align="start">
           <Link
@@ -76,7 +76,7 @@ export const Content: React.FC<PostContentProps> = ({
           align="start"
           spacing="1em"
           w="100%"
-        // border="1px solid yellow"
+          // border="1px solid yellow"
         >
           <Flex justify="space-between" w="100%">
             <VStack alignItems="left" spacing="0em">
@@ -108,7 +108,7 @@ export const Content: React.FC<PostContentProps> = ({
                   color="text.700"
                   textStyle="xs"
                   userSelect="none"
-                // ml="4"
+                  // ml="4"
                 >
                   {new Date(post.createdAt).toLocaleDateString()}
                   <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
@@ -226,9 +226,8 @@ export const Content: React.FC<PostContentProps> = ({
             handleLike={handleLike}
             handleTip={handleTip}
           />
-        </VStack >
-      </Flex >
-
+        </VStack>
+      </Flex>
     </>
   );
 };

@@ -13,7 +13,7 @@ const baseStyle = definePartsStyle({
     py: "1em",
     px: "1em",
     bg: "#F1F1F0", // === "background.100"
-    borderRadius: "1em",
+    borderRadius: "1.125em",
     border: "1px solid #E6E6E6",
     color: "brand.900"
   },

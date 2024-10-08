@@ -18,6 +18,7 @@ export const AutoResizeTextarea = React.forwardRef<
       minRows={1}
       fontSize={{ base: "0.875rem", lg: "1rem" }}
       overflow="auto"
+      borderRadius="1.125em"
       {...formElementBorderStyles}
       _placeholder={{
         color: "text.700"

@@ -11,12 +11,12 @@ import {
   FormControl,
   FormLabel,
   FormHelperText,
-  VStack,
   Heading,
   Text,
   useTheme,
   Input,
-  Link
+  Link,
+  Flex
 } from "@chakra-ui/react";
 import {
   SkillTags,
@@ -65,11 +65,11 @@ export const ProfileSettings = () => {
   };
 
   return (
-    <VStack spacing="2.5em" align="start">
+    <Flex direction="column" gap="2.5em">
       <Heading as="h2" fontFamily="body">
         Your information
       </Heading>
-      <VStack spacing="1.25em" align="start">
+      <Flex direction="column" gap="1.25em">
         <Text as="span" textStyle="lg" fontWeight="700">
           Avatar
         </Text>
@@ -78,6 +78,7 @@ export const ProfileSettings = () => {
           <Input
             type="text"
             placeholder="https://somewebsite.com/avatar.jpg"
+            w="100%"
             {...formElementBorderStyles}
             onChange={(e) =>
               setSettings({ ...settings, avatarUrl: e.target.value || "" })
@@ -97,6 +98,7 @@ export const ProfileSettings = () => {
             w="80px"
             p="0"
             border="none"
+            borderRadius="0"
             onChange={(e) =>
               setSettings({ ...settings, avatarFallbackColor: e.target.value })
             }
@@ -111,13 +113,14 @@ export const ProfileSettings = () => {
             w="80px"
             p="0"
             border="none"
+            borderRadius="0"
             onChange={(e) =>
               setSettings({ ...settings, backgroundColor: e.target.value })
             }
             value={settings.backgroundColor}
           />
         </FormControl>
-      </VStack>
+      </Flex>
       {/* <FormControl>
           <FormLabel fontSize={{ base: "1.25rem", lg: "1.5rem" }}>
             Username
@@ -204,6 +207,6 @@ export const ProfileSettings = () => {
       >
         Save
       </Button>
-    </VStack>
+    </Flex>
   );
 };

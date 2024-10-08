@@ -13,9 +13,9 @@ export const useCustomToast = () => {
         <Box
           mx="auto"
           color="brand.100"
-          py="0.5em"
+          p="1em 1.5em"
           bg="brand.300"
-          borderRadius="0.5em"
+          borderRadius="1.25em"
           textAlign="center"
           fontSize="1.125rem"
         >
@@ -37,7 +37,7 @@ export const useCustomToast = () => {
           color="brand.100"
           p="1em 1.5em"
           bg="brand.400"
-          borderRadius="2em"
+          borderRadius="1.125em"
           textAlign="center"
           fontSize="1.125rem"
         >
