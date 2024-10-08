@@ -6,7 +6,7 @@ export const TESTNET_CHAIN_RPC_ENDPOINT =
 export const TESTNET_CHAIN_REST_ENDPOINT =
   "https://full-node.testnet-1.coreum.dev:1317/";
 export const TESTNET_CHAIN_EXPLORER = "https://explorer.testnet-1.coreum.dev/";
-export const TESTNET_STAKING_DENOM = "utestcore";
+export const TESTNET_FEE_DENOM = "utestcore";
 export const TESTNET_CHAIN_COIN_TYPE = "990";
 export const TESTNET_SITE_TITLE = "cored.in";
 export const TESTNET_SITE_ICON_URL = "/coreum.svg";

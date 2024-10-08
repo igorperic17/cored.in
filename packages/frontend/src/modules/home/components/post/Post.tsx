@@ -3,14 +3,16 @@ import { USER_QUERIES } from "@/queries";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { Text, VStack } from "@chakra-ui/react";
-import { PostDTO, TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { PostDTO, PostInfo, PostRequestType, TESTNET_CHAIN_NAME, TESTNET_FEE_DENOM } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Content, TippingModal } from "./components";
 import { NewPost } from "../NewPost";
 import { useParams } from "react-router-dom";
 import { BaseServerStateKeys } from "@/constants";
+import { CoredinClientContext } from "@/contexts/CoredinClientContext";
+import { coin, coins } from "@cosmjs/amino";
 
 export type PostProps = {
   post: PostDTO;
@@ -29,6 +31,8 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     FEED_MUTATIONS.tipPost()
   );
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const coredinClient = useContext(CoredinClientContext);
+
   const { data: userProfile } = useLoggedInServerState(
     USER_QUERIES.getUser(chainContext.address || ""),
     {
@@ -89,29 +93,48 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     setIsTipModalOpen(true);
   };
 
-  const handleTip = async () => {
-    setIsTipModalOpen(false);
+  const handleTip = async (): Promise<boolean> => {
+    console.log('Tip amount:', tipAmount);
+    console.log('Tip denom:', TESTNET_FEE_DENOM);
+    let tipCoins = coin(tipAmount * 1_000_000, TESTNET_FEE_DENOM);
+    console.log('Tip coins:', tipCoins);
+    
+    const postInfo: PostInfo = {
+      id: post.id.toString(),
+      author: post.creatorWallet,
+      created_on: "0",
+      hash: "", // Correctly hash the post content
+      post_type: "Microblog",
+      vault: tipCoins,
+    };
 
-    // TODO: perform on-chain transaction, continue after successfull confirmation
+    try {
+      await coredinClient?.tipPostAuthor(
+        { postInfo }, 
+        "auto",
+        undefined,
+        [tipCoins]
+      );
 
-    await tipPost({ postId: post.id, tipAmount: tipAmount }).then(() => {
+      await tipPost({ postId: post.id, tipAmount: tipAmount });
+      
       queryClient.invalidateQueries();
-    });
+      return true;
+    } catch (error) {
+      console.error("Error tipping post:", error);
+      return false;
+    }
   };
 
   return (
     <>
       <VStack
-        // as={Link}
-        // to={`/user/${userProfile?.wallet}/posts/${post.id}`}
         align="start"
         spacing="0.5em"
         w="100%"
         h="max-content"
         layerStyle="cardBox"
         py="1em"
-        // boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added shadow for floating effect
-        // _hover={{ transform: "scale(1.01)", transition: "transform 0.1s" }} // Added slight zoom in on hover with animation
       >
         {postDetail?.parent && !isReply && (
           <Content

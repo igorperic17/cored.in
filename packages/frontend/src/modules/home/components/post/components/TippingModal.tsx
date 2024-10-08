@@ -13,14 +13,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
+  Text,
+  useToast
 } from "@chakra-ui/react";
-import { FC } from "react";
+import { FC, useState } from "react";
 
 type TippingModalProps = {
   tipAmount: number;
   setTipAmount: (amount: number) => void;
-  handleTip: () => Promise<void>;
+  handleTip: () => Promise<boolean>;
   isTipModalOpen: boolean;
   setIsTipModalOpen: (open: boolean) => void;
 };
@@ -32,6 +33,43 @@ export const TippingModal: FC<TippingModalProps> = ({
   isTipModalOpen,
   setIsTipModalOpen
 }) => {
+  const [isLoading, setIsLoading] = useState(false);
+  const toast = useToast();
+
+  const onTip = async () => {
+    setIsLoading(true);
+    try {
+      const success = await handleTip();
+      if (success) {
+        setIsTipModalOpen(false);
+        toast({
+          title: "Tip sent successfully",
+          status: "success",
+          duration: 3000,
+          isClosable: true,
+        });
+      } else {
+        toast({
+          title: "Failed to send tip",
+          status: "error",
+          duration: 3000,
+          isClosable: true,
+        });
+      }
+    } catch (error) {
+      console.error("Error sending tip:", error);
+      toast({
+        title: "An error occurred",
+        description: "Please try again later",
+        status: "error",
+        duration: 3000,
+        isClosable: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <Modal
       isOpen={isTipModalOpen}
@@ -65,15 +103,15 @@ export const TippingModal: FC<TippingModalProps> = ({
             </InputGroup>
           </FormControl>
           <Text mt="2em" textStyle="sm">
-            Author gets 95%:
+            Author gets%:
             <Text as="span" fontWeight="700" ml="1em">
               {tipAmount
-                ? `${(tipAmount * 0.95).toFixed(2)} CORE`
+                ? `${tipAmount.toFixed(2)} CORE`
                 : "0.00 CORE"}
             </Text>
           </Text>
           <Text mt="1" textStyle="sm">
-            Platform commission 5%:
+            Patform commission 5%:
             <Text as="span" fontWeight="700" ml="1em">
               {tipAmount
                 ? `${(tipAmount * 0.05).toFixed(2)} CORE`
@@ -85,8 +123,10 @@ export const TippingModal: FC<TippingModalProps> = ({
         <ModalFooter>
           <Button
             variant="primary"
-            isDisabled={tipAmount === 0}
-            onClick={handleTip}
+            isDisabled={tipAmount === 0 || isLoading}
+            onClick={onTip}
+            isLoading={isLoading}
+            loadingText="Sending..."
           >
             Send
           </Button>
