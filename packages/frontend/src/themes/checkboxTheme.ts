@@ -9,21 +9,21 @@ const baseStyle = definePartsStyle({
     fontFamily: "body"
   },
   control: {
-    borderRadius: "2px",
+    borderRadius: "50%",
     borderColor: "brand.900",
     borderWidth: "1px",
-    p: 1,
+    p: 3,
     mr: "6px",
     _hover: {
-      borderColor: "brand.200",
+      borderColor: "brand.900",
       _checked: {
         borderColor: "brand.900",
         bg: "brand.900"
       }
     },
     _checked: {
-      bg: "brand.200",
-      borderColor: "brand.200",
+      bg: "brand.900",
+      borderColor: "brand.900",
       color: "brand.100"
     }
   }
