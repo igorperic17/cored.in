@@ -84,9 +84,16 @@ export const Content: React.FC<PostContentProps> = ({
                 as={ReactRouterLink}
                 to={ROUTES.USER.buildPath(post.creatorWallet)}
               >
-                <Box
-                  // border="1px solid yellow"
-                  maxW={{ base: "190px" }}
+                <Text
+                  color="brand.900"
+                  textStyle="md"
+                  maxW={{
+                    base: "14ch",
+                    sm: "24ch",
+                    md: "36ch",
+                    lg: "28ch",
+                    xl: "32ch"
+                  }}
                   textOverflow="ellipsis"
                   whiteSpace="nowrap"
                   overflow="hidden"
