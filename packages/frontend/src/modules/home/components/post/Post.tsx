@@ -45,6 +45,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     }
   );
 
+  const [isHovered, setIsHovered] = useState(false);
   const [isLiked, setIsLiked] = React.useState(
     userProfile?.likedPosts.includes(post.id) || false
   );
@@ -134,6 +135,9 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         h="max-content"
         layerStyle="cardBox"
         py="1em"
+        bg={isHovered ? "brand.100" : undefined}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
       >
         {postDetail?.parent && !isReply && (
           <Content

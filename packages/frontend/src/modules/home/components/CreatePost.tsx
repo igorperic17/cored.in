@@ -4,7 +4,15 @@ import { USER_QUERIES } from "@/queries";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { ROUTES } from "@/router/routes";
 import { formElementBorderStyles } from "@/themes";
-import { Avatar, Button, Flex, Link, useDisclosure } from "@chakra-ui/react";
+import {
+  Avatar,
+  Button,
+  Flex,
+  Link,
+  useDisclosure,
+  useMediaQuery,
+  useTheme
+} from "@chakra-ui/react";
 import {
   CreatePostDTO,
   PostRequestType,
@@ -38,6 +46,10 @@ export const CreatePost = () => {
     undefined
   );
   const [skillTags, setSkillTags] = useState<SkillTag[]>([]);
+  const theme = useTheme();
+  const [isLargerThanSm] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.sm})`
+  );
 
   const handlePost = async () => {
     const post: CreatePostDTO = {
@@ -86,7 +98,9 @@ export const CreatePost = () => {
           justifyContent="start"
           onClick={onOpen}
         >
-          Create a post or share a work opportunity
+          {isLargerThanSm
+            ? "Create a post or share a work opportunity"
+            : "Create a post"}
         </Button>
       </Flex>
 
