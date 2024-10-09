@@ -95,7 +95,7 @@ export const TippingModal: FC<TippingModalProps> = ({
             </Text>
           </Text>
           <Text mt="1" textStyle="sm">
-            Patform commission 5%:
+            Platform commission 5%:
             <Text as="span" fontWeight="700" ml="1em">
               {tipAmount
                 ? `${(tipAmount * 0.05).toFixed(2)} CORE`
