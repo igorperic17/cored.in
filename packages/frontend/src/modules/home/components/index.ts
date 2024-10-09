@@ -1,6 +1,7 @@
 export * from "./Chat";
 export * from "./ChatMessage";
 export * from "./CreatePost";
+export * from "./CreatePostModal";
 export * from "./Credential";
 export * from "./CredentialsContainer";
 export * from "./CredentialsMain";
