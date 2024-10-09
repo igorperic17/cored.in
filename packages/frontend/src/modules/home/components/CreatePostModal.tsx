@@ -120,9 +120,14 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
             <Select
               {...formElementBorderStyles}
               value={requestType}
-              onChange={(e) =>
-                setRequestType(e.target.value as PostRequestType)
-              }
+              onChange={(e) => {
+                const type = Object.values(PostRequestType).includes(
+                  e.target.value as PostRequestType
+                )
+                  ? (e.target.value as PostRequestType)
+                  : undefined;
+                setRequestType(type);
+              }}
             >
               {requestTypeData.map((type) => (
                 <option key={`request-type-${type.value}`} value={type.value}>
