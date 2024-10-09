@@ -1,6 +1,6 @@
 import { PostVisibility } from "@coredin/shared";
 
-export const visibilityData = [
+export const visibilityData: { title: string; value: PostVisibility }[] = [
   {
     title: "Visible to everyone",
     value: PostVisibility.PUBLIC

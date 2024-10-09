@@ -137,13 +137,11 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
                     <Select
                       {...formElementBorderStyles}
                       value={visibility}
-                      onChange={(e) =>
-                        setVisibility(e.target.value as PostVisibility)
-                      }
+              onChange={(e) => setVisibility(e.target.value as PostVisibility)}
                     >
-                      {Object.values(PostVisibility).map((vis) => (
-                        <option key={vis} value={vis}>
-                          {vis[0].toUpperCase() + vis.slice(1).toLowerCase()}
+              {visibilityData.map((visData) => (
+                <option key={visData.value} value={visData.value}>
+                  {visData.title}
                         </option>
                       ))}
                     </Select>
