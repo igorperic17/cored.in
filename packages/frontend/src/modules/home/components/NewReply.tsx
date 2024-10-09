@@ -14,11 +14,11 @@ import { Avatar, Button, Flex, Icon } from "@chakra-ui/react";
 import { AutoResizeTextarea } from "@/components";
 import { FaArrowUp } from "react-icons/fa6";
 
-export type NewPostProps = {
+export type NewReplyProps = {
   replyToPostId?: number;
 };
 
-export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
+export const NewReply: React.FC<NewReplyProps> = ({ replyToPostId }) => {
   const queryClient = useQueryClient();
   const [postContent, setPostContent] = useState("");
   const { mutateAsync, isPending } = useMutableServerState(

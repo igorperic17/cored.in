@@ -3,16 +3,21 @@ import { USER_QUERIES } from "@/queries";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { Text, VStack } from "@chakra-ui/react";
-import { PostDTO, PostInfo, PostRequestType, TESTNET_CHAIN_NAME, TESTNET_FEE_DENOM } from "@coredin/shared";
+import {
+  PostDTO,
+  PostInfo,
+  TESTNET_CHAIN_NAME,
+  TESTNET_FEE_DENOM
+} from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
 import React, { useContext, useEffect, useState } from "react";
 import { Content, TippingModal } from "./components";
-import { NewPost } from "../NewPost";
 import { useParams } from "react-router-dom";
 import { BaseServerStateKeys } from "@/constants";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
-import { coin, coins } from "@cosmjs/amino";
+import { coin } from "@cosmjs/amino";
+import { NewReply } from "../NewReply";
 
 export type PostProps = {
   post: PostDTO;
@@ -94,27 +99,24 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   };
 
   const handleTip = async (): Promise<boolean> => {
-    let tipCoins = coin((tipAmount * 1.05) * 1_000_000, TESTNET_FEE_DENOM);
-    
+    let tipCoins = coin(tipAmount * 1.05 * 1_000_000, TESTNET_FEE_DENOM);
+
     const postInfo: PostInfo = {
       id: post.id.toString(),
       author: post.creatorWallet,
       created_on: "0",
       hash: "", // Correctly hash the post content
       post_type: "Microblog",
-      vault: tipCoins,
+      vault: tipCoins
     };
 
     try {
-      await coredinClient?.tipPostAuthor(
-        { postInfo }, 
-        "auto",
-        undefined,
-        [tipCoins]
-      );
+      await coredinClient?.tipPostAuthor({ postInfo }, "auto", undefined, [
+        tipCoins
+      ]);
 
       await tipPost({ postId: post.id });
-      
+
       queryClient.invalidateQueries();
       return true;
     } catch (error) {
@@ -169,7 +171,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
           handleLike={handleLike}
           handleTip={handleTipClick}
         />
-        {opened && !isParent && <NewPost replyToPostId={post.id} />}
+        {opened && !isParent && <NewReply replyToPostId={post.id} />}
         {opened &&
           postDetail &&
           postDetail.replies.map((reply) => (
