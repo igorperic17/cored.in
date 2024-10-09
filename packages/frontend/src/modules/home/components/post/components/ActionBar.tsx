@@ -1,22 +1,12 @@
 import { ROUTES } from "@/router/routes";
-import {
-  Box,
-  Button,
-  Flex,
-  IconButton,
-  Center,
-  Icon,
-  HStack
-} from "@chakra-ui/react";
-
+import { Box, Button, Flex, IconButton, Icon, HStack } from "@chakra-ui/react";
 import { FC } from "react";
 import {
-  FaDollarSign,
   FaHeart,
+  FaLink,
   FaRegComment,
   FaRegEye,
-  FaRegHeart,
-  FaRetweet
+  FaRegHeart
 } from "react-icons/fa6";
 import { PiHandCoins } from "react-icons/pi";
 import { Link as ReactRouterLink } from "react-router-dom";
@@ -93,7 +83,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
           />
 
           <IconButton
-            icon={<FaRetweet fontSize="1.5rem" />}
+            icon={<FaLink fontSize="1.5rem" />}
             variant="empty"
             aria-label="Share."
             size="1rem"
