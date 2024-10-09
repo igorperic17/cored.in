@@ -12,6 +12,7 @@ import {
   Avatar,
   Button,
   IconButton,
+  Tag,
   useDisclosure
 } from "@chakra-ui/react";
 import { FaEllipsis, FaTrash } from "react-icons/fa6";
@@ -213,6 +214,17 @@ export const Content: React.FC<PostContentProps> = ({
               </AlertDialogOverlay>
             </AlertDialog>
           </Flex>
+
+          {post.skillTags && (
+            <Flex gap="0.5em" flexWrap="wrap">
+              {post.skillTags.map((skill) => (
+                <Tag key={skill} variant="primary" size="md">
+                  {skill}
+                </Tag>
+              ))}
+            </Flex>
+          )}
+
           <Text color="brand.900" textStyle="sm" wordBreak="break-word">
             {post.text}
           </Text>
