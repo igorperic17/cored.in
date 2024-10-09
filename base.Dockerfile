@@ -1,6 +1,8 @@
 # Step 1: Build the application
 FROM node:20.14-alpine3.19 AS builder
 
+ENV NODE_OPTIONS=--max_old_space_size=8192
+
 WORKDIR /coredin
 
 COPY . .
