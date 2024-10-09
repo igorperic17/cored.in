@@ -56,7 +56,7 @@ export const NewReply: React.FC<NewReplyProps> = ({ replyToPostId }) => {
           w="100%"
           h="max-content"
           // outline="1px solid red"
-          p="1.125em"
+          py="1.125em"
         >
           <Avatar
             name={userProfile.username}
@@ -71,8 +71,9 @@ export const NewReply: React.FC<NewReplyProps> = ({ replyToPostId }) => {
             onChange={(e) => setPostContent(e.target.value)}
             variant="unstyled"
             p="0.5em"
-            minH="unset"
+            minH="36px"
             placeholder="Add your comment"
+            background="#FFFFFF"
           />
           <Button
             variant="primary"
