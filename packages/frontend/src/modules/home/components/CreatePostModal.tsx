@@ -28,7 +28,7 @@ import {
 } from "@coredin/shared";
 import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
-import { visibilityData } from "./post/constants";
+import { requestTypeData, visibilityData } from "./post/constants";
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -124,10 +124,9 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
                 setRequestType(e.target.value as PostRequestType)
               }
             >
-              <option value={undefined}>Microblog post</option>
-              {Object.values(PostRequestType).map((type) => (
-                <option key={type} value={type}>
-                  {type[0].toUpperCase() + type.slice(1).toLowerCase()}
+              {requestTypeData.map((type) => (
+                <option key={`request-type-${type.value}`} value={type.value}>
+                  {type.title}
                 </option>
               ))}
             </Select>
@@ -143,7 +142,10 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
               onChange={(e) => setVisibility(e.target.value as PostVisibility)}
             >
               {visibilityData.map((visData) => (
-                <option key={visData.value} value={visData.value}>
+                <option
+                  key={`visibility-${visData.value}`}
+                  value={visData.value}
+                >
                   {visData.title}
                 </option>
               ))}
