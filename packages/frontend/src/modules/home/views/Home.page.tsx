@@ -7,7 +7,7 @@ import {
   VisuallyHidden
 } from "@chakra-ui/react";
 import { Feed } from "../components/Feed";
-import { CreatePost, NewPost } from "../components";
+import { CreatePost } from "../components";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
@@ -66,7 +66,6 @@ const HomePage = () => {
       <VisuallyHidden>
         <Heading as="h1">Home page, user feed</Heading>
       </VisuallyHidden>
-      {/* <NewPost /> */}
       <CreatePost />
       <Box id="home-feed" layerStyle="cardBox" py="1em" w="100%">
         <Feed posts={posts?.pages.flatMap((page) => page) || []} />

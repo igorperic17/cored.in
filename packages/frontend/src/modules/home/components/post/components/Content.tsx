@@ -1,4 +1,4 @@
-import { Flex, Box, Text, VStack, Link, HStack } from "@chakra-ui/layout";
+import { Flex, Text, VStack, Link, HStack } from "@chakra-ui/layout";
 import React, { useRef } from "react";
 import { PostDTO, PostVisibility } from "@coredin/shared";
 import { Menu, MenuButton, MenuList, MenuItem } from "@chakra-ui/menu";
@@ -56,22 +56,20 @@ export const Content: React.FC<PostContentProps> = ({
         w="100%"
         // border="1px solid red"
       >
-        <VStack align="start">
-          <Link
-            as={ReactRouterLink}
-            to={ROUTES.USER.buildPath(post.creatorWallet)}
-          >
-            <Avatar
-              name={post.creatorUsername}
-              src={post.creatorAvatar}
-              bg="brand.100"
-              color={post.creatorAvatarFallbackColor || "brand.500"}
-              border={post.creatorAvatar || "1px solid #b0b0b0"}
-              size={{ base: "sm", sm: "md" }}
-              boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added horizontal shadow
-            />
-          </Link>
-        </VStack>
+        <Link
+          as={ReactRouterLink}
+          to={ROUTES.USER.buildPath(post.creatorWallet)}
+        >
+          <Avatar
+            name={post.creatorUsername}
+            src={post.creatorAvatar}
+            bg="brand.100"
+            color={post.creatorAvatarFallbackColor || "brand.500"}
+            border={post.creatorAvatar || "1px solid #b0b0b0"}
+            size={{ base: "sm", sm: "md" }}
+            // boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added horizontal shadow
+          />
+        </Link>
         <VStack
           align="start"
           spacing="1em"
@@ -98,11 +96,8 @@ export const Content: React.FC<PostContentProps> = ({
                   whiteSpace="nowrap"
                   overflow="hidden"
                 >
-                  {/* recommended username width 12 characters */}
-                  <Text color="brand.900" textStyle="md">
-                    {post.creatorUsername}
-                  </Text>
-                </Box>
+                  {post.creatorUsername}
+                </Text>
               </Link>
               {/* TODO: to add dateTime later */}
               <Link
@@ -115,7 +110,6 @@ export const Content: React.FC<PostContentProps> = ({
                   color="text.700"
                   textStyle="xs"
                   userSelect="none"
-                  // ml="4"
                 >
                   {new Date(post.createdAt).toLocaleDateString()}
                   <Text as="span" fontSize="0.75em" whiteSpace="pre-wrap">
@@ -141,7 +135,7 @@ export const Content: React.FC<PostContentProps> = ({
                     color={recipient.avatarFallbackColor || "brand.500"}
                     border={recipient.avatarUrl || "1px solid #b0b0b0"}
                     size={{ base: "sm", sm: "md" }}
-                    boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added horizontal shadow
+                    // boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added horizontal shadow
                   />
                 ))}
               </HStack>

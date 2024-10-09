@@ -8,7 +8,7 @@ import {
 } from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { NewPostContent, NewReplyContent } from "./post/components";
+import { NewReplyContent } from "./post/components";
 import { useChain } from "@cosmos-kit/react";
 import { USER_QUERIES } from "@/queries";
 
@@ -39,37 +39,35 @@ export const NewPost: React.FC<NewPostProps> = ({ replyToPostId }) => {
     };
     await mutateAsync({ post });
     await queryClient.invalidateQueries({
-      queryKey: replyToPostId
-        ? [BaseServerStateKeys.POST] // todo - handle single post refresh!
-        : [BaseServerStateKeys.FEED]
+      queryKey: [BaseServerStateKeys.POST] // todo - handle single post refresh!
     });
     setPostContent("");
   };
 
   return (
     <>
-      {userProfile &&
-        (replyToPostId ? (
-          <NewReplyContent
-            postContent={postContent}
-            setPostContent={setPostContent}
-            handlePost={handlePost}
-            isLoading={isPending}
-            visibility={visibility}
-            setVisibility={setVisibility}
-            userProfile={userProfile}
-          />
-        ) : (
-          <NewPostContent
-            postContent={postContent}
-            setPostContent={setPostContent}
-            handlePost={handlePost}
-            isLoading={isPending}
-            visibility={visibility}
-            setVisibility={setVisibility}
-            userProfile={userProfile}
-          />
-        ))}
+      {userProfile && replyToPostId && (
+        <NewReplyContent
+          postContent={postContent}
+          setPostContent={setPostContent}
+          handlePost={handlePost}
+          isLoading={isPending}
+          visibility={visibility}
+          setVisibility={setVisibility}
+          userProfile={userProfile}
+        />
+      )}
+      {/* // ) : (
+        //   <NewPostContent
+        //     postContent={postContent}
+        //     setPostContent={setPostContent}
+        //     handlePost={handlePost}
+        //     isLoading={isPending}
+        //     visibility={visibility}
+        //     setVisibility={setVisibility}
+        //     userProfile={userProfile}
+        //   />
+        // ))} */}
     </>
   );
 };
