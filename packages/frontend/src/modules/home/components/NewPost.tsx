@@ -8,7 +8,6 @@ import {
 } from "@coredin/shared";
 import { useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { NewReplyContent } from "./post/components";
 import { useChain } from "@cosmos-kit/react";
 import { USER_QUERIES } from "@/queries";
 import { Avatar, Button, Flex, Icon } from "@chakra-ui/react";
