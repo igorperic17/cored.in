@@ -106,7 +106,7 @@ export const Credential: FC<CredentialProps> = ({
       borderBottomColor="brand.100"
       _last={{ borderBottom: "none", pb: "0" }}
       py="1.5em"
-    // border="1px solid red"
+      // border="1px solid red"
     >
       <VStack
         align="start"
@@ -147,7 +147,7 @@ export const Credential: FC<CredentialProps> = ({
           ))}
       </VStack>
       {showOptions && (
-        <Menu offset={[-105, -10]}>
+        <Menu offset={[-105, -10]} autoSelect={false}>
           <MenuButton
             as={IconButton}
             variant="empty"

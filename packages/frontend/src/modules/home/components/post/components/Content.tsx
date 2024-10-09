@@ -164,7 +164,7 @@ export const Content: FC<PostContentProps> = ({
           </HStack>
         )}
         {showOptions && (
-          <Menu offset={[-105, -10]}>
+          <Menu offset={[-105, -10]} autoSelect={false}>
             <MenuButton
               as={IconButton}
               variant="empty"
