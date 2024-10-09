@@ -225,7 +225,12 @@ export const Content: React.FC<PostContentProps> = ({
             </Flex>
           )}
 
-          <Text color="brand.900" textStyle="sm" wordBreak="break-word">
+          <Text
+            color="brand.900"
+            textStyle="sm"
+            wordBreak="break-word"
+            whiteSpace="pre-wrap"
+          >
             {post.text}
           </Text>
 
