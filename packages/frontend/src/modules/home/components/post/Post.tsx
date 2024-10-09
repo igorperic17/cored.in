@@ -17,7 +17,7 @@ import { useParams } from "react-router-dom";
 import { BaseServerStateKeys } from "@/constants";
 import { CoredinClientContext } from "@/contexts/CoredinClientContext";
 import { coin } from "@cosmjs/amino";
-import { NewReply } from "../NewReply";
+import { NewReply } from "./components";
 
 export type PostProps = {
   post: PostDTO;
