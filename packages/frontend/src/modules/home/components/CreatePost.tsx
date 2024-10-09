@@ -43,7 +43,6 @@ export const CreatePost = () => {
       visibility,
       requestType
     };
-    console.log("post", post);
     await mutateAsync({ post });
     await queryClient.invalidateQueries({
       queryKey: [BaseServerStateKeys.FEED]
