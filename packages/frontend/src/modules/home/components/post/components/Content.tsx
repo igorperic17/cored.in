@@ -233,7 +233,7 @@ export const Content: FC<PostContentProps> = ({
         </AlertDialog>
       </Flex>
 
-      {post.skillTags && (
+      {post.skillTags.length > 0 && (
         <Link
           as={ReactRouterLink}
           to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
