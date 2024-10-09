@@ -164,7 +164,7 @@ export const Content: FC<PostContentProps> = ({
           </HStack>
         )}
         {showOptions && (
-          <Menu offset={[-105, -10]} autoSelect={false}>
+          <Menu autoSelect={false} placement="bottom-end">
             <MenuButton
               as={IconButton}
               variant="empty"
@@ -176,7 +176,10 @@ export const Content: FC<PostContentProps> = ({
               ml="auto"
               mt="-0.5em"
             />
-            <MenuList>
+            <MenuList
+            // motionProps={}
+            //
+            >
               <MenuItem onClick={onOpen} icon={<FaTrash color="red" />}>
                 <Text as="span" color="red">
                   Delete

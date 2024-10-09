@@ -147,7 +147,7 @@ export const Credential: FC<CredentialProps> = ({
           ))}
       </VStack>
       {showOptions && (
-        <Menu offset={[-105, -10]} autoSelect={false}>
+        <Menu placement="bottom-end" autoSelect={false}>
           <MenuButton
             as={IconButton}
             variant="empty"
