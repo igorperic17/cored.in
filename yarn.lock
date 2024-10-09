@@ -2979,6 +2979,7 @@ __metadata:
     "@interchain-ui/react": "npm:^1.25.1"
     "@leapwallet/cosmos-social-login-capsule-provider-ui": "npm:^0.0.58"
     "@tanstack/react-query": "npm:^5.56.2"
+    "@types/canvas-confetti": "npm:^1.6.4"
     "@types/react": "npm:^18.3.10"
     "@types/react-dom": "npm:^18.3.0"
     "@typescript-eslint/eslint-plugin": "npm:^6.21.0"
@@ -2986,6 +2987,7 @@ __metadata:
     "@vitejs/plugin-react": "npm:^4.3.2"
     axios: "npm:^1.7.7"
     buffer: "npm:^6.0.3"
+    canvas-confetti: "npm:^1.9.3"
     chain-registry: "npm:^1.63.38"
     chakra-react-select: "npm:^4.9.1"
     eslint: "npm:^8.57.1"
@@ -10511,6 +10513,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@types/canvas-confetti@npm:^1.6.4":
+  version: 1.6.4
+  resolution: "@types/canvas-confetti@npm:1.6.4"
+  checksum: 10/8573c61a78987abd24e7cd2483b94ba8f3ed014e736890b4d23861b21d6e1ce1cda9ca6608bc5e06988a7ac5bc58fbd55d3fb3d4b5647763f18d6c323a2d5acc
+  languageName: node
+  linkType: hard
+
 "@types/connect@npm:*":
   version: 3.4.38
   resolution: "@types/connect@npm:3.4.38"
@@ -13099,6 +13108,13 @@ __metadata:
   version: 1.0.30001643
   resolution: "caniuse-lite@npm:1.0.30001643"
   checksum: 10/dddbda29fa24fbc435873309c71070461cbfc915d9bce3216180524c20c5637b2bee1a14b45972e9ac19e1fdf63fba3f63608b9e7d68de32f5ee1953c8c69e05
+  languageName: node
+  linkType: hard
+
+"canvas-confetti@npm:^1.9.3":
+  version: 1.9.3
+  resolution: "canvas-confetti@npm:1.9.3"
+  checksum: 10/50378c45a10030f0e6c5d2e93972d6e01170dd197b74ef150dcc2ef0166c8e3eb600ea0e930cf923143be6ae4c7ff15ccf74fb6c347a177e6aa4de966afcb610
   languageName: node
   linkType: hard
 
