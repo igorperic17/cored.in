@@ -75,7 +75,7 @@ export const Navigation: FC<NavigationProps> = ({ wallet }) => {
       bottom={{ base: "0", lg: "" }}
       left="0"
       layerStyle="cardBox"
-      borderBottomRadius={{ base: "0", lg: "1em" }}
+      borderBottomRadius={{ base: "0", lg: "1.125em" }}
       pl={{ base: "0", lg: "2em" }}
       zIndex="1"
       py={{ base: "0.5em", lg: "1.5em" }}
