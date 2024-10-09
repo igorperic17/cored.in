@@ -15,7 +15,7 @@ export const Header: FC<HeaderProps> = ({ username }) => {
       position="sticky"
       top={{ base: "1rem", md: "1.5rem", lg: "1.75rem" }}
       zIndex="10"
-      px={{ base: "1em", md: "2.5em" }}
+      px={{ base: "0.5em", sm: "1em", md: "2.5em" }}
       mb={{ base: "1em", md: "2em", lg: "0" }}
     >
       <Flex
@@ -35,7 +35,6 @@ export const Header: FC<HeaderProps> = ({ username }) => {
           72px 68px 40px 0px #14141303,
           113px 106px 43px 0px #14141300"
         p={{ base: "0.688em", xl: "1em" }}
-        // border="1px solid red"
       >
         <Link
           as={ReactRouterLink}
