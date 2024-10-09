@@ -9,6 +9,7 @@ type MultiSelectProps = {
   value: SkillTag[];
   onChange: (value: any) => void;
   placeholder: string;
+  menuPlacement?: "top" | "bottom" | "auto";
 };
 
 export const MultiSelect: FC<MultiSelectProps> = ({
@@ -16,12 +17,13 @@ export const MultiSelect: FC<MultiSelectProps> = ({
   value,
   onChange,
   placeholder,
+  menuPlacement = "top",
   ...props
 }) => {
   return (
     <Select
       focusBorderColor="brand.200"
-      menuPlacement="top"
+      menuPlacement={menuPlacement}
       options={options.map((option) => ({ label: option, value: option }))}
       value={value.map((tag) => ({ label: tag, value: tag }))}
       isMulti={true}
