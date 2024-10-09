@@ -1,4 +1,4 @@
-import { AutoResizeTextarea } from "@/components";
+import { AutoResizeTextarea, MultiSelect } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { formElementBorderStyles } from "@/themes";
 import {
@@ -19,7 +19,13 @@ import {
   Text,
   VisuallyHidden
 } from "@chakra-ui/react";
-import { PostRequestType, PostVisibility, UserProfile } from "@coredin/shared";
+import {
+  PostRequestType,
+  PostVisibility,
+  SkillTag,
+  SkillTags,
+  UserProfile
+} from "@coredin/shared";
 import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { visibilityData } from "./post/constants";
@@ -33,6 +39,8 @@ type CreatePostModalProps = {
   userProfile?: UserProfile;
   requestType: PostRequestType | undefined;
   visibility: PostVisibility;
+  skillTags: SkillTag[];
+  setSkillTags: (tags: SkillTag[]) => void;
   postContent: string;
   handlePost: () => Promise<void>;
   isPending: boolean;
@@ -47,6 +55,8 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
   userProfile,
   requestType,
   visibility,
+  skillTags,
+  setSkillTags,
   postContent,
   handlePost,
   isPending
@@ -139,6 +149,21 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
               ))}
             </Select>
           </FormControl>
+          {(requestType === PostRequestType.JOB ||
+            requestType === PostRequestType.GIG) && (
+            <FormControl>
+              <VisuallyHidden>
+                Select the tags related to the post
+              </VisuallyHidden>
+              <MultiSelect
+                options={[...SkillTags]}
+                value={skillTags}
+                onChange={setSkillTags}
+                placeholder="Select skills"
+                menuPlacement="auto"
+              />
+            </FormControl>
+          )}
 
           <AutoResizeTextarea
             placeholder="Write the text, choose the post type, set the visibility and share it"

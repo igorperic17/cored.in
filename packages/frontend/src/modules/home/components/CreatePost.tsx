@@ -9,6 +9,7 @@ import {
   CreatePostDTO,
   PostRequestType,
   PostVisibility,
+  SkillTag,
   TESTNET_CHAIN_NAME
 } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
@@ -36,13 +37,16 @@ export const CreatePost = () => {
   const [requestType, setRequestType] = useState<PostRequestType | undefined>(
     undefined
   );
+  const [skillTags, setSkillTags] = useState<SkillTag[]>([]);
 
   const handlePost = async () => {
     const post: CreatePostDTO = {
       text: postContent,
       visibility,
-      requestType
+      requestType,
+      skillTags
     };
+    // console.log("post", post);
     await mutateAsync({ post });
     await queryClient.invalidateQueries({
       queryKey: [BaseServerStateKeys.FEED]
@@ -95,6 +99,10 @@ export const CreatePost = () => {
         userProfile={userProfile}
         requestType={requestType}
         visibility={visibility}
+        skillTags={skillTags || []}
+        setSkillTags={(newTags: SkillTag[]) =>
+          setSkillTags(newTags ? newTags.map((tag: any) => tag.value) : [])
+        }
         postContent={postContent}
         handlePost={handlePost}
         isPending={isPending}
