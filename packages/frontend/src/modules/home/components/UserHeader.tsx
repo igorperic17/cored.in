@@ -231,13 +231,15 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           {userProfile.bio}
         </Text>
 
-        <Flex gap="0.5em" flexWrap="wrap">
-          {userProfile.skillTags.map((skill) => (
-            <Tag key={skill} variant="primary" size="md">
-              {skill}
-            </Tag>
-          ))}
-        </Flex>
+        {userProfile.skillTags.length > 0 && (
+          <Flex gap="0.5em" flexWrap="wrap">
+            {userProfile.skillTags.map((skill) => (
+              <Tag key={skill} variant="primary" size="md">
+                {skill}
+              </Tag>
+            ))}
+          </Flex>
+        )}
 
         {!isOwnProfile &&
           !isSubscribed &&
