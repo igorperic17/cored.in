@@ -5,6 +5,8 @@ import {
   Avatar,
   Button,
   Flex,
+  FormControl,
+  FormLabel,
   Link,
   Modal,
   ModalBody,
@@ -14,16 +16,13 @@ import {
   ModalHeader,
   ModalOverlay,
   Select,
-  Table,
-  TableContainer,
-  Tbody,
-  Td,
   Text,
-  Tr
+  VisuallyHidden
 } from "@chakra-ui/react";
 import { PostRequestType, PostVisibility, UserProfile } from "@coredin/shared";
 import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
+import { visibilityData } from "./post/constants";
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -103,53 +102,44 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
           </Flex>
         </ModalHeader>
         <ModalCloseButton />
-        <ModalBody>
-          <TableContainer whiteSpace="normal" mb="1em">
-            <Table variant="unstyled" layout="fixed">
-              <Tbody>
-                <Tr>
-                  <Td pl="0" pb="0">
-                    Post type:
-                  </Td>
-                  <Td px="0" pb="0">
-                    <Select
-                      {...formElementBorderStyles}
-                      value={requestType}
-                      onChange={(e) =>
-                        setRequestType(e.target.value as PostRequestType)
-                      }
-                    >
-                      <option value={undefined}>Microblog post</option>
-                      {Object.values(PostRequestType).map((type) => (
-                        <option key={type} value={type}>
-                          {type[0].toUpperCase() + type.slice(1).toLowerCase()}
-                        </option>
-                      ))}
-                    </Select>
-                  </Td>
-                </Tr>
+        <ModalBody display="flex" flexDir="column" gap="1em">
+          <FormControl>
+            <VisuallyHidden>
+              <FormLabel>Select the type of the post</FormLabel>
+            </VisuallyHidden>
+            <Select
+              {...formElementBorderStyles}
+              value={requestType}
+              onChange={(e) =>
+                setRequestType(e.target.value as PostRequestType)
+              }
+            >
+              <option value={undefined}>Microblog post</option>
+              {Object.values(PostRequestType).map((type) => (
+                <option key={type} value={type}>
+                  {type[0].toUpperCase() + type.slice(1).toLowerCase()}
+                </option>
+              ))}
+            </Select>
+          </FormControl>
 
-                <Tr>
-                  <Td pl="0" pb="0">
-                    Visibility:
-                  </Td>
-                  <Td px="0" pb="0">
-                    <Select
-                      {...formElementBorderStyles}
-                      value={visibility}
+          <FormControl>
+            <VisuallyHidden>
+              <FormLabel>Select who can see the post</FormLabel>
+            </VisuallyHidden>
+            <Select
+              {...formElementBorderStyles}
+              value={visibility}
               onChange={(e) => setVisibility(e.target.value as PostVisibility)}
-                    >
+            >
               {visibilityData.map((visData) => (
                 <option key={visData.value} value={visData.value}>
                   {visData.title}
-                        </option>
-                      ))}
-                    </Select>
-                  </Td>
-                </Tr>
-              </Tbody>
-            </Table>
-          </TableContainer>
+                </option>
+              ))}
+            </Select>
+          </FormControl>
+
           <AutoResizeTextarea
             placeholder="Write the text, choose the post type, set the visibility and share it"
             value={postContent}
