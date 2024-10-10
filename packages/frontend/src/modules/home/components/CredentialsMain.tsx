@@ -68,19 +68,22 @@ export const CredentialsMain = () => {
             color: "brand.100"
           }}
           w="100%"
-          p="0.75em"
-          borderRadius="0.5em"
+          borderRadius="1.125em"
           listStyleType="none"
+          // border="1px solid red"
         >
           <Link
             as={ReactRouterLink}
             to={ROUTES.CREDENTIALS.INCOMING_REQUESTS.path}
-            _hover={{ textDecoration: "none" }}
+            _hover={{ textDecoration: "none", color: "inherit" }}
+            w="100%"
+            borderRadius="1.125em"
           >
             <Heading
               as="h2"
               fontFamily="body"
               fontSize={{ base: "1.25rem", lg: "1.5rem" }}
+              p="0.75em"
             >
               Incoming requests: {pendingRequests?.length}
             </Heading>
