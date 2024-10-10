@@ -118,7 +118,7 @@ const HomePage = () => {
               <Spinner size="xl" color="brand.500" />
             </Center>
           )}
-          {!hasNextPage && (
+          {posts?.pages[0] && !hasNextPage && (
             <Text
               textStyle="sm"
               color="text.700"

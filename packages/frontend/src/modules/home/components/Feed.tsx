@@ -10,7 +10,7 @@ export type FeedProps = {
 export const Feed: FC<FeedProps> = ({ posts }) => {
   return (
     <VStack spacing="0.5em" w="100%">
-      {posts.length ? (
+      {posts.length > 0 ? (
         posts.map((post) => <Post key={`post-${post.id}`} post={post} />)
       ) : (
         <Box p="1em" w="100%">
