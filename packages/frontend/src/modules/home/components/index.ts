@@ -13,6 +13,7 @@ export * from "./RegisteredProfile";
 export * from "./Navigation";
 export * from "./NewMessage";
 export * from "./NewMessageModal";
+export * from "./NotificationDot";
 export * from "./post";
 export * from "./ProfileSettings";
 export * from "./ProofUpdate";
