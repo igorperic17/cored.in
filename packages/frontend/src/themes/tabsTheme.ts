@@ -6,6 +6,11 @@ const { definePartsStyle, defineMultiStyleConfig } =
   createMultiStyleConfigHelpers(tabsAnatomy.keys);
 
 const sizes = {
+  sm: definePartsStyle({
+    tab: {
+      ...textStyles.sm
+    }
+  }),
   md: definePartsStyle({
     tab: {
       ...textStyles.md,
@@ -18,7 +23,7 @@ const unstyled = definePartsStyle({
   tab: {
     bg: "transparent",
     borderTopRadius: "1.125em",
-    borderBottom: "1px solid #E6E6E6",
+    // borderBottom: "1px solid #E6E6E6",
     _selected: {
       color: "brand.500",
       border: "1px solid #E6E6E6",
@@ -33,7 +38,6 @@ const unstyled = definePartsStyle({
       }
     }
   },
-
   tabpanel: {
     px: "2em",
     py: "2.5em",
@@ -46,7 +50,38 @@ const unstyled = definePartsStyle({
   }
 });
 
+const softRounded = definePartsStyle({
+  tab: {
+    // w: "33%",
+    bg: "transparent",
+    color: "brand.900",
+    border: "2px solid #FBB030", // === brand.200
+    borderRadius: "2em",
+    _selected: {
+      bg: "brand.200",
+      color: "brand.900",
+      border: "2px solid #FBB030"
+      // border: "none"
+    },
+    _hover: {
+      bg: "#FBB03033",
+      _selected: {
+        bg: "brand.200"
+      }
+    }
+  },
+  tablist: {
+    gap: "1em"
+  },
+  root: {
+    layerStyle: "cardBox"
+  },
+  tabpanel: {
+    px: "0"
+  }
+});
+
 export const tabsTheme = defineMultiStyleConfig({
   sizes,
-  variants: { unstyled }
+  variants: { unstyled, softRounded }
 });
