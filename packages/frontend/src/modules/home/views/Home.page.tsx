@@ -8,6 +8,7 @@ import {
   TabPanel,
   TabPanels,
   Tabs,
+  Text,
   VisuallyHidden
 } from "@chakra-ui/react";
 import { Feed } from "../components/Feed";
@@ -16,6 +17,7 @@ import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
 import { PostRequestType } from "@coredin/shared";
+import { END_FEED_PHRASES } from "../components/post/constants";
 
 const SCROLL_FETCH_DELAY_MS = 200;
 
@@ -23,7 +25,8 @@ const HomePage = () => {
   const {
     data: posts,
     fetchNextPage,
-    isFetchingNextPage
+    isFetchingNextPage,
+    hasNextPage
   } = useInfiniteQuery({
     ...FEED_QUERIES.getFeed(),
     initialPageParam: 1,
@@ -81,6 +84,9 @@ const HomePage = () => {
           post.requestType === PostRequestType.GIG
       ) || [];
 
+  const randomEndFeedPhrase =
+    END_FEED_PHRASES[Math.floor(Math.random() * END_FEED_PHRASES.length)];
+
   return (
     <Flex
       direction="column"
@@ -111,6 +117,17 @@ const HomePage = () => {
             <Center mt="32px">
               <Spinner size="xl" color="brand.500" />
             </Center>
+          )}
+          {!hasNextPage && (
+            <Text
+              textStyle="sm"
+              color="text.700"
+              w="80%"
+              mx="auto"
+              textAlign="center"
+            >
+              {randomEndFeedPhrase}
+            </Text>
           )}
         </TabPanels>
       </Tabs>
