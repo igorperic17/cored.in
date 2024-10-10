@@ -23,4 +23,29 @@ const baseStyle = definePartsStyle({
   }
 });
 
-export const modalTheme = defineMultiStyleConfig({ baseStyle });
+const full = definePartsStyle({
+  dialogContainer: {
+    px: "0",
+    py: "0",
+    borderRadius: "3em" // TODO
+  },
+  dialog: {
+    px: "0",
+    py: "0",
+    borderRadius: "3em" // TODO
+  },
+  closeButton: {
+    color: "brand.900",
+    width: "26px",
+    aspectRatio: "1",
+    top: "20px",
+    right: "10px",
+    p: "4px",
+    cursor: "pointer"
+  }
+});
+
+export const modalTheme = defineMultiStyleConfig({
+  baseStyle,
+  variants: { full }
+});

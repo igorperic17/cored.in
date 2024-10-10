@@ -6,7 +6,11 @@ import {
   SocialMedia
 } from "@/components";
 import { useAuth, useLoggedInServerState } from "@/hooks";
-import { Navigation, UserSignOut } from "@/modules/home/components";
+import {
+  MobileMenu,
+  NavigationDesktop,
+  UserSignOut
+} from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
 import {
@@ -58,7 +62,9 @@ export const HomeRoot = () => {
       zIndex="0"
     >
       {!isLargerThanLg && userProfile && (
-        <Header username={userProfile.username} />
+        <Header username={userProfile.username}>
+          <MobileMenu />
+        </Header>
       )}
 
       <Grid
@@ -73,7 +79,7 @@ export const HomeRoot = () => {
         // border="1px solid green"
         alignItems="flex-start" // important for the StickyBox to work
       >
-        {isLargerThanLg ? (
+        {isLargerThanLg && (
           <StickyBox offsetTop={24} offsetBottom={24}>
             <VStack
               spacing="1.25em"
@@ -94,7 +100,7 @@ export const HomeRoot = () => {
                   <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
                 </Link>
               </Box>
-              <Navigation wallet={chainContext.address || ""} />
+              <NavigationDesktop wallet={chainContext.address || ""} />
               <UserSignOut />
               <VStack spacing="1.25em" as="aside">
                 <VStack
@@ -109,8 +115,6 @@ export const HomeRoot = () => {
               </VStack>
             </VStack>
           </StickyBox>
-        ) : (
-          <Navigation wallet={chainContext.address || ""} />
         )}
 
         <Box as="main">
