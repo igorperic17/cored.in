@@ -1,14 +1,21 @@
 import { LoginButton, Logo } from "@/components";
+import { MobileMenu } from "@/modules/home/components";
 import { ROUTES } from "@/router/routes";
-import { Box, Flex, Link } from "@chakra-ui/react";
+import { Box, Flex, Link, useMediaQuery, useTheme } from "@chakra-ui/react";
 import { FC } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 
 type HeaderProps = {
   username?: string;
+  children?: React.ReactNode;
 };
 
-export const Header: FC<HeaderProps> = ({ username }) => {
+export const Header: FC<HeaderProps> = ({ username, children }) => {
+  const theme = useTheme();
+  const [isLargerThanLg] = useMediaQuery(
+    `(min-width: ${theme.breakpoints.lg})`
+  );
+
   return (
     <Box
       as="header"
@@ -52,12 +59,18 @@ export const Header: FC<HeaderProps> = ({ username }) => {
           />
         </Link>
 
-        <LoginButton
-          username={username}
-          variant="empty"
-          size="sm"
-          signInText="Connect wallet"
-        />
+        {children}
+
+        {/* {isLargerThanLg ? (
+          <LoginButton
+            username={username}
+            variant="empty"
+            size="sm"
+            signInText="Connect wallet"
+          />
+        ) : (
+          <MobileMenu />
+        )} */}
       </Flex>
     </Box>
   );
