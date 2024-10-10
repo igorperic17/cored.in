@@ -1,4 +1,4 @@
-import { Box, useToast } from "@chakra-ui/react";
+import { Box, Text, useToast } from "@chakra-ui/react";
 
 export const useCustomToast = () => {
   const toast = useToast();
@@ -11,15 +11,31 @@ export const useCustomToast = () => {
       isClosable: true,
       render: () => (
         <Box
-          mx="auto"
           color="brand.100"
-          p="1em 1.5em"
+          p="1em 2em"
           bg="brand.300"
           borderRadius="3em"
           textAlign="center"
-          fontSize="1.125rem"
+          // position="relative"
+          onClick={() => toast.closeAll()}
+          cursor="default"
         >
-          {message}
+          <Text as="span" textStyle="sm">
+            {message}
+          </Text>
+          {/* <IconButton
+            icon={<CloseIcon fontSize="0.625rem" />}
+            py="0.5em"
+            px="0.25em"
+            variant="empty"
+            color="inherit"
+            _hover={{ color: "inherit" }}
+            position="absolute"
+            top="1px"
+            right="2px"
+            aria-label="Close the pop-up notifications."
+            onClick={() => toast.closeAll()}
+          /> */}
         </Box>
       )
     });
@@ -33,15 +49,31 @@ export const useCustomToast = () => {
       isClosable: true,
       render: () => (
         <Box
-          mx="auto"
           color="brand.100"
-          p="1em 1.5em"
+          p="1em 2em"
           bg="brand.400"
           borderRadius="3em"
           textAlign="center"
-          fontSize="1.125rem"
+          // position="relative"
+          onClick={() => toast.closeAll()}
+          cursor="default"
         >
-          {message}
+          <Text as="span" textStyle="sm">
+            {message}
+          </Text>
+          {/* <IconButton
+            icon={<CloseIcon fontSize="0.625rem" />}
+            py="0.5em"
+            px="0.25em"
+            variant="empty"
+            color="inherit"
+            _hover={{ color: "inherit" }}
+            position="absolute"
+            top="1px"
+            right="2px"
+            aria-label="Close the pop-up notifications."
+            onClick={() => toast.closeAll()}
+          /> */}
         </Box>
       )
     });
