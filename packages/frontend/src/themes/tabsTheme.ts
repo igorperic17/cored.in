@@ -14,7 +14,7 @@ const sizes = {
   })
 };
 
-const baseStyle = definePartsStyle({
+const unstyled = definePartsStyle({
   tab: {
     bg: "transparent",
     borderTopRadius: "1.125em",
@@ -46,4 +46,7 @@ const baseStyle = definePartsStyle({
   }
 });
 
-export const tabsTheme = defineMultiStyleConfig({ baseStyle, sizes });
+export const tabsTheme = defineMultiStyleConfig({
+  sizes,
+  variants: { unstyled }
+});
