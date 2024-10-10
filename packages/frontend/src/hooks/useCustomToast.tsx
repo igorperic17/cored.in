@@ -15,7 +15,7 @@ export const useCustomToast = () => {
           color="brand.100"
           p="1em 1.5em"
           bg="brand.300"
-          borderRadius="1.25em"
+          borderRadius="3em"
           textAlign="center"
           fontSize="1.125rem"
         >
@@ -37,7 +37,7 @@ export const useCustomToast = () => {
           color="brand.100"
           p="1em 1.5em"
           bg="brand.400"
-          borderRadius="1.125em"
+          borderRadius="3em"
           textAlign="center"
           fontSize="1.125rem"
         >
