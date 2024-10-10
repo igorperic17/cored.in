@@ -15,7 +15,11 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Text
+  Table,
+  TableContainer,
+  Tbody,
+  Td,
+  Tr
 } from "@chakra-ui/react";
 import { FC, useState } from "react";
 
@@ -105,6 +109,9 @@ export const TippingModal: FC<TippingModalProps> = ({
     setTimeout(shoot, 200);
   };
 
+  const commissionAmount = tipAmount * 0.05;
+  const totalAmount = tipAmount + commissionAmount;
+
   return (
     <Modal
       isOpen={isTipModalOpen}
@@ -139,20 +146,36 @@ export const TippingModal: FC<TippingModalProps> = ({
               </InputRightAddon>
             </InputGroup>
           </FormControl>
-          <Text mt="2em" textStyle="sm">
-            Author gets%:
-            <Text as="span" fontWeight="700" ml="1em">
-              {tipAmount ? `${tipAmount.toFixed(2)} CORE` : "0.00 CORE"}
-            </Text>
-          </Text>
-          <Text mt="1" textStyle="sm">
+          <TableContainer whiteSpace="normal" mt="1.5em">
+            <Table variant="unstyled" layout="fixed">
+              <Tbody>
+                <Tr>
+                  <Td pl="0" py="0.5em" w="70%">
+                    Author gets:
+                  </Td>
+                  <Td px="0" py="0.5em" textAlign="right">
+                    {tipAmount ? tipAmount.toFixed(2) : "0.00"} CORE
+                  </Td>
+                </Tr>
+                <Tr borderBottom="1px solid black">
+                  <Td pl="0" pt="0.5em" pb="1em" w="70%">
             Platform commission 5%:
-            <Text as="span" fontWeight="700" ml="1em">
-              {tipAmount
-                ? `${(tipAmount * 0.05).toFixed(2)} CORE`
-                : "0.00 CORE"}
-            </Text>
-          </Text>
+                  </Td>
+                  <Td px="0" pt="0.5em" pb="1em" textAlign="right">
+                    {tipAmount ? commissionAmount.toFixed(2) : "0.00"} CORE
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Td pl="0" pt="1em" pb="0.5em" w="70%">
+                    Total to pay:
+                  </Td>
+                  <Td px="0" pt="1em" pb="0.5em" textAlign="right">
+                    {tipAmount ? totalAmount.toFixed(2) : "0.00"} CORE
+                  </Td>
+                </Tr>
+              </Tbody>
+            </Table>
+          </TableContainer>
         </ModalBody>
 
         <ModalFooter>
@@ -161,9 +184,8 @@ export const TippingModal: FC<TippingModalProps> = ({
             isDisabled={tipAmount === 0 || isLoading}
             onClick={onTip}
             isLoading={isLoading}
-            loadingText="Sending..."
           >
-            Send
+            Pay {totalAmount.toFixed(2)} CORE
           </Button>
         </ModalFooter>
       </ModalContent>
