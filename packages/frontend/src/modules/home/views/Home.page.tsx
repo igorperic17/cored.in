@@ -101,7 +101,7 @@ const HomePage = () => {
         <TabList>
           <Tab>All</Tab>
           <Tab>Posts</Tab>
-          <Tab>Jobs</Tab>
+          <Tab>Offers</Tab>
         </TabList>
         <TabPanels id="home-feed">
           <TabPanel>
