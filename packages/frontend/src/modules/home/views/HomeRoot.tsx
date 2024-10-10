@@ -83,9 +83,13 @@ export const HomeRoot = () => {
               <Box layerStyle="cardBox" p="2em" w="100%">
                 <Link
                   as={ReactRouterLink}
-                  to={ROUTES.ROOT.path}
+                  to={
+                    chainContext.address ? ROUTES.HOME.path : ROUTES.ROOT.path
+                  }
+                  aria-label={
+                    chainContext.address ? "Home page." : "Main page."
+                  }
                   _hover={{ textDecoration: "none" }}
-                  aria-label="Main page."
                 >
                   <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
                 </Link>
