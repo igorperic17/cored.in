@@ -38,8 +38,8 @@ export const Header: FC<HeaderProps> = ({ username }) => {
       >
         <Link
           as={ReactRouterLink}
-          to={ROUTES.ROOT.path}
-          aria-label="Main page."
+          to={username ? ROUTES.HOME.path : ROUTES.ROOT.path}
+          aria-label={username ? "Home page." : "Main page."}
           _hover={{
             textDecoration: "none"
           }}
