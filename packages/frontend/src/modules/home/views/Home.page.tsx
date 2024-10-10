@@ -1,9 +1,13 @@
 import {
-  Box,
   Center,
+  Flex,
   Heading,
   Spinner,
-  VStack,
+  Tab,
+  TabList,
+  TabPanel,
+  TabPanels,
+  Tabs,
   VisuallyHidden
 } from "@chakra-ui/react";
 import { Feed } from "../components/Feed";
@@ -11,6 +15,7 @@ import { CreatePost } from "../components";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useEffect } from "react";
+import { PostRequestType } from "@coredin/shared";
 
 const SCROLL_FETCH_DELAY_MS = 200;
 
@@ -61,21 +66,55 @@ const HomePage = () => {
     };
   }, []);
 
+  const completeFeed = posts?.pages.flatMap((page) => page) || [];
+
+  const postsOnly =
+    posts?.pages.flatMap((page) => page).filter((post) => !post.requestType) ||
+    [];
+
+  const jobsAndGigsOnly =
+    posts?.pages
+      .flatMap((page) => page)
+      .filter(
+        (post) =>
+          post.requestType === PostRequestType.JOB ||
+          post.requestType === PostRequestType.GIG
+      ) || [];
+
   return (
-    <VStack spacing={{ base: "0.5em", lg: "1.5em" }} onScroll={checkInView}>
+    <Flex
+      direction="column"
+      gap={{ base: "0.5em", lg: "1.5em" }}
+      onScroll={checkInView}
+    >
       <VisuallyHidden>
         <Heading as="h1">Home page, user feed</Heading>
       </VisuallyHidden>
       <CreatePost />
-      <Box id="home-feed" layerStyle="cardBox" py="1em" w="100%">
-        <Feed posts={posts?.pages.flatMap((page) => page) || []} />
-        {isFetchingNextPage && (
-          <Center mt="32px">
-            <Spinner size="xl" color="brand.500" />
-          </Center>
-        )}
-      </Box>
-    </VStack>
+      <Tabs variant="softRounded" size="sm">
+        <TabList>
+          <Tab>All</Tab>
+          <Tab>Posts</Tab>
+          <Tab>Jobs</Tab>
+        </TabList>
+        <TabPanels id="home-feed">
+          <TabPanel>
+            <Feed posts={completeFeed} />
+          </TabPanel>
+          <TabPanel>
+            <Feed posts={postsOnly} />
+          </TabPanel>
+          <TabPanel>
+            <Feed posts={jobsAndGigsOnly} />
+          </TabPanel>
+          {isFetchingNextPage && (
+            <Center mt="32px">
+              <Spinner size="xl" color="brand.500" />
+            </Center>
+          )}
+        </TabPanels>
+      </Tabs>
+    </Flex>
   );
 };
 
