@@ -58,7 +58,6 @@ export const NavigationDesktop: FC<NavigationDesktopProps> = ({ wallet }) => {
         isPostPage={isPostPage}
         pendingRequests={pendingRequests}
         unreadMessages={unreadMessages}
-        hasDisclaimer={false}
       />
     </Box>
   );

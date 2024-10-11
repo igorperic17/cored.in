@@ -1,14 +1,17 @@
 import {
+  Box,
   Button,
   Modal,
   ModalCloseButton,
   ModalContent,
-  useDisclosure
+  useDisclosure,
+  VStack
 } from "@chakra-ui/react";
 import { FaBars } from "react-icons/fa6";
-import { NavigationList } from ".";
+import { NavigationList, UserSignOut } from ".";
 import { useChain } from "@cosmos-kit/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { DisclaimerText, SocialMedia } from "@/components";
 
 export const MobileMenu = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -33,8 +36,16 @@ export const MobileMenu = () => {
               isPostPage={false}
               pendingRequests={undefined}
               unreadMessages={0}
-              hasDisclaimer={true}
             />
+
+            <Box mt="3em" mb="2em">
+              <UserSignOut isMobile />
+            </Box>
+
+            <VStack spacing="1em" mt="1em">
+              <DisclaimerText />
+              <SocialMedia size="1.5rem" gap="1.75em" color="text.400" />
+            </VStack>
           </ModalContent>
         </Modal>
       )}

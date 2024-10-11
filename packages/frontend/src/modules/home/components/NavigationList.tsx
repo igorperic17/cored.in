@@ -11,15 +11,13 @@ export type NavigationProps = {
   isPostPage: boolean;
   pendingRequests: CredentialRequestDTO[] | undefined;
   unreadMessages: number;
-  hasDisclaimer: boolean;
 };
 
 export const NavigationList: FC<NavigationProps> = ({
   wallet,
   isPostPage,
   pendingRequests,
-  unreadMessages,
-  hasDisclaimer
+  unreadMessages
 }) => {
   return (
     <Grid
@@ -32,8 +30,8 @@ export const NavigationList: FC<NavigationProps> = ({
         <Flex
           as="li"
           key={`home-navigation-${index}`}
-          justify="center"
-          align="center"
+          // justify="center"
+          // align="center"
           // border="1px solid red"
         >
           <Link
@@ -87,12 +85,6 @@ export const NavigationList: FC<NavigationProps> = ({
           </Link>
         </Flex>
       ))}
-      {hasDisclaimer && (
-        <VStack spacing="1em" mt="1em">
-          <DisclaimerText />
-          <SocialMedia size="1.5rem" gap="1.75em" color="text.400" />
-        </VStack>
-      )}
     </Grid>
   );
 };

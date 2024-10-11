@@ -9,14 +9,18 @@ import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
 import { Button, HStack, Icon, Link, Text, VStack } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import React, { useContext } from "react";
+import { useCallback, useContext } from "react";
 import { FaArrowRightFromBracket, FaIdCard } from "react-icons/fa6";
 import { prettifyDid } from "../helpers/prettifyDid";
 import { CopyIcon } from "@chakra-ui/icons";
 import { ROUTES } from "@/router/routes";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-export const UserSignOut = () => {
+type UserSignOutProps = {
+  isMobile?: boolean;
+};
+
+export const UserSignOut = ({ isMobile }: UserSignOutProps) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { needsAuth } = useAuth();
   const { data: userProfile } = useLoggedInServerState(
@@ -25,7 +29,7 @@ export const UserSignOut = () => {
       enabled: !!chainContext.address
     }
   );
-  const handleDisconnectWallet = React.useCallback(() => {
+  const handleDisconnectWallet = useCallback(() => {
     if (chainContext.isWalletConnected) {
       chainContext.disconnect();
     }
@@ -45,7 +49,13 @@ export const UserSignOut = () => {
   };
 
   return (
-    <HStack spacing="1em" align="start" layerStyle="cardBox" p="2em" w="100%">
+    <HStack
+      spacing="1em"
+      align="start"
+      layerStyle={isMobile ? "" : "cardBox"}
+      p={isMobile ? "" : "2em"}
+      w="100%"
+    >
       <Icon as={FaIdCard} fontSize="1.5rem" />
       <VStack align="start" spacing="1.5em">
         <Link
