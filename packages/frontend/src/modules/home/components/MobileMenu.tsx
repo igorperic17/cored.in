@@ -26,10 +26,10 @@ export const MobileMenu = () => {
       />
       {isOpen && (
         <Modal size="full" isOpen={isOpen} onClose={onClose}>
-          <ModalCloseButton />
           <ModalContent as="nav">
+            <ModalCloseButton />
             <NavigationList
-              wallet={""}
+              wallet={chainContext.address || ""}
               isPostPage={false}
               pendingRequests={undefined}
               unreadMessages={0}
