@@ -22,7 +22,10 @@ export class WaltIdIssuerService {
           keyType: "Ed25519",
           config: {
             server: this.vaultUrl + "/v1/transit",
-            accessKey: this.vaultAccessKey
+            auth: {
+              roleId: "0f2585bb-9a6b-e88f-03df-a60a174f311d",
+              secretId: "703a8152-fae4-9cf9-8c18-cbd5d91becf9"
+            }
           }
         },
         did: {
@@ -47,6 +50,7 @@ export class WaltIdIssuerService {
       issuerInfo,
       daysValid
     );
+    console.log("generated payload", payload);
     const createCredentialOfferResult = await axios.post(
       `${this.issuerApiUrl}/openid4vc/jwt/issue`,
       payload,
@@ -57,6 +61,13 @@ export class WaltIdIssuerService {
         }
       }
     );
+
+    console.log(
+      "createCredentialOfferResult data",
+      createCredentialOfferResult.data
+    );
+
+    // throw new Error();
 
     return createCredentialOfferResult.data;
   }
@@ -71,9 +82,13 @@ export class WaltIdIssuerService {
       issuerKey: {
         type: "tse",
         server: this.vaultUrl + "/v1/transit",
-        accessKey: this.vaultAccessKey,
+        auth: {
+          roleId: "0f2585bb-9a6b-e88f-03df-a60a174f311d",
+          secretId: "703a8152-fae4-9cf9-8c18-cbd5d91becf9"
+        },
         id: issuerInfo.issuerKeyVaultId
       },
+      authenticationMethod: "PRE_AUTHORIZED",
       issuerDid: issuerInfo.issuerDid,
       credentialConfigurationId: data.type + "_jwt_vc_json",
       credentialData: {

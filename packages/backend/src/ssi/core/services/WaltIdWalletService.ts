@@ -40,12 +40,15 @@ export class WaltIdWalletService {
       }
     });
 
-    // console.dir(response.data, { depth: 10 });
+    console.log("RAW VCs");
+    console.dir(response.data, { depth: 10 });
+    return [];
 
     return response.data;
   }
 
   async useOfferRequest(wallet: string, did: string, offerRequest: string) {
+    console.log("using offer request", offerRequest);
     const { token, ssiWallet } = await this.getSsiWallet(wallet);
     const targetUrl = `${this.walletApiUrl}/wallet-api/wallet/${ssiWallet}/exchange/useOfferRequest?did=${did}&requireUserInput=false`;
     const offerResponse = await axios.post(targetUrl, offerRequest, {
@@ -53,6 +56,8 @@ export class WaltIdWalletService {
         Authorization: `Bearer ${token}`
       }
     });
+
+    console.log("offer response data", offerResponse.data);
 
     return offerResponse.data;
   }
@@ -112,7 +117,10 @@ export class WaltIdWalletService {
         backend: "tse",
         config: {
           server: this.vaultUrl + "/v1/transit",
-          accessKey: this.vaultAccessKey
+          auth: {
+            roleId: "0f2585bb-9a6b-e88f-03df-a60a174f311d",
+            secretId: "703a8152-fae4-9cf9-8c18-cbd5d91becf9"
+          }
         },
         keyType: "Ed25519"
       },
@@ -278,7 +286,7 @@ export class WaltIdWalletService {
 
   private async registerUser(user: string, password: string) {
     return axios
-      .post(`${this.walletApiUrl}/wallet-api/auth/create`, {
+      .post(`${this.walletApiUrl}/wallet-api/auth/register`, {
         name: user,
         email: user,
         password: password,

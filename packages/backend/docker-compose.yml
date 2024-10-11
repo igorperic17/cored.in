@@ -27,8 +27,7 @@ services:
         aliases:
           - db
   vault:
-    image: openbao/openbao:2.0.0-alpha20240329
-    platform: linux/arm64
+    image: openbao/openbao:2.0.2
     container_name: coredin_openbao_vault
     environment:
       BAO_ADDR: 'http://0.0.0.0:8200'
@@ -41,9 +40,9 @@ services:
     volumes:
       - ./vault/local/config:/vault/config
       - vault_data:/vault/data:rw
+    command: bao server -config /vault/config/bao_config.json
   wallet-api:
-    image: waltid/wallet-api:0.3.1
-    platform: linux/amd64
+    image: waltid/wallet-api:0.8.0
     ports:
       - 7001:7001
     environment:
@@ -60,8 +59,7 @@ services:
     depends_on:
       - waltid-db
   issuer-api:
-    platform: linux/x86_64
-    image: docker.io/waltid/issuer-api:0.3.1
+    image: docker.io/waltid/issuer-api:0.8.0
     environment:
       ISSUER_API_PORT: 7002
     ports:
@@ -70,7 +68,7 @@ services:
       - ./issuer-api/local/config:/waltid-issuer-api/config
   verifier-api:
     platform: linux/x86_64
-    image: docker.io/waltid/verifier-api:0.3.1
+    image: docker.io/waltid/verifier-api:0.8.0
     environment:
       VERIFIER_API_PORT: 7003
     ports:

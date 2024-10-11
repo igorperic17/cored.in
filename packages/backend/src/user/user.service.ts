@@ -26,7 +26,7 @@ export class UserService {
     private readonly issuerService: WaltIdIssuerService,
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
-  ) { }
+  ) {}
 
   async getPublicOrPrivate(
     requesterWallet: string,
