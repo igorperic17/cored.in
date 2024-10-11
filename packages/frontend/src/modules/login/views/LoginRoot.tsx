@@ -1,9 +1,22 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
 import { DisclaimerText } from "@/components/DisclaimerText";
-import { Header, MainBackground } from "@/components";
+import { Header, LoginButton, MainBackground } from "@/components";
+import { useChain } from "@cosmos-kit/react";
+import { TESTNET_CHAIN_NAME } from "@coredin/shared";
+import { useAuth, useLoggedInServerState } from "@/hooks";
+import { USER_QUERIES } from "@/queries";
 
 export const LoginRoot = () => {
+  const { needsAuth } = useAuth();
+  const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const { data: userProfile } = useLoggedInServerState(
+    USER_QUERIES.getUser(chainContext.address || "", needsAuth),
+    {
+      enabled: !!chainContext.address
+    }
+  );
+
   return (
     <Box
       maxH="100%"
@@ -22,7 +35,14 @@ export const LoginRoot = () => {
         // bgPosition="center"
         // border="2px solid red"
       >
-        <Header />
+        <Header>
+          <LoginButton
+            variant="primary"
+            size="md"
+            signInText="Sign in"
+            username={userProfile?.username}
+          />
+        </Header>
         <Box as="main" mb="auto">
           <Outlet />
           <ScrollRestoration />
