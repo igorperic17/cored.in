@@ -538,9 +538,9 @@ export class PostsService {
     lastTipTime: Date | null,  // Could be null if no tips
     creationTime: Date,        // Scriptohost's Date class
     lastComputedTime: Date,    // Last time the score was updated
-    alpha: number = 1.5,
-    beta: number = 0.7,
-    gamma: number = 0.3,
+    alpha: number = 0.1,       // tip amount weight 
+    beta: number = 1.0,        // last tip timestamp weight
+    gamma: number = 2.0,       // creation timestamp weight
     decayConstant: number = 0.001  // Lambda decay constant
   ): number {
     const now = new Date();
@@ -573,4 +573,19 @@ export class PostsService {
 
     return decayingScore;
   }
+
+  async recalculateAllFeedScores(wallet: string): Promise<void> {
+    const posts = await this.postRepository.find();
+    for (const post of posts) {
+      const score = this.calculateScore(
+        post.tips,
+        post.lastTipDate,
+        post.createdAt,
+        post.lastTipDate // assume this was the latest update
+      );
+      post.feedScore = score;
+      await this.postRepository.save(post);
+    }
+  }
+
 }
