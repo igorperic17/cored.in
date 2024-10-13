@@ -65,6 +65,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   }, [userProfile?.likedPosts]);
 
   const handleLike = () => {
+    console.log(post);
     like({ postId: post.id, liked: !isLiked }).then(() => {
       queryClient.invalidateQueries({
         queryKey: [BaseServerStateKeys.FEED]

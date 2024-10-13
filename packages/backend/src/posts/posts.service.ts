@@ -18,6 +18,7 @@ import {
   CreatePostDTO,
   PostDTO,
   PostDetailDTO,
+  PostRequestType,
   PostVisibility
 } from "@coredin/shared";
 import { User } from "@/user/user.entity";
@@ -142,6 +143,7 @@ export class PostsService {
         relations: ["user"],
         where: [
           {
+            feedScore: Not(IsNull()), // TODO?: apply migration to default null to 0 score
             visibility: PostVisibility.PUBLIC,
             replyToPostId: IsNull()
           },
@@ -151,7 +153,11 @@ export class PostsService {
             replyToPostId: IsNull()
           }
         ],
-        order: { createdAt: "DESC" },
+        order: { 
+          feedScore: "DESC", 
+          lastReplyDate: "DESC",
+          createdAt: "DESC"
+        },
         take: PAGE_SIZE,
         skip: PAGE_SIZE * (page - 1)
       })
@@ -183,9 +189,10 @@ export class PostsService {
         where: {
           visibility: PostVisibility.PUBLIC,
           creatorWallet,
-          replyToPostId: IsNull()
+          replyToPostId: IsNull(),
+          feedScore: Not(IsNull())
         },
-        order: { createdAt: "DESC" }
+        order: { feedScore: "DESC" }
       })
     ).map((post) => this.fromDb(post));
   }
@@ -197,9 +204,10 @@ export class PostsService {
         where: {
           creatorWallet,
           replyToPostId: IsNull(),
-          visibility: Not(PostVisibility.RECIPIENTS)
+          visibility: Not(PostVisibility.RECIPIENTS),
+          feedScore: Not(IsNull())
         },
-        order: { createdAt: "DESC" }
+        order: { feedScore: "DESC" }
       })
     ).map((post) => this.fromDb(post));
   }
@@ -219,6 +227,7 @@ export class PostsService {
           recipientWallets: ArrayContains([requesterWallet])
         }
       ],
+      // messages should ignore the feed score ordering
       order: { lastReplyDate: "DESC", createdAt: "DESC" }
     });
 
@@ -250,6 +259,31 @@ export class PostsService {
         )
       };
     });
+  }
+
+
+  async getJobsFor(requesterWallet: string): Promise<PostDTO[]> {
+    const posts = await this.postRepository.find({
+      relations: ["user"],
+      where: [
+        {
+          requestType: PostRequestType.JOB,
+        },
+        {
+          feedScore: Not(IsNull())
+        }
+      ],
+      order: { feedScore: "DESC" }
+    });
+
+    return posts.map(post => ({
+      ...post,
+      creatorUsername: post.user.username,
+      creatorAvatar: post.user.avatarUrl,
+      creatorAvatarFallbackColor: post.user.avatarFallbackColor ? post.user.avatarFallbackColor : '',
+      createdAt: post.createdAt.toString(),
+      lastReplyDate: post.lastReplyDate ? post.lastReplyDate.toString() : undefined
+    }));
   }
 
   async create(requesterWallet: string, data: CreatePostDTO) {
@@ -303,10 +337,16 @@ export class PostsService {
       );
     }
 
+    const creationDate = new Date();
+     
+     // Recalculate the score based on the updated tip amount and last tip time
+     const newFeedScore = this.calculateScore(0, null, creationDate, creationDate);
+
     return await this.postRepository.insert({
+      feedScore: newFeedScore,
       creatorWallet: requesterWallet,
-      createdAt: new Date(),
-      lastReplyDate: new Date(),
+      createdAt: creationDate,
+      lastReplyDate: creationDate,
       unreadByWallets: data.recipientWallets,
       ...data
     });
@@ -359,7 +399,15 @@ export class PostsService {
     }
 
     const currentTips = await this.coredinContractService.getPostTips(post.id);
-    const amount = currentTips.toString();
+    const amount = Number(currentTips);
+    
+    // Update the last tip time to now
+    // TODO: in case of indexing in the future, the last tip time
+    //       should be extracted from the contract
+    const lastTipDate = new Date(Date.now());
+    
+    // Recalculate the score based on the updated tip amount and last tip time
+    const newFeedScore = this.calculateScore(amount, lastTipDate, post.createdAt, lastTipDate);
     
     return await this.postRepository.manager.transaction(
       "SERIALIZABLE",
@@ -368,7 +416,8 @@ export class PostsService {
           Post,
           { id: postId },
           {
-            tips: () => amount
+            tips: amount,
+            feedScore: newFeedScore
           }
         );
       }
@@ -401,7 +450,8 @@ export class PostsService {
       requestExpiration: post.requestExpiration,
       unread: requesterWallet
         ? post.unreadByWallets.includes(requesterWallet)
-        : undefined
+        : undefined,
+      feedScore: post.feedScore ?? 0.0,
     };
   }
 
@@ -480,5 +530,47 @@ export class PostsService {
     }
 
     return post;
+  }
+
+  // Function to calculate the current score, including base score and decaying factor
+  calculateScore(
+    totalTipAmount: number,
+    lastTipTime: Date | null,  // Could be null if no tips
+    creationTime: Date,        // Scriptohost's Date class
+    lastComputedTime: Date,    // Last time the score was updated
+    alpha: number = 1.5,
+    beta: number = 0.7,
+    gamma: number = 0.3,
+    decayConstant: number = 0.001  // Lambda decay constant
+  ): number {
+    const now = new Date();
+
+    // Calculate hours since last tip (if there's no tip, set the contribution to 0)
+    let hoursSinceLastTip = 0;
+    if (lastTipTime) {
+      const timeDiffMillis = now.getTime() - lastTipTime.getTime();
+      hoursSinceLastTip = timeDiffMillis / (1000 * 60 * 60);  // Convert milliseconds to hours
+    }
+
+    // Calculate hours since creation
+    const creationTimeDiffMillis = now.getTime() - creationTime.getTime();
+    const hoursSinceCreation = creationTimeDiffMillis / (1000 * 60 * 60);  // Convert milliseconds to hours
+
+    // Calculate the base score:
+    const tipScore = Math.log(1 + totalTipAmount);
+    const recencyLastTipScore = lastTipTime ? (1 / (1 + hoursSinceLastTip)) : 0;
+    const recencyCreationScore = 1 / (1 + hoursSinceCreation);
+
+    // Combine components into the base score
+    const baseScore = alpha * tipScore + beta * recencyLastTipScore + gamma * recencyCreationScore;
+
+    // Apply the decaying factor based on the last computed time
+    const timeDiffMillis = now.getTime() - lastComputedTime.getTime();
+    const hoursSinceLastUpdate = timeDiffMillis / (1000 * 60 * 60);  // Convert to hours
+
+    // Apply the exponential decay to the base score
+    const decayingScore = baseScore * Math.exp(-decayConstant * hoursSinceLastUpdate);
+
+    return decayingScore;
   }
 }
