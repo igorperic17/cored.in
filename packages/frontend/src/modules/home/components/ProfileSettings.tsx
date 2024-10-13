@@ -1,4 +1,5 @@
 import { AutoResizeTextarea, MultiSelect } from "@/components";
+import { MultiSelectValue } from "@/components/MultiSelect";
 import {
   useCustomToast,
   useLoggedInServerState,
@@ -173,15 +174,21 @@ export const ProfileSettings = () => {
           Skills
         </FormLabel>
         <MultiSelect
-          options={[...SkillTags]}
-          value={settings.skillTags || []}
-          onChange={(newSkills) =>
+          options={[...SkillTags.map(v => { 
+            return { label: v, value: v } as MultiSelectValue
+          })]}
+          value={settings.skillTags?.map(v => { 
+            return { label: v, value: v } as MultiSelectValue
+          }) ?? []}
+          onChange={(newSkills) => {
+            console.log(newSkills);
             setSettings({
               ...settings,
               skillTags: newSkills
-                ? newSkills.map((skill: any) => skill.value)
+                ? newSkills.map((skill: MultiSelectValue) => skill.value)
                 : []
             })
+          }
           }
           placeholder="Select skills"
         />
