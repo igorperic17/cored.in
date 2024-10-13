@@ -39,10 +39,10 @@ const SkillFilter: React.FC<SkillFilterProps> = ({ isOpen, onClose, onOpen, onAp
 
   return (
     <>
-      <Button onClick={handleToggle} leftIcon={<Icon as={FaFilter} />}>
+      <Button onClick={handleToggle} leftIcon={<Icon as={FaFilter} />} variant="secondary" size="xs">
         {localSelectedTags.length} {skillsText} selected
       </Button>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} size="xl">
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>Apply Tags</ModalHeader>
@@ -59,7 +59,8 @@ const SkillFilter: React.FC<SkillFilterProps> = ({ isOpen, onClose, onOpen, onAp
             />
           </ModalBody>
           <ModalFooter>
-            <Button onClick={handleApply}>Apply</Button>
+            <Button onClick={() => setLocalSelectedTags([])} variant="secondary" mr="auto" size="sm">Clear</Button>
+            <Button onClick={handleApply} variant="primary" size="sm">Apply</Button>
           </ModalFooter>
         </ModalContent>
       </Modal>

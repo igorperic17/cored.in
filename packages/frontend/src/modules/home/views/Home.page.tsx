@@ -23,13 +23,19 @@ import { Feed } from "../components/Feed";
 import { CreatePost } from "../components";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { PostRequestType, SkillTag } from "@coredin/shared";
 import { END_FEED_PHRASES } from "../components/post/constants";
 import SkillFilter from "@/modules/home/components/SkillFilter"; // Import SkillFilter for reusable implementation
 import { SkillTags } from "@coredin/shared"; // Import SkillTags for defining tags
 
 const SCROLL_FETCH_DELAY_MS = 200;
+
+enum FeedTabs {
+  All = "All",
+  Posts = "Posts",
+  Offers = "Offers"
+}
 
 const HomePage = () => {
   const {
@@ -79,28 +85,35 @@ const HomePage = () => {
     };
   }, []);
 
-  const completeFeed = posts?.pages.flatMap((page) => page) || [];
+  const completeFeed = useMemo(() => posts?.pages.flatMap((page) => page) || [], [posts]);
 
-  const postsOnly =
-    posts?.pages.flatMap((page) => page).filter((post) => !post.requestType) ||
-    [];
+  const postsOnly = useMemo(() => {
+    return posts?.pages.flatMap((page) => page).filter((post) => !post.requestType) || [];
+  }, [posts]);
 
-  const jobsAndGigsOnly =
-    posts?.pages
+  const [selectedTagsFilter, setSelectedTagsFilter] = useState<SkillTag[]>([]);
+
+  const jobsAndGigsOnly = useMemo(() => {
+    return posts?.pages
       .flatMap((page) => page)
       .filter(
         (post) =>
-          post.requestType === PostRequestType.JOB ||
-          post.requestType === PostRequestType.GIG
+          (selectedTagsFilter.length === 0 || selectedTagsFilter.some(tag => post.skillTags.includes(tag))) &&
+          (post.requestType === PostRequestType.JOB || post.requestType === PostRequestType.GIG)
       ) || [];
+  }, [posts, selectedTagsFilter]);
 
   const randomEndFeedPhrase =
     END_FEED_PHRASES[Math.floor(Math.random() * END_FEED_PHRASES.length)];
 
-  const [selectedTagsFilter, setSelectedTagsFilter] = useState<SkillTag[]>([]);
+  const [selectedTab, setSelectedTab] = useState<FeedTabs>(FeedTabs.All); // State to track the currently selected tab
 
   const handleTagChange = (tags: SkillTag[]) => {
     setSelectedTagsFilter(tags);
+  };
+
+  const handleTabChange = (tab: FeedTabs) => {
+    setSelectedTab(tab);
   };
 
   const [isOpen, setIsOpen] = useState(false);
@@ -108,7 +121,6 @@ const HomePage = () => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  // Define tags for the MultiSelect component, so they are mutable
   let tags = SkillTags.map(x => x);
 
   return (
@@ -121,20 +133,23 @@ const HomePage = () => {
         <Heading as="h1">Home page, user feed</Heading>
       </VisuallyHidden>
       <CreatePost />
-      <SkillFilter
-        isOpen={isOpen}
-        onOpen={handleOpen}
-        onClose={handleClose}
-        onApply={handleTagChange}
-        availableTags={tags.map(tag => tag)}
-        initialTags={selectedTagsFilter} 
-        />
       <Tabs variant="softRounded" size="sm">
-        <TabList>
-          <Tab>All</Tab>
-          <Tab>Posts</Tab>
-          <Tab>Offers</Tab>
-        </TabList>
+        <Flex direction="row" justifyContent="space-between">
+          <TabList>
+            {Object.values(FeedTabs).map((tab) => (
+              <Tab key={tab} onClick={() => handleTabChange(tab)}>{tab}</Tab>
+            ))}
+          </TabList>
+          {selectedTab === FeedTabs.Offers && <SkillFilter
+            isOpen={isOpen}
+            onOpen={handleOpen}
+            onClose={handleClose}
+            onApply={handleTagChange}
+            availableTags={tags.map(tag => tag)}
+            initialTags={selectedTagsFilter}
+          />
+          }
+        </Flex>
         <TabPanels id="home-feed">
           <TabPanel>
             <Feed posts={completeFeed} />
@@ -163,6 +178,7 @@ const HomePage = () => {
           )}
         </TabPanels>
       </Tabs>
+      
     </Flex>
   );
 };
