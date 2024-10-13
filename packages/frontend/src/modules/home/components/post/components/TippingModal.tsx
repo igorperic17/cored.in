@@ -3,6 +3,7 @@ import { useCustomToast } from "@/hooks";
 import { formElementBorderStyles } from "@/themes";
 import {
   Button,
+  Flex,
   FormControl,
   FormLabel,
   Input,
@@ -117,51 +118,55 @@ export const TippingModal: FC<TippingModalProps> = ({
         <ModalBody>
           <FormControl>
             <FormLabel>Enter the amount of CORE you'd like to tip.</FormLabel>
-            <InputGroup>
-              <Input
-                type="number"
-                min="0"
-                placeholder="5.50"
-                w="120px"
-                {...formElementBorderStyles}
-                value={tipAmount}
-                onChange={(e) => setTipAmount(Number(e.target.value))}
-              />
-              <InputRightAddon
-                color="brand.900"
-                bg="text.300"
-                border="1px solid #141413"
-                borderTopRightRadius="1.125em"
-                borderBottomRightRadius="1.125em"
-              >
-                CORE
-              </InputRightAddon>
-            </InputGroup>
+            <Flex m="10">
+              <InputGroup justifyContent="center" alignItems="center">
+                <Input
+                  textAlign="center"
+                  alignContent="center"
+                  type="number"
+                  min="0"
+                  placeholder="5.50"
+                  w="120px"
+                  {...formElementBorderStyles}
+                  value={tipAmount}
+                  onChange={(e) => setTipAmount(Number(e.target.value))}
+                />
+                <InputRightAddon
+                  color="brand.900"
+                  bg="brand.300"
+                  border="1px solid #141413D0"
+                  borderTopRightRadius="1.125em"
+                  borderBottomRightRadius="1.125em"
+                >
+                  CORE
+                </InputRightAddon>
+              </InputGroup>
+            </Flex>
           </FormControl>
           <TableContainer whiteSpace="normal" mt="1.5em">
-            <Table variant="unstyled" layout="fixed">
+            <Table variant="unstyled" layout="fixed" fontSize="sm">
               <Tbody>
                 <Tr>
-                  <Td pl="0" py="0.5em" w="70%">
+                  <Td pl="0" pb="0" w="60%">
                     Author gets:
                   </Td>
-                  <Td px="0" py="0.5em" textAlign="right">
+                  <Td px="0" pb="0" textAlign="right">
                     {tipAmount ? tipAmount.toFixed(2) : "0.00"} CORE
                   </Td>
                 </Tr>
                 <Tr borderBottom="1px solid black">
-                  <Td pl="0" pt="0.5em" pb="1em" w="70%">
+                  <Td pl="0" pb="1em" pt="0" w="60%">
                     Platform commission 5%:
                   </Td>
-                  <Td px="0" pt="0.5em" pb="1em" textAlign="right">
+                  <Td px="0" pb="1em" pt="0" textAlign="right">
                     {tipAmount ? commissionAmount.toFixed(2) : "0.00"} CORE
                   </Td>
                 </Tr>
                 <Tr>
-                  <Td pl="0" pt="1em" pb="0.5em" w="70%">
+                  <Td pl="0" pt="1em" pb="0.5em" w="60%" fontSize="xl">
                     Total to pay:
                   </Td>
-                  <Td px="0" pt="1em" pb="0.5em" textAlign="right">
+                  <Td px="0" pt="1em" pb="0.5em" textAlign="right" fontSize="lg" fontWeight="bold">
                     {tipAmount ? totalAmount.toFixed(2) : "0.00"} CORE
                   </Td>
                 </Tr>
@@ -170,7 +175,7 @@ export const TippingModal: FC<TippingModalProps> = ({
           </TableContainer>
         </ModalBody>
 
-        <ModalFooter>
+        <ModalFooter justifyContent="center">
           <Button
             variant="primary"
             isDisabled={tipAmount === 0 || isLoading}

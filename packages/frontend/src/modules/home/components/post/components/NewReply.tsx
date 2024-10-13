@@ -70,10 +70,11 @@ export const NewReply: React.FC<NewReplyProps> = ({ replyToPostId }) => {
             value={postContent}
             onChange={(e) => setPostContent(e.target.value)}
             variant="unstyled"
-            p="0.5em"
+            pl="1em"
             minH="36px"
             placeholder="Add your comment"
             background="#FFFFFF"
+            border="1px solid"
           />
           <Button
             variant="primary"

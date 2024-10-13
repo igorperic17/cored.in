@@ -163,11 +163,11 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
                 Select the tags related to the post
               </VisuallyHidden>
               <MultiSelect
-                options={[...SkillTags]}
-                value={skillTags}
-                onChange={setSkillTags}
+                options={SkillTags.map((tag) => ({ label: tag, value: tag }))}
+                value={skillTags.map((tag) => ({ label: tag, value: tag }))}
+                onChange={(newTags) => setSkillTags(newTags.map((tag) => tag.value as SkillTag))}
                 placeholder="Select skills"
-                menuPlacement="auto"
+                menuPlacement="bottom"
               />
             </FormControl>
           )}
@@ -178,7 +178,7 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
             onChange={(e) => setPostContent(e.target.value)}
             minH="50vh"
             variant="unstyled"
-            p="0.5em"
+            p="1em"
           />
         </ModalBody>
 
