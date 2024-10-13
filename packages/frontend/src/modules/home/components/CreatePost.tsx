@@ -115,7 +115,7 @@ export const CreatePost = () => {
         visibility={visibility}
         skillTags={skillTags || []}
         setSkillTags={(newTags: SkillTag[]) =>
-          setSkillTags(newTags ? newTags.map((tag: any) => tag.value) : [])
+          setSkillTags(newTags)
         }
         postContent={postContent}
         handlePost={handlePost}
