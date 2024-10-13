@@ -26,6 +26,11 @@ export class PostsController {
     return this.postsService.getPostsWithRecipients(req.wallet);
   }
 
+  @Get("jobs")
+  async getJobsFeed(@Req() req: AuthenticatedRequest) {
+    return this.postsService.getJobsFor(req.wallet);
+  }
+
   @Get(":id")
   async getPost(
     @Req() req: AuthenticatedRequest,
