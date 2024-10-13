@@ -51,7 +51,7 @@ export const NewMessageModal: FC<NewMessageModalProps> = ({
             onChange={(e) => setPostContent(e.target.value)}
             minH="50vh"
             variant="unstyled"
-            p="0.5em"
+            p="1em"
           />
         </ModalBody>
 

@@ -11,7 +11,6 @@ export const AutoResizeTextarea = React.forwardRef<
     <Textarea
       as={ResizeTextarea}
       minH="60px"
-      // overflow="hidden"
       w="100%"
       resize="none"
       ref={ref}
@@ -20,6 +19,7 @@ export const AutoResizeTextarea = React.forwardRef<
       overflow="auto"
       borderRadius="1.125em"
       {...formElementBorderStyles}
+      borderColor="rgba(0, 0, 0, 0.5)" // added this line to set a smoother border line
       _placeholder={{
         color: "text.700"
       }}
