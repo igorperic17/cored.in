@@ -1,13 +1,18 @@
 import { formElementBorderStyles } from "@/themes";
 import { SkillTag } from "@coredin/shared";
 import { chakraComponents, Select } from "chakra-react-select";
-import { FC } from "react";
+import { FC, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 
+export interface MultiSelectValue { 
+  label: string, 
+  value: string // wanted to do SkillTag here, but wouldn't be reusable
+}
+
 type MultiSelectProps = {
-  options: SkillTag[];
-  value: SkillTag[];
-  onChange: (value: any) => void;
+  options: MultiSelectValue[]; // forces user to provide key/value pairs from outside of the component
+  value: MultiSelectValue[];
+  onChange: (value: MultiSelectValue[]) => void;
   placeholder: string;
   menuPlacement?: "top" | "bottom" | "auto";
 };
@@ -20,14 +25,15 @@ export const MultiSelect: FC<MultiSelectProps> = ({
   menuPlacement = "top",
   ...props
 }) => {
+
   return (
     <Select
       focusBorderColor="brand.200"
       menuPlacement={menuPlacement}
-      options={options.map((option) => ({ label: option, value: option }))}
-      value={value.map((tag) => ({ label: tag, value: tag }))}
+      options={options}
+      value={value}
       isMulti={true}
-      onChange={onChange}
+      onChange={(e) => onChange(e as MultiSelectValue[])}
       isClearable={false}
       isSearchable={true}
       placeholder={placeholder}

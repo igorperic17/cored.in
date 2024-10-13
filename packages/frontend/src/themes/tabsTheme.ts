@@ -55,7 +55,7 @@ const softRounded = definePartsStyle({
     // w: "33%",
     bg: "transparent",
     color: "brand.900",
-    border: "2px solid #FBB030", // === brand.200
+    border: "1px solid #FBB030", // === brand.200
     borderRadius: "2em",
     _selected: {
       bg: "brand.200",

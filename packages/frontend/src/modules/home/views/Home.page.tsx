@@ -9,15 +9,25 @@ import {
   TabPanels,
   Tabs,
   Text,
-  VisuallyHidden
+  VisuallyHidden,
+  Button,
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter
 } from "@chakra-ui/react";
 import { Feed } from "../components/Feed";
 import { CreatePost } from "../components";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { PostRequestType } from "@coredin/shared";
+import { useEffect, useState } from "react";
+import { PostRequestType, SkillTag } from "@coredin/shared";
 import { END_FEED_PHRASES } from "../components/post/constants";
+import SkillFilter from "@/modules/home/components/SkillFilter"; // Import SkillFilter for reusable implementation
+import { SkillTags } from "@coredin/shared"; // Import SkillTags for defining tags
 
 const SCROLL_FETCH_DELAY_MS = 200;
 
@@ -87,6 +97,20 @@ const HomePage = () => {
   const randomEndFeedPhrase =
     END_FEED_PHRASES[Math.floor(Math.random() * END_FEED_PHRASES.length)];
 
+  const [selectedTagsFilter, setSelectedTagsFilter] = useState<SkillTag[]>([]);
+
+  const handleTagChange = (tags: SkillTag[]) => {
+    setSelectedTagsFilter(tags);
+  };
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleOpen = () => setIsOpen(true);
+  const handleClose = () => setIsOpen(false);
+
+  // Define tags for the MultiSelect component, so they are mutable
+  let tags = SkillTags.map(x => x);
+
   return (
     <Flex
       direction="column"
@@ -97,6 +121,14 @@ const HomePage = () => {
         <Heading as="h1">Home page, user feed</Heading>
       </VisuallyHidden>
       <CreatePost />
+      <SkillFilter
+        isOpen={isOpen}
+        onOpen={handleOpen}
+        onClose={handleClose}
+        onApply={handleTagChange}
+        availableTags={tags.map(tag => tag)}
+        initialTags={selectedTagsFilter} 
+        />
       <Tabs variant="softRounded" size="sm">
         <TabList>
           <Tab>All</Tab>
