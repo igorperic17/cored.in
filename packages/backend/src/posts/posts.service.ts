@@ -10,6 +10,8 @@ import {
   ArrayContains,
   FindOptionsWhere,
   IsNull,
+  LessThan,
+  MoreThan,
   Not,
   Repository
 } from "typeorm";
@@ -115,53 +117,21 @@ export class PostsService {
     };
   }
 
-  // Not in use anymore, replaced by getPublicAndSubscribed
-  // async getPublicFeed(): Promise<PostDTO[]> {
-  //   return (
-  //     await this.postRepository.find({
-  //       relations: ["user"],
-  //       where: {
-  //         visibility: PostVisibility.PUBLIC,
-  //         replyToPostId: IsNull()
-  //       },
-  //       order: { createdAt: "DESC" }
-  //     })
-  //   ).map((post) => this.fromDb(post));
-  // }
-
   async getPublicAndSubscribedFeed(
     requesterWallet: string,
     page: number
   ): Promise<PostDTO[]> {
-    const allSubscriptions =
-      await this.coredinContractService.getAllSubscriptions(requesterWallet);
-    const subscribedWallets = allSubscriptions.map(
-      (subscription) => subscription.subscribed_to_wallet
-    );
-    return (
-      await this.postRepository.find({
-        relations: ["user"],
-        where: [
-          {
-            feedScore: Not(IsNull()), // TODO?: apply migration to default null to 0 score
-            visibility: PostVisibility.PUBLIC,
-            replyToPostId: IsNull()
-          },
-          {
-            creatorWallet: Any([...subscribedWallets, requesterWallet]),
-            visibility: PostVisibility.PRIVATE,
-            replyToPostId: IsNull()
-          }
-        ],
-        order: { 
-          feedScore: "DESC", 
-          lastReplyDate: "DESC",
-          createdAt: "DESC"
-        },
-        take: PAGE_SIZE,
-        skip: PAGE_SIZE * (page - 1)
-      })
-    ).map((post) => this.fromDb(post));
+    return this.getFeedWithBoostedPosts(requesterWallet, page, [
+      {
+        visibility: PostVisibility.PUBLIC,
+        replyToPostId: IsNull()
+      },
+      {
+        creatorWallet: Any([...await this.getSubscribedWallets(requesterWallet), requesterWallet]),
+        visibility: PostVisibility.PRIVATE,
+        replyToPostId: IsNull()
+      }
+    ]);
   }
 
   async getUserPosts(
@@ -169,47 +139,37 @@ export class PostsService {
     requesterWallet: string
   ): Promise<PostDTO[]> {
     if (creatorWallet === requesterWallet) {
-      return await this.getAllUserPosts(creatorWallet);
+      return this.getAllUserPosts(creatorWallet);
     }
     const isSubscribed = await this.coredinContractService.isWalletSubscribed(
       creatorWallet,
       requesterWallet
     );
     if (isSubscribed) {
-      return await this.getAllUserPosts(creatorWallet);
+      return this.getAllUserPosts(creatorWallet);
     }
 
-    return await this.getPublicUserPosts(creatorWallet);
+    return this.getPublicUserPosts(creatorWallet);
   }
 
   async getPublicUserPosts(creatorWallet: string): Promise<PostDTO[]> {
-    return (
-      await this.postRepository.find({
-        relations: ["user"],
-        where: {
-          visibility: PostVisibility.PUBLIC,
-          creatorWallet,
-          replyToPostId: IsNull(),
-          feedScore: Not(IsNull())
-        },
-        order: { feedScore: "DESC" }
-      })
-    ).map((post) => this.fromDb(post));
+    return this.getFeedWithBoostedPosts(creatorWallet, 1, [
+      {
+        visibility: PostVisibility.PUBLIC,
+        creatorWallet,
+        replyToPostId: IsNull(),
+      }
+    ]);
   }
 
   private async getAllUserPosts(creatorWallet: string): Promise<PostDTO[]> {
-    return (
-      await this.postRepository.find({
-        relations: ["user"],
-        where: {
-          creatorWallet,
-          replyToPostId: IsNull(),
-          visibility: Not(PostVisibility.RECIPIENTS),
-          feedScore: Not(IsNull())
-        },
-        order: { feedScore: "DESC" }
-      })
-    ).map((post) => this.fromDb(post));
+    return this.getFeedWithBoostedPosts(creatorWallet, 1, [
+      {
+        creatorWallet,
+        replyToPostId: IsNull(),
+        visibility: Not(PostVisibility.RECIPIENTS),
+      }
+    ]);
   }
 
   async getPostsWithRecipients(requesterWallet: string): Promise<PostDTO[]> {
@@ -235,22 +195,6 @@ export class PostsService {
       posts.map((post) => post.recipientWallets).flat()
     );
 
-    // TODO - eventually we could just have one query to get all posts and recipients
-    // const query = this.postRepository
-    //   .createQueryBuilder("post")
-    //   .leftJoinAndSelect(User, "user", "post.creatorWallet = user.wallet")
-    //   // .leftJoinAndSelect(
-    //   //   User,
-    //   //   "recipients",
-    //   //   "ANY(post.recipientWallets) = user.wallet"
-    //   // )
-    //   .where(
-    //     '"replyToPostId" = NULL AND visibility = :visibility AND (post.creatorWallet = :wallet OR post.recipientWallets @> ARRAY[:wallet])',
-    //     { wallet, visibility: PostVisibility.RECIPIENTS }
-    //   )
-    //   .orderBy("post.createdAt", "DESC")
-    //   .getMany();
-
     return posts.map((post) => {
       return {
         ...this.fromDb(post, requesterWallet),
@@ -261,29 +205,62 @@ export class PostsService {
     });
   }
 
-
   async getJobsFor(requesterWallet: string): Promise<PostDTO[]> {
-    const posts = await this.postRepository.find({
+    return this.getFeedWithBoostedPosts(requesterWallet, 1, [
+      {
+        requestType: PostRequestType.JOB,
+      }
+    ]);
+  }
+
+  private async getFeedWithBoostedPosts(
+    requesterWallet: string,
+    page: number,
+    whereConditions: FindOptionsWhere<Post>[]
+  ): Promise<PostDTO[]> {
+    const now = new Date();
+
+    // Fetch all boosted posts
+    const allBoostedPosts = await this.postRepository.find({
       relations: ["user"],
-      where: [
-        {
-          requestType: PostRequestType.JOB,
-        },
-        {
-          feedScore: Not(IsNull())
-        }
-      ],
-      order: { feedScore: "DESC" }
+      where: whereConditions.map(condition => ({
+        ...condition,
+        boostedUntil: MoreThan(now)
+      })),
+      order: { 
+        tips: "DESC",
+        createdAt: "DESC"
+      }
     });
 
-    return posts.map(post => ({
-      ...post,
-      creatorUsername: post.user.username,
-      creatorAvatar: post.user.avatarUrl,
-      creatorAvatarFallbackColor: post.user.avatarFallbackColor ? post.user.avatarFallbackColor : '',
-      createdAt: post.createdAt.toString(),
-      lastReplyDate: post.lastReplyDate ? post.lastReplyDate.toString() : undefined
-    }));
+    // Get the nth boosted post, where n is the page number
+    const boostedPostIndex = page - 1;
+    const boostedPost = boostedPostIndex < allBoostedPosts.length ? allBoostedPosts[boostedPostIndex] : null;
+
+    // Fetch non-boosted posts
+    const nonBoostedPosts = await this.postRepository.find({
+      relations: ["user"],
+      where: whereConditions.map(condition => ({
+        ...condition,
+        boostedUntil: IsNull() || LessThan(now) 
+      })),
+      order: { 
+        createdAt: "DESC"
+      },
+      take: boostedPost ? PAGE_SIZE - 1 : PAGE_SIZE,
+      skip: boostedPost ? PAGE_SIZE * (page - 1) : PAGE_SIZE * (page - 1) + 1
+    });
+
+    // Combine and sort the results
+    let result = boostedPost ? [boostedPost, ...nonBoostedPosts] : nonBoostedPosts;
+    result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
+    return result.map((post) => this.fromDb(post));
+  }
+
+  private async getSubscribedWallets(requesterWallet: string): Promise<string[]> {
+    const allSubscriptions = await this.coredinContractService.getAllSubscriptions(requesterWallet);
+    return allSubscriptions.map(subscription => subscription.subscribed_to_wallet);
   }
 
   async create(requesterWallet: string, data: CreatePostDTO) {
@@ -337,16 +314,11 @@ export class PostsService {
       );
     }
 
-    const creationDate = new Date();
-     
-     // Recalculate the score based on the updated tip amount and last tip time
-     const newFeedScore = this.calculateScore(0, null, creationDate, creationDate);
-
     return await this.postRepository.insert({
-      feedScore: newFeedScore,
+      boostedUntil: undefined, // new posts are not boosted by default
       creatorWallet: requesterWallet,
-      createdAt: creationDate,
-      lastReplyDate: creationDate,
+      createdAt: new Date(),
+      lastReplyDate: new Date(),
       unreadByWallets: data.recipientWallets,
       ...data
     });
@@ -398,16 +370,16 @@ export class PostsService {
       throw new Error('Post not found');
     }
 
-    const currentTips = await this.coredinContractService.getPostTips(post.id);
-    const amount = Number(currentTips);
+    const contractTipsString = await this.coredinContractService.getPostTips(post.id);
+    const contractTips = Number(contractTipsString);
+    const currentDBTips = post.tips;
+    const tipDiff = contractTips - currentDBTips; // can this overflow or be exploited somehow?
     
-    // Update the last tip time to now
-    // TODO: in case of indexing in the future, the last tip time
-    //       should be extracted from the contract
-    const lastTipDate = new Date(Date.now());
-    
-    // Recalculate the score based on the updated tip amount and last tip time
-    const newFeedScore = this.calculateScore(amount, lastTipDate, post.createdAt, lastTipDate);
+    // convert the tipDiff into the time period for boost
+    // for now, assume 10 CORE = 1 minute of boost
+    const timeToBoostInMinutes = (tipDiff / 10.0);
+    const boostedUntil = post.boostedUntil ? new Date(post.boostedUntil) : new Date();
+    const newBoostedUntil = new Date(boostedUntil.getTime() + timeToBoostInMinutes * 60000);
     
     return await this.postRepository.manager.transaction(
       "SERIALIZABLE",
@@ -416,8 +388,8 @@ export class PostsService {
           Post,
           { id: postId },
           {
-            tips: amount,
-            feedScore: newFeedScore
+            tips: contractTips,
+            boostedUntil: newBoostedUntil
           }
         );
       }
@@ -451,7 +423,6 @@ export class PostsService {
       unread: requesterWallet
         ? post.unreadByWallets.includes(requesterWallet)
         : undefined,
-      feedScore: post.feedScore ?? 0.0,
     };
   }
 
@@ -532,60 +503,60 @@ export class PostsService {
     return post;
   }
 
-  // Function to calculate the current score, including base score and decaying factor
-  calculateScore(
-    totalTipAmount: number,
-    lastTipTime: Date | null,  // Could be null if no tips
-    creationTime: Date,        // Scriptohost's Date class
-    lastComputedTime: Date,    // Last time the score was updated
-    alpha: number = 0.1,       // tip amount weight 
-    beta: number = 1.0,        // last tip timestamp weight
-    gamma: number = 2.0,       // creation timestamp weight
-    decayConstant: number = 0.001  // Lambda decay constant
-  ): number {
-    const now = new Date();
+  // // Function to calculate the current score, including base score and decaying factor
+  // calculateScore(
+  //   totalTipAmount: number,
+  //   lastTipTime: Date | null,  // Could be null if no tips
+  //   creationTime: Date,        // Scriptohost's Date class
+  //   lastComputedTime: Date,    // Last time the score was updated
+  //   alpha: number = 0.1,       // tip amount weight 
+  //   beta: number = 1.0,        // last tip timestamp weight
+  //   gamma: number = 2.0,       // creation timestamp weight
+  //   decayConstant: number = 0.001  // Lambda decay constant
+  // ): number {
+  //   const now = new Date();
 
-    // Calculate hours since last tip (if there's no tip, set the contribution to 0)
-    let hoursSinceLastTip = 0;
-    if (lastTipTime) {
-      const timeDiffMillis = now.getTime() - lastTipTime.getTime();
-      hoursSinceLastTip = timeDiffMillis / (1000 * 60 * 60);  // Convert milliseconds to hours
-    }
+  //   // Calculate hours since last tip (if there's no tip, set the contribution to 0)
+  //   let hoursSinceLastTip = 0;
+  //   if (lastTipTime) {
+  //     const timeDiffMillis = now.getTime() - lastTipTime.getTime();
+  //     hoursSinceLastTip = timeDiffMillis / (1000 * 60 * 60);  // Convert milliseconds to hours
+  //   }
 
-    // Calculate hours since creation
-    const creationTimeDiffMillis = now.getTime() - creationTime.getTime();
-    const hoursSinceCreation = creationTimeDiffMillis / (1000 * 60 * 60);  // Convert milliseconds to hours
+  //   // Calculate hours since creation
+  //   const creationTimeDiffMillis = now.getTime() - creationTime.getTime();
+  //   const hoursSinceCreation = creationTimeDiffMillis / (1000 * 60 * 60);  // Convert milliseconds to hours
 
-    // Calculate the base score:
-    const tipScore = Math.log(1 + totalTipAmount);
-    const recencyLastTipScore = lastTipTime ? (1 / (1 + hoursSinceLastTip)) : 0;
-    const recencyCreationScore = 1 / (1 + hoursSinceCreation);
+  //   // Calculate the base score:
+  //   const tipScore = Math.log(1 + totalTipAmount);
+  //   const recencyLastTipScore = lastTipTime ? (1 / (1 + hoursSinceLastTip)) : 0;
+  //   const recencyCreationScore = 1 / (1 + hoursSinceCreation);
 
-    // Combine components into the base score
-    const baseScore = alpha * tipScore + beta * recencyLastTipScore + gamma * recencyCreationScore;
+  //   // Combine components into the base score
+  //   const baseScore = alpha * tipScore + beta * recencyLastTipScore + gamma * recencyCreationScore;
 
-    // Apply the decaying factor based on the last computed time
-    const timeDiffMillis = now.getTime() - lastComputedTime.getTime();
-    const hoursSinceLastUpdate = timeDiffMillis / (1000 * 60 * 60);  // Convert to hours
+  //   // Apply the decaying factor based on the last computed time
+  //   const timeDiffMillis = now.getTime() - lastComputedTime.getTime();
+  //   const hoursSinceLastUpdate = timeDiffMillis / (1000 * 60 * 60);  // Convert to hours
 
-    // Apply the exponential decay to the base score
-    const decayingScore = baseScore * Math.exp(-decayConstant * hoursSinceLastUpdate);
+  //   // Apply the exponential decay to the base score
+  //   const decayingScore = baseScore * Math.exp(-decayConstant * hoursSinceLastUpdate);
 
-    return decayingScore;
-  }
+  //   return decayingScore;
+  // }
 
-  async recalculateAllFeedScores(wallet: string): Promise<void> {
-    const posts = await this.postRepository.find();
-    for (const post of posts) {
-      const score = this.calculateScore(
-        post.tips,
-        post.lastTipDate,
-        post.createdAt,
-        post.lastTipDate // assume this was the latest update
-      );
-      post.feedScore = score;
-      await this.postRepository.save(post);
-    }
-  }
+  // async recalculateAllFeedScores(wallet: string): Promise<void> {
+  //   const posts = await this.postRepository.find();
+  //   for (const post of posts) {
+  //     const score = this.calculateScore(
+  //       post.tips,
+  //       post.lastTipDate,
+  //       post.createdAt,
+  //       post.lastTipDate // assume this was the latest update
+  //     );
+  //     post.feedScore = score;
+  //     await this.postRepository.save(post);
+  //   }
+  // }
 
 }
