@@ -134,6 +134,8 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         h="max-content"
         layerStyle="cardBox"
         py="1em"
+        border={post.boostedUntil && new Date(post.boostedUntil) > new Date() ? "1px solid red" : "1px solid blue"}
+        // borderColor={post.boostedUntil && new Date(post.boostedUntil) > new Date() ? "brand.100" : "transparent"}
         _hover={{ bg: "brand.100" }}
       >
         {postDetail?.parent && !isReply && (

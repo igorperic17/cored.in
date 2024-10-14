@@ -108,10 +108,6 @@ export class Post {
   @JoinColumn({ name: "replyToPostId" })
   replies: Post[];
 
-  @Column('decimal', { precision: 6, scale: 2, nullable: true })
-  // @Index() - TBD: do we need to index on this for faster lookup?
-  feedScore: number;
-
   @Column({ nullable: true })
-  lastTipDate: Date;
+  boostedUntil: Date;
 }

@@ -21,5 +21,5 @@ export type PostDTO = {
   tips: number; // assume the coin is the native CORE coin
   requestType?: PostRequestType;
   requestExpiration?: DateString;
-  feedScore: number;
+  boostedUntil?: DateString;
 };

@@ -81,9 +81,4 @@ export class PostsController {
   ) {
     return await this.postsService.updateTip(id);
   }
-
-  @TypedRoute.Post("recalculate-feed-scores")
-  async recalculateFeedScores(@Req() req: AuthenticatedRequest) {
-    return await this.postsService.recalculateAllFeedScores(req.wallet);
-  }
 }
