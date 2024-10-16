@@ -24,5 +24,6 @@ export enum BaseServerStateKeys {
   CONTRACT_IS_SUBSCRIBED = "contract_is_subscribed",
   CONTRACT_SUBSCRIPTION_INFO = "contract_subscription_info",
   CONTRACT_GET_SUBSCRIBERS = "contract_get_subscribers",
-  CONTRACT_GET_SUBSCRIPTIONS = "contract_get_subscriptions"
+  CONTRACT_GET_SUBSCRIPTIONS = "contract_get_subscriptions",
+  CLEAR_BOOSTS = "clear_boosts"
 }
