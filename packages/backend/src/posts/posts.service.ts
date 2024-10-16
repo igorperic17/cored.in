@@ -220,40 +220,39 @@ export class PostsService {
   ): Promise<PostDTO[]> {
     const now = new Date();
 
-    // Fetch boosted posts first
-    const boostedPosts = await this.postRepository.find({
-      relations: ["user"],
-      where: whereConditions.map(condition => ({
-        ...condition,
-        boostedUntil: MoreThan(now)
-      })),
-      order: {
-        boostedUntil: "DESC",
-        createdAt: "DESC"
-      }
-    });
-
-    // Calculate how many unboosted posts we need
-    const unboostedPostsNeeded = PAGE_SIZE - boostedPosts.length;
-
-    // Fetch unboosted posts if needed
-    let unboostedPosts: Post[] = [];
-    if (unboostedPostsNeeded > 0) {
-      const offset = Math.max(0, PAGE_SIZE * (page - 1) - boostedPosts.length);
-      unboostedPosts = await this.postRepository.find({
+    // Fetch boosted posts only for the first page
+    let boostedPosts: Post[] = [];
+    if (page === 1) {
+      boostedPosts = await this.postRepository.find({
         relations: ["user"],
         where: whereConditions.map(condition => ({
           ...condition,
-          boostedUntil: LessThanOrEqual(now)
+          boostedUntil: MoreThan(now)
         })),
         order: {
           boostedUntil: "DESC",
           createdAt: "DESC"
-        },
-        take: unboostedPostsNeeded,
-        skip: offset
+        }
       });
     }
+
+    // Calculate how many unboosted posts we need
+    const unboostedPostsNeeded = PAGE_SIZE - boostedPosts.length;
+
+    // Fetch unboosted posts
+    const offset = (page - 1) * PAGE_SIZE;
+    const unboostedPosts = await this.postRepository.find({
+      relations: ["user"],
+      where: whereConditions.map(condition => ({
+        ...condition,
+        boostedUntil: LessThanOrEqual(now)
+      })),
+      order: {
+        createdAt: "DESC"
+      },
+      take: unboostedPostsNeeded,
+      skip: offset
+    });
 
     // Combine boosted and unboosted posts
     const allPosts = [...boostedPosts, ...unboostedPosts];
