@@ -11,6 +11,7 @@ import {
   FindOptionsWhere,
   IsNull,
   LessThan,
+  LessThanOrEqual,
   MoreThan,
   Not,
   Repository
@@ -212,7 +213,6 @@ export class PostsService {
       }
     ]);
   }
-
   private async getFeedWithBoostedPosts(
     requesterWallet: string,
     page: number,
@@ -220,42 +220,45 @@ export class PostsService {
   ): Promise<PostDTO[]> {
     const now = new Date();
 
-    // Fetch all boosted posts
-    const allBoostedPosts = await this.postRepository.find({
+    // Fetch boosted posts first
+    const boostedPosts = await this.postRepository.find({
       relations: ["user"],
       where: whereConditions.map(condition => ({
         ...condition,
         boostedUntil: MoreThan(now)
       })),
-      order: { 
-        tips: "DESC",
+      order: {
+        boostedUntil: "DESC",
         createdAt: "DESC"
       }
     });
 
-    // Get the nth boosted post, where n is the page number
-    const boostedPostIndex = page - 1;
-    const boostedPost = boostedPostIndex < allBoostedPosts.length ? allBoostedPosts[boostedPostIndex] : null;
+    // Calculate how many unboosted posts we need
+    const unboostedPostsNeeded = PAGE_SIZE - boostedPosts.length;
 
-    // Fetch non-boosted posts
-    const nonBoostedPosts = await this.postRepository.find({
-      relations: ["user"],
-      where: whereConditions.map(condition => ({
-        ...condition,
-        boostedUntil: IsNull() || LessThan(now) 
-      })),
-      order: { 
-        createdAt: "DESC"
-      },
-      take: boostedPost ? PAGE_SIZE - 1 : PAGE_SIZE,
-      skip: boostedPost ? PAGE_SIZE * (page - 1) : PAGE_SIZE * (page - 1) + 1
-    });
+    // Fetch unboosted posts if needed
+    let unboostedPosts: Post[] = [];
+    if (unboostedPostsNeeded > 0) {
+      const offset = Math.max(0, PAGE_SIZE * (page - 1) - boostedPosts.length);
+      unboostedPosts = await this.postRepository.find({
+        relations: ["user"],
+        where: whereConditions.map(condition => ({
+          ...condition,
+          boostedUntil: LessThanOrEqual(now)
+        })),
+        order: {
+          boostedUntil: "DESC",
+          createdAt: "DESC"
+        },
+        take: unboostedPostsNeeded,
+        skip: offset
+      });
+    }
 
-    // Combine and sort the results
-    let result = boostedPost ? [boostedPost, ...nonBoostedPosts] : nonBoostedPosts;
-    result.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+    // Combine boosted and unboosted posts
+    const allPosts = [...boostedPosts, ...unboostedPosts];
 
-    return result.map((post) => this.fromDb(post));
+    return allPosts.map((post) => this.fromDb(post, requesterWallet));
   }
 
   private async getSubscribedWallets(requesterWallet: string): Promise<string[]> {
@@ -315,7 +318,7 @@ export class PostsService {
     }
 
     return await this.postRepository.insert({
-      boostedUntil: undefined, // new posts are not boosted by default
+      boostedUntil: new Date(), // set to now() for proper sorting, won't make the post boosted initially
       creatorWallet: requesterWallet,
       createdAt: new Date(),
       lastReplyDate: new Date(),
@@ -363,7 +366,6 @@ export class PostsService {
       }
     );
   }
-
   async updateTip(postId: number) {
     const post = await this.postRepository.findOne({ where: { id: postId } });
     if (!post) {
@@ -373,14 +375,19 @@ export class PostsService {
     const contractTipsString = await this.coredinContractService.getPostTips(post.id);
     const contractTips = Number(contractTipsString);
     const currentDBTips = post.tips;
-    const tipDiff = contractTips - currentDBTips; // can this overflow or be exploited somehow?
+    const tipDiff = contractTips - currentDBTips;
     
-    // convert the tipDiff into the time period for boost
-    // for now, assume 10 CORE = 1 minute of boost
-    const timeToBoostInMinutes = (tipDiff / 10.0);
-    const boostedUntil = post.boostedUntil ? new Date(post.boostedUntil) : new Date();
-    const newBoostedUntil = new Date(boostedUntil.getTime() + timeToBoostInMinutes * 60000);
+    // Convert microCORE to CORE and then to minutes
+    // Assume 10 CORE = 1 minute of boost
+    const timeToBoostInMinutes = (tipDiff / 1000000.0) / 10.0;
+    console.log("tipDiff", tipDiff);
+    console.log("timeToBoostInMinutes", timeToBoostInMinutes);
     
+    const now = new Date();
+    const boostedUntil = post.boostedUntil && new Date(post.boostedUntil) > now ? new Date(post.boostedUntil) : now;
+    const newBoostedUntil = new Date(boostedUntil.getTime() + timeToBoostInMinutes * 60000.0);
+    console.log("boostedUntil", boostedUntil);
+    console.log("newBoostedUntil", newBoostedUntil);
     return await this.postRepository.manager.transaction(
       "SERIALIZABLE",
       async (transactionalEntityManager) => {
@@ -423,6 +430,7 @@ export class PostsService {
       unread: requesterWallet
         ? post.unreadByWallets.includes(requesterWallet)
         : undefined,
+      boostedUntil: post.boostedUntil ?? post.createdAt
     };
   }
 
@@ -545,18 +553,13 @@ export class PostsService {
   //   return decayingScore;
   // }
 
-  // async recalculateAllFeedScores(wallet: string): Promise<void> {
-  //   const posts = await this.postRepository.find();
-  //   for (const post of posts) {
-  //     const score = this.calculateScore(
-  //       post.tips,
-  //       post.lastTipDate,
-  //       post.createdAt,
-  //       post.lastTipDate // assume this was the latest update
-  //     );
-  //     post.feedScore = score;
-  //     await this.postRepository.save(post);
-  //   }
-  // }
+  // TODO - remove this before deploying to production!
+  async clearAllBoosts(wallet: string): Promise<void> {
+    const posts = await this.postRepository.find();
+    for (const post of posts) {
+      post.boostedUntil = post.createdAt;
+      await this.postRepository.save(post);
+    }
+  }
 
 }

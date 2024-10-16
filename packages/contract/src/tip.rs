@@ -333,4 +333,53 @@ mod tests {
             } if id == &non_existent_post_id
         ));
     }
+
+    #[test]
+    fn test_get_post_tips_with_commission() {
+        let mut deps = mock_dependencies();
+        let env = mock_env();
+        let info = mock_info("tipper", &[]);
+        let post_id = "test_post_tips_commission".to_string();
+
+        // Setup a mock post without initial tips
+        let post_info = PostInfo {
+            id: post_id.clone(),
+            hash: "test_hash".to_string(),
+            author: Addr::unchecked("author_address"),
+            post_type: PostType::Microblog,
+            created_on: env.block.time,
+            vault: Coin {
+                denom: FEE_DENOM.to_string(),
+                amount: Uint128::zero(),
+            },
+        };
+        POST.save(deps.as_mut().storage, post_id.clone(), &post_info).unwrap();
+
+        // Simulate tipping process using the tip_post_author function
+        let tip_amount = Uint128::new(1000); // 10 tokens
+        let tip_info = MessageInfo {
+            sender: info.sender,
+            funds: vec![Coin {
+                denom: FEE_DENOM.to_string(),
+                amount: tip_amount,
+            }],
+        };
+
+        let res = tip_post_author(deps.as_mut(), env.clone(), tip_info, post_info.clone()).unwrap();
+
+        // Verify that the tip_post_author function executed successfully
+        assert_eq!(res.messages.len(), 2); // One for commission, one for author tip
+
+        // Test getting tips for the post
+        let tips = get_post_tips(deps.as_ref(), post_id).unwrap();
+        assert_eq!(tips.len(), 1);
+        assert_eq!(tips[0].denom, FEE_DENOM.to_string());
+        
+        // The total tips should be the tip amount minus the 5% commission
+        let expected_tip = tip_amount * Decimal::percent(95);
+        assert_eq!(tips[0].amount, expected_tip);
+        
+        // Verify that the total tips are indeed 9.5 tokens (950 units)
+        assert_eq!(tips[0].amount, Uint128::new(950));
+    }
 }
