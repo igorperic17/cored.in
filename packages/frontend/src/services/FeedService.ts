@@ -35,4 +35,8 @@ export class FeedService {
   async tipPost(postId: number): Promise<void> {
     return this.http.post("posts/" + postId + `/tip`, {});
   }
+
+  async clearBoosts(): Promise<void> {
+    return this.http.post("posts/clear-boosts", {});
+  }
 }

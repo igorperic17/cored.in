@@ -1,4 +1,4 @@
-import { Controller, Delete, Get, Param, Req, UseGuards } from "@nestjs/common";
+import { BadRequestException, Controller, Delete, Get, Param, Req, UseGuards } from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
@@ -80,5 +80,16 @@ export class PostsController {
     @TypedBody() { }: { }
   ) {
     return await this.postsService.updateTip(id);
+  }
+
+  // TODO - remove this before deploying to production!
+  @TypedRoute.Post("clear-boosts")
+  async clearAllBoosts(@Req() req: AuthenticatedRequest) {
+    try {
+      await this.postsService.clearAllBoosts(req.wallet);
+      return { message: "All boosts cleared successfully" };
+    } catch (error) {
+      throw new BadRequestException("Failed to clear boosts");
+    }
   }
 }

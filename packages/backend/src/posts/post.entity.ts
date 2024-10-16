@@ -7,7 +7,8 @@ import {
   Index,
   ManyToOne,
   JoinColumn,
-  OneToMany
+  OneToMany,
+  UpdateDateColumn
 } from "typeorm";
 
 @Entity("posts")
@@ -108,6 +109,10 @@ export class Post {
   @JoinColumn({ name: "replyToPostId" })
   replies: Post[];
 
-  @Column({ nullable: true })
+  // UNIX timestamp
+  @UpdateDateColumn({
+    type: 'timestamp', 
+    precision: 3
+  })
   boostedUntil: Date;
 }

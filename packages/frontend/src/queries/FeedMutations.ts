@@ -21,5 +21,9 @@ export const FEED_MUTATIONS = {
     mutationKey: [BaseServerStateKeys.TIP_POST],
     mutationFn: ({ postId }: { postId: number }) =>
       feedService.tipPost(postId)
+  }),
+  clearBoosts: () => ({
+    mutationKey: [BaseServerStateKeys.CLEAR_BOOSTS],
+    mutationFn: () => feedService.clearBoosts()
   })
 };

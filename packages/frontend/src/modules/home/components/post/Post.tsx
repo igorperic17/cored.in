@@ -2,7 +2,7 @@ import { useLoggedInServerState, useMutableServerState } from "@/hooks";
 import { USER_QUERIES } from "@/queries";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
-import { Text, VStack } from "@chakra-ui/react";
+import { Text, VStack, Tag, Flex } from "@chakra-ui/react";
 import {
   PostDTO,
   PostInfo,
@@ -60,9 +60,52 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       enabled: opened
     });
 
+  const [isBoosted, setIsBoosted] = React.useState(
+    post.boostedUntil && new Date(post.boostedUntil) > new Date()
+  );
+  const [remainingTime, setRemainingTime] = useState("");
+
   useEffect(() => {
     setIsLiked(userProfile?.likedPosts.includes(post.id) || false);
   }, [userProfile?.likedPosts]);
+
+  useEffect(() => {
+    const updateRemainingTime = () => {
+      if (post.boostedUntil) {
+        const now = new Date();
+        const boostedUntil = new Date(post.boostedUntil);
+        if (boostedUntil > now) {
+          const diff = boostedUntil.getTime() - now.getTime();
+          const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
+          const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
+          const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+          const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+          const timeString = [
+            years > 0 ? `${years}y` : '',
+            months > 0 ? `${months}m` : '',
+            days > 0 ? `${days}d` : '',
+            hours > 0 ? `${hours}h` : '',
+            minutes > 0 ? `${minutes}m` : '',
+            `${seconds}s`
+          ].filter(Boolean).join(' | ');
+
+          setRemainingTime(timeString);
+          setIsBoosted(true);
+        } else {
+          setIsBoosted(false);
+          setRemainingTime("");
+        }
+      }
+    };
+
+    updateRemainingTime();
+    const timer = setInterval(updateRemainingTime, 1000);
+
+    return () => clearInterval(timer);
+  }, [post.boostedUntil]);
 
   const handleLike = () => {
     console.log(post);
@@ -124,9 +167,37 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
       return false;
     }
   };
-
   return (
     <>
+      {isBoosted && (
+      <Flex justify="start" w="100%" mb="-10px">
+        {/* <Flex justify="start" w="100%">
+          <Tag
+            size="sm"
+            color="brand.100"
+            backgroundColor="brand.300"
+            animation="pulse 2s infinite"
+            borderBottomRadius="0"
+            borderTopRadius="10"
+          >
+            Boosted until {new Date(post.boostedUntil).toLocaleDateString()}
+          </Tag>
+        </Flex> */}
+
+        <Flex justify="end" w="100%">
+          <Tag
+            size="sm"
+            color="brand.100"
+            backgroundColor="brand.300"
+            animation="pulse 2s infinite"
+            borderBottomRadius="0"
+            borderTopRadius="10"
+          >
+            Boost duration: {remainingTime}
+          </Tag>
+        </Flex>
+        </Flex>
+      )}
       <VStack
         align="start"
         spacing="0.5em"
@@ -134,9 +205,10 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         h="max-content"
         layerStyle="cardBox"
         py="1em"
-        // border={post.boostedUntil && new Date(post.boostedUntil) > new Date() ? "1px solid red" : "1px solid blue"}
-        // borderColor={post.boostedUntil && new Date(post.boostedUntil) > new Date() ? "brand.100" : "transparent"}
         _hover={{ bg: "brand.100" }}
+        // borderTopLeftRadius={isBoosted ? "0" : undefined}
+        borderTopRightRadius={isBoosted ? "0" : undefined}
+        borderColor={isBoosted ? "brand.300" : "brand.100"}
       >
         {postDetail?.parent && !isReply && (
           <Content

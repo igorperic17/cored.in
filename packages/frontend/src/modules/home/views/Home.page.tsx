@@ -22,12 +22,14 @@ import {
 import { Feed } from "../components/Feed";
 import { CreatePost } from "../components";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PostRequestType, SkillTag } from "@coredin/shared";
 import { END_FEED_PHRASES } from "../components/post/constants";
 import SkillFilter from "@/modules/home/components/SkillFilter"; // Import SkillFilter for reusable implementation
 import { SkillTags } from "@coredin/shared"; // Import SkillTags for defining tags
+import { FEED_MUTATIONS } from "@/queries/FeedMutations";
+import { useCustomToast } from "@/hooks/useCustomToast";
 
 const SCROLL_FETCH_DELAY_MS = 200;
 
@@ -59,6 +61,10 @@ const HomePage = () => {
       return firstPageParam - 1;
     }
   });
+  
+  const queryClient = useQueryClient(); // Get queryClient from useQueryClient
+  const { mutate: mutateClearBoosts } = useMutation(FEED_MUTATIONS.clearBoosts());
+  const { successToast, errorToast } = useCustomToast();
 
   let timeoutId: string | number | NodeJS.Timeout | undefined;
 
@@ -140,6 +146,22 @@ const HomePage = () => {
               <Tab key={tab} onClick={() => handleTabChange(tab)}>{tab}</Tab>
             ))}
           </TabList>
+          <Button
+            size="xs"
+            colorScheme="green"
+            onClick={async () => {
+              try {
+                await mutateClearBoosts();
+                queryClient.invalidateQueries();
+                successToast("All boosts have been reset");
+              } catch (error) {
+                console.error('Failed to reset boosts:', error);
+                errorToast("Failed to reset boosts");
+              }
+            }}
+          >
+            Reset boosts
+          </Button>
           {selectedTab === FeedTabs.Offers && <SkillFilter
             isOpen={isOpen}
             onOpen={handleOpen}
