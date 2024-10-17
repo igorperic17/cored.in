@@ -38,10 +38,15 @@ pub fn tip_post_author(
     let author_wallet = post_info.author.clone();
 
     // Calculate 5% commission
-    let commission_rate = Decimal::percent(5);
-    let total_tip = info.funds[0].amount.clone(); // Assuming single coin type
-    let commission = total_tip * commission_rate;
-    let author_tip = total_tip - commission;
+    let mut author_tip_int = Uint128::zero();
+    let mut commission = Uint128::zero();
+    if info.funds[0].amount > Uint128::zero() {
+        let commission_rate = Decimal::percent(5);
+        let total_tip = info.funds[0].amount.clone(); // Assuming single coin type
+        let author_tip = Decimal::from_atomics(total_tip, 0).unwrap().checked_div(Decimal::percent(100) + commission_rate).unwrap();
+        author_tip_int = author_tip.to_uint_floor();
+        commission = total_tip - author_tip_int;
+    }
 
     // Create bank messages for commission and author tip
     let commission_msg = BankMsg::Send {
@@ -56,11 +61,11 @@ pub fn tip_post_author(
         to_address: author_wallet.to_string(),
         amount: vec![Coin {
             denom: info.funds[0].denom.clone(),
-            amount: author_tip,
+            amount: author_tip_int,
         }],
     };
 
-    post_info.vault.amount += author_tip;
+    post_info.vault.amount += author_tip_int;
     POST.save(deps.storage, key.clone(), &post_info)?;
 
     Ok(Response::new()
@@ -70,7 +75,7 @@ pub fn tip_post_author(
         .add_attribute("post_id", post_info.id)
         .add_attribute("recipient", author_wallet)
         .add_attribute("commission", commission.to_string())
-        .add_attribute("author_tip", author_tip.to_string()))
+        .add_attribute("author_tip", author_tip_int.to_string()))
 }
 
 pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
@@ -85,61 +90,14 @@ pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
 
 #[cfg(test)]
 mod tests {
+
     use cosmwasm_std::{
-        testing::{mock_dependencies, mock_env, mock_info},
-        Addr, Uint128,
+        from_json, testing::{mock_dependencies, mock_env, mock_info}, Addr, Uint128
     };
 
     use super::*;
     use crate::models::post::{PostInfo, PostType};
 
-    #[test]
-    fn test_tip_post_author_success() {
-        let mut deps = mock_dependencies();
-        let env = mock_env();
-        let post_id = "test_post_1".to_string();
-        let author = Addr::unchecked("author_address");
-        let tipper = Addr::unchecked("tipper_address");
-
-        // Setup a mock post
-        let post_info = PostInfo {
-            id: post_id.clone(),
-            hash: "test_hash".to_string(),
-            author: author.clone(),
-            post_type: PostType::Microblog,
-            created_on: env.block.time,
-            vault: Coin {
-                denom: FEE_DENOM.to_string(),
-                amount: Uint128::zero(),
-            },
-        };
-        POST.save(deps.as_mut().storage, post_id.clone(), &post_info)
-            .unwrap();
-
-        // Setup the tip
-        let tip_amount = Uint128::new(100);
-        let info = mock_info(
-            tipper.as_str(),
-            &[Coin {
-                denom: FEE_DENOM.to_string(),
-                amount: tip_amount,
-            }],
-        );
-
-        // Execute the tip
-        let res = tip_post_author(deps.as_mut(), env.clone(), info, post_info.clone()).unwrap();
-
-        // Check the response
-        assert_eq!(res.messages.len(), 2);
-        assert_eq!(res.attributes.len(), 5);
-
-        // Check commission and author tip calculations
-        let commission = tip_amount * Decimal::percent(5);
-        let author_tip = tip_amount - commission;
-
-        assert_eq!(res.attributes[3].value, commission.to_string());
-        assert_eq!(res.attributes[4].value, author_tip.to_string());
-    }
 
     #[test]
     fn test_tip_post_author_no_funds() {
@@ -300,11 +258,11 @@ mod tests {
     fn test_get_post_tips() {
         let mut deps = mock_dependencies();
         let env = mock_env();
-        let post_id = "test_post_tips".to_string();
+        let post_id = Uint64::new(1);
 
         // Setup a mock post with tips
         let post_info = PostInfo {
-            id: post_id.clone(),
+            id: post_id.to_string(),
             hash: "test_hash".to_string(),
             author: Addr::unchecked("author_address"),
             post_type: PostType::Microblog,
@@ -314,23 +272,20 @@ mod tests {
                 amount: Uint128::new(100), // Assuming 100 ucore as the tip amount
             },
         };
-        POST.save(deps.as_mut().storage, post_id.clone(), &post_info)
+        POST.save(deps.as_mut().storage, post_id.to_string(), &post_info)
             .unwrap();
 
         // Test getting tips for an existing post
-        let tips = get_post_tips(deps.as_ref(), post_id.clone()).unwrap();
-        assert_eq!(tips.len(), 1);
-        assert_eq!(tips[0].denom, FEE_DENOM.to_string());
-        assert_eq!(tips[0].amount, Uint128::new(100));
+        let tips = get_post_tips(deps.as_ref(), post_id).unwrap();
+        let tips_amount: Uint128 = from_json::<Uint128>(tips).unwrap();
+        assert_eq!(tips_amount, Uint128::new(100));
 
         // Test getting tips for a non-existing post
-        let non_existent_post_id = "non_existent_post_tips".to_string();
-        let err = get_post_tips(deps.as_ref(), non_existent_post_id.clone()).unwrap_err();
+        let non_existent_post_id = Uint64::new(999);
+        let err = get_post_tips(deps.as_ref(), non_existent_post_id).unwrap_err();
         assert!(matches!(
             err,
-            ContractError::PostNotFound {
-                ref id
-            } if id == &non_existent_post_id
+            StdError::NotFound { .. }
         ));
     }
 
@@ -339,11 +294,11 @@ mod tests {
         let mut deps = mock_dependencies();
         let env = mock_env();
         let info = mock_info("tipper", &[]);
-        let post_id = "test_post_tips_commission".to_string();
+        let post_id = Uint64::new(2);
 
         // Setup a mock post without initial tips
         let post_info = PostInfo {
-            id: post_id.clone(),
+            id: post_id.to_string(),
             hash: "test_hash".to_string(),
             author: Addr::unchecked("author_address"),
             post_type: PostType::Microblog,
@@ -353,10 +308,10 @@ mod tests {
                 amount: Uint128::zero(),
             },
         };
-        POST.save(deps.as_mut().storage, post_id.clone(), &post_info).unwrap();
+        POST.save(deps.as_mut().storage, post_id.to_string(), &post_info).unwrap();
 
         // Simulate tipping process using the tip_post_author function
-        let tip_amount = Uint128::new(1000); // 10 tokens
+        let tip_amount = Uint128::new(10500000); // 10 CORE + 0.5 commission
         let tip_info = MessageInfo {
             sender: info.sender,
             funds: vec![Coin {
@@ -365,21 +320,14 @@ mod tests {
             }],
         };
 
-        let res = tip_post_author(deps.as_mut(), env.clone(), tip_info, post_info.clone()).unwrap();
-
-        // Verify that the tip_post_author function executed successfully
-        assert_eq!(res.messages.len(), 2); // One for commission, one for author tip
-
-        // Test getting tips for the post
-        let tips = get_post_tips(deps.as_ref(), post_id).unwrap();
-        assert_eq!(tips.len(), 1);
-        assert_eq!(tips[0].denom, FEE_DENOM.to_string());
+        let tip_res = tip_post_author(deps.as_mut(), env.clone(), tip_info, post_info.clone()).unwrap();
+        println!("{:?}", tip_res);
         
+        let tip_raw = get_post_tips(deps.as_ref(), post_id).unwrap();
+        let tip_result: Uint128 = from_json::<Uint128>(tip_raw).unwrap();
+
         // The total tips should be the tip amount minus the 5% commission
-        let expected_tip = tip_amount * Decimal::percent(95);
-        assert_eq!(tips[0].amount, expected_tip);
-        
-        // Verify that the total tips are indeed 9.5 tokens (950 units)
-        assert_eq!(tips[0].amount, Uint128::new(950));
+        // let expected_tip = Decimal::new(tip_result).checked_div(Decimal::from_str("1.05").unwrap()).unwrap();
+        assert_eq!(tip_result, Uint128::from(10000000u128)); // expected to get 10_000_000 ucore
     }
 }

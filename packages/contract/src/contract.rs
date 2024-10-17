@@ -30,7 +30,7 @@ const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
 
 // TODO: adjust this to "utestcore" when deploying the contract, so it works when deployed to testnet
-pub const FEE_DENOM: &str = "utestcore";
+pub const FEE_DENOM: &str = "ucore";
 
 pub const NFT_CLASS_PREFIX: &str = "coredintestnet";
 pub const NFT_CLASS_SUFFIX_PROFILE: &str = "p";
