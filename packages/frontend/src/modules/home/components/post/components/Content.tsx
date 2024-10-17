@@ -1,4 +1,4 @@
-import { FC, useRef } from "react";
+import { FC, useEffect, useRef, useState } from "react";
 import { PostDTO, PostVisibility } from "@coredin/shared";
 import {
   AlertDialog,
@@ -61,14 +61,17 @@ export const Content: FC<PostContentProps> = ({
 
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
 
-  let editorState;
-  try {
-    const parsedContent = JSON.parse(post.text);
-    editorState = EditorState.createWithContent(convertFromRaw(parsedContent));
-  } catch (error) {
-    // If parsing as JSON fails, treat it as plain text
-    editorState = EditorState.createWithContent(ContentState.createFromText(post.text));
-  }
+  const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
+
+  useEffect(() => {
+    try {
+      const parsedContent = JSON.parse(post.text);
+      setEditorState(EditorState.createWithContent(convertFromRaw(parsedContent)));
+    } catch (error) {
+      // If parsing as JSON fails, treat it as plain text
+      setEditorState(EditorState.createWithContent(ContentState.createFromText(post.text)));
+    }
+  }, [post.text]);
 
   return (
     <Flex

@@ -32,13 +32,13 @@ export function RichTextEditor({
       >
         <Editor
           editorState={editorState}
-          onEditorStateChange={onEditorStateChange}
+          onEditorStateChange={(e) => readOnly ? {} : onEditorStateChange(e)}
           placeholder="Be creative!"
           readOnly={readOnly}
           toolbarHidden={hideToolbar}
-          toolbar={{
-            options: ['inline', 'blockType', 'list', 'textAlign', 'link', 'emoji', 'image', 'remove', 'history'],
-          }}
+        //   toolbar={{
+        //     options: ['inline', 'blockType', 'list', 'textAlign', 'link', 'emoji', 'image', 'remove', 'history'],
+        //   }}
           toolbarStyle={{
               border: '1px solid',
               borderColor: 'rgba(1,1,1,0.2)',
@@ -47,7 +47,7 @@ export function RichTextEditor({
           }}
           editorStyle={{
             ...(inputTheme.baseStyle?.field ?? {}),
-            minHeight: preview ? undefined : "250px",
+            minHeight: readOnly ? undefined : "250px",
             maxHeight: preview ? undefined : "50vh",
             padding: '10px',
             paddingLeft: preview ? '10px' : '20px',
