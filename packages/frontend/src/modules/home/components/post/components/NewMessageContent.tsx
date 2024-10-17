@@ -13,6 +13,7 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { SubscriptionInfo, UserProfile } from "@coredin/shared";
 import { formElementBorderStyles } from "@/themes";
 
+
 export type NewMessageProps = {
   postContent: string;
   setPostContent: Dispatch<SetStateAction<string>>;
@@ -59,6 +60,7 @@ export const NewMessageContent: FC<NewMessageProps> = ({
           color={userProfile.avatarFallbackColor || "brand.500"}
           border={userProfile.avatarUrl || "1px solid #b0b0b0"}
         />
+
         <AutoResizeTextarea
           placeholder="Share your thoughts"
           value={postContent}

@@ -171,19 +171,6 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     <>
       {isBoosted && (
       <Flex justify="start" w="100%" mb="-10px">
-        {/* <Flex justify="start" w="100%">
-          <Tag
-            size="sm"
-            color="brand.100"
-            backgroundColor="brand.300"
-            animation="pulse 2s infinite"
-            borderBottomRadius="0"
-            borderTopRadius="10"
-          >
-            Boosted until {new Date(post.boostedUntil).toLocaleDateString()}
-          </Tag>
-        </Flex> */}
-
         <Flex justify="end" w="100%">
           <Tag
             size="sm"
@@ -205,10 +192,14 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         h="max-content"
         layerStyle="cardBox"
         py="1em"
-        _hover={{ bg: "brand.100" }}
         // borderTopLeftRadius={isBoosted ? "0" : undefined}
         borderTopRightRadius={isBoosted ? "0" : undefined}
         borderColor={isBoosted ? "brand.300" : "brand.100"}
+        _hover={{
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          transition: "all 0.3s ease-in-out",
+        }}
+        transition="all 0.3s ease-in-out"
       >
         {postDetail?.parent && !isReply && (
           <Content

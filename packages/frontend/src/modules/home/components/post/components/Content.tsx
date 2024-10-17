@@ -26,6 +26,8 @@ import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
+import { RichTextEditor } from "../../RichTextEditor";
+import { ContentState, EditorState, convertFromRaw } from 'draft-js';
 
 export type PostContentProps = {
   post: PostDTO;
@@ -59,20 +61,26 @@ export const Content: FC<PostContentProps> = ({
 
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
 
+  let editorState;
+  try {
+    const parsedContent = JSON.parse(post.text);
+    editorState = EditorState.createWithContent(convertFromRaw(parsedContent));
+  } catch (error) {
+    // If parsing as JSON fails, treat it as plain text
+    editorState = EditorState.createWithContent(ContentState.createFromText(post.text));
+  }
+
   return (
     <Flex
       direction="column"
       gap={{ base: "0.75em", sm: "1.125em" }}
       w="100%"
       align="start"
-      // border="1px solid red"
     >
       <Flex
         justify="space-between"
         w="100%"
         gap={{ base: "0.75em", sm: "1.125em" }}
-        // border="1px solid red"
-        //
       >
         <Link
           as={ReactRouterLink}
@@ -85,7 +93,6 @@ export const Content: FC<PostContentProps> = ({
             color={post.creatorAvatarFallbackColor || "brand.500"}
             border={post.creatorAvatar || "1px solid #b0b0b0"}
             size={{ base: "sm", sm: "md" }}
-            // boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added horizontal shadow
           />
         </Link>
         <VStack
@@ -93,7 +100,6 @@ export const Content: FC<PostContentProps> = ({
           justify="space-between"
           spacing="0em"
           w="100%"
-          // border="1px solid red"
         >
           <Link
             as={ReactRouterLink}
@@ -114,18 +120,15 @@ export const Content: FC<PostContentProps> = ({
               textOverflow="ellipsis"
               whiteSpace="nowrap"
               overflow="hidden"
-              // border="1px solid red"
             >
               {post.creatorUsername}
             </Text>
           </Link>
-          {/* TODO: to add dateTime later */}
           <Link
             as={ReactRouterLink}
             to={ROUTES.USER.POST.buildPath(post.creatorWallet, post.id)}
             _hover={{ textDecoration: "none" }}
             aria-label="Open the post."
-            // border="1px solid red"
           >
             <Text
               as="time"
@@ -143,7 +146,6 @@ export const Content: FC<PostContentProps> = ({
           </Link>
         </VStack>
 
-        {/* ! */}
         {post.visibility === PostVisibility.RECIPIENTS && (
           <HStack>
             <Text as="span" color="text.700" textStyle="sm">
@@ -158,7 +160,6 @@ export const Content: FC<PostContentProps> = ({
                 color={recipient.avatarFallbackColor || "brand.500"}
                 border={recipient.avatarUrl || "1px solid #b0b0b0"}
                 size={{ base: "sm", sm: "md" }}
-                // boxShadow="0 4px 6px rgba(0, 0, 0, 0.1)" // Added horizontal shadow
               />
             ))}
           </HStack>
@@ -176,10 +177,7 @@ export const Content: FC<PostContentProps> = ({
               ml="auto"
               mt="-0.5em"
             />
-            <MenuList
-            // motionProps={}
-            //
-            >
+            <MenuList>
               <MenuItem onClick={onOpen} icon={<FaTrash color="red" />}>
                 <Text as="span" color="red">
                   Delete
@@ -257,18 +255,17 @@ export const Content: FC<PostContentProps> = ({
       <Link
         as={ReactRouterLink}
         to={postUrl}
-        _hover={{ textDecoration: "none" }}
+        _hover={{ textDecoration: "none", color: "black" }}
         w="100%"
         aria-label="Open the post."
       >
-        <Text
-          color="brand.900"
-          textStyle="sm"
-          wordBreak="break-word"
-          whiteSpace="pre-wrap"
-        >
-          {post.text}
-        </Text>
+        <RichTextEditor
+          editorState={editorState}
+          onEditorStateChange={() => {}}
+          readOnly={true}
+          hideToolbar={true}
+          preview={!opened}
+        />
       </Link>
 
       <ActionBar

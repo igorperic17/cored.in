@@ -146,7 +146,7 @@ const HomePage = () => {
               <Tab key={tab} onClick={() => handleTabChange(tab)}>{tab}</Tab>
             ))}
           </TabList>
-          <Button
+          {/* <Button
             size="xs"
             colorScheme="green"
             onClick={async () => {
@@ -161,7 +161,7 @@ const HomePage = () => {
             }}
           >
             Reset boosts
-          </Button>
+          </Button> */}
           {selectedTab === FeedTabs.Offers && <SkillFilter
             isOpen={isOpen}
             onOpen={handleOpen}
