@@ -1,11 +1,12 @@
 use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
-use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
+use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries, CoreumResult};
 use cosmwasm_std::{
     coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
-    StdResult, Uint64,
+    StdResult, Uint64
 };
 use cw_storage_plus::Map;
 use std::collections::LinkedList;
+use cw2::set_contract_version;
 
 use crate::coin_helpers::{
     assert_sent_sufficient_coin, generate_nft_class_id, generate_nft_symbol,
@@ -13,7 +14,7 @@ use crate::coin_helpers::{
 use crate::error::ContractError;
 use crate::models::did::DID;
 use crate::models::profile_info::ProfileInfo;
-use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, QueryMsg};
+use crate::msg::{ExecuteMsg, GetDIDResponse, GetMerkleRootResponse, InstantiateMsg, MigrateMsg, QueryMsg};
 use crate::state::{
     Config, CONFIG, CREDENTIAL, DID_PROFILE_MAP, USERNAME_PROFILE_MAP, WALLET_PROFILE_MAP,
 };
@@ -35,6 +36,9 @@ pub const FEE_DENOM: &str = "ucore";
 pub const NFT_CLASS_PREFIX: &str = "coredintestnet";
 pub const NFT_CLASS_SUFFIX_PROFILE: &str = "p";
 
+const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
+const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+
 #[cfg_attr(not(feature = "library"), entry_point)]
 pub fn instantiate(
     deps: DepsMut,
@@ -47,6 +51,8 @@ pub fn instantiate(
         did_register_price: msg.purchase_price,
         subscription_fee: msg.subscription_fee,
     };
+    // set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION).unwrap();
+    
     CONFIG.save(deps.storage, &config_state)?;
 
     // create an NFT class for subscriptions (owners are subscribers)

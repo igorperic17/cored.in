@@ -9,6 +9,7 @@ pub mod msg;
 pub mod state;
 pub mod subscription;
 pub mod tip;
+pub mod migration; // TODO: Should this be pub? Check with Coreum team
 
 pub mod models {
     pub mod did;

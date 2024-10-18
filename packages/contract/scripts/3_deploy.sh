@@ -4,6 +4,18 @@
 # Assumes a funded wallet called "my_local_dev_wallet" has been imported to the CLI using:
 # cored keys add my_local_dev_wallet --recover --chain-id=$CHAIN_ID
 
+# Ask for user confirmation
+echo "WARNING: This script will deploy a fresh contract on the chain."
+echo "If there's already a version of the contract you care about, you should use the 2_migrate.sh script instead."
+echo "Only continue if this is the first time you're deploying this contract on the chain."
+read -p "Are you sure you want to proceed with deploying a new contract? (y/n) " -n 1 -r
+echo
+if [[ ! $REPLY =~ ^[Yy]$ ]]
+then
+    echo "Deployment cancelled."
+    exit 1
+fi
+
 # Ensure that the wallet "my_local_dev_wallet" exists before proceeding
 echo "Checking for existence of 'my_local_dev_wallet'..."
 if ! cored keys list --chain-id=$CHAIN_ID | grep -q "my_local_dev_wallet"; then
@@ -42,7 +54,7 @@ echo "Success! The new contract code ID is: $CODE_ID"
 # At this point, the contract still has no address, it will get it after initializing
 echo "Initializing the contract..."
 INIT="{\"purchase_price\":{\"amount\":\"0\",\"denom\":\"$COREUM_DENOM\"}, \"subscription_fee\": \"0\"}"
-INIT_RES=$(cored tx wasm instantiate $CODE_ID "$INIT" --from my_local_dev_wallet --gas auto --gas-adjustment 1.5  --label "cored.in" -b block -y --no-admin --output json  $COREUM_NODE_ARGS $COREUM_CHAIN_ID_ARGS)
+INIT_RES=$(cored tx wasm instantiate $CODE_ID "$INIT" --from my_local_dev_wallet --gas auto --gas-adjustment 1.5  --label "cored.in" -b block -y --admin my_local_dev_wallet --output json  $COREUM_NODE_ARGS $COREUM_CHAIN_ID_ARGS)
 
 if [ $? -ne 0 ]; then
     echo "Error: Contract initialization failed." >&2
