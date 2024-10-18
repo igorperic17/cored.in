@@ -3,18 +3,17 @@ use crate::error::ContractError;
 use coreum_wasm_sdk::core::CoreumQueries;
 use cosmwasm_std::entry_point;
 use cosmwasm_std::{
-    DepsMut, Env, Response, StdError,
+    DepsMut, Env, Response
 };
 
-use cw2::set_contract_version;
-
-const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
-const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
+// use cw2::set_contract_version;
+// const CONTRACT_NAME: &str = env!("CARGO_PKG_NAME");
+// const CONTRACT_VERSION: &str = env!("CARGO_PKG_VERSION");
 
 use crate::msg::MigrateMsg;
 
 #[entry_point]
-pub fn migrate(deps: DepsMut<CoreumQueries>, _env: Env, _msg: MigrateMsg) -> Result<Response, ContractError> {
+pub fn migrate(_deps: DepsMut<CoreumQueries>, _env: Env, _msg: MigrateMsg) -> Result<Response, ContractError> {
 
     // Example migration #1: https://github.com/CoreumFoundation/coreumbridge-xrpl/blob/master/contract/src/migration.rs
     // let ver = cw2::get_contract_version(deps.storage).unwrap();
