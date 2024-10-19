@@ -44,7 +44,7 @@ pub fn instantiate(
 ) -> Result<Response<CoreumMsg>, StdError> {
     let config_state = Config {
         owner: info.sender,
-        did_register_price: msg.purchase_price,
+        did_register_price: msg.did_register_price,
         subscription_fee: msg.subscription_fee,
     };
     // set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION).unwrap();

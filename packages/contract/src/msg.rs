@@ -14,27 +14,15 @@ use crate::{
 
 #[derive(Serialize, Deserialize, Clone, Debug, PartialEq, JsonSchema)]
 pub struct InstantiateMsg {
-    pub purchase_price: Option<Coin>,
-    pub transfer_price: Option<Coin>,
-    pub subscription_fee: Decimal,
+    pub did_register_price: Option<Coin>,
+    pub subscription_fee: Decimal, // percentage from range [0.0, 1.0]
 }
 
 impl InstantiateMsg {
     pub fn zero() -> Self {
         InstantiateMsg {
-            purchase_price: None,
-            transfer_price: None,
             subscription_fee: Decimal::zero(),
-        }
-    }
-}
-
-impl Default for InstantiateMsg {
-    fn default() -> Self {
-        Self {
-            purchase_price: None,
-            transfer_price: None,
-            subscription_fee: Decimal::percent(5),
+            did_register_price: None,
         }
     }
 }

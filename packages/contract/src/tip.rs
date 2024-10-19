@@ -1,10 +1,11 @@
 use coreum_wasm_sdk::core::CoreumMsg;
 use cosmwasm_std::{to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64};
 
-use crate::{contract::FEE_DENOM, error::ContractError, models::post::PostInfo, state::POST};
+use crate::{contract::FEE_DENOM, error::ContractError, models::post::PostInfo, state::{CONFIG, POST}};
+
 pub fn tip_post_author(
     deps: DepsMut,
-    env: Env,
+    _env: Env,
     info: MessageInfo,
     post_info: PostInfo,
 ) -> Result<Response<CoreumMsg>, ContractError> {
@@ -49,8 +50,10 @@ pub fn tip_post_author(
     }
 
     // Create bank messages for commission and author tip
+    // get the contract admin address
+    let admin_address = CONFIG.load(deps.storage)?.owner;
     let commission_msg = BankMsg::Send {
-        to_address: env.contract.address.to_string(),
+        to_address: admin_address.to_string(),
         amount: vec![Coin {
             denom: info.funds[0].denom.clone(),
             amount: commission,
@@ -89,7 +92,13 @@ pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
 }
 
 #[cfg(test)]
+
 mod tests {
+    use crate::msg::{InstantiateMsg, ExecuteMsg};
+    use crate::test_helpers::test_helpers::{get_balance, mock_register_account, with_test_tube};
+    // use cosmwasm_std::testing::{MockApi, MockQuerier, MockStorage};
+    use cosmwasm_std::{Coin, Decimal, Timestamp};
+    use coreum_test_tube::Account;
 
     use cosmwasm_std::{
         from_json, testing::{mock_dependencies, mock_env, mock_info}, Addr, Uint128
@@ -97,11 +106,21 @@ mod tests {
 
     use super::*;
     use crate::models::post::{PostInfo, PostType};
+    use crate::state::{Config, CONFIG};
 
+    fn setup_config(deps: DepsMut) {
+        let config = Config {
+            owner: Addr::unchecked("admin"),
+            did_register_price: None,
+            subscription_fee: Decimal::percent(5),
+        };
+        CONFIG.save(deps.storage, &config).unwrap();
+    }
 
     #[test]
     fn test_tip_post_author_no_funds() {
         let mut deps = mock_dependencies();
+        setup_config(deps.as_mut());
         let env = mock_env();
         let post_id = "test_post_2".to_string();
         let author = Addr::unchecked("author_address");
@@ -135,6 +154,7 @@ mod tests {
     #[test]
     fn test_tip_post_author_post_not_found() {
         let mut deps = mock_dependencies();
+        setup_config(deps.as_mut());
         let env = mock_env();
         let post_id = "non_existent_post".to_string();
         let tipper = Addr::unchecked("tipper_address");
@@ -176,6 +196,7 @@ mod tests {
     #[test]
     fn test_tip_post_author_post_exists() {
         let mut deps = mock_dependencies();
+        setup_config(deps.as_mut());
         let env = mock_env();
         let post_id = "existing_post".to_string();
         let tipper = Addr::unchecked("tipper_address");
@@ -216,6 +237,7 @@ mod tests {
     #[test]
     fn test_tip_post_author_post_doesnt_exist() {
         let mut deps = mock_dependencies();
+        setup_config(deps.as_mut());
         let env = mock_env();
         let post_id = "non_existent_post".to_string();
         let tipper = Addr::unchecked("tipper_address");
@@ -257,6 +279,7 @@ mod tests {
     #[test]
     fn test_get_post_tips() {
         let mut deps = mock_dependencies();
+        setup_config(deps.as_mut());
         let env = mock_env();
         let post_id = Uint64::new(1);
 
@@ -292,6 +315,7 @@ mod tests {
     #[test]
     fn test_get_post_tips_with_commission() {
         let mut deps = mock_dependencies();
+        setup_config(deps.as_mut());
         let env = mock_env();
         let info = mock_info("tipper", &[]);
         let post_id = Uint64::new(2);
@@ -329,5 +353,72 @@ mod tests {
         // The total tips should be the tip amount minus the 5% commission
         // let expected_tip = Decimal::new(tip_result).checked_div(Decimal::from_str("1.05").unwrap()).unwrap();
         assert_eq!(tip_result, Uint128::from(10000000u128)); // expected to get 10_000_000 ucore
+    }
+
+    #[test]
+    fn test_admin_commission_from_tips() {
+        let instantiate_msg = InstantiateMsg {
+            subscription_fee: Decimal::percent(5),
+            did_register_price: None,
+        };
+
+        with_test_tube(instantiate_msg, &|accs, contract_addr, wasm, bank, _nft| {
+            let admin = &accs[0];
+            let author = &accs[1];
+            let tipper = &accs[2];
+
+
+            // Register the author
+            mock_register_account(&wasm, &contract_addr, &author, "author".to_string());
+
+            let initial_admin_balance = get_balance(&bank, &admin);
+            let initial_author_balance = get_balance(&bank, &author);
+
+            // Create a post
+            let post_id = Uint64::new(3);
+            let post_info = PostInfo {
+                id: post_id.to_string(),
+                hash: "test_hash".to_string(),
+                author: Addr::unchecked(author.address()),
+                post_type: PostType::Microblog,
+                created_on: Timestamp::from_seconds(0), // irrelevant for this test
+                vault: Coin {
+                    denom: FEE_DENOM.to_string(),
+                    amount: Uint128::zero(),
+                },
+            };
+
+            // Tip the post
+            let tip_amount = Uint128::new(105_000_000); // 100 CORE tip + 5% commission
+            let tip_msg = ExecuteMsg::TipPostAuthor { post_info: post_info.clone() };
+            wasm.execute(
+                &contract_addr,
+                &tip_msg,
+                &[Coin {
+                    denom: FEE_DENOM.to_string(),
+                    amount: tip_amount,
+                }],
+                &tipper,
+            ).unwrap();
+
+            // Check admin balance (should have received 5% commission)
+            let expected_commission = Uint128::new(initial_admin_balance.u128() + 5_000_000); // 5% of 100 CORE
+            let admin_balance = get_balance(&bank, &admin);
+            assert_eq!(admin_balance, expected_commission, "Admin should receive 5% commission");
+
+            // Check author balance (should have received 95% of the tip)
+            let expected_author_tip = Uint128::new(initial_author_balance.u128() + 100_000_000); // 100% of 100 CORE
+            let author_balance = get_balance(&bank, &author);
+            assert_eq!(author_balance, expected_author_tip, "Author should receive 95% of the tip");
+
+            // Check tipper balance (should have decreased by the tip amount)
+            // TODO: factor in the gas price (is it predictable?)
+            // let tipper_balance = get_balance(&bank, &tipper);
+            // assert_eq!(
+            //     tipper_balance,
+            //     Uint128::new(99_990_500_000), // Initial balance (100_000_000_000) - tip amount
+            //     "Tipper balance should decrease by the tip amount"
+            // );
+        });
     }
 }

@@ -70,7 +70,7 @@ export function RichTextEditor({
           right="0"
           bottom="0"
           pointerEvents="none"
-          background="linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 80%, rgba(255,255,255,1) 100%)"
+          background="linear-gradient(to bottom, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 80%, rgba(255,255,255,1) 100%)"
           zIndex="1"
         />
       )}
