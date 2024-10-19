@@ -60,8 +60,15 @@ pub fn tip_post_author(
         }],
     };
 
+    // if the author is boosting their own post, send the tip to admin
+    let tip_recipient = if author_wallet == info.sender {
+        admin_address.to_string()
+    } else {
+        author_wallet.to_string()
+    };
+
     let author_msg = BankMsg::Send {
-        to_address: author_wallet.to_string(),
+        to_address: tip_recipient,
         amount: vec![Coin {
             denom: info.funds[0].denom.clone(),
             amount: author_tip_int,
@@ -96,7 +103,6 @@ pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
 mod tests {
     use crate::msg::{InstantiateMsg, ExecuteMsg};
     use crate::test_helpers::test_helpers::{get_balance, mock_register_account, with_test_tube};
-    // use cosmwasm_std::testing::{MockApi, MockQuerier, MockStorage};
     use cosmwasm_std::{Coin, Decimal, Timestamp};
     use coreum_test_tube::Account;
 
@@ -411,14 +417,23 @@ mod tests {
             let author_balance = get_balance(&bank, &author);
             assert_eq!(author_balance, expected_author_tip, "Author should receive 95% of the tip");
 
-            // Check tipper balance (should have decreased by the tip amount)
-            // TODO: factor in the gas price (is it predictable?)
-            // let tipper_balance = get_balance(&bank, &tipper);
-            // assert_eq!(
-            //     tipper_balance,
-            //     Uint128::new(99_990_500_000), // Initial balance (100_000_000_000) - tip amount
-            //     "Tipper balance should decrease by the tip amount"
-            // );
+            // Check if the admin gets paid for author tipping their own post
+            let initial_admin_balance = get_balance(&bank, &admin);
+            let self_tip_msg = ExecuteMsg::TipPostAuthor { post_info: post_info.clone() };
+            wasm.execute(
+                &contract_addr,
+                &self_tip_msg,
+                &[Coin {
+                    denom: FEE_DENOM.to_string(),
+                    amount: tip_amount,
+                }],
+                &author,
+            ).unwrap();
+
+            // Check admin balance (should have received the entire tip)
+            let expected_admin_balance = Uint128::new(initial_admin_balance.u128() + tip_amount.u128());
+            let admin_balance_after_self_tip = get_balance(&bank, &admin);
+            assert_eq!(admin_balance_after_self_tip, expected_admin_balance, "Admin should receive the entire tip when author tips their own post");
         });
     }
 }
