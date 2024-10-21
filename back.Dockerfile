@@ -14,11 +14,10 @@ COPY --from=builder coredin/package.json app/
 COPY --from=builder coredin/yarn.lock app/
 COPY --from=builder coredin/.yarnrc.yml app/
 COPY --from=builder coredin/.yarn app/.yarn
-RUN cd app && yarn workspaces focus @coredin/backend --production
 
 # Step 4: Install deps required for prod (nestJs build doesn't include them)
 WORKDIR /app
-RUN yarn workspaces focus @aniwa/backend --production
+RUN yarn workspaces focus @coredin/backend --production
 
 # Step 5: Install curl required for health check
 RUN apk add --no-cache curl
