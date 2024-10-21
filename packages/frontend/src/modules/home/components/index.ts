@@ -18,7 +18,6 @@ export * from "./NotificationDot";
 export * from "./post";
 export * from "./ProfileSettings";
 export * from "./ProofUpdate";
-export * from "./RegisteredProfile";
 export * from "./RequestCredential";
 export * from "./SubscribeToProfile";
 export * from "./SubscriptionModal";
