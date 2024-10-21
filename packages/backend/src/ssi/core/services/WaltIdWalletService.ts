@@ -16,7 +16,8 @@ export class WaltIdWalletService {
   constructor(
     private readonly walletApiUrl: string,
     private readonly vaultUrl: string,
-    private readonly vaultAccessKey: string
+    private readonly vaultRoleId: string,
+    private readonly vaultSecretId: string
   ) {}
 
   async getOrCreateDid(wallet: string, didKeyId: string) {
@@ -117,8 +118,8 @@ export class WaltIdWalletService {
         config: {
           server: this.vaultUrl + "/v1/transit",
           auth: {
-            roleId: "0f2585bb-9a6b-e88f-03df-a60a174f311d",
-            secretId: "703a8152-fae4-9cf9-8c18-cbd5d91becf9"
+            roleId: this.vaultRoleId,
+            secretId: this.vaultSecretId
           }
         },
         keyType: "Ed25519"

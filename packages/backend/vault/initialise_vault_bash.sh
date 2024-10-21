@@ -1,5 +1,7 @@
 #!/bin/bash
 
+SECRET_NAME_PREFIX="coredin-vault/"
+
 update_secret() {
     local secret_name="$1"
     local secret_value="$2"
@@ -35,7 +37,6 @@ echo "initialized" $initialized
 if [ "$initialized" = false ] ; then
     echo "Initialising vault..."
     VAULT_INIT_OUTPUT=$(bao operator init -format=json)
-    SECRET_NAME_PREFIX="coredin-vault/"
 
     # echo "$VAULT_INIT_OUTPUT"
 
@@ -48,5 +49,31 @@ if [ "$initialized" = false ] ; then
 
     update_secret "root-token" "$initial_root_token"
 fi
+
+VAULT_AUTH_LIST_OUTPUT=$(bao auth list -format=json)
+echo $VAULT_AUTH_LIST_OUTPUT
+
+app_role_enabled=$(echo "$VAULT_AUTH_LIST_OUTPUT" | jq -r '.["approle/"]')
+echo "app_role_enabled" $app_role_enabled
+
+if [ "$app_role_enabled" = null ] ; then
+    echo "Enabling approle..."
+    secret_name="root-token"
+    initial_root_token=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$SECRET_NAME_PREFIX$secret_name" | jq -r ".SecretString")
+    bao login "$initial_root_token"
+    bao auth enable approle
+    echo 'path "transit/*" {
+        capabilities = ["create", "update", "read", "delete", "list"]
+    }' > transit-policy.hcl
+    bao policy write transit-policy transit-policy.hcl
+    bao write auth/approle/role/$APP_ROLE token_type=batch token_policies="transit-policy"
+    VAULT_ROLE_ID=$(bao read auth/approle/role/$APP_ROLE/role-id -format=json | jq -r ".data.role_id")
+    VAULT_SECRET_ID=$(bao write -f auth/approle/role/$APP_ROLE/secret-id -format=json | jq -r ".data.secret_id")
+    # echo "Role ID: $VAULT_ROLE_ID"
+    # echo "Secret ID: $VAULT_SECRET_ID"
+    update_secret "role-id" "$VAULT_ROLE_ID"
+    update_secret "secret-id" "$VAULT_SECRET_ID"
+fi
+
 
 echo "Vault setup complete."

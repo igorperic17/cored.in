@@ -10,7 +10,8 @@ export class WaltIdIssuerService {
   constructor(
     private readonly issuerApiUrl: string,
     private readonly vaultUrl: string,
-    private readonly vaultAccessKey: string
+    private readonly vaultRoleId: string,
+    private readonly vaultSecretId: string
   ) {}
 
   async onboardIssuer(wallet: string) {
@@ -23,8 +24,8 @@ export class WaltIdIssuerService {
           config: {
             server: this.vaultUrl + "/v1/transit",
             auth: {
-              roleId: "0f2585bb-9a6b-e88f-03df-a60a174f311d",
-              secretId: "703a8152-fae4-9cf9-8c18-cbd5d91becf9"
+              roleId: this.vaultRoleId,
+              secretId: this.vaultSecretId
             }
           }
         },
@@ -83,8 +84,8 @@ export class WaltIdIssuerService {
         type: "tse",
         server: this.vaultUrl + "/v1/transit",
         auth: {
-          roleId: "0f2585bb-9a6b-e88f-03df-a60a174f311d",
-          secretId: "703a8152-fae4-9cf9-8c18-cbd5d91becf9"
+          roleId: this.vaultRoleId,
+          secretId: this.vaultSecretId
         },
         id: issuerInfo.issuerKeyVaultId
       },
