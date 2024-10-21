@@ -21,7 +21,10 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "prepare": "ts-patch install && typia patch",
-    "deploy": "sh deploy.sh"
+    "deploy": "sh deploy.sh",
+    "typeorm:generate": "yarn typeorm-ts-node-commonjs migration:generate -d db/dataSource.ts",
+    "typeorm:migrate": "yarn typeorm-ts-node-commonjs migration:run -d db/dataSource.ts",
+    "typeorm:revert": "yarn typeorm-ts-node-commonjs migration:revert -d db/dataSource.ts"
   },
   "dependencies": {
     "@codegenie/serverless-express": "^4.15.0",

@@ -16,8 +16,14 @@ COPY --from=builder coredin/.yarnrc.yml app/
 COPY --from=builder coredin/.yarn app/.yarn
 RUN cd app && yarn workspaces focus @coredin/backend --production
 
-# Step 4: Install curl required for health check
+# Step 4: Install deps required for prod (nestJs build doesn't include them)
+WORKDIR /app
+RUN yarn workspaces focus @aniwa/backend --production
+
+# Step 5: Install curl required for health check
 RUN apk add --no-cache curl
 
+# Step 6: Execute pending migrations and run app
 EXPOSE 3000
-CMD [ "node", "app/packages/backend/dist/main.js" ]
+WORKDIR /app/packages/backend
+CMD yarn typeorm:migrate && node dist/main.js

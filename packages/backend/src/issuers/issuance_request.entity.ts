@@ -1,4 +1,4 @@
-import { User } from "@/user/user.entity";
+import { User } from "../user/user.entity";
 import { CredentialDTO, CredentialRequestStatus } from "@coredin/shared";
 import {
   Entity,
