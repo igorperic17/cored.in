@@ -3,11 +3,6 @@ resource "random_password" "rds_password" {
   special = false
 }
 
-resource "random_password" "waltid_rds_password" {
-  length  = 32
-  special = false
-}
-
 resource "aws_db_parameter_group" "rds_parameter_group" {
   name        = "${var.app_name}-rds-parameter-group"
   family      = "postgres16"
