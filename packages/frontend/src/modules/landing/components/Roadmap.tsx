@@ -24,7 +24,7 @@ import {
 
 export const Roadmap = () => {
   const { activeStep } = useSteps({
-    index: 3,
+    index: 4,
     count: ROADMAP_STEPS.length
   });
 
