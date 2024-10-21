@@ -42,7 +42,6 @@ export class WaltIdWalletService {
 
     console.log("RAW VCs");
     console.dir(response.data, { depth: 10 });
-    return [];
 
     return response.data;
   }

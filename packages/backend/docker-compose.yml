@@ -42,7 +42,7 @@ services:
       - vault_data:/vault/data:rw
     command: bao server -config /vault/config/bao_config.json
   wallet-api:
-    image: waltid/wallet-api:0.8.0
+    image: waltid/wallet-api:1.0.2410181217-SNAPSHOT
     ports:
       - 7001:7001
     environment:
@@ -59,7 +59,7 @@ services:
     depends_on:
       - waltid-db
   issuer-api:
-    image: docker.io/waltid/issuer-api:0.8.0
+    image: docker.io/waltid/issuer-api:1.0.2410181217-SNAPSHOT
     environment:
       ISSUER_API_PORT: 7002
     ports:
@@ -68,7 +68,7 @@ services:
       - ./issuer-api/local/config:/waltid-issuer-api/config
   verifier-api:
     platform: linux/x86_64
-    image: docker.io/waltid/verifier-api:0.8.0
+    image: docker.io/waltid/verifier-api:1.0.2410181217-SNAPSHOT
     environment:
       VERIFIER_API_PORT: 7003
     ports:
