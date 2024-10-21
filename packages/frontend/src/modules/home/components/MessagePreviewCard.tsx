@@ -66,9 +66,10 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
             }
             border={
               isInitialisedByMe
-                ? initialMessage.recipients?.[0].avatarUrl
+                ? initialMessage.recipients?.[0].avatarUrl ||
+                  "1px solid #b0b0b0"
                 : initialMessage.creatorWallet !== chainContext.address
-                  ? initialMessage.creatorAvatar
+                  ? initialMessage.creatorAvatar || "1px solid #b0b0b0"
                   : "1px solid #b0b0b0"
             }
             size={{ base: "sm", sm: "md" }}
