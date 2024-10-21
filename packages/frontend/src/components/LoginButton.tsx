@@ -34,7 +34,8 @@ export const LoginButton: FC<LoginButtonProps> = ({
   variant,
   size = "md",
   signInText,
-  username
+  username,
+  ...props
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -106,8 +107,8 @@ export const LoginButton: FC<LoginButtonProps> = ({
           to={ROUTES.LOGIN.path}
           variant={variant}
           size={size}
-          // border="1px solid red"
           onClick={onOpen}
+          {...props}
         >
           {signInText}
         </Button>
