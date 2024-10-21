@@ -125,9 +125,10 @@ export const SubscriptionSettings = () => {
               value={subscriptionSettings.price}
             />
             <InputRightAddon
-              color="brand.900"
-              bg="other.200"
-              border="1px solid #141413"
+              color="brand.100"
+              bg="brand.300"
+              border="1px solid"
+              borderColor="other.200"
               borderTopRightRadius="1.125em"
               borderBottomRightRadius="1.125em"
             >

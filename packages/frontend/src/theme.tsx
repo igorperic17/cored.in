@@ -32,7 +32,7 @@ const colors = {
     900: "#141413" // black
   },
   other: {
-    200: "#b0b0b0", // Used to identify self-issued credential, as a background for CORE right input element, as a helper text in NotRegisteredProfile
+    200: "#b0b0b0", // Used to identify self-issued credential, as a helper text in NotRegisteredProfile, for form elements border
     600: "#75746B" // Use this for placeholders and helper texts
   }
 };
