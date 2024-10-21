@@ -41,8 +41,8 @@ export class WaltIdWalletService {
       }
     });
 
-    console.log("RAW VCs");
-    console.dir(response.data, { depth: 10 });
+    // console.log("RAW VCs");
+    // console.dir(response.data, { depth: 10 });
 
     return response.data;
   }
@@ -57,7 +57,7 @@ export class WaltIdWalletService {
       }
     });
 
-    console.log("offer response data", offerResponse.data);
+    // console.log("offer response data", offerResponse.data);
 
     return offerResponse.data;
   }

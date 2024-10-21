@@ -34,7 +34,7 @@ export class WaltIdIssuerService {
         }
       }
     );
-    console.log("Onboarded issuer for wallet,", wallet);
+    // console.log("Onboarded issuer for wallet,", wallet);
 
     return createIssuerKeyResult.data;
   }
@@ -51,7 +51,7 @@ export class WaltIdIssuerService {
       issuerInfo,
       daysValid
     );
-    console.log("generated payload", payload);
+    // console.log("generated payload", payload);
     const createCredentialOfferResult = await axios.post(
       `${this.issuerApiUrl}/openid4vc/jwt/issue`,
       payload,
@@ -63,10 +63,10 @@ export class WaltIdIssuerService {
       }
     );
 
-    console.log(
-      "createCredentialOfferResult data",
-      createCredentialOfferResult.data
-    );
+    // console.log(
+    //   "createCredentialOfferResult data",
+    //   createCredentialOfferResult.data
+    // );
 
     // throw new Error();
 
