@@ -272,7 +272,8 @@ export const RequestCredential = () => {
               textTransform="none"
               fontWeight="400"
               fontSize={{ base: "0.875rem", lg: "1rem" }}
-              border="1px solid #141413"
+              border="1px solid"
+              borderColor="other.200"
               _hover={{
                 bg: "inherit",
                 color: "inherit",
