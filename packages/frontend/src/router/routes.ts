@@ -38,6 +38,9 @@ export const ROUTES = {
   SETTINGS: {
     path: "/settings"
   },
+  TIPS: {
+    path: "/tips"
+  },
   PRIVACY_POLICY: {
     path: "/privacy-policy"
   }

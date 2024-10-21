@@ -18,6 +18,7 @@ import CredentialsPage from "@/modules/home/views/Credentials.page";
 import { IncomingRequestsPage } from "@/modules/home/views/IncomingRequests.page";
 import SubscriptionsPage from "@/modules/home/views/Subscriptions.page";
 import MessagesPage from "@/modules/home/views/Messages.page";
+import TipsPage from "@/modules/home/views/Tips.page";
 
 export const router = createBrowserRouter([
   {
@@ -133,6 +134,17 @@ export const router = createBrowserRouter([
       {
         index: true,
         element: <SettingsPage />
+      }
+    ]
+  },
+  {
+    path: ROUTES.TIPS.path,
+    element: <HomeRoot />,
+    errorElement: <ResourceNotFoundPage />,
+    children: [
+      {
+        index: true,
+        element: <TipsPage />
       }
     ]
   }
