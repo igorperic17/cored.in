@@ -83,7 +83,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
         )}
         <Button
           bg="none"
-          color="text.700"
+          color="other.600"
           variant={variant}
           size="xs"
           _hover={{
@@ -108,6 +108,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
           size={size}
           // border="1px solid red"
           onClick={onOpen}
+          isDisabled
         >
           {signInText}
         </Button>

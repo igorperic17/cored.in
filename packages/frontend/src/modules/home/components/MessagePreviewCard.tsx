@@ -38,7 +38,7 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
         }
         layerStyle="cardBox"
         _hover={{
-          bg: "text.100"
+          bg: "brand.100"
         }}
       >
         <Flex
@@ -114,7 +114,7 @@ export const MessagePreviewCard: FC<MessagePreviewCardProps> = ({
         <Text
           as="time"
           dateTime=""
-          color="text.700"
+          color="other.600"
           textStyle="sm"
           ml={{ base: "3.125em", sm: "4.125em" }}
           userSelect="none"

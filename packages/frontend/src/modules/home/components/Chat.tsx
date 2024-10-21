@@ -221,7 +221,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
             <MenuButton
               as={IconButton}
               variant="empty"
-              color="text.700"
+              color="other.600"
               aria-label="See menu."
               icon={<FaEllipsis fontSize="1.5rem" />}
               size="lg"
@@ -267,7 +267,7 @@ export const Chat: FC<ChatProps> = ({ message }) => {
                   ref={cancelRef}
                   onClick={onClose}
                   variant="empty"
-                  color="text.700"
+                  color="other.600"
                 >
                   Cancel
                 </Button>

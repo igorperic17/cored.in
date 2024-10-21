@@ -44,7 +44,7 @@ export const MobileMenu = () => {
 
             <VStack spacing="1em" mt="1em">
               <DisclaimerText />
-              <SocialMedia size="1.5rem" gap="1.75em" color="text.400" />
+              <SocialMedia size="1.5rem" gap="1.75em" color="other.600" />
             </VStack>
           </ModalContent>
         </Modal>

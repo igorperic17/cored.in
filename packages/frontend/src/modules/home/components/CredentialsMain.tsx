@@ -20,7 +20,7 @@ export const CredentialsMain = () => {
         {/* <Box
           as="li"
           _hover={{
-            bg: "background.600"
+            bg: "other.600"
           }}
           w="100%"
           p="0.75em"
@@ -62,7 +62,7 @@ export const CredentialsMain = () => {
 
         <Box
           as="li"
-          color={pendingRequests?.length === 0 ? "text.700" : "brand.900"}
+          color={pendingRequests?.length === 0 ? "other.600" : "brand.900"}
           _hover={{
             bg: "brand.300",
             color: "brand.100"

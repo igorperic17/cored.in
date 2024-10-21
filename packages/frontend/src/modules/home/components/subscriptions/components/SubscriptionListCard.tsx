@@ -82,7 +82,7 @@ export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
           {info.subscribed_to}
         </Text> */}
         <Text
-          color="text.700"
+          color="other.600"
           textOverflow="ellipsis"
           whiteSpace="nowrap"
           overflow="hidden"
@@ -102,7 +102,7 @@ export const SubscriptionListCard: React.FC<SubscriptionListCardProps> = ({
         variant="empty"
         size="xs"
       >
-        <Button color="text.700" _hover={{ color: "brand.400" }}>
+        <Button color="other.600" _hover={{ color: "brand.400" }}>
           Remove
         </Button>
         <Button>Renew</Button>

@@ -13,7 +13,7 @@ const baseStyle = definePartsStyle({
     borderRadius: "1.125em",
 
     _placeholder: {
-      color: "text.700"
+      color: "other.600"
     }
   }
 });

@@ -126,7 +126,7 @@ export const SubscriptionSettings = () => {
             />
             <InputRightAddon
               color="brand.900"
-              bg="text.300"
+              bg="other.200"
               border="1px solid #141413"
               borderTopRightRadius="1.125em"
               borderBottomRightRadius="1.125em"
@@ -134,7 +134,7 @@ export const SubscriptionSettings = () => {
               CORE
             </InputRightAddon>
           </InputGroup>
-          <FormHelperText color="text.700">
+          <FormHelperText color="other.600">
             This is the price that users will be charged when subscribing to
             your profile. If you wish the subscription to be free, set the price
             to 0.
@@ -161,7 +161,7 @@ export const SubscriptionSettings = () => {
             <option value="60">2 months</option>
             <option value="90">3 months</option>
           </Select>
-          <FormHelperText color="text.700">
+          <FormHelperText color="other.600">
             This is the duration that users will be subscribed to your profile.
             After this period they will need to renew the subscription in order
             to get access to the subscription features again. 1 month equals to

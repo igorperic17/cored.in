@@ -84,7 +84,7 @@ export const UserSignOut = ({ isMobile }: UserSignOutProps) => {
         <Button
           variant="empty"
           size="xs"
-          color="text.700"
+          color="other.600"
           onClick={handleDisconnectWallet}
           rightIcon={<FaArrowRightFromBracket />}
         >

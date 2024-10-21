@@ -21,7 +21,7 @@ export const AutoResizeTextarea = React.forwardRef<
       {...formElementBorderStyles}
       borderColor="rgba(0, 0, 0, 0.5)" // added this line to set a smoother border line
       _placeholder={{
-        color: "text.700"
+        color: "other.600"
       }}
       {...props}
     />
