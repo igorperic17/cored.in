@@ -108,7 +108,6 @@ export const LoginButton: FC<LoginButtonProps> = ({
           size={size}
           // border="1px solid red"
           onClick={onOpen}
-          isDisabled
         >
           {signInText}
         </Button>
