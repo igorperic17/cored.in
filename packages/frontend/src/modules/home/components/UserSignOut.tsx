@@ -6,7 +6,15 @@ import {
   useLoggedInServerState
 } from "@/hooks";
 import { CONTRACT_QUERIES, USER_QUERIES } from "@/queries";
-import { Button, HStack, Icon, Link, Text, VStack } from "@chakra-ui/react";
+import {
+  BoxProps,
+  Button,
+  HStack,
+  Icon,
+  Link,
+  Text,
+  VStack
+} from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useCallback, useContext } from "react";
@@ -16,11 +24,11 @@ import { CopyIcon } from "@chakra-ui/icons";
 import { ROUTES } from "@/router/routes";
 import { Link as ReactRouterLink } from "react-router-dom";
 
-type UserSignOutProps = {
+type UserSignOutProps = BoxProps & {
   isMobile?: boolean;
 };
 
-export const UserSignOut = ({ isMobile }: UserSignOutProps) => {
+export const UserSignOut = ({ isMobile, ...props }: UserSignOutProps) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { needsAuth } = useAuth();
   const { data: userProfile } = useLoggedInServerState(
@@ -55,6 +63,7 @@ export const UserSignOut = ({ isMobile }: UserSignOutProps) => {
       layerStyle={isMobile ? "" : "cardBox"}
       p={isMobile ? "" : "2em"}
       w="100%"
+      {...props}
     >
       <Icon as={FaIdCard} fontSize="1.5rem" />
       <VStack align="start" spacing="1.5em">
