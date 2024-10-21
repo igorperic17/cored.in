@@ -34,10 +34,16 @@ export const Tips = () => {
         </Button>
       </Flex>
 
-      <Flex w="100%" direction="column" gap="0.5em">
-        <TipsNotificationCard />
-        <TipsNotificationCard />
-        <TipsNotificationCard />
+      <Flex as="ul" w="100%" direction="column" gap="0.5em">
+        <li>
+          <TipsNotificationCard />
+        </li>
+        <li>
+          <TipsNotificationCard />
+        </li>
+        <li>
+          <TipsNotificationCard />
+        </li>
       </Flex>
     </Flex>
   );
