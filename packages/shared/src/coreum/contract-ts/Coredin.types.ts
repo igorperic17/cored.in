@@ -7,9 +7,8 @@
 export type Uint128 = string;
 export type Decimal = string;
 export interface InstantiateMsg {
-  purchase_price?: Coin | null;
+  did_register_price?: Coin | null;
   subscription_fee: Decimal;
-  transfer_price?: Coin | null;
 }
 export interface Coin {
   amount: Uint128;

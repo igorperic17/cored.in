@@ -6,7 +6,7 @@
     "subscription_fee"
   ],
   "properties": {
-    "purchase_price": {
+    "did_register_price": {
       "anyOf": [
         {
           "$ref": "#/definitions/Coin"
@@ -18,16 +18,6 @@
     },
     "subscription_fee": {
       "$ref": "#/definitions/Decimal"
-    },
-    "transfer_price": {
-      "anyOf": [
-        {
-          "$ref": "#/definitions/Coin"
-        },
-        {
-          "type": "null"
-        }
-      ]
     }
   },
   "additionalProperties": false,

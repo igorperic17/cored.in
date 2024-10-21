@@ -26,9 +26,11 @@ import {
   SkillTags,
   UserProfile
 } from "@coredin/shared";
-import { FC } from "react";
+import { FC, useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { requestTypeData, visibilityData } from "./post/constants";
+import { RichTextEditor } from "./RichTextEditor";
+import { EditorState, convertToRaw } from "draft-js";
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -61,14 +63,26 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
   handlePost,
   isPending
 }) => {
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+
+  const handleEditorStateChange = (newEditorState: EditorState) => {
+    setEditorState(newEditorState);
+    const contentState = newEditorState.getCurrentContent();
+    const rawContentState = convertToRaw(contentState);
+    setPostContent(JSON.stringify(rawContentState));
+  };
+
   return (
     <Modal
       isOpen={isOpen}
       onClose={() => {
         onClose();
         setPostContent("");
+        setEditorState(EditorState.createEmpty());
       }}
-      size="xl"
+      size="5xl"
       isCentered
     >
       <ModalOverlay />
@@ -165,20 +179,17 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
               <MultiSelect
                 options={SkillTags.map((tag) => ({ label: tag, value: tag }))}
                 value={skillTags.map((tag) => ({ label: tag, value: tag }))}
-                onChange={(newTags) => setSkillTags(newTags.map((tag) => tag.value as SkillTag))}
+                onChange={(newTags) =>
+                  setSkillTags(newTags.map((tag) => tag.value as SkillTag))
+                }
                 placeholder="Select skills"
                 menuPlacement="bottom"
               />
             </FormControl>
           )}
-
-          <AutoResizeTextarea
-            placeholder="Write the text, choose the post type, set the visibility and share it"
-            value={postContent}
-            onChange={(e) => setPostContent(e.target.value)}
-            minH="50vh"
-            variant="unstyled"
-            p="1em"
+          <RichTextEditor
+            editorState={editorState}
+            onEditorStateChange={handleEditorStateChange}
           />
         </ModalBody>
 

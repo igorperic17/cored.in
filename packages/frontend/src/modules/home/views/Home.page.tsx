@@ -22,7 +22,11 @@ import {
 import { Feed } from "../components/Feed";
 import { CreatePost } from "../components";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient
+} from "@tanstack/react-query";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { PostRequestType, SkillTag } from "@coredin/shared";
 import { END_FEED_PHRASES } from "../components/post/constants";
@@ -61,9 +65,11 @@ const HomePage = () => {
       return firstPageParam - 1;
     }
   });
-  
+
   const queryClient = useQueryClient(); // Get queryClient from useQueryClient
-  const { mutate: mutateClearBoosts } = useMutation(FEED_MUTATIONS.clearBoosts());
+  const { mutate: mutateClearBoosts } = useMutation(
+    FEED_MUTATIONS.clearBoosts()
+  );
   const { successToast, errorToast } = useCustomToast();
 
   let timeoutId: string | number | NodeJS.Timeout | undefined;
@@ -91,22 +97,33 @@ const HomePage = () => {
     };
   }, []);
 
-  const completeFeed = useMemo(() => posts?.pages.flatMap((page) => page) || [], [posts]);
+  const completeFeed = useMemo(
+    () => posts?.pages.flatMap((page) => page) || [],
+    [posts]
+  );
 
   const postsOnly = useMemo(() => {
-    return posts?.pages.flatMap((page) => page).filter((post) => !post.requestType) || [];
+    return (
+      posts?.pages
+        .flatMap((page) => page)
+        .filter((post) => !post.requestType) || []
+    );
   }, [posts]);
 
   const [selectedTagsFilter, setSelectedTagsFilter] = useState<SkillTag[]>([]);
 
   const jobsAndGigsOnly = useMemo(() => {
-    return posts?.pages
-      .flatMap((page) => page)
-      .filter(
-        (post) =>
-          (selectedTagsFilter.length === 0 || selectedTagsFilter.some(tag => post.skillTags.includes(tag))) &&
-          (post.requestType === PostRequestType.JOB || post.requestType === PostRequestType.GIG)
-      ) || [];
+    return (
+      posts?.pages
+        .flatMap((page) => page)
+        .filter(
+          (post) =>
+            (selectedTagsFilter.length === 0 ||
+              selectedTagsFilter.some((tag) => post.skillTags.includes(tag))) &&
+            (post.requestType === PostRequestType.JOB ||
+              post.requestType === PostRequestType.GIG)
+        ) || []
+    );
   }, [posts, selectedTagsFilter]);
 
   const randomEndFeedPhrase =
@@ -127,7 +144,7 @@ const HomePage = () => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  let tags = SkillTags.map(x => x);
+  let tags = SkillTags.map((x) => x);
 
   return (
     <Flex
@@ -143,10 +160,12 @@ const HomePage = () => {
         <Flex direction="row" justifyContent="space-between">
           <TabList>
             {Object.values(FeedTabs).map((tab) => (
-              <Tab key={tab} onClick={() => handleTabChange(tab)}>{tab}</Tab>
+              <Tab key={tab} onClick={() => handleTabChange(tab)}>
+                {tab}
+              </Tab>
             ))}
           </TabList>
-          <Button
+          {/* <Button
             size="xs"
             colorScheme="green"
             onClick={async () => {
@@ -161,16 +180,17 @@ const HomePage = () => {
             }}
           >
             Reset boosts
-          </Button>
-          {selectedTab === FeedTabs.Offers && <SkillFilter
-            isOpen={isOpen}
-            onOpen={handleOpen}
-            onClose={handleClose}
-            onApply={handleTagChange}
-            availableTags={tags.map(tag => tag)}
-            initialTags={selectedTagsFilter}
-          />
-          }
+          </Button> */}
+          {selectedTab === FeedTabs.Offers && (
+            <SkillFilter
+              isOpen={isOpen}
+              onOpen={handleOpen}
+              onClose={handleClose}
+              onApply={handleTagChange}
+              availableTags={tags.map((tag) => tag)}
+              initialTags={selectedTagsFilter}
+            />
+          )}
         </Flex>
         <TabPanels id="home-feed">
           <TabPanel>
@@ -200,7 +220,6 @@ const HomePage = () => {
           )}
         </TabPanels>
       </Tabs>
-      
     </Flex>
   );
 };

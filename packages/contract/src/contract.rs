@@ -2,7 +2,7 @@ use coreum_wasm_sdk::assetnft::{self, DISABLE_SENDING};
 use coreum_wasm_sdk::core::{CoreumMsg, CoreumQueries};
 use cosmwasm_std::{
     coin, entry_point, to_json_binary, Binary, Deps, DepsMut, Env, MessageInfo, Response, StdError,
-    StdResult, Uint64,
+    StdResult, Uint64
 };
 use cw_storage_plus::Map;
 use std::collections::LinkedList;
@@ -30,7 +30,7 @@ const MIN_NAME_LENGTH: u64 = 3;
 const MAX_NAME_LENGTH: u64 = 64;
 
 // TODO: adjust this to "utestcore" when deploying the contract, so it works when deployed to testnet
-pub const FEE_DENOM: &str = "utestcore";
+pub const FEE_DENOM: &str = "ucore";
 
 pub const NFT_CLASS_PREFIX: &str = "coredintestnet";
 pub const NFT_CLASS_SUFFIX_PROFILE: &str = "p";
@@ -44,9 +44,11 @@ pub fn instantiate(
 ) -> Result<Response<CoreumMsg>, StdError> {
     let config_state = Config {
         owner: info.sender,
-        did_register_price: msg.purchase_price,
+        did_register_price: msg.did_register_price,
         subscription_fee: msg.subscription_fee,
     };
+    // set_contract_version(deps.storage, CONTRACT_NAME, CONTRACT_VERSION).unwrap();
+    
     CONFIG.save(deps.storage, &config_state)?;
 
     // create an NFT class for subscriptions (owners are subscribers)

@@ -77,20 +77,28 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         if (boostedUntil > now) {
           const diff = boostedUntil.getTime() - now.getTime();
           const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
-          const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-          const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const months = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30)
+          );
+          const days = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+          );
+          const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
           const timeString = [
-            years > 0 ? `${years}y` : '',
-            months > 0 ? `${months}m` : '',
-            days > 0 ? `${days}d` : '',
-            hours > 0 ? `${hours}h` : '',
-            minutes > 0 ? `${minutes}m` : '',
+            years > 0 ? `${years}y` : "",
+            months > 0 ? `${months}m` : "",
+            days > 0 ? `${days}d` : "",
+            hours > 0 ? `${hours}h` : "",
+            minutes > 0 ? `${minutes}m` : "",
             `${seconds}s`
-          ].filter(Boolean).join(' | ');
+          ]
+            .filter(Boolean)
+            .join(" | ");
 
           setRemainingTime(timeString);
           setIsBoosted(true);
@@ -170,32 +178,19 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   return (
     <>
       {isBoosted && (
-      <Flex justify="start" w="100%" mb="-10px">
-        {/* <Flex justify="start" w="100%">
-          <Tag
-            size="sm"
-            color="brand.100"
-            backgroundColor="brand.300"
-            animation="pulse 2s infinite"
-            borderBottomRadius="0"
-            borderTopRadius="10"
-          >
-            Boosted until {new Date(post.boostedUntil).toLocaleDateString()}
-          </Tag>
-        </Flex> */}
-
-        <Flex justify="end" w="100%">
-          <Tag
-            size="sm"
-            color="brand.100"
-            backgroundColor="brand.300"
-            animation="pulse 2s infinite"
-            borderBottomRadius="0"
-            borderTopRadius="10"
-          >
-            Boost duration: {remainingTime}
-          </Tag>
-        </Flex>
+        <Flex justify="start" w="100%" mb="-10px">
+          <Flex justify="end" w="100%">
+            <Tag
+              size="sm"
+              color="brand.100"
+              backgroundColor="brand.300"
+              animation="pulse 2s infinite"
+              borderBottomRadius="0"
+              borderTopRadius="10"
+            >
+              Boost duration: {remainingTime}
+            </Tag>
+          </Flex>
         </Flex>
       )}
       <VStack
@@ -205,10 +200,14 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         h="max-content"
         layerStyle="cardBox"
         py="1em"
-        _hover={{ bg: "brand.100" }}
         // borderTopLeftRadius={isBoosted ? "0" : undefined}
         borderTopRightRadius={isBoosted ? "0" : undefined}
         borderColor={isBoosted ? "brand.300" : "brand.100"}
+        _hover={{
+          boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
+          transition: "all 0.3s ease-in-out"
+        }}
+        transition="all 0.3s ease-in-out"
       >
         {postDetail?.parent && !isReply && (
           <Content
