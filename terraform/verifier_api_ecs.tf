@@ -93,7 +93,7 @@ resource "aws_ecs_service" "verifier_api" {
   dynamic "load_balancer" {
     for_each = var.use_elbs ? [1] : []
     content {
-      target_group_arn = aws_alb_target_group.verifier_api.arn
+      target_group_arn = aws_alb_target_group.verifier_api[0].arn
       container_name   = "${var.app_name}-verifier-api-container"
       container_port   = var.verifier_api_port
     }

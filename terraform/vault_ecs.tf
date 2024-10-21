@@ -124,7 +124,7 @@ resource "aws_ecs_service" "vault" {
   dynamic "load_balancer" {
     for_each = var.use_elbs ? [1] : []
     content {
-      target_group_arn = aws_alb_target_group.vault.arn
+      target_group_arn = aws_alb_target_group.vault[0].arn
       container_name   = "${var.app_name}-vault-container"
       container_port   = var.vault_port
     }

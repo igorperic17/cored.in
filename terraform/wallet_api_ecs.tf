@@ -164,7 +164,7 @@ resource "aws_ecs_service" "wallet_api" {
   dynamic "load_balancer" {
     for_each = var.use_elbs ? [1] : []
     content {
-      target_group_arn = aws_alb_target_group.wallet_api.arn
+      target_group_arn = aws_alb_target_group.wallet_api[0].arn
       container_name   = "${var.app_name}-wallet-api-container"
       container_port   = var.wallet_api_port
     }
