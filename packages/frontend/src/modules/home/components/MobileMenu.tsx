@@ -37,6 +37,7 @@ export const MobileMenu = () => {
                 isPostPage={false}
                 pendingRequests={undefined}
                 unreadMessages={0}
+                closeMobileMenu={onClose}
               />
 
               <UserSignOut isMobile w="max-content" />
