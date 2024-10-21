@@ -3,6 +3,11 @@ resource "random_password" "rds_password" {
   special = false
 }
 
+resource "random_password" "waltid_rds_password" {
+  length  = 32
+  special = false
+}
+
 resource "aws_db_parameter_group" "rds_parameter_group" {
   name        = "${var.app_name}-rds-parameter-group"
   family      = "postgres16"
@@ -15,19 +20,20 @@ resource "aws_db_parameter_group" "rds_parameter_group" {
 }
 
 resource "aws_db_instance" "rds_instance" {
-  identifier           = "${var.app_name}-rds"
-  allocated_storage    = 10
-  db_name              = var.db_name
-  engine               = "postgres"
-  engine_version       = "16.3"
-  instance_class       = var.db_instance_class
-  username             = var.db_user
-  password             = random_password.rds_password.result
-  db_subnet_group_name = aws_db_subnet_group.rds_subnet_group.name
-  parameter_group_name = aws_db_parameter_group.rds_parameter_group.name
-  apply_immediately    = true
-  publicly_accessible  = true // TODO: Rollback after adding VPN (var.use_private_subnets ? false : true)
-  skip_final_snapshot  = true
+  identifier              = "${var.app_name}-rds"
+  allocated_storage       = 10
+  db_name                 = var.db_name
+  engine                  = "postgres"
+  engine_version          = var.db_engine_version
+  instance_class          = var.db_instance_class
+  username                = var.db_user
+  password                = random_password.rds_password.result
+  db_subnet_group_name    = aws_db_subnet_group.rds_subnet_group.name
+  parameter_group_name    = aws_db_parameter_group.rds_parameter_group.name
+  apply_immediately       = true
+  publicly_accessible     = true // TODO: Rollback after adding VPN (var.use_private_subnets ? false : true)
+  backup_retention_period = var.db_retention_window_days
+  storage_encrypted       = true
 
   availability_zone = var.db_availability_zones[0]
 
@@ -40,6 +46,7 @@ resource "aws_db_instance" "rds_instance" {
 }
 
 provider "postgresql" {
+  scheme   = "awspostgres"
   host     = element(split(":", aws_db_instance.rds_instance.endpoint), 0)
   database = aws_db_instance.rds_instance.db_name
   username = var.db_user
@@ -47,18 +54,18 @@ provider "postgresql" {
 }
 
 provider "postgresql" {
+  scheme   = "awspostgres"
   alias    = "wallet_api"
   host     = element(split(":", aws_db_instance.rds_instance.endpoint), 0)
-  database = "postgres"
   username = var.db_user
   password = random_password.rds_password.result
 }
 
-# resource "postgresql_database" "wallet_api_database" {
-#   provider = postgresql.wallet_api
-#   name     = var.wallet_api_db_name
-#   owner    = var.db_user
-# }
+resource "postgresql_database" "wallet_api_database" {
+  provider = postgresql.wallet_api
+  name     = var.wallet_api_db_name
+  owner    = var.db_user
+}
 
 resource "aws_secretsmanager_secret" "rds_password_asm_secret" {
   name                    = "${var.app_name}-rds-password"

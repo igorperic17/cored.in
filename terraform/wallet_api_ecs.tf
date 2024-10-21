@@ -103,7 +103,7 @@ resource "aws_ecs_task_definition" "wallet_api" {
       environment = [
         {
           name  = "DB_URL",
-          value = "${aws_db_instance.rds_instance.endpoint}/${var.db_name}"
+          value = "${aws_db_instance.rds_instance.endpoint}/${var.wallet_api_db_name}"
         },
         {
           name  = "DB_USER",
