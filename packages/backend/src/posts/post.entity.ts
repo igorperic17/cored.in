@@ -1,4 +1,4 @@
-import { User } from "@/user/user.entity";
+import { User } from "../user/user.entity";
 import { PostVisibility, PostRequestType, DateString } from "@coredin/shared";
 import {
   Entity,
@@ -111,7 +111,7 @@ export class Post {
 
   // UNIX timestamp
   @UpdateDateColumn({
-    type: 'timestamp', 
+    type: "timestamp",
     precision: 3
   })
   boostedUntil: Date;

@@ -2,7 +2,7 @@ app_name                           = "coredin"
 is_app_https                       = true
 use_private_subnets                = true
 use_vpc_endpoints                  = false
-use_elbs                           = false
+use_elbs                           = true
 use_lambda_backend                 = false
 use_vault_efs                      = true
 backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
@@ -14,8 +14,8 @@ db_availability_zones = [
 ]
 db_name                  = "coredinprod"
 db_user                  = "coredin_rds_admin"
-db_engine_version        = "16.1"
-db_retention_window_days = 0
+db_engine_version        = "16.3"
+db_retention_window_days = 30
 
 wallet_api_image   = "730335564744.dkr.ecr.eu-west-1.amazonaws.com/coredin/waltid-wallet-api:x86"
 wallet_api_db_name = "coredinwalletapiprod"
