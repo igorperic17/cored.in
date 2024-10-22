@@ -1,10 +1,8 @@
-import { useCustomToast } from "@/hooks";
 import { formElementBorderStyles } from "@/themes";
 import {
   Button,
   Flex,
   FormControl,
-  FormHelperText,
   FormLabel,
   Heading,
   Input,
@@ -20,6 +18,13 @@ import {
   Text
 } from "@chakra-ui/react";
 import { FC, useState } from "react";
+import {
+  TESTNET_CHAIN_BECH32_PREFIX,
+  TESTNET_CHAIN_NAME,
+  TESTNET_FEE_DENOM,
+  TESTNET_GAS_PRICE
+} from "@coredin/shared";
+import { useChain } from "@cosmos-kit/react";
 
 type TransferModalProps = {
   isOpen: boolean;
@@ -32,18 +37,43 @@ export const TransferModal: FC<TransferModalProps> = ({
   onClose,
   balance
 }) => {
+  const { address, sign, broadcast } = useChain(TESTNET_CHAIN_NAME);
   const [transferAmount, setTransferAmount] = useState<number>(0);
-  const [toWalletAddress, setToWalletAddress] = useState("");
-  const { successToast, errorToast } = useCustomToast(); // TODO: implement in the code
-
+  const [toAddress, setToAddress] = useState("");
   const isInvalidTransferAmount = transferAmount && transferAmount > balance;
 
   const handleClose = () => {
     onClose();
     setTransferAmount(0);
-    setToWalletAddress("");
+    setToAddress("");
   };
-  //   console.log("transferAmount", transferAmount, typeof transferAmount);
+
+  // TODO - move decimals to shared...
+  // TODO - debug
+  const handleSend = () => {
+    // Encode a send message.
+    const msg = {
+      typeUrl: "/cosmos.bank.v1beta1.MsgSend",
+      value: {
+        fromAddress: address,
+        toAddress,
+        amount: [
+          {
+            denom: TESTNET_FEE_DENOM,
+            amount: (transferAmount * 1000000).toString()
+          }
+        ]
+        // type: "/cosmos.bank.v1beta1.MsgSend"
+      }
+    };
+    const fee = {
+      amount: [{ denom: TESTNET_FEE_DENOM, amount: TESTNET_GAS_PRICE }],
+      gas: "200000"
+    };
+    const memo = "Transfered from cored.in";
+
+    sign([msg], fee, memo).then((value) => broadcast(value)); // , fee, memo
+  };
 
   return (
     <Modal isOpen={isOpen} onClose={handleClose} isCentered>
@@ -60,10 +90,10 @@ export const TransferModal: FC<TransferModalProps> = ({
                 fontSize="1rem"
                 textTransform="uppercase"
               >
-                My balance
+                Wallet balance
               </Heading>
               <Text as="span" fontSize="2rem" fontWeight="700">
-                {`${2870} CORE`}
+                {`${balance} CORE`}
               </Text>
             </Flex>
             <FormControl>
@@ -103,9 +133,9 @@ export const TransferModal: FC<TransferModalProps> = ({
               <Input
                 type="text"
                 {...formElementBorderStyles}
-                placeholder="0x..."
-                value={toWalletAddress}
-                onChange={(e) => setToWalletAddress(e.target.value)}
+                placeholder={`${TESTNET_CHAIN_BECH32_PREFIX}...`}
+                value={toAddress}
+                onChange={(e) => setToAddress(e.target.value)}
               />
             </FormControl>
           </Flex>
@@ -124,8 +154,8 @@ export const TransferModal: FC<TransferModalProps> = ({
           <Button
             variant="primary"
             size="sm"
-            onClick={() => {}}
-            isDisabled={isInvalidTransferAmount || !toWalletAddress}
+            onClick={handleSend}
+            isDisabled={isInvalidTransferAmount || !toAddress}
           >
             Transfer
           </Button>
