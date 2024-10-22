@@ -98,7 +98,7 @@ resource "aws_ecs_service" "issuer_api" {
   dynamic "load_balancer" {
     for_each = var.use_elbs ? [1] : []
     content {
-      target_group_arn = aws_alb_target_group.issuer_api.arn
+      target_group_arn = aws_alb_target_group.issuer_api[0].arn
       container_name   = "${var.app_name}-issuer-api-container"
       container_port   = var.issuer_api_port
     }

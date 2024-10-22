@@ -7,7 +7,7 @@ db:
   port: 5432
   user: 'dev_user'
   database: 'coredin_dev_db'
-  synchronize: true
+  synchronize: false
   debug: true
 
 unleash:

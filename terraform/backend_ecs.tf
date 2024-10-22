@@ -71,7 +71,7 @@ resource "aws_ecs_task_definition" "backend" {
               port        = aws_db_instance.rds_instance.port,
               user        = var.db_user,
               database    = var.db_name,
-              synchronize = true,
+              synchronize = false,
               debug       = false,
             },
             vault = {

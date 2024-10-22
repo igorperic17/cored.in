@@ -13,7 +13,9 @@ OR
 ## Database
 This project uses a posgreSQL DB, one sample instance could be run with `docker compose up -d postgres` inside packages/backend.
 
-It can then be accessed directly with `psql -U dev_user -h localhost -p 5432 -d coredin_dev_db`
+It can then be accessed directly with `psql -U dev_user -h localhost -p 5432 -d coredin_dev_db`.
+
+Migrations can be generated from backend package with `yarn typeorm:generate db/migrations/<Migration description>` and ran with `yarn typeorm:migrate`.
 
 ## Technologies
 
