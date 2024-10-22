@@ -1,10 +1,10 @@
-FROM openbao/openbao:2.0.0-beta20240618-amd64
+FROM openbao/openbao:2.0.2
 
 RUN apk update && \
     apk add --no-cache \
-        aws-cli \
-        curl \
-        bash
+    aws-cli \
+    curl \
+    bash
 
 RUN curl -sSL -o /usr/local/bin/jq "https://github.com/stedolan/jq/releases/download/jq-1.6/jq-linux64" \
     && chmod +x /usr/local/bin/jq

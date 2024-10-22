@@ -7,8 +7,14 @@ export const WaltIdIssuerServiceProvider = {
   useFactory: (config: ConfigService, secrets: SecretsService) => {
     const issuerApiUrl = config.get("issuer.api.url");
     const vaultApiUrl = config.get("vault.api.url");
-    const vaultAccessKey = secrets.get("vault_access_key");
-    return new WaltIdIssuerService(issuerApiUrl, vaultApiUrl, vaultAccessKey);
+    const vaultRoleId = secrets.get("vault_role_id");
+    const vaultSecretId = secrets.get("vault_secret_id");
+    return new WaltIdIssuerService(
+      issuerApiUrl,
+      vaultApiUrl,
+      vaultRoleId,
+      vaultSecretId
+    );
   },
   inject: [ConfigService, SecretsService]
 };

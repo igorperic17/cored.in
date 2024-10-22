@@ -1,7 +1,15 @@
 use coreum_wasm_sdk::core::CoreumMsg;
-use cosmwasm_std::{to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response, StdError, StdResult, Uint128, Uint64};
+use cosmwasm_std::{
+    to_json_binary, BankMsg, Binary, Coin, Decimal, Deps, DepsMut, Env, MessageInfo, Response,
+    StdError, StdResult, Uint128, Uint64,
+};
 
-use crate::{contract::FEE_DENOM, error::ContractError, models::post::PostInfo, state::{CONFIG, POST}};
+use crate::{
+    contract::FEE_DENOM,
+    error::ContractError,
+    models::post::PostInfo,
+    state::{CONFIG, POST},
+};
 
 pub fn tip_post_author(
     deps: DepsMut,
@@ -44,7 +52,10 @@ pub fn tip_post_author(
     if info.funds[0].amount > Uint128::zero() {
         let commission_rate = Decimal::percent(5);
         let total_tip = info.funds[0].amount.clone(); // Assuming single coin type
-        let author_tip = Decimal::from_atomics(total_tip, 0).unwrap().checked_div(Decimal::percent(100) + commission_rate).unwrap();
+        let author_tip = Decimal::from_atomics(total_tip, 0)
+            .unwrap()
+            .checked_div(Decimal::percent(100) + commission_rate)
+            .unwrap();
         author_tip_int = author_tip.to_uint_floor();
         commission = total_tip - author_tip_int;
     }
@@ -94,20 +105,25 @@ pub fn get_post_tips(deps: Deps, post_id: Uint64) -> StdResult<Binary> {
     if let Some(post) = post {
         Ok(to_json_binary(&post.vault.amount)?)
     } else {
-        Err(StdError::not_found(format!("Post with id {} not found", post_id)))
+        Err(StdError::not_found(format!(
+            "Post with id {} not found",
+            post_id
+        )))
     }
 }
 
 #[cfg(test)]
 
 mod tests {
-    use crate::msg::{InstantiateMsg, ExecuteMsg};
+    use crate::msg::{ExecuteMsg, InstantiateMsg};
     use crate::test_helpers::test_helpers::{get_balance, mock_register_account, with_test_tube};
-    use cosmwasm_std::{Coin, Decimal, Timestamp};
     use coreum_test_tube::Account;
+    use cosmwasm_std::{Coin, Decimal, Timestamp};
 
     use cosmwasm_std::{
-        from_json, testing::{mock_dependencies, mock_env, mock_info}, Addr, Uint128
+        from_json,
+        testing::{mock_dependencies, mock_env, mock_info},
+        Addr, Uint128,
     };
 
     use super::*;
@@ -312,10 +328,7 @@ mod tests {
         // Test getting tips for a non-existing post
         let non_existent_post_id = Uint64::new(999);
         let err = get_post_tips(deps.as_ref(), non_existent_post_id).unwrap_err();
-        assert!(matches!(
-            err,
-            StdError::NotFound { .. }
-        ));
+        assert!(matches!(err, StdError::NotFound { .. }));
     }
 
     #[test]
@@ -338,7 +351,8 @@ mod tests {
                 amount: Uint128::zero(),
             },
         };
-        POST.save(deps.as_mut().storage, post_id.to_string(), &post_info).unwrap();
+        POST.save(deps.as_mut().storage, post_id.to_string(), &post_info)
+            .unwrap();
 
         // Simulate tipping process using the tip_post_author function
         let tip_amount = Uint128::new(10500000); // 10 CORE + 0.5 commission
@@ -350,9 +364,10 @@ mod tests {
             }],
         };
 
-        let tip_res = tip_post_author(deps.as_mut(), env.clone(), tip_info, post_info.clone()).unwrap();
+        let tip_res =
+            tip_post_author(deps.as_mut(), env.clone(), tip_info, post_info.clone()).unwrap();
         println!("{:?}", tip_res);
-        
+
         let tip_raw = get_post_tips(deps.as_ref(), post_id).unwrap();
         let tip_result: Uint128 = from_json::<Uint128>(tip_raw).unwrap();
 
@@ -372,7 +387,6 @@ mod tests {
             let admin = &accs[0];
             let author = &accs[1];
             let tipper = &accs[2];
-
 
             // Register the author
             mock_register_account(&wasm, &contract_addr, &author, "author".to_string());
@@ -396,7 +410,9 @@ mod tests {
 
             // Tip the post
             let tip_amount = Uint128::new(105_000_000); // 100 CORE tip + 5% commission
-            let tip_msg = ExecuteMsg::TipPostAuthor { post_info: post_info.clone() };
+            let tip_msg = ExecuteMsg::TipPostAuthor {
+                post_info: post_info.clone(),
+            };
             wasm.execute(
                 &contract_addr,
                 &tip_msg,
@@ -405,21 +421,30 @@ mod tests {
                     amount: tip_amount,
                 }],
                 &tipper,
-            ).unwrap();
+            )
+            .unwrap();
 
             // Check admin balance (should have received 5% commission)
             let expected_commission = Uint128::new(initial_admin_balance.u128() + 5_000_000); // 5% of 100 CORE
             let admin_balance = get_balance(&bank, &admin);
-            assert_eq!(admin_balance, expected_commission, "Admin should receive 5% commission");
+            assert_eq!(
+                admin_balance, expected_commission,
+                "Admin should receive 5% commission"
+            );
 
             // Check author balance (should have received 95% of the tip)
             let expected_author_tip = Uint128::new(initial_author_balance.u128() + 100_000_000); // 100% of 100 CORE
             let author_balance = get_balance(&bank, &author);
-            assert_eq!(author_balance, expected_author_tip, "Author should receive 95% of the tip");
+            assert_eq!(
+                author_balance, expected_author_tip,
+                "Author should receive 95% of the tip"
+            );
 
             // Check if the admin gets paid for author tipping their own post
             let initial_admin_balance = get_balance(&bank, &admin);
-            let self_tip_msg = ExecuteMsg::TipPostAuthor { post_info: post_info.clone() };
+            let self_tip_msg = ExecuteMsg::TipPostAuthor {
+                post_info: post_info.clone(),
+            };
             wasm.execute(
                 &contract_addr,
                 &self_tip_msg,
@@ -428,12 +453,17 @@ mod tests {
                     amount: tip_amount,
                 }],
                 &author,
-            ).unwrap();
+            )
+            .unwrap();
 
             // Check admin balance (should have received the entire tip)
-            let expected_admin_balance = Uint128::new(initial_admin_balance.u128() + tip_amount.u128());
+            let expected_admin_balance =
+                Uint128::new(initial_admin_balance.u128() + tip_amount.u128());
             let admin_balance_after_self_tip = get_balance(&bank, &admin);
-            assert_eq!(admin_balance_after_self_tip, expected_admin_balance, "Admin should receive the entire tip when author tips their own post");
+            assert_eq!(
+                admin_balance_after_self_tip, expected_admin_balance,
+                "Admin should receive the entire tip when author tips their own post"
+            );
         });
     }
 }

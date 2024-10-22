@@ -92,13 +92,13 @@ export class PostsController {
   }
 
   // TODO - remove this before deploying to production!
-  @TypedRoute.Post("clear-boosts")
-  async clearAllBoosts(@Req() req: AuthenticatedRequest) {
-    try {
-      await this.postsService.clearAllBoosts(req.wallet);
-      return { message: "All boosts cleared successfully" };
-    } catch (error) {
-      throw new BadRequestException("Failed to clear boosts");
-    }
-  }
+  // @TypedRoute.Post("clear-boosts")
+  // async clearAllBoosts(@Req() req: AuthenticatedRequest) {
+  //   try {
+  //     await this.postsService.clearAllBoosts(req.wallet);
+  //     return { message: "All boosts cleared successfully" };
+  //   } catch (error) {
+  //     throw new BadRequestException("Failed to clear boosts");
+  //   }
+  // }
 }

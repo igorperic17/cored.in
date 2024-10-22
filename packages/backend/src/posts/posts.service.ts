@@ -590,11 +590,11 @@ export class PostsService {
   // }
 
   // TODO - remove this before deploying to production!
-  async clearAllBoosts(wallet: string): Promise<void> {
-    const posts = await this.postRepository.find();
-    for (const post of posts) {
-      post.boostedUntil = post.createdAt;
-      await this.postRepository.save(post);
-    }
-  }
+  // async clearAllBoosts(wallet: string): Promise<void> {
+  //   const posts = await this.postRepository.find();
+  //   for (const post of posts) {
+  //     post.boostedUntil = post.createdAt;
+  //     await this.postRepository.save(post);
+  //   }
+  // }
 }

@@ -7,6 +7,7 @@ FROM node:20.14-alpine3.19
 # Step 3: Copy 
 COPY --from=builder coredin/packages/backend/dist app/packages/backend/dist
 COPY --from=builder coredin/packages/backend/config app/packages/backend/config
+COPY --from=builder coredin/packages/backend/db app/packages/backend/db
 COPY --from=builder coredin/packages/shared/dist app/packages/shared/dist
 COPY --from=builder coredin/packages/shared/package.json app/packages/shared
 COPY --from=builder coredin/packages/backend/package.json app/packages/backend
@@ -14,10 +15,15 @@ COPY --from=builder coredin/package.json app/
 COPY --from=builder coredin/yarn.lock app/
 COPY --from=builder coredin/.yarnrc.yml app/
 COPY --from=builder coredin/.yarn app/.yarn
-RUN cd app && yarn workspaces focus @coredin/backend --production
 
-# Step 4: Install curl required for health check
+# Step 4: Install deps required for prod (nestJs build doesn't include them)
+WORKDIR /app
+RUN yarn workspaces focus @coredin/backend --production
+
+# Step 5: Install curl required for health check
 RUN apk add --no-cache curl
 
+# Step 6: Execute pending migrations and run app
 EXPOSE 3000
-CMD [ "node", "app/packages/backend/dist/main.js" ]
+WORKDIR /app/packages/backend
+CMD yarn typeorm:migrate && node dist/main.js
