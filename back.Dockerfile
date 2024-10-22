@@ -7,6 +7,7 @@ FROM node:20.14-alpine3.19
 # Step 3: Copy 
 COPY --from=builder coredin/packages/backend/dist app/packages/backend/dist
 COPY --from=builder coredin/packages/backend/config app/packages/backend/config
+COPY --from=builder coredin/packages/backend/db app/packages/backend/db
 COPY --from=builder coredin/packages/shared/dist app/packages/shared/dist
 COPY --from=builder coredin/packages/shared/package.json app/packages/shared
 COPY --from=builder coredin/packages/backend/package.json app/packages/backend
