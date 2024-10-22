@@ -311,7 +311,8 @@ resource "aws_iam_policy" "backend_secrets_read_policy" {
           aws_secretsmanager_secret.internal_endpoint_secret_asm_secret.arn,
           aws_secretsmanager_secret.rds_password_asm_secret.arn,
           data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn,
-          data.aws_secretsmanager_secret.vault_root_token.arn,
+          data.aws_secretsmanager_secret.vault_role_id.arn,
+          data.aws_secretsmanager_secret.vault_secret_id.arn,
           data.aws_secretsmanager_secret.unleash_instance_id_asm_secret.arn
         ]
       },
