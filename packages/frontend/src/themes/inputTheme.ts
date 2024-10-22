@@ -15,7 +15,35 @@ const baseStyle = definePartsStyle({
     _placeholder: {
       color: "other.600"
     }
+  },
+  addon: {
+    borderRadius: "0.5em",
+    background: "#eaecec",
   }
 });
 
-export const inputTheme = defineMultiStyleConfig({ baseStyle });
+const richTextEditorStyle = definePartsStyle({
+  field: {
+    // borderBottomLeftRadius: "1.125em",
+    // borderBottomRightRadius: "1.125em",
+    background: "#fefcfc",
+  },
+  toolbar: {
+    display: "block",
+    background: "#eaecec",
+    borderTopLeftRadius: "1.125em",
+    borderTopRightRadius: "1.125em",
+    borderBottomLeftRadius: "0",
+    borderBottomRightRadius: "0",
+  },
+  editor: {
+    minHeight: "18em",
+  }
+});
+
+export const inputTheme = defineMultiStyleConfig({ 
+  baseStyle,
+  variants: {
+    richTextEditor: richTextEditorStyle
+  }
+});

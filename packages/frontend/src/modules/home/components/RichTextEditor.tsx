@@ -1,28 +1,52 @@
 import React from "react";
-import { Editor } from "react-draft-wysiwyg";
-import { EditorState } from "draft-js";
-import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import ReactQuill from "react-quill";
+import "react-quill/dist/quill.snow.css";
 import { Box, BoxProps } from "@chakra-ui/react";
 import { inputTheme } from "../../../themes/inputTheme";
 
 interface RichTextEditorProps extends BoxProps {
-  editorState: EditorState;
-  onEditorStateChange: (newEditorState: EditorState) => void;
+  value: string;
+  onTextChange?: (content: string) => void;
   readOnly?: boolean;
   hideToolbar?: boolean;
   maxHeight?: string;
   preview?: boolean;
+  id: string;
 }
 
 export function RichTextEditor({
-  editorState,
-  onEditorStateChange,
+  id,
+  value,
+  onTextChange,
   readOnly = false,
   hideToolbar = false,
   maxHeight = "500px",
   preview = false,
   ...boxProps
 }: RichTextEditorProps) {
+  const modules = {
+    toolbar: hideToolbar ? false : [
+      [{ 'header': [1, 2, false] }],
+      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+      ['link', 'image'],
+      ['clean']
+    ],
+  };
+
+  const formats = [
+    'header',
+    'bold', 'italic', 'underline', 'strike', 'blockquote',
+    'list', 'bullet', 'indent',
+    'link', 'image'
+  ];
+
+  const handleChange = (content: string) => {
+    if (onTextChange) {
+        onTextChange(content);
+    }
+  };
+
   return (
     <Box position="relative" {...boxProps}>
       <Box
@@ -30,35 +54,25 @@ export function RichTextEditor({
         overflowY={preview ? "hidden" : "auto"}
         position="relative"
       >
-        <Editor
-          editorState={editorState}
-          onEditorStateChange={(e) => (readOnly ? {} : onEditorStateChange(e))}
-          placeholder="Be creative!"
+        <ReactQuill
+          id={`editor${id}`}
+          value={value}
+          onChange={handleChange}
+          modules={modules}
+          formats={formats}
           readOnly={readOnly}
-          toolbarHidden={hideToolbar}
-          //   toolbar={{
-          //     options: ['inline', 'blockType', 'list', 'textAlign', 'link', 'emoji', 'image', 'remove', 'history'],
-          //   }}
-          toolbarStyle={{
-            border: "1px solid",
-            borderColor: "rgba(1,1,1,0.2)",
-            borderRadius: "1.125rem",
-            padding: "0.5rem"
-          }}
-          editorStyle={{
+          theme="snow"
+          style={{
             ...(inputTheme.baseStyle?.field ?? {}),
             minHeight: readOnly ? undefined : "250px",
             maxHeight: preview ? undefined : "50vh",
-            padding: "10px",
-            paddingLeft: preview ? "10px" : "20px",
-            border: readOnly ? "none" : "1px solid",
-            borderColor: "rgba(1,1,1,0.2)",
+            border: readOnly ? "none" : "1px solid rgba(1,1,1,0.2)",
+            borderRadius: "1.125rem",
+            background: preview ? "brand.100" : "white",
             color: "inherit",
             fontFamily: "inherit",
             fontSize: "1rem",
             textAlign: "left",
-            borderRadius: "1.125rem",
-            background: preview ? "brand.100" : "white"
           }}
         />
       </Box>

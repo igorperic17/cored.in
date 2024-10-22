@@ -30,7 +30,7 @@ import { FC, useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { requestTypeData, visibilityData } from "./post/constants";
 import { RichTextEditor } from "./RichTextEditor";
-import { EditorState, convertToRaw } from "draft-js";
+import RichTextEditorQuillHook from "./RichTextEditorQuillHook";
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -63,15 +63,10 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
   handlePost,
   isPending
 }) => {
-  const [editorState, setEditorState] = useState(() =>
-    EditorState.createEmpty()
-  );
+  const [editorId] = useState(() => `${Math.random().toString(36).substr(2, 9)}`);
 
-  const handleEditorStateChange = (newEditorState: EditorState) => {
-    setEditorState(newEditorState);
-    const contentState = newEditorState.getCurrentContent();
-    const rawContentState = convertToRaw(contentState);
-    setPostContent(JSON.stringify(rawContentState));
+  const handleEditorChange = (content: string) => {
+    setPostContent(content);
   };
 
   return (
@@ -80,7 +75,6 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
       onClose={() => {
         onClose();
         setPostContent("");
-        setEditorState(EditorState.createEmpty());
       }}
       size="5xl"
       isCentered
@@ -187,9 +181,10 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
               />
             </FormControl>
           )}
-          <RichTextEditor
-            editorState={editorState}
-            onEditorStateChange={handleEditorStateChange}
+          <RichTextEditorQuillHook
+            id={editorId}
+            value={postContent}
+            onTextChange={handleEditorChange}
           />
         </ModalBody>
 

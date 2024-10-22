@@ -26,8 +26,7 @@ import { FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
-import { RichTextEditor } from "../../RichTextEditor";
-import { ContentState, EditorState, convertFromRaw } from "draft-js";
+import RichTextEditorQuillHook from "../../RichTextEditorQuillHook";
 
 export type PostContentProps = {
   post: PostDTO;
@@ -60,24 +59,6 @@ export const Content: FC<PostContentProps> = ({
   const cancelRef = useRef(null);
 
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
-
-  const [editorState, setEditorState] = useState<EditorState>(
-    EditorState.createEmpty()
-  );
-
-  useEffect(() => {
-    try {
-      const parsedContent = JSON.parse(post.text);
-      setEditorState(
-        EditorState.createWithContent(convertFromRaw(parsedContent))
-      );
-    } catch (error) {
-      // If parsing as JSON fails, treat it as plain text
-      setEditorState(
-        EditorState.createWithContent(ContentState.createFromText(post.text))
-      );
-    }
-  }, [post.text]);
 
   return (
     <Flex
@@ -268,11 +249,12 @@ export const Content: FC<PostContentProps> = ({
         w="100%"
         aria-label="Open the post."
       >
-        <RichTextEditor
-          editorState={editorState}
-          onEditorStateChange={() => {}}
+        <RichTextEditorQuillHook
+          // placeholder="Be creative!"
+          value={post.text} 
+          id={post.id.toString()}          
           readOnly={true}
-          hideToolbar={true}
+          // hideToolbar={true}
           preview={!opened}
         />
       </Link>
