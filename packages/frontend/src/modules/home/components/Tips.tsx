@@ -12,8 +12,26 @@ import {
   useDisclosure
 } from "@chakra-ui/react";
 import { TipsNotificationCard, TransferModal } from ".";
+import { useLoggedInServerState, useMutableServerState } from "@/hooks";
+import { USER_MUTATIONS, USER_QUERIES } from "@/queries";
+import { useEffect } from "react";
 
 export const Tips = () => {
+  const { data: tips } = useLoggedInServerState(USER_QUERIES.getTips());
+  const { mutateAsync: updateTipsSeen } = useMutableServerState(
+    USER_MUTATIONS.updateTipsSeen()
+  );
+
+  const unseenTips =
+    tips?.receivedTips.filter((tip) => !tip.isViewed).map((tip) => tip.id) ||
+    [];
+
+  useEffect(() => {
+    if (unseenTips.length > 0) {
+      updateTipsSeen({ tipIds: unseenTips });
+    }
+  }, [JSON.stringify(unseenTips)]);
+
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   return (

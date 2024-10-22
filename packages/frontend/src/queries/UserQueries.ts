@@ -10,5 +10,9 @@ export const USER_QUERIES = {
       needsAuth?.toString() || "false"
     ],
     queryFn: () => userService.getUser(user)
+  }),
+  getTips: () => ({
+    queryKey: [BaseServerStateKeys.USER_TIPS],
+    queryFn: () => userService.getTips()
   })
 };

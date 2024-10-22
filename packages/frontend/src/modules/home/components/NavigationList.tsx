@@ -11,6 +11,7 @@ export type NavigationProps = {
   isPostPage: boolean;
   pendingRequests: CredentialRequestDTO[] | undefined;
   unreadMessages: number;
+  unseenTips: number;
   closeMobileMenu?: () => void;
 };
 
@@ -19,6 +20,7 @@ export const NavigationList: FC<NavigationProps> = ({
   isPostPage,
   pendingRequests,
   unreadMessages,
+  unseenTips,
   closeMobileMenu
 }) => {
   return (
@@ -83,6 +85,11 @@ export const NavigationList: FC<NavigationProps> = ({
                 //       {unreadMessages}
                 //     </Text>
                 //   )}
+              )}
+              {item.title === "tips" && unseenTips > 0 && (
+                <NotificationDot
+                  ariaLabel={`${pendingRequests?.length} new received tips.`}
+                />
               )}
             </HStack>
           </Link>

@@ -16,7 +16,7 @@ export class UserController {
     private readonly walletService: WaltIdWalletService
   ) {}
 
-  @Get(":wallet")
+  @Get("profile/:wallet")
   @UseGuards(LoggedIn)
   async getProfile(
     @Req() req: AuthenticatedRequest,
@@ -29,6 +29,22 @@ export class UserController {
     );
 
     return user;
+  }
+
+  @Get("tips")
+  @UseGuards(LoggedIn)
+  async getTips(@Req() req: AuthenticatedRequest) {
+    console.log("request tips");
+    return this.userService.getTips(req.wallet);
+  }
+
+  @TypedRoute.Put("tips")
+  @UseGuards(LoggedIn)
+  async updateTipsSeen(
+    @Req() req: AuthenticatedRequest,
+    @TypedBody() { tipIds }: { tipIds: number[] }
+  ) {
+    return this.userService.updateTipsSeen(req.wallet, tipIds);
   }
 
   @TypedRoute.Post()

@@ -432,7 +432,8 @@ export class PostsService {
           denom: tip.denom,
           receiverWallet: post.creatorWallet,
           txHash,
-          createdAt: new Date()
+          createdAt: new Date(),
+          isViewed: post.creatorWallet === tipperWallet
         });
       }
     );

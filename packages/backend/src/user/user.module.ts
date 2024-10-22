@@ -6,12 +6,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { UserService } from "./user.service";
 import { SsiModule } from "../ssi/app/ssi.module";
 import { CoreumModule } from "@/coreum/app/coreum.module";
+import { Tip } from "../posts/tips/tip.entity";
 
 @Module({
   imports: [
     AuthenticationModule,
     SsiModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Tip]),
     CoreumModule
   ],
   providers: [UserService],
