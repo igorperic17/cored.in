@@ -77,20 +77,28 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         if (boostedUntil > now) {
           const diff = boostedUntil.getTime() - now.getTime();
           const years = Math.floor(diff / (1000 * 60 * 60 * 24 * 365));
-          const months = Math.floor((diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30));
-          const days = Math.floor((diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          const months = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 365)) / (1000 * 60 * 60 * 24 * 30)
+          );
+          const days = Math.floor(
+            (diff % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24)
+          );
+          const hours = Math.floor(
+            (diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
           const timeString = [
-            years > 0 ? `${years}y` : '',
-            months > 0 ? `${months}m` : '',
-            days > 0 ? `${days}d` : '',
-            hours > 0 ? `${hours}h` : '',
-            minutes > 0 ? `${minutes}m` : '',
+            years > 0 ? `${years}y` : "",
+            months > 0 ? `${months}m` : "",
+            days > 0 ? `${days}d` : "",
+            hours > 0 ? `${hours}h` : "",
+            minutes > 0 ? `${minutes}m` : "",
             `${seconds}s`
-          ].filter(Boolean).join(' | ');
+          ]
+            .filter(Boolean)
+            .join(" | ");
 
           setRemainingTime(timeString);
           setIsBoosted(true);
@@ -142,7 +150,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   };
 
   const handleTip = async (): Promise<boolean> => {
-    let tipCoins = coin(tipAmount * 1.05 * 1_000_000, TESTNET_FEE_DENOM);
+    const tipCoins = coin(tipAmount * 1.05 * 1_000_000, TESTNET_FEE_DENOM);
 
     const postInfo: PostInfo = {
       id: post.id.toString(),
@@ -154,14 +162,24 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     };
 
     try {
-      await coredinClient?.tipPostAuthor({ postInfo }, "auto", undefined, [
-        tipCoins
-      ]);
+      const tx = await coredinClient?.tipPostAuthor(
+        { postInfo },
+        "auto",
+        undefined,
+        [tipCoins]
+      );
 
-      await tipPost({ postId: post.id });
+      if (tx && tx.transactionHash) {
+        await tipPost({
+          postId: post.id,
+          tip: tipCoins,
+          txHash: tx.transactionHash
+        });
+        queryClient.invalidateQueries();
+        return true;
+      }
 
-      queryClient.invalidateQueries();
-      return true;
+      return false;
     } catch (error) {
       console.error("Error tipping post:", error);
       return false;
@@ -170,19 +188,19 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   return (
     <>
       {isBoosted && (
-      <Flex justify="start" w="100%" mb="-10px">
-        <Flex justify="end" w="100%">
-          <Tag
-            size="sm"
-            color="brand.100"
-            backgroundColor="brand.300"
-            animation="pulse 2s infinite"
-            borderBottomRadius="0"
-            borderTopRadius="10"
-          >
-            Boost duration: {remainingTime}
-          </Tag>
-        </Flex>
+        <Flex justify="start" w="100%" mb="-10px">
+          <Flex justify="end" w="100%">
+            <Tag
+              size="sm"
+              color="brand.100"
+              backgroundColor="brand.300"
+              animation="pulse 2s infinite"
+              borderBottomRadius="0"
+              borderTopRadius="10"
+            >
+              Boost duration: {remainingTime}
+            </Tag>
+          </Flex>
         </Flex>
       )}
       <VStack
@@ -197,7 +215,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         borderColor={isBoosted ? "brand.300" : "brand.100"}
         _hover={{
           boxShadow: "0 0 10px rgba(0, 0, 0, 0.2)",
-          transition: "all 0.3s ease-in-out",
+          transition: "all 0.3s ease-in-out"
         }}
         transition="all 0.3s ease-in-out"
       >

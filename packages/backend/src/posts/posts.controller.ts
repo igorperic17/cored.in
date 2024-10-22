@@ -1,9 +1,18 @@
-import { BadRequestException, Controller, Delete, Get, Param, Req, UseGuards } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Req,
+  UseGuards
+} from "@nestjs/common";
 import { PostsService } from "./posts.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
 import { CreatePostDTO } from "@coredin/shared";
+import { Coin } from "@cosmjs/amino";
 
 @Controller("posts")
 @UseGuards(LoggedIn)
@@ -77,9 +86,9 @@ export class PostsController {
   async tip(
     @TypedParam("id") id: number,
     @Req() req: AuthenticatedRequest,
-    @TypedBody() { }: { }
+    @TypedBody() { tip, txHash }: { tip: Coin; txHash: string }
   ) {
-    return await this.postsService.updateTip(id);
+    return await this.postsService.updateTip(id, req.wallet, tip, txHash);
   }
 
   // TODO - remove this before deploying to production!

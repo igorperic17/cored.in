@@ -30,6 +30,8 @@ import {
   CoredinSignerService
 } from "@/coreum/services";
 import { UserService } from "@/user/user.service";
+import { Coin } from "@cosmjs/amino";
+import { Tip } from "./tips/tip.entity";
 
 const PAGE_SIZE = 10;
 
@@ -378,7 +380,12 @@ export class PostsService {
       }
     );
   }
-  async updateTip(postId: number) {
+  async updateTip(
+    postId: number,
+    tipperWallet: string,
+    tip: Coin,
+    txHash: string
+  ) {
     const post = await this.postRepository.findOne({ where: { id: postId } });
     if (!post) {
       throw new Error("Post not found");
@@ -388,7 +395,7 @@ export class PostsService {
       post.id
     );
     const contractTips = Number(contractTipsString);
-    const currentDBTips = post.tips;
+    const currentDBTips = post.totalTipsAmount;
     const tipDiff = contractTips - currentDBTips;
 
     // Convert microCORE to CORE and then to minutes
@@ -414,10 +421,19 @@ export class PostsService {
           Post,
           { id: postId },
           {
-            tips: contractTips,
+            totalTipsAmount: contractTips,
             boostedUntil: newBoostedUntil
           }
         );
+        await transactionalEntityManager.save(Tip, {
+          tipperWallet,
+          postId,
+          amount: tip.amount,
+          denom: tip.denom,
+          receiverWallet: post.creatorWallet,
+          txHash,
+          createdAt: new Date()
+        });
       }
     );
   }
@@ -435,7 +451,7 @@ export class PostsService {
       creatorWallet: post.creatorWallet,
       creatorUsername: post.user.username,
       creatorAvatar: post.user.avatarUrl,
-      tips: post.tips,
+      tips: post.totalTipsAmount,
       creatorAvatarFallbackColor: post.user.avatarFallbackColor,
       visibility: post.visibility,
       text: post.text,

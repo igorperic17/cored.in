@@ -1,5 +1,6 @@
 import { HttpService } from "@/services";
 import { CreatePostDTO, PostDTO, PostDetailDTO } from "@coredin/shared";
+import { Coin } from "@cosmjs/amino";
 
 export class FeedService {
   constructor(private readonly http: HttpService) {}
@@ -32,8 +33,8 @@ export class FeedService {
     return this.http.delete("posts/" + postId);
   }
 
-  async tipPost(postId: number): Promise<void> {
-    return this.http.post("posts/" + postId + `/tip`, {});
+  async tipPost(postId: number, tip: Coin, txHash: string): Promise<void> {
+    return this.http.post("posts/" + postId + `/tip`, { tip, txHash });
   }
 
   async clearBoosts(): Promise<void> {

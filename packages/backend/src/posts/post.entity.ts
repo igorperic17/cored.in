@@ -10,6 +10,7 @@ import {
   OneToMany,
   UpdateDateColumn
 } from "typeorm";
+import { Tip } from "./tips/tip.entity";
 
 @Entity("posts")
 export class Post {
@@ -88,7 +89,7 @@ export class Post {
   likes: number;
 
   @Column({ default: 0 })
-  tips: number;
+  totalTipsAmount: number;
 
   @Column({ nullable: true })
   @Index()
@@ -109,9 +110,13 @@ export class Post {
   @JoinColumn({ name: "replyToPostId" })
   replies: Post[];
 
+  @OneToMany(() => Tip, (tip) => tip.post)
+  @JoinColumn({ name: "postId" })
+  tips: Tip[];
+
   // UNIX timestamp
   @UpdateDateColumn({
-    type: 'timestamp', 
+    type: "timestamp",
     precision: 3
   })
   boostedUntil: Date;
