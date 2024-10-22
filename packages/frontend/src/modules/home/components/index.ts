@@ -24,6 +24,7 @@ export * from "./SubscriptionModal";
 export * from "./SubscriptionSettings";
 export * from "./Tips";
 export * from "./TipsNotificationCard";
+export * from "./TransferModal";
 export * from "./UserHeader";
 export * from "./UserSignOut";
 export * from "./UserTabsContainer";
