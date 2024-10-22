@@ -8,7 +8,7 @@ interface LoginRequest {
   pubKey: string;
   signature: string;
   expiration: number;
-};
+}
 
 @Controller("authentication")
 export class AuthenticationController {
@@ -20,9 +20,13 @@ export class AuthenticationController {
     if (!loginRequest.signature || loginRequest.signature.length < 10) {
       throw new HttpException("Wrong signature length", HttpStatus.FORBIDDEN);
     }
+    // Adding one day to max allowed timestamp to avoid using with users with unsynced clocks / wrong timezones
+    // This implies we allow logins up to loginDurationMs + one day (currently 2h in total)
+    const oneHourLoginMarginMs = 60 * 60 * 1000;
     if (
       !loginRequest.expiration ||
-      loginRequest.expiration > Date.now() + MaxLoginDurationMs
+      loginRequest.expiration >
+        Date.now() + MaxLoginDurationMs + oneHourLoginMarginMs
     ) {
       throw new HttpException("Invalid Expiration", HttpStatus.FORBIDDEN);
     }

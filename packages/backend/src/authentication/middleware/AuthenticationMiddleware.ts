@@ -3,7 +3,10 @@ import { JwtService } from "@nestjs/jwt";
 import { Request, Response, NextFunction } from "express";
 import { WALLET_HEADER, MaxLoginDurationMs, LoginMessage } from "../constants";
 import * as Cosmos from "@keplr-wallet/cosmos";
-import { MAINNET_CHAIN_BECH32_PREFIX, TESTNET_CHAIN_BECH32_PREFIX } from "@coredin/shared";
+import {
+  MAINNET_CHAIN_BECH32_PREFIX,
+  TESTNET_CHAIN_BECH32_PREFIX
+} from "@coredin/shared";
 
 @Injectable()
 export class AuthenticationMiddleware implements NestMiddleware {
@@ -37,23 +40,27 @@ export class AuthenticationMiddleware implements NestMiddleware {
     }
 
     // Adding one day to max allowed timestamp to avoid using with users with unsynced clocks / wrong timezones
-    // This implies we allow logins up to loginDurationMs + one day (currently 8 days in total)
-    const oneDayLoginMarginMs = 24 * 60 * 60 * 1000;
+    // This implies we allow logins up to loginDurationMs + one day (currently 2h in total)
+    const oneHourLoginMarginMs = 60 * 60 * 1000;
     if (
       decodedJwt.expiration >
-      now + MaxLoginDurationMs + oneDayLoginMarginMs
+      now + MaxLoginDurationMs + oneHourLoginMarginMs
     ) {
       return;
     }
-    
+
     if (this.trySetWalletHeader(req, decodedJwt, TESTNET_CHAIN_BECH32_PREFIX)) {
       return;
     }
-    this.trySetWalletHeader(req, decodedJwt, MAINNET_CHAIN_BECH32_PREFIX)
+    this.trySetWalletHeader(req, decodedJwt, MAINNET_CHAIN_BECH32_PREFIX);
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  private trySetWalletHeader(req: Request, decodedJwt: any, prefix: string): boolean {
+  private trySetWalletHeader(
+    req: Request,
+    decodedJwt: any,
+    prefix: string
+  ): boolean {
     try {
       const message = LoginMessage + decodedJwt.expiration;
       const { signature, pubKey, walletAddress } = decodedJwt;
@@ -75,7 +82,10 @@ export class AuthenticationMiddleware implements NestMiddleware {
       }
       return isRecovered;
     } catch (exception: unknown) {
-      console.warn(`Wallet header could not be set for prefix ${prefix}`, exception);
+      console.warn(
+        `Wallet header could not be set for prefix ${prefix}`,
+        exception
+      );
       return false;
     }
   }
