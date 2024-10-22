@@ -86,7 +86,7 @@ export const IssuanceRequest: React.FC<IssuanceRequestProps> = ({
         <Button
           variant="empty"
           onClick={handleReject}
-          color="text.700"
+          color="other.600"
           isLoading={isRejecting}
         >
           Decline

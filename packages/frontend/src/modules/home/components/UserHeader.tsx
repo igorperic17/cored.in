@@ -171,7 +171,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
             aria-label="Edit profile."
             variant="empty"
             size="sm"
-            color="text.700"
+            color="other.600"
             mt="3.5em"
             // mt={{ base: "-3rem", md: "-4.5rem" }}
             _hover={{
@@ -216,7 +216,7 @@ export const UserHeader: React.FC<UserHeaderProps> = ({
           <Button
             variant="empty"
             size="sm"
-            color="text.700"
+            color="other.600"
             alignSelf="start"
             rightIcon={<CopyIcon ml="0.5em" />}
             aria-label="Copy user DID."

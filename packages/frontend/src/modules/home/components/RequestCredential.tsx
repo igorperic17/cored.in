@@ -91,7 +91,7 @@ export const RequestCredential = () => {
         <FormLabel>Select the type of a credential</FormLabel>
         <Select
           {...formElementBorderStyles}
-          _placeholder={{ color: "text.700" }}
+          _placeholder={{ color: "other.600" }}
           value={state.type}
           onChange={(e) =>
             setState({
@@ -272,7 +272,8 @@ export const RequestCredential = () => {
               textTransform="none"
               fontWeight="400"
               fontSize={{ base: "0.875rem", lg: "1rem" }}
-              border="1px solid #141413"
+              border="1px solid"
+              borderColor="other.200"
               _hover={{
                 bg: "inherit",
                 color: "inherit",

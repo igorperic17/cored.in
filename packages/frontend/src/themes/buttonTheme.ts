@@ -47,7 +47,7 @@ const primary = defineStyle({
     bg: "brand.300",
     color: "brand.100",
     _disabled: {
-      bg: "background.400",
+      bg: "other.600",
       color: "brand.900"
     },
     _loading: {
@@ -59,7 +59,7 @@ const primary = defineStyle({
     opacity: "1"
   },
   _disabled: {
-    bg: "background.400",
+    bg: "other.600",
     color: "brand.900"
   }
 });
@@ -106,7 +106,7 @@ const empty = defineStyle({
     color: "brand.300"
   }
   // _focus: {
-  //   color: "text.100"
+  //   color: "brand.100"
   // }
 });
 

@@ -15,7 +15,7 @@ export const IncomingRequests = () => {
         Incoming requests: {pendingRequests?.length}
       </Heading>
       {pendingRequests?.length === 0 ? (
-        <Text color="text.700">There are no pending credential requests</Text>
+        <Text color="other.600">There are no pending credential requests</Text>
       ) : (
         <VStack spacing="1em" align="start" w="100%">
           {pendingRequests &&

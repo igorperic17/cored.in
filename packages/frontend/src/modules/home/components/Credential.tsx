@@ -111,7 +111,7 @@ export const Credential: FC<CredentialProps> = ({
       <VStack
         align="start"
         spacing="1em"
-        color={verified ? "brand.900" : "text.300"}
+        color={verified ? "brand.900" : "other.200"}
         w="100%"
       >
         {verified && issuer && issuerWallet !== profileWallet && (
@@ -151,7 +151,7 @@ export const Credential: FC<CredentialProps> = ({
           <MenuButton
             as={IconButton}
             variant="empty"
-            color="text.700"
+            color="other.600"
             aria-label="See menu."
             icon={<FaEllipsis fontSize="1.5rem" />}
             size="lg"
@@ -199,7 +199,7 @@ export const Credential: FC<CredentialProps> = ({
                 ref={cancelRef}
                 onClick={onClose}
                 variant="empty"
-                color="text.700"
+                color="other.600"
               >
                 Cancel
               </Button>

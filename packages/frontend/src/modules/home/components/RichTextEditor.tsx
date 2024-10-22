@@ -1,9 +1,9 @@
-import React from 'react';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState } from 'draft-js';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { Box, BoxProps } from '@chakra-ui/react';
-import { inputTheme } from '../../../themes/inputTheme';
+import React from "react";
+import { Editor } from "react-draft-wysiwyg";
+import { EditorState } from "draft-js";
+import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { Box, BoxProps } from "@chakra-ui/react";
+import { inputTheme } from "../../../themes/inputTheme";
 
 interface RichTextEditorProps extends BoxProps {
   editorState: EditorState;
@@ -14,14 +14,14 @@ interface RichTextEditorProps extends BoxProps {
   preview?: boolean;
 }
 
-export function RichTextEditor({ 
-  editorState, 
-  onEditorStateChange, 
-  readOnly = false, 
-  hideToolbar = false, 
-  maxHeight = "500px", 
+export function RichTextEditor({
+  editorState,
+  onEditorStateChange,
+  readOnly = false,
+  hideToolbar = false,
+  maxHeight = "500px",
   preview = false,
-  ...boxProps 
+  ...boxProps
 }: RichTextEditorProps) {
   return (
     <Box position="relative" {...boxProps}>
@@ -32,33 +32,33 @@ export function RichTextEditor({
       >
         <Editor
           editorState={editorState}
-          onEditorStateChange={(e) => readOnly ? {} : onEditorStateChange(e)}
+          onEditorStateChange={(e) => (readOnly ? {} : onEditorStateChange(e))}
           placeholder="Be creative!"
           readOnly={readOnly}
           toolbarHidden={hideToolbar}
-        //   toolbar={{
-        //     options: ['inline', 'blockType', 'list', 'textAlign', 'link', 'emoji', 'image', 'remove', 'history'],
-        //   }}
+          //   toolbar={{
+          //     options: ['inline', 'blockType', 'list', 'textAlign', 'link', 'emoji', 'image', 'remove', 'history'],
+          //   }}
           toolbarStyle={{
-              border: '1px solid',
-              borderColor: 'rgba(1,1,1,0.2)',
-              borderRadius: '1.125rem',
-              padding: '0.5rem',
+            border: "1px solid",
+            borderColor: "rgba(1,1,1,0.2)",
+            borderRadius: "1.125rem",
+            padding: "0.5rem"
           }}
           editorStyle={{
             ...(inputTheme.baseStyle?.field ?? {}),
             minHeight: readOnly ? undefined : "250px",
             maxHeight: preview ? undefined : "50vh",
-            padding: '10px',
-            paddingLeft: preview ? '10px' : '20px',
-            border: readOnly ? 'none' :'1px solid',
-            borderColor: 'rgba(1,1,1,0.2)',
-            color: 'inherit',
-            fontFamily: 'inherit',
-            fontSize: '1rem',
-            textAlign: 'left',
-            borderRadius: '1.125rem',
-            background: preview ? 'brand.100' : 'white',
+            padding: "10px",
+            paddingLeft: preview ? "10px" : "20px",
+            border: readOnly ? "none" : "1px solid",
+            borderColor: "rgba(1,1,1,0.2)",
+            color: "inherit",
+            fontFamily: "inherit",
+            fontSize: "1rem",
+            textAlign: "left",
+            borderRadius: "1.125rem",
+            background: preview ? "brand.100" : "white"
           }}
         />
       </Box>

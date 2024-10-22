@@ -30,7 +30,7 @@ import { FC, useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { requestTypeData, visibilityData } from "./post/constants";
 import { RichTextEditor } from "./RichTextEditor";
-import { EditorState, convertToRaw } from 'draft-js';
+import { EditorState, convertToRaw } from "draft-js";
 
 type CreatePostModalProps = {
   isOpen: boolean;
@@ -63,7 +63,9 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
   handlePost,
   isPending
 }) => {
-  const [editorState, setEditorState] = useState(() => EditorState.createEmpty());
+  const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
 
   const handleEditorStateChange = (newEditorState: EditorState) => {
     setEditorState(newEditorState);
@@ -177,7 +179,9 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
               <MultiSelect
                 options={SkillTags.map((tag) => ({ label: tag, value: tag }))}
                 value={skillTags.map((tag) => ({ label: tag, value: tag }))}
-                onChange={(newTags) => setSkillTags(newTags.map((tag) => tag.value as SkillTag))}
+                onChange={(newTags) =>
+                  setSkillTags(newTags.map((tag) => tag.value as SkillTag))
+                }
                 placeholder="Select skills"
                 menuPlacement="bottom"
               />
@@ -192,7 +196,7 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
         <ModalFooter>
           <Button
             variant="empty"
-            color="text.700"
+            color="other.600"
             size="sm"
             onClick={onClose}
             mr="1.5em"

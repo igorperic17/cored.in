@@ -99,7 +99,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
                   <Button
                     variant="empty"
                     size="sm"
-                    color="text.900"
+                    color="brand.900"
                     wordBreak="break-word"
                     whiteSpace="normal"
                     aria-label="Copy wallet address."
@@ -193,7 +193,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
               fontSize={{ base: "1.25rem", md: "1.75rem" }}
               color="brand.300"
             />
-            <Text my="1em" color="text.300">
+            <Text my="1em" color="other.200">
               At least 3 characters required, only letters and numbers allowed.
             </Text>
           </FormControl>

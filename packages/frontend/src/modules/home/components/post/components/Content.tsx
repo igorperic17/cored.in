@@ -27,7 +27,7 @@ import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
 import { RichTextEditor } from "../../RichTextEditor";
-import { ContentState, EditorState, convertFromRaw } from 'draft-js';
+import { ContentState, EditorState, convertFromRaw } from "draft-js";
 
 export type PostContentProps = {
   post: PostDTO;
@@ -61,15 +61,21 @@ export const Content: FC<PostContentProps> = ({
 
   const postUrl = ROUTES.USER.POST.buildPath(post.creatorWallet, post.id);
 
-  const [editorState, setEditorState] = useState<EditorState>(EditorState.createEmpty());
+  const [editorState, setEditorState] = useState<EditorState>(
+    EditorState.createEmpty()
+  );
 
   useEffect(() => {
     try {
       const parsedContent = JSON.parse(post.text);
-      setEditorState(EditorState.createWithContent(convertFromRaw(parsedContent)));
+      setEditorState(
+        EditorState.createWithContent(convertFromRaw(parsedContent))
+      );
     } catch (error) {
       // If parsing as JSON fails, treat it as plain text
-      setEditorState(EditorState.createWithContent(ContentState.createFromText(post.text)));
+      setEditorState(
+        EditorState.createWithContent(ContentState.createFromText(post.text))
+      );
     }
   }, [post.text]);
 
@@ -136,7 +142,7 @@ export const Content: FC<PostContentProps> = ({
             <Text
               as="time"
               dateTime=""
-              color="text.700"
+              color="other.600"
               textStyle="xs"
               userSelect="none"
             >
@@ -151,7 +157,7 @@ export const Content: FC<PostContentProps> = ({
 
         {post.visibility === PostVisibility.RECIPIENTS && (
           <HStack>
-            <Text as="span" color="text.700" textStyle="sm">
+            <Text as="span" color="other.600" textStyle="sm">
               {`Recipient: ${post.recipients?.map((recipient) => recipient.username).join(", ")}`}
             </Text>
             {post.recipients?.map((recipient) => (
@@ -172,7 +178,7 @@ export const Content: FC<PostContentProps> = ({
             <MenuButton
               as={IconButton}
               variant="empty"
-              color="text.700"
+              color="other.600"
               aria-label="See menu."
               icon={<FaEllipsis fontSize="1.5rem" />}
               size="lg"
@@ -219,7 +225,7 @@ export const Content: FC<PostContentProps> = ({
                   ref={cancelRef}
                   onClick={onClose}
                   variant="empty"
-                  color="text.700"
+                  color="other.600"
                 >
                   Cancel
                 </Button>

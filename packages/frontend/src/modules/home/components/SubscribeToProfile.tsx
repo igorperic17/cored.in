@@ -9,6 +9,8 @@ type SubscribeToProfileProps = {
   profileDid: ProfileInfo;
 };
 
+// IMPORTANT: This component is not in use right now
+
 export const SubscribeToProfile: FC<SubscribeToProfileProps> = ({
   profileDid
 }) => {
@@ -57,7 +59,7 @@ export const SubscribeToProfile: FC<SubscribeToProfileProps> = ({
       <Text
         textStyle="lg"
         // fontSize="1.5em"
-        color="text.100"
+        color="red"
         // textTransform="uppercase"
         textAlign="center"
       >

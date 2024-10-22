@@ -5,7 +5,8 @@ import {
   FaPaperPlane,
   FaUser,
   FaCertificate,
-  FaBinoculars
+  FaBinoculars,
+  FaCoins
 } from "react-icons/fa6";
 
 export const navigationData = (wallet: string) =>
@@ -29,6 +30,11 @@ export const navigationData = (wallet: string) =>
       title: "subscriptions",
       icon: FaBinoculars,
       link: ROUTES.SUBSCRIPTIONS.path
+    },
+    {
+      title: "tips",
+      icon: FaCoins,
+      link: ROUTES.TIPS.path
     },
     {
       title: "profile",

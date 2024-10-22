@@ -86,7 +86,7 @@ export const ProfileSettings = () => {
             }
             value={settings.avatarUrl}
           />
-          <FormHelperText color="text.700">
+          <FormHelperText color="other.600">
             First letter of your username will be shown in cases when there is
             no image provided.
           </FormHelperText>
@@ -130,7 +130,7 @@ export const ProfileSettings = () => {
             <InputLeftElement
               pointerEvents="none"
               color="brand.900"
-              bg="text.300"
+              bg="other.200"
               border="1px solid #141413"
             >
               @
@@ -142,7 +142,7 @@ export const ProfileSettings = () => {
               {...formElementBorderStyles}
             />
           </InputGroup>
-          <FormHelperText color="text.700">
+          <FormHelperText color="other.600">
             Enter only letters and numbers. Maximum length: 16 characters
           </FormHelperText>
         </FormControl> */}
@@ -161,7 +161,7 @@ export const ProfileSettings = () => {
           onChange={(e) => setSettings({ ...settings, bio: e.target.value })}
           value={settings.bio}
         />
-        <FormHelperText color="text.700">
+        <FormHelperText color="other.600">
           Maximum length: 250 characters
         </FormHelperText>
       </FormControl>
@@ -174,12 +174,16 @@ export const ProfileSettings = () => {
           Skills
         </FormLabel>
         <MultiSelect
-          options={[...SkillTags.map(v => { 
-            return { label: v, value: v } as MultiSelectValue
-          })]}
-          value={settings.skillTags?.map(v => { 
-            return { label: v, value: v } as MultiSelectValue
-          }) ?? []}
+          options={[
+            ...SkillTags.map((v) => {
+              return { label: v, value: v } as MultiSelectValue;
+            })
+          ]}
+          value={
+            settings.skillTags?.map((v) => {
+              return { label: v, value: v } as MultiSelectValue;
+            }) ?? []
+          }
           onChange={(newSkills) => {
             console.log(newSkills);
             setSettings({
@@ -187,12 +191,11 @@ export const ProfileSettings = () => {
               skillTags: newSkills
                 ? newSkills.map((skill: MultiSelectValue) => skill.value)
                 : []
-            })
-          }
-          }
+            });
+          }}
           placeholder="Select skills"
         />
-        <FormHelperText color="text.700">
+        <FormHelperText color="other.600">
           If you don't see the skill you want to add, please suggest one to us
           on{" "}
           <Link

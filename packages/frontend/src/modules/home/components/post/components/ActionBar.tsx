@@ -59,7 +59,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         <Button
           variant="empty"
           aria-label="Like the post."
-          color={isLiked ? "brand.400" : "text.700"}
+          color={isLiked ? "brand.400" : "other.600"}
           _hover={{ color: "brand.400" }}
           // border="1px solid red"
           pr="8px"
@@ -88,7 +88,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
           }
           variant="empty"
           aria-label="Add comment."
-          color={opened ? "brand.300" : "text.700"}
+          color={opened ? "brand.300" : "other.600"}
           onClick={handleComment}
           isLoading={isDetailLoading}
           // border="1px solid red"
@@ -98,7 +98,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
           icon={<FaLink fontSize={isLargerThanSm ? "1.25rem" : "1rem"} />}
           variant="empty"
           aria-label="Share."
-          color="text.700"
+          color="other.600"
           onClick={handleShare}
           // border="1px solid red"
         />
@@ -106,7 +106,7 @@ export const ActionBar: FC<PostActionBarProps> = ({
         <Button
           variant="empty"
           aria-label="Send tip to promote this post."
-          color="text.700"
+          color="other.600"
           leftIcon={
             <Icon
               as={PiHandCoins}

@@ -11,13 +11,15 @@ export type NavigationProps = {
   isPostPage: boolean;
   pendingRequests: CredentialRequestDTO[] | undefined;
   unreadMessages: number;
+  closeMobileMenu?: () => void;
 };
 
 export const NavigationList: FC<NavigationProps> = ({
   wallet,
   isPostPage,
   pendingRequests,
-  unreadMessages
+  unreadMessages,
+  closeMobileMenu
 }) => {
   return (
     <Grid
@@ -33,6 +35,7 @@ export const NavigationList: FC<NavigationProps> = ({
           // justify="center"
           // align="center"
           // border="1px solid red"
+          onClick={closeMobileMenu}
         >
           <Link
             as={ReactRouterLink}
