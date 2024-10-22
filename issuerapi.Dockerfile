@@ -1,4 +1,4 @@
-FROM waltid/issuer-api:0.3.1
+FROM waltid/issuer-api:0.8.1
 
 COPY packages/backend/issuer-api/prod /waltid-issuer-api
 

@@ -107,8 +107,9 @@ resource "aws_ecs_task_definition" "backend" {
             internal_endpoint_secrets = "ENV_SECRET_2",
             db_password               = "ENV_SECRET_3",
             signer_pkey               = "ENV_SECRET_4",
-            vault_access_key          = "ENV_SECRET_5",
-            unleash_instance_id       = "ENV_SECRET_6"
+            unleash_instance_id       = "ENV_SECRET_5",
+            vault_role_id             = "ENV_SECRET_6",
+            vault_secret_id           = "ENV_SECRET_7"
           })
         }
       ]
@@ -130,12 +131,16 @@ resource "aws_ecs_task_definition" "backend" {
           valueFrom = data.aws_secretsmanager_secret.wallet_sign_private_key_asm_secret.arn
         },
         {
-          name      = "vault_access_key",
-          valueFrom = data.aws_secretsmanager_secret.vault_root_token.arn
-        },
-        {
           name      = "unleash_instance_id",
           valueFrom = data.aws_secretsmanager_secret.unleash_instance_id_asm_secret.arn
+        },
+        {
+          name      = "vault_role_id",
+          valueFrom = data.aws_secretsmanager_secret.vault_role_id.arn
+        },
+        {
+          name      = "vault_secret_id",
+          valueFrom = data.aws_secretsmanager_secret.vault_secret_id.arn
         }
       ]
       healthCheck = {

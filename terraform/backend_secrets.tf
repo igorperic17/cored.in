@@ -29,6 +29,14 @@ data "aws_secretsmanager_secret" "vault_root_token" {
   name = "${var.app_name}-vault/root-token"
 }
 
+data "aws_secretsmanager_secret" "vault_role_id" {
+  name = "${var.app_name}-vault/role-id"
+}
+
+data "aws_secretsmanager_secret" "vault_secret_id" {
+  name = "${var.app_name}-vault/secret-id"
+}
+
 data "aws_secretsmanager_secret" "unleash_instance_id_asm_secret" {
   name = "${var.app_name}-unleash-instance-id"
 }
