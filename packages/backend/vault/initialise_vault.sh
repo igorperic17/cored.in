@@ -50,6 +50,10 @@ if [ "$initialized" = false ] ; then
     update_secret "root-token" "$initial_root_token"
 fi
 
+secret_name="root-token"
+root_token=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$SECRET_NAME_PREFIX$secret_name" | jq -r ".SecretString")
+bao login "$root_token"
+
 VAULT_AUTH_LIST_OUTPUT=$(bao auth list -format=json)
 echo $VAULT_AUTH_LIST_OUTPUT
 
@@ -58,10 +62,13 @@ echo "app_role_enabled" $app_role_enabled
 
 if [ "$app_role_enabled" = null ] ; then
     echo "Enabling approle..."
-    secret_name="root-token"
-    initial_root_token=$(aws secretsmanager get-secret-value --region "$AWS_REGION" --secret-id "$SECRET_NAME_PREFIX$secret_name" | jq -r ".SecretString")
-    bao login "$initial_root_token"
     bao auth enable approle
+fi
+
+APP_ROLE="TEST"
+EXISTING_ROLE_ID=$(bao read auth/approle/role/$APP_ROLE/role-id -format=json | jq -r ".data.role_id")
+
+if ["$EXISTING_ROLE_ID" = ""] ; then
     echo 'path "transit/*" {
         capabilities = ["create", "update", "read", "delete", "list"]
     }' > transit-policy.hcl
