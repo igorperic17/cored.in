@@ -1,6 +1,8 @@
 export enum BaseServerStateKeys {
   FEATURE_FLAGS = "feature_flags",
   USER = "user",
+  USER_TIPS = "user_tips",
+  UPDATE_TIPS_SEEN = "update_tips_seen",
   UPDATE_PROFILE = "update_profile",
   FEED = "feed",
   USER_FEED = "user_feed",

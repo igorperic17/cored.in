@@ -13,7 +13,6 @@ import { Dispatch, FC, SetStateAction } from "react";
 import { SubscriptionInfo, UserProfile } from "@coredin/shared";
 import { formElementBorderStyles } from "@/themes";
 
-
 export type NewMessageProps = {
   postContent: string;
   setPostContent: Dispatch<SetStateAction<string>>;
@@ -88,7 +87,7 @@ export const NewMessageContent: FC<NewMessageProps> = ({
               </option>
             ))}
           </Select>
-          <FormHelperText color="text.700">
+          <FormHelperText color="other.600">
             Only selected users will be able to see this message.
           </FormHelperText>
         </FormControl>

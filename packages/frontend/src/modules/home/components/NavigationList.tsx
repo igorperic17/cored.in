@@ -11,13 +11,17 @@ export type NavigationProps = {
   isPostPage: boolean;
   pendingRequests: CredentialRequestDTO[] | undefined;
   unreadMessages: number;
+  unseenTips: number;
+  closeMobileMenu?: () => void;
 };
 
 export const NavigationList: FC<NavigationProps> = ({
   wallet,
   isPostPage,
   pendingRequests,
-  unreadMessages
+  unreadMessages,
+  unseenTips,
+  closeMobileMenu
 }) => {
   return (
     <Grid
@@ -33,6 +37,7 @@ export const NavigationList: FC<NavigationProps> = ({
           // justify="center"
           // align="center"
           // border="1px solid red"
+          onClick={closeMobileMenu}
         >
           <Link
             as={ReactRouterLink}
@@ -80,6 +85,11 @@ export const NavigationList: FC<NavigationProps> = ({
                 //       {unreadMessages}
                 //     </Text>
                 //   )}
+              )}
+              {item.title === "tips" && unseenTips > 0 && (
+                <NotificationDot
+                  ariaLabel={`${pendingRequests?.length} new received tips.`}
+                />
               )}
             </HStack>
           </Link>

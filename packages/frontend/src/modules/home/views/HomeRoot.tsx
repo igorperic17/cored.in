@@ -110,7 +110,7 @@ export const HomeRoot = () => {
                   spacing="2em"
                 >
                   <DisclaimerText />
-                  <SocialMedia size="2rem" gap="2.25em" color="text.400" />
+                  <SocialMedia size="2rem" gap="2.25em" color="other.600" />
                 </VStack>
               </VStack>
             </VStack>

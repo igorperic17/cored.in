@@ -42,7 +42,7 @@ export const CredentialSection: FC<CredentialSectionProps> = ({
             as={ReactRouterLink}
             to={ROUTES.CREDENTIALS.REQUEST.path}
             variant="empty"
-            color="text.700"
+            color="other.600"
             aria-label={`Add ${section}.`}
           >
             <Icon as={FaPlus} fontSize="1.5rem" />

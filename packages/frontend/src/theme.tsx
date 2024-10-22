@@ -29,24 +29,11 @@ const colors = {
     300: "#00AA54", // green
     400: "#FF550F", // red
     500: "#7F02FE", // purple
-    900: "#141413"
+    900: "#141413" // black
   },
-  text: {
-    100: "#F1F1F0", // light - white / main text
-    300: "#b0b0b0", // USED IN LOGIN, HELPER TEXT *
-    400: "#828178", // medium / text on card
-    600: "#737373", // - hover 2 / not in use yet
-    700: "#75746B", // PLEACEHOLDER and SIGN OUT BUTTON *
-    800: "#62625D", // - medium - dark / not in use yet
-    900: "#121111" // dark
-  },
-  background: {
-    100: "#F5F5F5", // body bg
-    400: "#828178", /// === text.400
-    600: "#3E3D3A", // card bg
-    700: "#272723",
-    800: "#222320", // very dark bg / profile bg
-    900: "#141413" // body bg / black // FLOC
+  other: {
+    200: "#b0b0b0", // Used to identify self-issued credential, as a helper text in NotRegisteredProfile, for form elements border
+    600: "#75746B" // Use this for placeholders and helper texts
   }
 };
 
@@ -64,7 +51,7 @@ const styles = {
       backgroundColor: "brand.200"
     },
     "html, body": {
-      color: "text.900",
+      color: "brand.900",
       boxSizing: "border-box"
     },
     body: {

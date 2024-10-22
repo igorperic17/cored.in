@@ -1,6 +1,7 @@
 import { feedService } from "@/dependencies";
 import { CreatePostDTO } from "@coredin/shared";
 import { BaseServerStateKeys } from "../constants";
+import { Coin } from "@cosmjs/amino";
 
 export const FEED_MUTATIONS = {
   publish: () => ({
@@ -19,8 +20,15 @@ export const FEED_MUTATIONS = {
   }),
   tipPost: () => ({
     mutationKey: [BaseServerStateKeys.TIP_POST],
-    mutationFn: ({ postId }: { postId: number }) =>
-      feedService.tipPost(postId)
+    mutationFn: ({
+      postId,
+      tip,
+      txHash
+    }: {
+      postId: number;
+      tip: Coin;
+      txHash: string;
+    }) => feedService.tipPost(postId, tip, txHash)
   }),
   clearBoosts: () => ({
     mutationKey: [BaseServerStateKeys.CLEAR_BOOSTS],

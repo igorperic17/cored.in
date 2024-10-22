@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import useSound from "use-sound";
 import NotificationSound from "@/assets/sounds/coredin-notification-long-pop.mp3";
 import { NavigationList } from "./NavigationList";
+import { USER_QUERIES } from "@/queries";
 
 type NavigationDesktopProps = {
   wallet: string;
@@ -23,9 +24,16 @@ export const NavigationDesktop: FC<NavigationDesktopProps> = ({ wallet }) => {
     FEED_QUERIES.getMessages(),
     { refetchInterval: 5000, refetchIntervalInBackground: true }
   );
+  const { data: tips } = useLoggedInServerState(USER_QUERIES.getTips(), {
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true
+  });
 
   const unreadMessages =
     messages?.filter((message) => message.unread).length || 0;
+
+  const unseenTips =
+    tips?.receivedTips.filter((tip) => !tip.isViewed).length || 0;
 
   const isPostPage = location.pathname.includes("posts");
   const [lastNotifiedMessageId, setLastNotifiedMessageId] = useState<number>(0);
@@ -58,6 +66,7 @@ export const NavigationDesktop: FC<NavigationDesktopProps> = ({ wallet }) => {
         isPostPage={isPostPage}
         pendingRequests={pendingRequests}
         unreadMessages={unreadMessages}
+        unseenTips={unseenTips}
       />
     </Box>
   );

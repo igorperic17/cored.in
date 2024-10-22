@@ -14,7 +14,7 @@ export const Feed: FC<FeedProps> = ({ posts }) => {
         posts.map((post) => <Post key={`post-${post.id}`} post={post} />)
       ) : (
         <Box p="1em" w="100%">
-          <Text textStyle="sm" color="text.700">
+          <Text textStyle="sm" color="other.600">
             There is no activity here yet.
           </Text>
         </Box>

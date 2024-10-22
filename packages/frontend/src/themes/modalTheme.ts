@@ -12,10 +12,10 @@ const baseStyle = definePartsStyle({
   dialog: {
     py: "1em",
     px: "1em",
-    bg: "#F1F1F0", // === "background.100"
+    bg: "brand.100",
     borderRadius: "1.125em",
     border: "1px solid #E6E6E6",
-    color: "brand.900",
+    color: "brand.900"
   },
   overlay: {
     bg: "#14141380",
@@ -23,22 +23,20 @@ const baseStyle = definePartsStyle({
   }
 });
 
+const secondary = defineMultiStyleConfig({});
+
 const full = definePartsStyle({
   dialogContainer: {
-    px: "0",
-    py: "0",
-    borderRadius: "3em" // TODO
+    p: "0"
   },
   dialog: {
-    px: "0",
-    py: "0",
-    borderRadius: "3em" // TODO
+    px: "0"
   },
   closeButton: {
     color: "brand.900",
     width: "26px",
     aspectRatio: "1",
-    top: "20px",
+    top: "10px",
     right: "10px",
     p: "4px",
     cursor: "pointer"
@@ -47,5 +45,5 @@ const full = definePartsStyle({
 
 export const modalTheme = defineMultiStyleConfig({
   baseStyle,
-  variants: { full }
+  sizes: { full }
 });

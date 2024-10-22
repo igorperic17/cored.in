@@ -9,15 +9,7 @@ import {
   TabPanels,
   Tabs,
   Text,
-  VisuallyHidden,
-  Button,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter
+  VisuallyHidden
 } from "@chakra-ui/react";
 import { Feed } from "../components/Feed";
 import { CreatePost } from "../components";
@@ -27,7 +19,7 @@ import {
   useMutation,
   useQueryClient
 } from "@tanstack/react-query";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { PostRequestType, SkillTag } from "@coredin/shared";
 import { END_FEED_PHRASES } from "../components/post/constants";
 import SkillFilter from "@/modules/home/components/SkillFilter"; // Import SkillFilter for reusable implementation
@@ -63,14 +55,16 @@ const HomePage = () => {
         return undefined;
       }
       return firstPageParam - 1;
-    }
+    },
+    refetchInterval: 5000, // TODO - increase slightly?
+    refetchIntervalInBackground: true
   });
 
-  const queryClient = useQueryClient(); // Get queryClient from useQueryClient
-  const { mutate: mutateClearBoosts } = useMutation(
-    FEED_MUTATIONS.clearBoosts()
-  );
-  const { successToast, errorToast } = useCustomToast();
+  // const queryClient = useQueryClient(); // Get queryClient from useQueryClient
+  // const { mutate: mutateClearBoosts } = useMutation(
+  //   FEED_MUTATIONS.clearBoosts()
+  // );
+  // const { successToast, errorToast } = useCustomToast();
 
   let timeoutId: string | number | NodeJS.Timeout | undefined;
 
@@ -144,7 +138,7 @@ const HomePage = () => {
   const handleOpen = () => setIsOpen(true);
   const handleClose = () => setIsOpen(false);
 
-  let tags = SkillTags.map((x) => x);
+  const tags = SkillTags.map((x) => x);
 
   return (
     <Flex
@@ -210,7 +204,7 @@ const HomePage = () => {
           {posts?.pages[0] && !hasNextPage && (
             <Text
               textStyle="sm"
-              color="text.700"
+              color="other.600"
               w="80%"
               mx="auto"
               textAlign="center"

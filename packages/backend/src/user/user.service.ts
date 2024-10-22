@@ -1,12 +1,14 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { In, IsNull, Not, Repository } from "typeorm";
+import { Any, In, IsNull, Not, Repository } from "typeorm";
 import { User } from "./user.entity";
 import {
   NotFoundError,
   UserProfile,
   UpdateProfileDTO,
-  CredentialDTO
+  CredentialDTO,
+  TipDTO,
+  TipsDTO
 } from "@coredin/shared";
 import { Effect } from "effect";
 import { WaltIdIssuerService, WaltIdWalletService } from "../ssi/core/services";
@@ -14,12 +16,15 @@ import { CoredinContractService } from "@/coreum/services";
 // import { MerkleTree } from "merkletreejs";
 // import { keccak256 } from "@ethersproject/keccak256";
 import { VerifiableCredential } from "@/ssi/core/data-classes";
+import { Tip } from "@/posts/tips/tip.entity";
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+    @InjectRepository(Tip)
+    private readonly tipRepository: Repository<Tip>,
     @Inject(WaltIdWalletService)
     private readonly walletService: WaltIdWalletService,
     @Inject(WaltIdIssuerService)
@@ -32,6 +37,7 @@ export class UserService {
     requesterWallet: string,
     wallet: string
   ): Promise<Effect.Effect<UserProfile, NotFoundError>> {
+    console.log("get user", requesterWallet, wallet);
     if (requesterWallet === wallet) {
       return this.getPrivate(wallet);
     }
@@ -113,6 +119,34 @@ export class UserService {
     }
 
     return Effect.fail(new NotFoundError());
+  }
+
+  async getTips(wallet: string): Promise<TipsDTO> {
+    console.log("getting tips..", wallet);
+    const allTips = await this.tipRepository.find({
+      where: [{ tipperWallet: wallet }, { receiverWallet: wallet }],
+      relations: ["tipper", "receiver"]
+    });
+
+    return {
+      sentTips: allTips
+        .filter((tip) => tip.tipperWallet === wallet)
+        .map(this.adaptTip),
+      receivedTips: allTips
+        .filter((tip) => tip.receiverWallet === wallet)
+        .map(this.adaptTip)
+    };
+  }
+
+  async updateTipsSeen(wallet: string, tipIds: number[]) {
+    await this.tipRepository.update(
+      {
+        receiverWallet: wallet,
+        id: Any(tipIds),
+        isViewed: false
+      },
+      { isViewed: true }
+    );
   }
 
   async updateLastSeen(wallet: string) {
@@ -199,6 +233,25 @@ export class UserService {
       bio: user.bio,
       issuerDid: user.issuerDid,
       credentials: []
+    };
+  }
+
+  private adaptTip(tip: Tip): TipDTO {
+    return {
+      id: tip.id,
+      postId: tip.postId,
+      tipperWallet: tip.tipperWallet,
+      tipperAvatar: tip.tipper.avatarUrl,
+      tipperUsername: tip.tipper.username,
+      tipperAvatarFallbackColor: tip.tipper.avatarFallbackColor,
+      receiverWallet: tip.receiverWallet,
+      receiverUsername: tip.receiver.username,
+      receiverAvatar: tip.receiver.avatarUrl,
+      receiverAvatarFallbackColor: tip.receiver.avatarFallbackColor,
+      createdAt: tip.createdAt.toISOString(),
+      amount: tip.amount,
+      denom: tip.denom,
+      isViewed: tip.isViewed
     };
   }
 

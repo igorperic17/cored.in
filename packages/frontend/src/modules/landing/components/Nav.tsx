@@ -66,6 +66,7 @@ export const Nav = () => {
         size="md"
         signInText="Sign in"
         username={userProfile?.username}
+        py="0.43em" // Remove this if the text length is going to match the other login button on the page
       />
     </Header>
   );

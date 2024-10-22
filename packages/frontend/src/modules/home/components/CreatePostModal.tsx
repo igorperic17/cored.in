@@ -196,7 +196,7 @@ export const CreatePostModal: FC<CreatePostModalProps> = ({
         <ModalFooter>
           <Button
             variant="empty"
-            color="text.700"
+            color="other.600"
             size="sm"
             onClick={onClose}
             mr="1.5em"

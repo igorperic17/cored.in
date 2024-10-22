@@ -1,11 +1,19 @@
 import { HttpService } from "@/services";
-import { UpdateProfileDTO, UserProfile } from "@coredin/shared";
+import { TipsDTO, UpdateProfileDTO, UserProfile } from "@coredin/shared";
 
 export class UserService {
   constructor(private readonly http: HttpService) {}
 
   async getUser(wallet: string): Promise<UserProfile> {
-    return this.http.get("user/" + wallet);
+    return this.http.get("user/profile/" + wallet);
+  }
+
+  async getTips(): Promise<TipsDTO> {
+    return this.http.get("user/tips");
+  }
+
+  async updateTipsSeen(tipIds: number[]): Promise<void> {
+    return this.http.put("user/tips", { tipIds });
   }
 
   async updateProfile(profile: UpdateProfileDTO): Promise<void> {

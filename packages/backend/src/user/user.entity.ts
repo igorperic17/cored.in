@@ -1,4 +1,12 @@
-import { Entity, Column, PrimaryGeneratedColumn, Index } from "typeorm";
+import { Tip } from "../posts/tips/tip.entity";
+import {
+  Entity,
+  Column,
+  PrimaryGeneratedColumn,
+  Index,
+  JoinColumn,
+  OneToMany
+} from "typeorm";
 
 @Entity("users")
 export class User {
@@ -92,4 +100,12 @@ export class User {
     nullable: true
   })
   bio: string;
+
+  @OneToMany(() => Tip, (tip) => tip.post)
+  @JoinColumn({ name: "receiverWallet", referencedColumnName: "wallet" })
+  receivedTips: Tip[];
+
+  @OneToMany(() => Tip, (tip) => tip.post)
+  @JoinColumn({ name: "receiverWallet", referencedColumnName: "wallet" })
+  sentTips: Tip[];
 }

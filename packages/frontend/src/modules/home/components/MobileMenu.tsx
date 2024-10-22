@@ -1,5 +1,4 @@
 import {
-  Box,
   Button,
   Modal,
   ModalCloseButton,
@@ -31,20 +30,23 @@ export const MobileMenu = () => {
         <Modal size="full" isOpen={isOpen} onClose={onClose}>
           <ModalContent as="nav">
             <ModalCloseButton />
-            <NavigationList
-              wallet={chainContext.address || ""}
-              isPostPage={false}
-              pendingRequests={undefined}
-              unreadMessages={0}
-            />
+            {/* TODO: may be a good idea to revisit the spacing when we remove the disclaimer */}
+            <VStack spacing={{ base: "5vh", sm: "8vh" }} px="1em">
+              <NavigationList
+                wallet={chainContext.address || ""}
+                isPostPage={false}
+                pendingRequests={undefined}
+                unreadMessages={0}
+                unseenTips={0}
+                closeMobileMenu={onClose}
+              />
 
-            <Box mt="3em" mb="2em">
-              <UserSignOut isMobile />
-            </Box>
+              <UserSignOut isMobile w="max-content" />
 
-            <VStack spacing="1em" mt="1em">
-              <DisclaimerText />
-              <SocialMedia size="1.5rem" gap="1.75em" color="text.400" />
+              <VStack spacing="1em">
+                <DisclaimerText />
+                <SocialMedia size="1.5rem" gap="1.75em" color="other.600" />
+              </VStack>
             </VStack>
           </ModalContent>
         </Modal>

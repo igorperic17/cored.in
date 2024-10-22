@@ -25,8 +25,13 @@ import {
   PostVisibility
 } from "@coredin/shared";
 import { User } from "@/user/user.entity";
-import { CoredinContractService, CoredinSignerService } from "@/coreum/services";
+import {
+  CoredinContractService,
+  CoredinSignerService
+} from "@/coreum/services";
 import { UserService } from "@/user/user.service";
+import { Coin } from "@cosmjs/amino";
+import { Tip } from "./tips/tip.entity";
 
 const PAGE_SIZE = 10;
 
@@ -113,7 +118,9 @@ export class PostsService {
       // TODO - sort by createdAt in query, it requires using QueryBuilder
       replies: postWithReplies.replies
         .map((reply) => this.fromDb(reply))
-        .sort((a, b) => a.createdAt.localeCompare(b.createdAt)),
+        .sort(
+          (a, b) => b.tips - a.tips || a.createdAt.localeCompare(b.createdAt)
+        ),
       recipients
     };
   }
@@ -128,7 +135,10 @@ export class PostsService {
         replyToPostId: IsNull()
       },
       {
-        creatorWallet: Any([...await this.getSubscribedWallets(requesterWallet), requesterWallet]),
+        creatorWallet: Any([
+          ...(await this.getSubscribedWallets(requesterWallet)),
+          requesterWallet
+        ]),
         visibility: PostVisibility.PRIVATE,
         replyToPostId: IsNull()
       }
@@ -158,7 +168,7 @@ export class PostsService {
       {
         visibility: PostVisibility.PUBLIC,
         creatorWallet,
-        replyToPostId: IsNull(),
+        replyToPostId: IsNull()
       }
     ]);
   }
@@ -168,7 +178,7 @@ export class PostsService {
       {
         creatorWallet,
         replyToPostId: IsNull(),
-        visibility: Not(PostVisibility.RECIPIENTS),
+        visibility: Not(PostVisibility.RECIPIENTS)
       }
     ]);
   }
@@ -209,7 +219,7 @@ export class PostsService {
   async getJobsFor(requesterWallet: string): Promise<PostDTO[]> {
     return this.getFeedWithBoostedPosts(requesterWallet, 1, [
       {
-        requestType: PostRequestType.JOB,
+        requestType: PostRequestType.JOB
       }
     ]);
   }
@@ -225,7 +235,7 @@ export class PostsService {
     if (page === 1) {
       boostedPosts = await this.postRepository.find({
         relations: ["user"],
-        where: whereConditions.map(condition => ({
+        where: whereConditions.map((condition) => ({
           ...condition,
           boostedUntil: MoreThan(now)
         })),
@@ -243,7 +253,7 @@ export class PostsService {
     const offset = (page - 1) * PAGE_SIZE;
     const unboostedPosts = await this.postRepository.find({
       relations: ["user"],
-      where: whereConditions.map(condition => ({
+      where: whereConditions.map((condition) => ({
         ...condition,
         boostedUntil: LessThanOrEqual(now)
       })),
@@ -260,9 +270,14 @@ export class PostsService {
     return allPosts.map((post) => this.fromDb(post, requesterWallet));
   }
 
-  private async getSubscribedWallets(requesterWallet: string): Promise<string[]> {
-    const allSubscriptions = await this.coredinContractService.getAllSubscriptions(requesterWallet);
-    return allSubscriptions.map(subscription => subscription.subscribed_to_wallet);
+  private async getSubscribedWallets(
+    requesterWallet: string
+  ): Promise<string[]> {
+    const allSubscriptions =
+      await this.coredinContractService.getAllSubscriptions(requesterWallet);
+    return allSubscriptions.map(
+      (subscription) => subscription.subscribed_to_wallet
+    );
   }
 
   async create(requesterWallet: string, data: CreatePostDTO) {
@@ -365,26 +380,38 @@ export class PostsService {
       }
     );
   }
-  async updateTip(postId: number) {
+  async updateTip(
+    postId: number,
+    tipperWallet: string,
+    tip: Coin,
+    txHash: string
+  ) {
     const post = await this.postRepository.findOne({ where: { id: postId } });
     if (!post) {
-      throw new Error('Post not found');
+      throw new Error("Post not found");
     }
 
-    const contractTipsString = await this.coredinContractService.getPostTips(post.id);
+    const contractTipsString = await this.coredinContractService.getPostTips(
+      post.id
+    );
     const contractTips = Number(contractTipsString);
-    const currentDBTips = post.tips;
+    const currentDBTips = post.totalTipsAmount;
     const tipDiff = contractTips - currentDBTips;
-    
+
     // Convert microCORE to CORE and then to minutes
     // Assume 10 CORE = 1 minute of boost
-    const timeToBoostInMinutes = (tipDiff / 1000000.0) / 10.0;
+    const timeToBoostInMinutes = tipDiff / 1000000.0 / 10.0;
     console.log("tipDiff", tipDiff);
     console.log("timeToBoostInMinutes", timeToBoostInMinutes);
-    
+
     const now = new Date();
-    const boostedUntil = post.boostedUntil && new Date(post.boostedUntil) > now ? new Date(post.boostedUntil) : now;
-    const newBoostedUntil = new Date(boostedUntil.getTime() + timeToBoostInMinutes * 60000.0);
+    const boostedUntil =
+      post.boostedUntil && new Date(post.boostedUntil) > now
+        ? new Date(post.boostedUntil)
+        : now;
+    const newBoostedUntil = new Date(
+      boostedUntil.getTime() + timeToBoostInMinutes * 60000.0
+    );
     console.log("boostedUntil", boostedUntil);
     console.log("newBoostedUntil", newBoostedUntil);
     return await this.postRepository.manager.transaction(
@@ -394,10 +421,20 @@ export class PostsService {
           Post,
           { id: postId },
           {
-            tips: contractTips,
+            totalTipsAmount: contractTips,
             boostedUntil: newBoostedUntil
           }
         );
+        await transactionalEntityManager.save(Tip, {
+          tipperWallet,
+          postId,
+          amount: tip.amount,
+          denom: tip.denom,
+          receiverWallet: post.creatorWallet,
+          txHash,
+          createdAt: new Date(),
+          isViewed: post.creatorWallet === tipperWallet
+        });
       }
     );
   }
@@ -415,7 +452,7 @@ export class PostsService {
       creatorWallet: post.creatorWallet,
       creatorUsername: post.user.username,
       creatorAvatar: post.user.avatarUrl,
-      tips: post.tips,
+      tips: post.totalTipsAmount,
       creatorAvatarFallbackColor: post.user.avatarFallbackColor,
       visibility: post.visibility,
       text: post.text,
@@ -516,7 +553,7 @@ export class PostsService {
   //   lastTipTime: Date | null,  // Could be null if no tips
   //   creationTime: Date,        // Scriptohost's Date class
   //   lastComputedTime: Date,    // Last time the score was updated
-  //   alpha: number = 0.1,       // tip amount weight 
+  //   alpha: number = 0.1,       // tip amount weight
   //   beta: number = 1.0,        // last tip timestamp weight
   //   gamma: number = 2.0,       // creation timestamp weight
   //   decayConstant: number = 0.001  // Lambda decay constant
@@ -553,12 +590,11 @@ export class PostsService {
   // }
 
   // TODO - remove this before deploying to production!
-  async clearAllBoosts(wallet: string): Promise<void> {
-    const posts = await this.postRepository.find();
-    for (const post of posts) {
-      post.boostedUntil = post.createdAt;
-      await this.postRepository.save(post);
-    }
-  }
-
+  // async clearAllBoosts(wallet: string): Promise<void> {
+  //   const posts = await this.postRepository.find();
+  //   for (const post of posts) {
+  //     post.boostedUntil = post.createdAt;
+  //     await this.postRepository.save(post);
+  //   }
+  // }
 }

@@ -91,7 +91,7 @@ export const CreatePost = () => {
           _active={{
             bg: "transparent"
           }}
-          color="text.700"
+          color="other.600"
           fontSize={{ base: "0.875rem", lg: "1rem" }}
           fontWeight="400"
           textTransform="none"
@@ -114,9 +114,7 @@ export const CreatePost = () => {
         requestType={requestType}
         visibility={visibility}
         skillTags={skillTags || []}
-        setSkillTags={(newTags: SkillTag[]) =>
-          setSkillTags(newTags)
-        }
+        setSkillTags={(newTags: SkillTag[]) => setSkillTags(newTags)}
         postContent={postContent}
         handlePost={handlePost}
         isPending={isPending}

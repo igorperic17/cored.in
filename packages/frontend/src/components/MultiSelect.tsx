@@ -4,9 +4,9 @@ import { chakraComponents, Select } from "chakra-react-select";
 import { FC, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 
-export interface MultiSelectValue { 
-  label: string, 
-  value: string // wanted to do SkillTag here, but wouldn't be reusable
+export interface MultiSelectValue {
+  label: string;
+  value: string; // wanted to do SkillTag here, but wouldn't be reusable
 }
 
 type MultiSelectProps = {
@@ -25,7 +25,6 @@ export const MultiSelect: FC<MultiSelectProps> = ({
   menuPlacement = "top",
   ...props
 }) => {
-
   return (
     <Select
       focusBorderColor="brand.200"
@@ -82,7 +81,7 @@ export const MultiSelect: FC<MultiSelectProps> = ({
         placeholder: (provided) => ({
           ...provided,
           fontSize: { base: "0.875rem", lg: "1rem" },
-          color: "text.700",
+          color: "other.600",
           ml: "0.75em"
         }),
         valueContainer: (provided) => ({

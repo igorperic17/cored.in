@@ -86,7 +86,7 @@ export const IssuersListModal: FC<IssuersListModalProps> = ({
                 <VStack align="start" spacing="0em">
                   <Text as="span">{issuer.username}</Text>
                   <Box
-                    color="text.700"
+                    color="other.600"
                     textOverflow="ellipsis"
                     display="inline"
                     whiteSpace="nowrap"

@@ -132,9 +132,10 @@ export const TippingModal: FC<TippingModalProps> = ({
                   onChange={(e) => setTipAmount(Number(e.target.value))}
                 />
                 <InputRightAddon
-                  color="brand.900"
+                  color="brand.100"
                   bg="brand.300"
-                  border="1px solid #141413D0"
+                  border="1px solid"
+                  borderColor="other.200"
                   borderTopRightRadius="1.125em"
                   borderBottomRightRadius="1.125em"
                 >
@@ -166,7 +167,14 @@ export const TippingModal: FC<TippingModalProps> = ({
                   <Td pl="0" pt="1em" pb="0.5em" w="60%" fontSize="xl">
                     Total to pay:
                   </Td>
-                  <Td px="0" pt="1em" pb="0.5em" textAlign="right" fontSize="lg" fontWeight="bold">
+                  <Td
+                    px="0"
+                    pt="1em"
+                    pb="0.5em"
+                    textAlign="right"
+                    fontSize="lg"
+                    fontWeight="bold"
+                  >
                     {tipAmount ? totalAmount.toFixed(2) : "0.00"} CORE
                   </Td>
                 </Tr>

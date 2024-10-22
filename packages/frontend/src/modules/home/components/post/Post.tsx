@@ -150,7 +150,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   };
 
   const handleTip = async (): Promise<boolean> => {
-    let tipCoins = coin(tipAmount * 1.05 * 1_000_000, TESTNET_FEE_DENOM);
+    const tipCoins = coin(tipAmount * 1.05 * 1_000_000, TESTNET_FEE_DENOM);
 
     const postInfo: PostInfo = {
       id: post.id.toString(),
@@ -162,14 +162,24 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     };
 
     try {
-      await coredinClient?.tipPostAuthor({ postInfo }, "auto", undefined, [
-        tipCoins
-      ]);
+      const tx = await coredinClient?.tipPostAuthor(
+        { postInfo },
+        "auto",
+        undefined,
+        [tipCoins]
+      );
 
-      await tipPost({ postId: post.id });
+      if (tx && tx.transactionHash) {
+        await tipPost({
+          postId: post.id,
+          tip: tipCoins,
+          txHash: tx.transactionHash
+        });
+        queryClient.invalidateQueries();
+        return true;
+      }
 
-      queryClient.invalidateQueries();
-      return true;
+      return false;
     } catch (error) {
       console.error("Error tipping post:", error);
       return false;
