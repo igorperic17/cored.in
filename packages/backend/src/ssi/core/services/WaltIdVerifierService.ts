@@ -53,7 +53,7 @@ export class WaltIdVerifierService {
     ];
 
     return {
-      request_credentials: [credentialType],
+      request_credentials: [{ type: credentialType, format: "jwt_vc_json" }],
       presentation_definition: {
         id: "<automatically assigned>",
         input_descriptors: [

@@ -10,7 +10,8 @@ export class WaltIdIssuerService {
   constructor(
     private readonly issuerApiUrl: string,
     private readonly vaultUrl: string,
-    private readonly vaultAccessKey: string
+    private readonly vaultRoleId: string,
+    private readonly vaultSecretId: string
   ) {}
 
   async onboardIssuer(wallet: string) {
@@ -22,7 +23,10 @@ export class WaltIdIssuerService {
           keyType: "Ed25519",
           config: {
             server: this.vaultUrl + "/v1/transit",
-            accessKey: this.vaultAccessKey
+            auth: {
+              roleId: this.vaultRoleId,
+              secretId: this.vaultSecretId
+            }
           }
         },
         did: {
@@ -30,7 +34,7 @@ export class WaltIdIssuerService {
         }
       }
     );
-    console.log("Onboarded issuer for wallet,", wallet);
+    // console.log("Onboarded issuer for wallet,", wallet);
 
     return createIssuerKeyResult.data;
   }
@@ -47,6 +51,7 @@ export class WaltIdIssuerService {
       issuerInfo,
       daysValid
     );
+    // console.log("generated payload", payload);
     const createCredentialOfferResult = await axios.post(
       `${this.issuerApiUrl}/openid4vc/jwt/issue`,
       payload,
@@ -57,6 +62,13 @@ export class WaltIdIssuerService {
         }
       }
     );
+
+    // console.log(
+    //   "createCredentialOfferResult data",
+    //   createCredentialOfferResult.data
+    // );
+
+    // throw new Error();
 
     return createCredentialOfferResult.data;
   }
@@ -71,9 +83,13 @@ export class WaltIdIssuerService {
       issuerKey: {
         type: "tse",
         server: this.vaultUrl + "/v1/transit",
-        accessKey: this.vaultAccessKey,
+        auth: {
+          roleId: this.vaultRoleId,
+          secretId: this.vaultSecretId
+        },
         id: issuerInfo.issuerKeyVaultId
       },
+      authenticationMethod: "PRE_AUTHORIZED",
       issuerDid: issuerInfo.issuerDid,
       credentialConfigurationId: data.type + "_jwt_vc_json",
       credentialData: {
