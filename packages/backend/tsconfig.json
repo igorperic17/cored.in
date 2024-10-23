@@ -29,5 +29,10 @@
         "stringify": "assert", 
       },
     ]
-  }
+  },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
+  },
 }

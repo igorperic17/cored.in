@@ -1,16 +1,19 @@
 # Step 1: Build the application
 FROM coredin/base:latest AS builder
+RUN yarn workspace @coredin/backend prepare
+RUN yarn workspace @coredin/backend build
 
 # Step 2: Set up the production environment
-FROM node:20.14-alpine3.19
+FROM node:22.10-alpine3.20
 
 # Step 3: Copy 
 COPY --from=builder coredin/packages/backend/dist app/packages/backend/dist
 COPY --from=builder coredin/packages/backend/config app/packages/backend/config
 COPY --from=builder coredin/packages/backend/db app/packages/backend/db
+COPY --from=builder coredin/packages/backend/package.json app/packages/backend
+COPY --from=builder coredin/packages/backend/tsconfig.json app/packages/backend
 COPY --from=builder coredin/packages/shared/dist app/packages/shared/dist
 COPY --from=builder coredin/packages/shared/package.json app/packages/shared
-COPY --from=builder coredin/packages/backend/package.json app/packages/backend
 COPY --from=builder coredin/package.json app/
 COPY --from=builder coredin/yarn.lock app/
 COPY --from=builder coredin/.yarnrc.yml app/

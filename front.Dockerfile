@@ -1,5 +1,6 @@
 # Step 1: Build the application
 FROM coredin/base:latest AS builder
+RUN yarn workspace @coredin/frontend build
 
 # WORKDIR /coredin
 
