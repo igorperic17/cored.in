@@ -47,6 +47,16 @@ yarn workspace @coredin/frontend add (package-name)
 yarn docker
 ```
 
+## Updating docker services
+
+```
+docker build --file vault.Dockerfile --tag coredin/vault:latest .
+docker tag coredin/vault:latest $COREDIN_ECR_URL/coredin/vault:x86
+aws ecr get-login-password --region $COREDIN_AWS_REGION | docker login --username AWS --password-stdin $COREDIN_ECR_URL
+docker push $COREDIN_ECR_URL/coredin/vault:x86
+aws ecs update-service --cluster coredin-vault-cluster --service coredin-vault-service --force-new-deployment
+```
+
 
 ## Vault Setup
 
