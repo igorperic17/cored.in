@@ -2997,13 +2997,13 @@ __metadata:
     prettier: "npm:^3.3.3"
     process: "npm:^0.11.10"
     quill: "npm:^2.0.2"
-    quill-image-resize-module-react: "npm:^3.0.0"
     react: "npm:^18.3.1"
     react-cookie: "npm:^7.2.0"
     react-dom: "npm:^18.3.1"
     react-icons: "npm:^4.12.0"
     react-quill: "npm:^2.0.0"
     react-quilljs: "npm:^2.0.4"
+    react-quilljs-vite-fix: "npm:^1.0.5"
     react-router-dom: "npm:^6.26.2"
     react-sticky-box: "npm:^2.0.5"
     react-textarea-autosize: "npm:^8.5.3"
@@ -21259,18 +21259,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"quill-image-resize-module-react@npm:^3.0.0":
-  version: 3.0.0
-  resolution: "quill-image-resize-module-react@npm:3.0.0"
-  dependencies:
-    lodash: "npm:^4.17.4"
-    quill: "npm:^1.2.2"
-    raw-loader: "npm:^0.5.1"
-  checksum: 10/efd7cdd8e3fbe9246e605fc80177b893fba839149cdd378bec5218927b3a0ece24997eeaa276562d7b64aab38e0cbd691c15978925146460b8b3753e8c280a71
-  languageName: node
-  linkType: hard
-
-"quill@npm:^1.2.2, quill@npm:^1.3.7":
+"quill@npm:^1.3.7":
   version: 1.3.7
   resolution: "quill@npm:1.3.7"
   dependencies:
@@ -21358,13 +21347,6 @@ __metadata:
     iconv-lite: "npm:0.4.24"
     unpipe: "npm:1.0.0"
   checksum: 10/863b5171e140546a4d99f349b720abac4410338e23df5e409cfcc3752538c9caf947ce382c89129ba976f71894bd38b5806c774edac35ebf168d02aa1ac11a95
-  languageName: node
-  linkType: hard
-
-"raw-loader@npm:^0.5.1":
-  version: 0.5.1
-  resolution: "raw-loader@npm:0.5.1"
-  checksum: 10/6cad08ce5359c9ae3fff802be1dd9591a159a397b3df3712fca58ff8a948a9d4660d2f9cd6aeb831ded813b13b667c705f8ba93ec6e4a92d176c0a0ad2327b1b
   languageName: node
   linkType: hard
 
@@ -21547,6 +21529,17 @@ __metadata:
     react: ^16 || ^17 || ^18
     react-dom: ^16 || ^17 || ^18
   checksum: 10/e9aa49815bf3f52aefcef067eb3e3d474a737464ba06e3ac81a37806bac486bfa440303e5f2bf95b719aedc8918bbe19948ada83a7b62d7211ae95b053cb00b1
+  languageName: node
+  linkType: hard
+
+"react-quilljs-vite-fix@npm:^1.0.5":
+  version: 1.0.5
+  resolution: "react-quilljs-vite-fix@npm:1.0.5"
+  peerDependencies:
+    quill: ^1.3.7 || ^2.0.0-dev.0
+    react: ^17.0.2 || ^18.0.0-0
+    react-dom: ^17.0.2 || ^18.0.0-0
+  checksum: 10/e75d77271f4e39e6d47cfaad6e9951f7c71aa7bb58e5649aa69fc7532e0138292adddc7c838c6817c366ac03f226aa3efc51ffd2f90d05ca552a79b7b2c55130
   languageName: node
   linkType: hard
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { useQuill } from "react-quilljs";
+import { useQuill } from "react-quilljs-vite-fix";
 import BlotFormatter from "@enzedonline/quill-blot-formatter2";
 import "quill/dist/quill.snow.css";
 import { Box, BoxProps } from "@chakra-ui/react";
