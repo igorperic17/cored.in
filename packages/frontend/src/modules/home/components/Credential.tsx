@@ -72,10 +72,9 @@ export const Credential: FC<CredentialProps> = ({
     if (chainContext.address) {
       console.log("verifying leaf...");
       const { leaf, proof } = generateProof(credential, tree);
-      console.log(leaf, proof);
       coredinClient
         ?.verifyCredential({
-          did: subjectDid,
+          did: { value: subjectDid },
           credentialHash: leaf,
           merkleProofs: proof
         })
