@@ -48,7 +48,7 @@
     "bufferutil": "^4.0.8",
     "clean-webpack-plugin": "^4.0.0",
     "effect": "^2.4.19",
-    "merkletreejs": "^0.3.11",
+    "merkletreejs": "^0.4.0",
     "pg": "^8.13.0",
     "reflect-metadata": "^0.2.1",
     "rxjs": "^7.8.1",

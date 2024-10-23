@@ -45,7 +45,7 @@
     "chain-registry": "^1.63.38",
     "chakra-react-select": "^4.9.1",
     "framer-motion": "^10.18.0",
-    "merkletreejs": "^0.3.11",
+    "merkletreejs": "^0.4.0",
     "process": "^0.11.10",
     "quill": "^2.0.2",
     "react": "^18.3.1",
