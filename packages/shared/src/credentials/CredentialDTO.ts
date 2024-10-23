@@ -3,7 +3,7 @@ import { CredentialType } from "./CredentialTypes";
 
 export type CredentialDTO = {
   id: string;
-  subjectDid: DID;
+  subjectDid: string;
   type: CredentialType;
   title: string;
   establishment: string;
