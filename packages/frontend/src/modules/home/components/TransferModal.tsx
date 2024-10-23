@@ -79,7 +79,7 @@ export const TransferModal: FC<TransferModalProps> = ({
     <Modal isOpen={isOpen} onClose={handleClose} isCentered>
       <ModalOverlay />
       <ModalContent>
-        <ModalHeader>Transfer to your wallet</ModalHeader>
+        <ModalHeader>Transfer to another wallet</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
           <Flex direction="column" gap="2em">
