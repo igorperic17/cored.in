@@ -15,7 +15,7 @@ export const TipsNotificationCard: React.FC<TipsNotificationCardProps> = ({
   direction
 }) => {
   const [username, avatar, avatarFallbackColor, profileWallet] =
-    direction === "sent"
+    direction === "received"
       ? [
           tip.tipperUsername,
           tip.tipperAvatar,
