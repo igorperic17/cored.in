@@ -58,7 +58,7 @@ resource "aws_ecs_task_definition" "issuer_api" {
       environment = var.use_elbs ? [
         {
           name  = "ELB_ADDRESS"
-          value = "" # TODO - add the actual load balancer address
+          value = aws_alb.issuer_api[0].dns_name
         }
       ] : []
       secrets = []
