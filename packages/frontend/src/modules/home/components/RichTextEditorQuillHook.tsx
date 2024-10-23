@@ -1,7 +1,7 @@
-import React from 'react';
-import { useQuill } from 'react-quilljs';
-import BlotFormatter from 'quill-blot-formatter';
-import 'quill/dist/quill.snow.css';
+import React from "react";
+import { useQuill } from "react-quilljs";
+import BlotFormatter from "@enzedonline/quill-blot-formatter2";
+import "quill/dist/quill.snow.css";
 import { Box, BoxProps } from "@chakra-ui/react";
 import { inputTheme } from "../../../themes/inputTheme";
 
@@ -26,23 +26,42 @@ const RichTextEditorQuillHook: React.FC<RichTextEditorProps & BoxProps> = ({
   placeholder = "Write your text here...",
   ...boxProps
 }) => {
-  const modules = React.useMemo(() => ({
-    toolbar: readOnly ? false : [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
-      [{ 'align': []}],
-      ['link', 'image', 'video'],
-      ['clean']
-    ],
-    blotFormatter: {}
-  }), [readOnly]);
+  const modules = React.useMemo(
+    () => ({
+      toolbar: readOnly
+        ? false
+        : [
+            [{ header: [1, 2, 3, false] }],
+            ["bold", "italic", "underline", "strike", "blockquote"],
+            [
+              { list: "ordered" },
+              { list: "bullet" },
+              { indent: "-1" },
+              { indent: "+1" }
+            ],
+            [{ align: [] }],
+            ["link", "image", "video"],
+            ["clean"]
+          ],
+      blotFormatter: {}
+    }),
+    [readOnly]
+  );
 
   const formats = [
-    'header',
-    'bold', 'italic', 'underline', 'strike', 'blockquote',
-    'list', 'bullet', 'indent', 'align',
-    'link', 'image', 'video'
+    "header",
+    "bold",
+    "italic",
+    "underline",
+    "strike",
+    "blockquote",
+    "list",
+    "bullet",
+    "indent",
+    "align",
+    "link",
+    "image",
+    "video"
   ];
 
   const { quill, quillRef, Quill } = useQuill({
@@ -55,15 +74,15 @@ const RichTextEditorQuillHook: React.FC<RichTextEditorProps & BoxProps> = ({
 
   React.useEffect(() => {
     if (Quill && !quill) {
-      Quill.register('modules/blotFormatter', BlotFormatter);
+      Quill.register("modules/blotFormatter", BlotFormatter);
     }
   }, [Quill, quill]);
 
   React.useEffect(() => {
     if (quill) {
-      quill.on('text-change', () => {
+      quill.on("text-change", () => {
         if (onTextChange) {
-            onTextChange(quill.root.innerHTML);
+          onTextChange(quill.root.innerHTML);
         }
       });
     }
@@ -87,17 +106,20 @@ const RichTextEditorQuillHook: React.FC<RichTextEditorProps & BoxProps> = ({
         position="relative"
         maxH={readOnly ? undefined : "50vh"}
       >
-        <div ref={quillRef} style={{
-          ...(inputTheme.baseStyle?.field ?? {}),
-          ...(inputTheme.variants?.richTextEditor?.field ?? {}),
-          minHeight: readOnly ? undefined : "250px",
-          border: readOnly ? "none" : "1px solid rgba(1,1,1,0.2)",
-          background: preview ? "brand.100" : "white",
-          color: "inherit",
-          fontFamily: "inherit",
-          fontSize: "inherit",
-          textAlign: undefined,
-        }} />
+        <div
+          ref={quillRef}
+          style={{
+            ...(inputTheme.baseStyle?.field ?? {}),
+            ...(inputTheme.variants?.richTextEditor?.field ?? {}),
+            minHeight: readOnly ? undefined : "250px",
+            border: readOnly ? "none" : "1px solid rgba(1,1,1,0.2)",
+            background: preview ? "brand.100" : "white",
+            color: "inherit",
+            fontFamily: "inherit",
+            fontSize: "inherit",
+            textAlign: undefined
+          }}
+        />
       </Box>
       {preview && (
         <Box

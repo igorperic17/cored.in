@@ -2974,6 +2974,7 @@ __metadata:
     "@cosmos-kit/react": "npm:^2.18.0"
     "@emotion/react": "npm:^11.13.3"
     "@emotion/styled": "npm:^11.13.0"
+    "@enzedonline/quill-blot-formatter2": "npm:^2.2.2"
     "@ethersproject/keccak256": "npm:^5.7.0"
     "@fontsource-variable/public-sans": "npm:^5.1.0"
     "@interchain-ui/react": "npm:^1.25.1"
@@ -2996,7 +2997,6 @@ __metadata:
     prettier: "npm:^3.3.3"
     process: "npm:^0.11.10"
     quill: "npm:^2.0.2"
-    quill-blot-formatter: "npm:^1.0.5"
     quill-image-resize-module-react: "npm:^3.0.0"
     react: "npm:^18.3.1"
     react-cookie: "npm:^7.2.0"
@@ -4178,6 +4178,15 @@ __metadata:
   version: 0.4.0
   resolution: "@emotion/weak-memoize@npm:0.4.0"
   checksum: 10/db5da0e89bd752c78b6bd65a1e56231f0abebe2f71c0bd8fc47dff96408f7065b02e214080f99924f6a3bfe7ee15afc48dad999d76df86b39b16e513f7a94f52
+  languageName: node
+  linkType: hard
+
+"@enzedonline/quill-blot-formatter2@npm:^2.2.2":
+  version: 2.2.2
+  resolution: "@enzedonline/quill-blot-formatter2@npm:2.2.2"
+  dependencies:
+    deepmerge: "npm:^4.3.1"
+  checksum: 10/17068689241eb90941d35d148fed96efdd03c82cfed9c9f64cfcee202802458890e4b7fe2167e6c49a002140d998dfe617be843cceb35c447d0dc37a28c48b84
   languageName: node
   linkType: hard
 
@@ -14446,14 +14455,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"deepmerge@npm:^2.0.0":
-  version: 2.2.1
-  resolution: "deepmerge@npm:2.2.1"
-  checksum: 10/a3da411cd3d471a8ae86ff7fd5e19abb648377b3f8c42a9e4c822406c2960a391cb829e4cca53819b73715e68f56b06f53c643ca7bba21cab569fecc9a723de1
-  languageName: node
-  linkType: hard
-
-"deepmerge@npm:^4.2.2":
+"deepmerge@npm:^4.2.2, deepmerge@npm:^4.3.1":
   version: 4.3.1
   resolution: "deepmerge@npm:4.3.1"
   checksum: 10/058d9e1b0ff1a154468bf3837aea436abcfea1ba1d165ddaaf48ca93765fdd01a30d33c36173da8fbbed951dd0a267602bc782fe288b0fc4b7e1e7091afc4529
@@ -21232,17 +21234,6 @@ __metadata:
   version: 5.1.1
   resolution: "quick-lru@npm:5.1.1"
   checksum: 10/a516faa25574be7947969883e6068dbe4aa19e8ef8e8e0fd96cddd6d36485e9106d85c0041a27153286b0770b381328f4072aa40d3b18a19f5f7d2b78b94b5ed
-  languageName: node
-  linkType: hard
-
-"quill-blot-formatter@npm:^1.0.5":
-  version: 1.0.5
-  resolution: "quill-blot-formatter@npm:1.0.5"
-  dependencies:
-    deepmerge: "npm:^2.0.0"
-  peerDependencies:
-    quill: ^1.3.4
-  checksum: 10/b12c03a281e08d938fddc93ea7dfb050610d7da237015d08e6d12331052bcc445cf8c93f7248c56168d8799eb725de6cf5a9930937f1e63e6a0ab20f20070a20
   languageName: node
   linkType: hard
 
