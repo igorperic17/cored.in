@@ -3,6 +3,7 @@ import {
   Button,
   Flex,
   Heading,
+  Spinner,
   Tab,
   TabList,
   TabPanel,
@@ -69,25 +70,35 @@ export const Tips = () => {
         mb={{ base: "0.5em", lg: "1.5em" }}
       >
         <Heading as="h1">Tips</Heading>
-        <Flex justify="space-between" gap="1em" align="center">
-          <Flex direction="column-reverse" gap="0em">
-            <Heading
-              as="h2"
-              color="other.200"
-              fontSize="1rem"
-              textTransform="uppercase"
-            >
-              Wallet balance
-            </Heading>
-            <Text as="span" fontSize="2rem" fontWeight="700">
-              {`${balance > 0 ? balance : "..."} CORE`}
-            </Text>
+        {balance === 0 && (
+          <Spinner size="md" color="brand.500" thickness="4px" />
+        )}
+        {balance > 0 && (
+          <Flex justify="space-between" gap="1em" align="center">
+            <Flex direction="column-reverse" gap="0em">
+              <Heading
+                as="h2"
+                color="other.200"
+                fontSize="1rem"
+                textTransform="uppercase"
+              >
+                Wallet balance
+              </Heading>
+
+              <Text as="span" fontSize="2rem" fontWeight="700">
+                {`${balance} CORE`}
+              </Text>
+            </Flex>
+            <Button variant="primary" size="md" onClick={onOpen}>
+              Transfer
+            </Button>
+            <TransferModal
+              isOpen={isOpen}
+              onClose={onClose}
+              balance={balance}
+            />
           </Flex>
-          <Button variant="primary" size="md" onClick={onOpen}>
-            Transfer
-          </Button>
-          <TransferModal isOpen={isOpen} onClose={onClose} balance={balance} />
-        </Flex>
+        )}
       </Flex>
 
       <Tabs isFitted size="md" variant="unstyled">
