@@ -105,52 +105,17 @@ export const LoginButton: FC<LoginButtonProps> = ({
       <>
         <Button
           as={ReactRouterLink}
-          // to={ROUTES.LOGIN.path} // this messes with the redirect/embedURL param
           variant={variant}
           size={size}
-          // TODO: revisit this onClick later
           onClick={() => {
-            navigate(ROUTES.LOGIN.path);
-            onOpen();
+            location.pathname === ROUTES.ROOT.path &&
+              navigate(ROUTES.LOGIN.path);
+            location.pathname === ROUTES.LOGIN.path && onOpen();
           }}
           {...props}
         >
           {signInText}
         </Button>
-
-        {/* <Button
-          variant="empty"
-          size="md"
-          onClick={() => window.openCapsuleModal()}
-          key="capsule-wallet"
-        >
-          Log in
-        </Button> */}
-        {/* <VStack gap="16px">
-          {chainContext.walletRepo.wallets.map((wallet) => {
-            return (
-              <Button
-                variant="empty"
-                size="md"
-                onClick={() => wallet.connect(true)}
-                key={wallet.walletName}
-                rightIcon={
-                  <Img
-                    src={
-                      typeof wallet.walletInfo.logo === "string"
-                        ? wallet.walletInfo.logo
-                        : wallet.walletInfo.logo?.minor
-                    }
-                    maxW="32px"
-                    // maxH="32px"
-                  />
-                }
-              >
-                {wallet.walletInfo.prettyName}
-              </Button>
-            );
-          })}
-        </VStack> */}
 
         <Modal isOpen={isOpen} onClose={onClose} isCentered size="lg">
           <ModalOverlay />
