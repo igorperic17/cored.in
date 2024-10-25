@@ -21,7 +21,7 @@ import { FC } from "react";
 import { persistentStorageService } from "@/dependencies";
 import { ConnectedWalletKey } from "@/constants";
 import { ROUTES } from "@/router/routes";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { Link as ReactRouterLink, useNavigate } from "react-router-dom";
 
 interface LoginButtonProps extends ButtonProps {
   variant: "primary" | "empty";
@@ -39,6 +39,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (chainContext.address) {
@@ -107,7 +108,11 @@ export const LoginButton: FC<LoginButtonProps> = ({
           // to={ROUTES.LOGIN.path} // this messes with the redirect/embedURL param
           variant={variant}
           size={size}
-          onClick={onOpen}
+          // TODO: revisit this onClick later
+          onClick={() => {
+            navigate(ROUTES.LOGIN.path);
+            onOpen();
+          }}
           {...props}
         >
           {signInText}
