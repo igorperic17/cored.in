@@ -108,7 +108,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
           variant={variant}
           size={size}
           onClick={() => {
-            location.pathname === ROUTES.ROOT.path &&
+            location.pathname !== ROUTES.LOGIN.path &&
               navigate(ROUTES.LOGIN.path);
             location.pathname === ROUTES.LOGIN.path && onOpen();
           }}
