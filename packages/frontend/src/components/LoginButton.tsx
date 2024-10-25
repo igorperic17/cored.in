@@ -104,7 +104,7 @@ export const LoginButton: FC<LoginButtonProps> = ({
       <>
         <Button
           as={ReactRouterLink}
-          to={ROUTES.LOGIN.path}
+          // to={ROUTES.LOGIN.path} // this messes with the redirect/embedURL param
           variant={variant}
           size={size}
           onClick={onOpen}
