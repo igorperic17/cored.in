@@ -6,6 +6,7 @@ import {
   Center,
   Flex,
   FormControl,
+  FormHelperText,
   FormLabel,
   HStack,
   Heading,
@@ -184,7 +185,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
             </VisuallyHidden>
             <Input
               variant="flushed"
-              placeholder="Enter desired username"
+              placeholder="Enter username"
               onChange={handleChangeUserName}
               value={usernameInput}
               focusBorderColor="brand.300"
@@ -193,20 +194,27 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
               fontSize={{ base: "1.25rem", md: "1.75rem" }}
               color="brand.300"
             />
-            <Text my="1em" color="other.200">
+            <FormHelperText fontSize="1rem" my="1em" color="other.200">
               At least 3 characters required, only letters and numbers allowed.
-            </Text>
+            </FormHelperText>
           </FormControl>
-          <Button
-            mt="2em"
-            isDisabled={usernameInput.length < 3 || balance < 1}
-            onClick={registerProfile}
-            size="md"
-            variant="primary"
-            isLoading={isRegistering}
-          >
-            REGISTER
-          </Button>
+
+          <VStack spacing="1em">
+            <Button
+              mt="2em"
+              isDisabled={usernameInput.length < 3 || balance < 1}
+              onClick={registerProfile}
+              size="md"
+              variant="primary"
+              isLoading={isRegistering}
+            >
+              REGISTER
+            </Button>
+            <Text color="other.600" textStyle="sm">
+              Please note that you will not be able to change your username
+              later
+            </Text>
+          </VStack>
         </VStack>
       )}
     </HStack>
