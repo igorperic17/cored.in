@@ -1,4 +1,4 @@
-import { AutoResizeTextarea, MultiSelect } from "@/components";
+import { MultiSelect } from "@/components";
 import { ROUTES } from "@/router/routes";
 import { formElementBorderStyles } from "@/themes";
 import {
@@ -29,7 +29,6 @@ import {
 import { FC, useState } from "react";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { requestTypeData, visibilityData } from "./post/constants";
-import { RichTextEditor } from "./RichTextEditor";
 import RichTextEditorQuillHook from "./RichTextEditorQuillHook";
 
 type CreatePostModalProps = {

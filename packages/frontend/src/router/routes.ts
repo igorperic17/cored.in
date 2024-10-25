@@ -43,5 +43,17 @@ export const ROUTES = {
   },
   PRIVACY_POLICY: {
     path: "/privacy-policy"
+  },
+  EARN: {
+    path: "/earn/*",  // The * allows matching the entire path after /earn, including slashes
+    buildPath: (embedURL?: string) => {
+      try {
+        // Only allow valid URLs (with http/https) to be embedded
+        const url = new URL(embedURL || "");
+        return `/earn/${encodeURIComponent(url.href)}`;  // Use the full href as the path and encode it
+      } catch (e) {
+        return "/earn";  // Fallback if URL is invalid
+      }
+    }
   }
 };

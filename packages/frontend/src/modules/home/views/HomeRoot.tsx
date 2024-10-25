@@ -48,7 +48,7 @@ export const HomeRoot = () => {
   );
   if (!chainContext.isWalletConnected) {
     return (
-      <Navigate to={ROUTES.LOGIN.path + "?redirect=" + location.pathname} />
+      <Navigate to={ROUTES.LOGIN.path + "?redirect=" + location.pathname + location.search} />
     );
   }
 

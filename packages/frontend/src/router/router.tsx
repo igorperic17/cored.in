@@ -147,5 +147,16 @@ export const router = createBrowserRouter([
         element: <TipsPage />
       }
     ]
+  },
+  {
+    path: ROUTES.EARN.path,
+    element: <HomeRoot />,
+    errorElement: <ResourceNotFoundPage />,
+    children: [
+      {
+        path: "*",
+        element: <HomePage />
+      }
+    ]
   }
 ]);

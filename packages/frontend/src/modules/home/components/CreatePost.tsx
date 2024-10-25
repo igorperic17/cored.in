@@ -22,9 +22,11 @@ import {
 } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
 import { useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { Link as ReactRouterLink } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link as ReactRouterLink, useLocation, useParams } from "react-router-dom";
 import { CreatePostModal } from "./CreatePostModal";
+
+
 
 export const CreatePost = () => {
   const queryClient = useQueryClient();
@@ -50,6 +52,34 @@ export const CreatePost = () => {
   const [isLargerThanSm] = useMediaQuery(
     `(min-width: ${theme.breakpoints.sm})`
   );
+
+  const { '*': embedURL} = useParams();
+  const location = useLocation();
+  
+  const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+  const isYouTubeURL = (url: string) => {
+    return youtubeRegex.test(url);
+  };
+
+  const sanitizeYouTubeURL = (url: string) => {
+    const match = url.match(youtubeRegex);
+    if (match && match[1]) {
+      return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    return url; // prevent embedding invalid URLs
+  };
+
+  useEffect(() => {
+    const url = embedURL + location.search;
+    if (url && isYouTubeURL(url)) {
+      const sanitizedURL = sanitizeYouTubeURL(url);
+
+      console.log("sanitizedURL", sanitizedURL);
+      const embedHTML = `<iframe class="ql-video ql-align-center" frameborder="0" allowfullscreen="true" src="${sanitizedURL}" data-blot-formatter-id="lgupr" width="500px" height="300px""></iframe>`
+      setPostContent(embedHTML);
+      onOpen();
+    }
+  }, [embedURL, location]);
 
   const handlePost = async () => {
     const post: CreatePostDTO = {
