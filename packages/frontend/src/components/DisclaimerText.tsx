@@ -11,11 +11,10 @@ export const DisclaimerText: FC<DisclaimerTextProps> = ({
 }) => {
   return (
     <Text color="other.600" textStyle={size} {...props}>
-      Please note that the official launch of cored.in is set for December 2024.
-      The current version is for testing only, and all data, including profiles
-      and posts, will be cleared before launch. The token will switch from
-      TESTCORE to CORE upon release. We encourage you to explore and provide
-      feedback on Discord.
+      The official launch of cored.in is set for December 2024. The current
+      version is for testing only, and all data, including profiles and posts,
+      will be cleared before launch. The token will switch from TESTCORE to CORE
+      upon release. We encourage you to explore and provide feedback on Discord.
     </Text>
   );
 };
