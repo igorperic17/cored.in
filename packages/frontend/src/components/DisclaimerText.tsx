@@ -1,12 +1,21 @@
-import { Text } from "@chakra-ui/layout";
+import { Text, TextProps } from "@chakra-ui/layout";
+import { FC } from "react";
 
-export const DisclaimerText = () => {
+type DisclaimerTextProps = TextProps & {
+  size?: "xs" | "sm";
+};
+
+export const DisclaimerText: FC<DisclaimerTextProps> = ({
+  size = "sm",
+  ...props
+}) => {
   return (
-    <Text color="other.600" textStyle="sm" textAlign="center">
-      Please note that cored.in is currently in active development and features
-      are available for testing purposes only. All data may be deleted at any
-      time without any prior notice. Please come back when cored.in is ready to
-      create a persistent profile.
+    <Text color="other.600" textStyle={size} {...props}>
+      Please note that the official launch of cored.in is set for December 2024.
+      The current version is for testing only, and all data, including profiles
+      and posts, will be cleared before launch. The token will switch from
+      TESTCORE to CORE upon release. We encourage you to explore and provide
+      feedback on Discord.
     </Text>
   );
 };
