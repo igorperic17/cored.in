@@ -7,6 +7,7 @@ import {
 } from "@/components";
 import { useAuth, useLoggedInServerState } from "@/hooks";
 import {
+  LaunchCountdown,
   MobileMenu,
   NavigationDesktop,
   UserSignOut
@@ -31,7 +32,6 @@ import {
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import StickyBox from "react-sticky-box";
-import { LaunchCountdown } from "../components/LaunchCountdown";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -73,14 +73,14 @@ export const HomeRoot = () => {
       )}
 
       <Grid
-        pt="1.5em"
+        pt={{ base: "1.5em", sm: "1em", xl: "1.5em" }}
         pb={{ base: "4.5em", lg: "1.5em" }}
-        px={{ base: "0.5em", sm: "1em", md: "2.5em" }}
+        px={{ base: "0.5em", sm: "1em", xl: "2.5em" }}
         templateColumns={{
           base: "100%",
-          lg: "minmax(300px, 20%) minmax(600px, 50%)"
+          lg: "minmax(250px, 300px) minmax(450px, 1fr) minmax(200px, 300px)"
         }}
-        gap={{ base: "0.5em", lg: "3%" }}
+        gap={{ base: "8px", lg: "24px" }}
         // border="1px solid green"
         alignItems="flex-start" // important for the StickyBox to work
       >
@@ -120,18 +120,6 @@ export const HomeRoot = () => {
                   <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
                 </Link>
               </Box>
-              <VStack
-                as="aside"
-                h="max-content"
-                layerStyle="cardBox"
-                py="1em"
-                spacing="0.75em"
-                align="start"
-              >
-                <LaunchCountdown />
-                <DisclaimerText size="xs" />
-                <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
-              </VStack>
               <NavigationDesktop wallet={chainContext.address || ""} />
               <UserSignOut />
             </VStack>
@@ -142,6 +130,21 @@ export const HomeRoot = () => {
           <Outlet />
           <ScrollRestoration />
         </Box>
+
+        {isLargerThanLg && (
+          <VStack
+            as="aside"
+            h="max-content"
+            layerStyle="cardBox"
+            py="1em"
+            spacing="0.75em"
+            align="start"
+          >
+            <LaunchCountdown />
+            <DisclaimerText size="xs" />
+            <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
+          </VStack>
+        )}
       </Grid>
       <MainBackground />
     </Box>
