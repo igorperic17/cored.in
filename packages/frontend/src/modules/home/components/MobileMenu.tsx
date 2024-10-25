@@ -1,16 +1,15 @@
 import {
   Button,
+  Center,
   Modal,
   ModalCloseButton,
   ModalContent,
-  useDisclosure,
-  VStack
+  useDisclosure
 } from "@chakra-ui/react";
 import { FaBars } from "react-icons/fa6";
 import { NavigationList, UserSignOut } from ".";
 import { useChain } from "@cosmos-kit/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
-import { DisclaimerText, SocialMedia } from "@/components";
 
 export const MobileMenu = () => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -28,10 +27,9 @@ export const MobileMenu = () => {
       />
       {isOpen && (
         <Modal size="full" isOpen={isOpen} onClose={onClose}>
-          <ModalContent as="nav">
+          <ModalContent as="nav" h="100%">
             <ModalCloseButton />
-            {/* TODO: may be a good idea to revisit the spacing when we remove the disclaimer */}
-            <VStack spacing={{ base: "5vh", sm: "8vh" }} px="1em">
+            <Center flexDirection="column" gap="12%" px="1em" h="100%">
               <NavigationList
                 wallet={chainContext.address || ""}
                 isPostPage={false}
@@ -42,12 +40,7 @@ export const MobileMenu = () => {
               />
 
               <UserSignOut isMobile w="max-content" />
-
-              <VStack spacing="1em">
-                <DisclaimerText />
-                <SocialMedia size="1.5rem" gap="1.75em" color="other.600" />
-              </VStack>
-            </VStack>
+            </Center>
           </ModalContent>
         </Modal>
       )}

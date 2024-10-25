@@ -48,7 +48,11 @@ export const HomeRoot = () => {
   );
   if (!chainContext.isWalletConnected) {
     return (
-      <Navigate to={ROUTES.LOGIN.path + "?redirect=" + location.pathname + location.search} />
+      <Navigate
+        to={
+          ROUTES.LOGIN.path + "?redirect=" + location.pathname + location.search
+        }
+      />
     );
   }
 
@@ -75,10 +79,24 @@ export const HomeRoot = () => {
           base: "100%",
           lg: "minmax(300px, 20%) minmax(600px, 50%)"
         }}
-        gap="3%"
+        gap={{ base: "0.5em", lg: "3%" }}
         // border="1px solid green"
         alignItems="flex-start" // important for the StickyBox to work
       >
+        {!isLargerThanLg && (
+          <VStack
+            as="aside"
+            h="max-content"
+            layerStyle="cardBox"
+            py="1em"
+            spacing="0.25em"
+            align="start"
+            mt="-1em"
+          >
+            <DisclaimerText size="xs" />
+            <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
+          </VStack>
+        )}
         {isLargerThanLg && (
           <StickyBox offsetTop={24} offsetBottom={24}>
             <VStack
@@ -100,19 +118,19 @@ export const HomeRoot = () => {
                   <Logo w="148px" h="auto" aspectRatio="6.17 / 1" />
                 </Link>
               </Box>
+              <VStack
+                as="aside"
+                h="max-content"
+                layerStyle="cardBox"
+                py="1em"
+                spacing="0.25em"
+                align="start"
+              >
+                <DisclaimerText size="xs" />
+                <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
+              </VStack>
               <NavigationDesktop wallet={chainContext.address || ""} />
               <UserSignOut />
-              <VStack spacing="1.25em" as="aside">
-                <VStack
-                  h="max-content"
-                  layerStyle="cardBox"
-                  px="2em"
-                  spacing="2em"
-                >
-                  <DisclaimerText />
-                  <SocialMedia size="2rem" gap="2.25em" color="other.600" />
-                </VStack>
-              </VStack>
             </VStack>
           </StickyBox>
         )}

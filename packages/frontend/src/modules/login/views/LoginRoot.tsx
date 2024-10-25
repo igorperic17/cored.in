@@ -1,6 +1,6 @@
 import { Box, Flex } from "@chakra-ui/react";
 import { Outlet, ScrollRestoration } from "react-router-dom";
-import { DisclaimerText } from "@/components/DisclaimerText";
+import { DisclaimerText } from "@/components";
 import { Header, LoginButton, MainBackground } from "@/components";
 import { useChain } from "@cosmos-kit/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
@@ -52,9 +52,9 @@ export const LoginRoot = () => {
           mx="auto"
           py="2em"
           px={{ base: "1em", md: "2.5em", lg: "3.5em" }}
-          maxW="1100px"
+          maxW="800px"
         >
-          <DisclaimerText />
+          <DisclaimerText textAlign="center" />
         </Box>
       </Flex>
       <MainBackground />

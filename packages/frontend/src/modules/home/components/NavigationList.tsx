@@ -1,6 +1,5 @@
 import { Flex, Grid, HStack, Icon, Link, Text, VStack } from "@chakra-ui/react";
 import { navigationData } from "../constants/navigationData";
-import { DisclaimerText, SocialMedia } from "@/components";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { FC } from "react";
 import { CredentialRequestDTO } from "@coredin/shared";
