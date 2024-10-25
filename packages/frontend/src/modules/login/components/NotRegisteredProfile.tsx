@@ -6,6 +6,7 @@ import {
   Center,
   Flex,
   FormControl,
+  FormErrorMessage,
   FormHelperText,
   FormLabel,
   HStack,
@@ -27,6 +28,7 @@ interface ProfileRegistrationProps {
   usernameInput: string;
   registerProfile: () => void;
   isRegistering: boolean;
+  isErrorUsername: boolean;
 }
 
 export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
@@ -34,7 +36,8 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
   handleChangeUserName,
   usernameInput,
   registerProfile,
-  isRegistering
+  isRegistering,
+  isErrorUsername
 }) => {
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const [balance, setBalance] = useState(0);
@@ -179,7 +182,7 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
               {did?.value}
             </Text>
           </Heading>
-          <FormControl>
+          <FormControl isInvalid={isErrorUsername}>
             <VisuallyHidden>
               <FormLabel as="label">Enter a username</FormLabel>
             </VisuallyHidden>
@@ -189,11 +192,19 @@ export const NotRegisteredProfile: FC<ProfileRegistrationProps> = ({
               onChange={handleChangeUserName}
               value={usernameInput}
               focusBorderColor="brand.300"
+              errorBorderColor="brand.400"
               py="0.875em"
               textAlign="center"
               fontSize={{ base: "1.25rem", md: "1.75rem" }}
               color="brand.300"
             />
+            <FormErrorMessage
+              justifyContent="center"
+              fontSize="1rem"
+              color="brand.400"
+            >
+              This username already exists
+            </FormErrorMessage>
             <FormHelperText fontSize="1rem" my="1em" color="other.200">
               At least 3 characters required, only letters and numbers allowed.
             </FormHelperText>

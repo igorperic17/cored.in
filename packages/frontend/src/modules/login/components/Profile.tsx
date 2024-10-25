@@ -1,5 +1,6 @@
 import {
   useAuth,
+  useCustomToast,
   useLoggedInServerState,
   useMutableServerState
 } from "@/hooks";
@@ -40,6 +41,8 @@ export const Profile = () => {
   );
   const [isRegistering, setIsRegistering] = useState(false);
   const [isLoadingContract, setIsLoadingContract] = useState(true);
+  const [isErrorUsername, setIsErrorUsername] = useState(false);
+  const { errorToast } = useCustomToast();
 
   const updateOnchainProfile = () => {
     if (chainContext.address) {
@@ -61,9 +64,9 @@ export const Profile = () => {
       setOnchainProfile(null);
     }
 
-    console.log('On chain DID...', onchainProfile?.did);
-    console.log('userProfile DID...', userProfile?.did);
-    console.log('userProfile DID...', userProfile?.did);
+    console.log("On chain DID...", onchainProfile?.did);
+    console.log("userProfile DID...", userProfile?.did);
+    console.log("userProfile DID...", userProfile?.did);
   };
 
   useEffect(updateOnchainProfile, [
@@ -95,11 +98,16 @@ export const Profile = () => {
           });
           setIsRegistering(false);
         })
-        .catch((error) => {
+        .catch((error: Error) => {
           console.log("error while registering");
           console.error(error);
           updateOnchainProfile();
           setIsRegistering(false);
+          if (error.message.includes("Name has been taken")) {
+            setIsErrorUsername(true);
+          } else {
+            errorToast("Something went wrong while registering");
+          }
         });
     }
   };
@@ -122,13 +130,15 @@ export const Profile = () => {
       {!chainContext.address && <RequireWalletConnection />}
       {!isLoadingContract &&
         userProfile &&
-        (!onchainProfile || onchainProfile?.did.value !== userProfile.did?.value) && (
+        (!onchainProfile ||
+          onchainProfile?.did.value !== userProfile.did?.value) && (
           <NotRegisteredProfile
             did={userProfile.did!}
             handleChangeUserName={handleChangeUserName}
             usernameInput={usernameInput}
             registerProfile={registerProfile}
             isRegistering={isRegistering}
+            isErrorUsername={isErrorUsername}
           />
         )}
       {onchainProfile &&
