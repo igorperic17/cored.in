@@ -31,6 +31,7 @@ import {
 } from "react-router-dom";
 import { Link as ReactRouterLink } from "react-router-dom";
 import StickyBox from "react-sticky-box";
+import { LaunchCountdown } from "../components/LaunchCountdown";
 
 export const HomeRoot = () => {
   const theme = useTheme();
@@ -93,6 +94,7 @@ export const HomeRoot = () => {
             align="start"
             mt="-1em"
           >
+            <LaunchCountdown />
             <DisclaimerText size="xs" />
             <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
           </VStack>
@@ -123,9 +125,10 @@ export const HomeRoot = () => {
                 h="max-content"
                 layerStyle="cardBox"
                 py="1em"
-                spacing="0.25em"
+                spacing="0.75em"
                 align="start"
               >
+                <LaunchCountdown />
                 <DisclaimerText size="xs" />
                 <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
               </VStack>

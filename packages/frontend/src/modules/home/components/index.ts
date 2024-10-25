@@ -8,6 +8,7 @@ export * from "./CredentialsMain";
 export * from "./CredentialSection";
 export * from "./Feed";
 export * from "./IssuanceRequest";
+export * from "./LaunchCountdown";
 export * from "./MessagePreviewCard";
 export * from "./MobileMenu";
 export * from "./NavigationDesktop";
