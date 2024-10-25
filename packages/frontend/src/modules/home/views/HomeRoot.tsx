@@ -91,11 +91,11 @@ export const HomeRoot = () => {
             layerStyle="cardBox"
             py="1em"
             spacing="0.25em"
-            align="start"
+            // align="start"
             mt="-1em"
           >
             <LaunchCountdown />
-            <DisclaimerText size="xs" />
+            <DisclaimerText size="xs" textAlign="center" />
             <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
           </VStack>
         )}
