@@ -456,10 +456,14 @@ export class PostsService {
     );
   }
 
-  private async getWithRelations(where: FindOptionsWhere<Post>[]) {
+  private async getWithRelations(conditions: FindOptionsWhere<Post>[]) {
+    const where = conditions.map((condition) => ({
+      ...condition,
+      hiddenAt: IsNull()
+    }));
     return await this.postRepository.findOne({
       relations: ["user", "parent", "parent.user", "replies", "replies.user"],
-      where: { ...where, hiddenAt: IsNull() },
+      where,
       order: { createdAt: "DESC" }
     });
   }
