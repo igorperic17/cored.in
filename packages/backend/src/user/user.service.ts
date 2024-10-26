@@ -1,6 +1,6 @@
 import { Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { Any, In, IsNull, Not, Repository } from "typeorm";
+import { Any, In, IsNull, Like, Not, Repository } from "typeorm";
 import { User } from "./user.entity";
 import {
   NotFoundError,
@@ -192,6 +192,15 @@ export class UserService {
     });
 
     return issuers.map((issuer) => this.adaptforPublicVisibililty(issuer));
+  }
+
+  async searchUsers(username: string) {
+    const users = await this.userRepository.find({
+      where: { username: Like(`%${username}%`) },
+      take: 10
+    });
+
+    return users.map((users) => this.adaptforPublicVisibililty(users));
   }
 
   private async adaptCredentials(

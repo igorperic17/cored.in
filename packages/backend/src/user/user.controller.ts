@@ -31,6 +31,15 @@ export class UserController {
     return user;
   }
 
+  @Get("search")
+  @UseGuards(LoggedIn)
+  async search(
+    @Req() req: AuthenticatedRequest,
+    @TypedQuery() params: { username: string }
+  ) {
+    return this.userService.searchUsers(params.username);
+  }
+
   @Get("tips")
   @UseGuards(LoggedIn)
   async getTips(@Req() req: AuthenticatedRequest) {
