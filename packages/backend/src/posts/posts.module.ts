@@ -6,13 +6,15 @@ import { Post } from "./post.entity";
 import { PostsService } from "./posts.service";
 import { CoreumModule } from "@/coreum/app/coreum.module";
 import { UserModule } from "@/user/user.module";
+import { FeatureFlagModule } from "@/feature-flag/feature-flag.module";
 
 @Module({
   imports: [
     AuthenticationModule,
     CoreumModule,
     TypeOrmModule.forFeature([Post]),
-    UserModule
+    UserModule,
+    FeatureFlagModule
   ],
   providers: [PostsService],
   controllers: [PostsController],

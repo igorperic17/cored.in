@@ -38,7 +38,7 @@ import { FeatureFlagModule } from "./feature-flag/feature-flag.module";
         password: secretsService.get("db_password"),
         database: configService.get("db.database"),
         synchronize: configService.get("db.synchronize"),
-        logging: false, // configService.get("db.debug"),
+        logging: configService.get("db.debug"),
         autoLoadEntities: true
       }),
       inject: [ConfigService, SecretsService]

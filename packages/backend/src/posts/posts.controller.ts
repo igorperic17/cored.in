@@ -1,8 +1,8 @@
 import {
-  BadRequestException,
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Req,
   UseGuards
@@ -11,13 +11,17 @@ import { PostsService } from "./posts.service";
 import { AuthenticatedRequest } from "../authentication";
 import { LoggedIn } from "../authentication/guard";
 import { TypedBody, TypedParam, TypedQuery, TypedRoute } from "@nestia/core";
-import { CreatePostDTO } from "@coredin/shared";
+import { CreatePostDTO, FEATURE_FLAG } from "@coredin/shared";
 import { Coin } from "@cosmjs/amino";
+import { FeatureFlagClient } from "@/feature-flag/services";
 
 @Controller("posts")
 @UseGuards(LoggedIn)
 export class PostsController {
-  constructor(private readonly postsService: PostsService) {}
+  constructor(
+    private readonly postsService: PostsService,
+    private readonly featureFlagClient: FeatureFlagClient
+  ) {}
 
   @Get()
   async getHomeFeed(
@@ -91,7 +95,18 @@ export class PostsController {
     return await this.postsService.updateTip(id, req.wallet, tip, txHash);
   }
 
-  // TODO - remove this before deploying to production!
+  @TypedRoute.Post(":id/hide")
+  async hide(@TypedParam("id") id: number, @Req() req: AuthenticatedRequest) {
+    console.log("hide request from ", req.wallet, " for post ", id);
+    if (
+      !this.featureFlagClient.isEnabled(FEATURE_FLAG.HIDE_POSTS, req.wallet)
+    ) {
+      throw new NotFoundException();
+    }
+
+    return await this.postsService.hide(id);
+  }
+
   // @TypedRoute.Post("clear-boosts")
   // async clearAllBoosts(@Req() req: AuthenticatedRequest) {
   //   try {

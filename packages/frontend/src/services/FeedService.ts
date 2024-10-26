@@ -33,6 +33,10 @@ export class FeedService {
     return this.http.delete("posts/" + postId);
   }
 
+  async hidePost(postId: number): Promise<void> {
+    return this.http.post("posts/" + postId + `/hide`, {});
+  }
+
   async tipPost(postId: number, tip: Coin, txHash: string): Promise<void> {
     return this.http.post("posts/" + postId + `/tip`, { tip, txHash });
   }

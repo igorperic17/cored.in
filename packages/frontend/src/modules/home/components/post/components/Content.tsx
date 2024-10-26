@@ -1,4 +1,4 @@
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useRef } from "react";
 import { PostDTO, PostVisibility } from "@coredin/shared";
 import {
   AlertDialog,
@@ -22,7 +22,7 @@ import {
   VStack,
   useDisclosure
 } from "@chakra-ui/react";
-import { FaEllipsis, FaTrash } from "react-icons/fa6";
+import { FaBan, FaEllipsis, FaTrash } from "react-icons/fa6";
 import { ActionBar } from "./ActionBar";
 import { Link as ReactRouterLink } from "react-router-dom";
 import { ROUTES } from "@/router/routes";
@@ -37,6 +37,8 @@ export type PostContentProps = {
   isLiking: boolean;
   isDetailLoading: boolean;
   showOptions: boolean;
+  canHide: boolean;
+  handleHide: () => void;
   handleComment: () => void;
   handleLike: () => void;
   handleTip: () => void;
@@ -53,7 +55,9 @@ export const Content: FC<PostContentProps> = ({
   showOptions,
   handleComment,
   handleLike,
-  handleTip
+  handleTip,
+  canHide,
+  handleHide
 }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   const cancelRef = useRef(null);
@@ -154,7 +158,7 @@ export const Content: FC<PostContentProps> = ({
             ))}
           </HStack>
         )}
-        {showOptions && (
+        {(showOptions || canHide) && (
           <Menu autoSelect={false} placement="bottom-end">
             <MenuButton
               as={IconButton}
@@ -168,11 +172,20 @@ export const Content: FC<PostContentProps> = ({
               mt="-0.5em"
             />
             <MenuList>
-              <MenuItem onClick={onOpen} icon={<FaTrash color="red" />}>
-                <Text as="span" color="red">
-                  Delete
-                </Text>
-              </MenuItem>
+              {showOptions && (
+                <MenuItem onClick={onOpen} icon={<FaTrash color="red" />}>
+                  <Text as="span" color="red">
+                    Delete
+                  </Text>
+                </MenuItem>
+              )}
+              {canHide && (
+                <MenuItem onClick={handleHide} icon={<FaBan color="orange" />}>
+                  <Text as="span" color="orange">
+                    Hide (WARNING: MODERATION ACTION!)
+                  </Text>
+                </MenuItem>
+              )}
             </MenuList>
           </Menu>
         )}
@@ -251,8 +264,8 @@ export const Content: FC<PostContentProps> = ({
       >
         <RichTextEditorQuillHook
           // placeholder="Be creative!"
-          value={post.text} 
-          id={post.id.toString()}          
+          value={post.text}
+          id={post.id.toString()}
           readOnly={true}
           // hideToolbar={true}
           preview={!opened}

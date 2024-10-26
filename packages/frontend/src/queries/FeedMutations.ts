@@ -18,6 +18,10 @@ export const FEED_MUTATIONS = {
     mutationFn: ({ postId }: { postId: number }) =>
       feedService.deletePost(postId)
   }),
+  hidePost: () => ({
+    mutationKey: [BaseServerStateKeys.HIDE_POST],
+    mutationFn: ({ postId }: { postId: number }) => feedService.hidePost(postId)
+  }),
   tipPost: () => ({
     mutationKey: [BaseServerStateKeys.TIP_POST],
     mutationFn: ({

@@ -10,7 +10,6 @@ import {
   ArrayContains,
   FindOptionsWhere,
   IsNull,
-  LessThan,
   LessThanOrEqual,
   MoreThan,
   Not,
@@ -25,10 +24,7 @@ import {
   PostVisibility
 } from "@coredin/shared";
 import { User } from "@/user/user.entity";
-import {
-  CoredinContractService,
-  CoredinSignerService
-} from "@/coreum/services";
+import { CoredinContractService } from "@/coreum/services";
 import { UserService } from "@/user/user.service";
 import { Coin } from "@cosmjs/amino";
 import { Tip } from "./tips/tip.entity";
@@ -117,6 +113,7 @@ export class PostsService {
         : undefined,
       // TODO - sort by createdAt in query, it requires using QueryBuilder
       replies: postWithReplies.replies
+        .filter((reply) => !reply.hiddenAt) // TODO - find a way to add SQL to filter out hidden posts
         .map((reply) => this.fromDb(reply))
         .sort(
           (a, b) => b.tips - a.tips || a.createdAt.localeCompare(b.createdAt)
@@ -190,10 +187,12 @@ export class PostsService {
         {
           creatorWallet: requesterWallet,
           replyToPostId: IsNull(),
+          hiddenAt: IsNull(),
           visibility: PostVisibility.RECIPIENTS
         },
         {
           replyToPostId: IsNull(),
+          hiddenAt: IsNull(),
           visibility: PostVisibility.RECIPIENTS,
           recipientWallets: ArrayContains([requesterWallet])
         }
@@ -237,7 +236,8 @@ export class PostsService {
         relations: ["user"],
         where: whereConditions.map((condition) => ({
           ...condition,
-          boostedUntil: MoreThan(now)
+          boostedUntil: MoreThan(now),
+          hiddenAt: IsNull()
         })),
         order: {
           boostedUntil: "DESC",
@@ -255,7 +255,8 @@ export class PostsService {
       relations: ["user"],
       where: whereConditions.map((condition) => ({
         ...condition,
-        boostedUntil: LessThanOrEqual(now)
+        boostedUntil: LessThanOrEqual(now),
+        hiddenAt: IsNull()
       })),
       order: {
         createdAt: "DESC"
@@ -439,10 +440,20 @@ export class PostsService {
     );
   }
 
+  // IMPORTANT: only allow moderators to hide posts (feature flag in controller currently)
+  async hide(postId: number) {
+    return await this.postRepository.update(
+      { id: postId, hiddenAt: IsNull() },
+      {
+        hiddenAt: () => "now()"
+      }
+    );
+  }
+
   private async getWithRelations(where: FindOptionsWhere<Post>[]) {
     return await this.postRepository.findOne({
       relations: ["user", "parent", "parent.user", "replies", "replies.user"],
-      where,
+      where: { ...where, hiddenAt: IsNull() },
       order: { createdAt: "DESC" }
     });
   }

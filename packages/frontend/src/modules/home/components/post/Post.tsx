@@ -1,9 +1,14 @@
-import { useLoggedInServerState, useMutableServerState } from "@/hooks";
+import {
+  useFlag,
+  useLoggedInServerState,
+  useMutableServerState
+} from "@/hooks";
 import { USER_QUERIES } from "@/queries";
 import { FEED_MUTATIONS } from "@/queries/FeedMutations";
 import { FEED_QUERIES } from "@/queries/FeedQueries";
 import { Text, VStack, Tag, Flex } from "@chakra-ui/react";
 import {
+  FEATURE_FLAG,
   PostDTO,
   PostInfo,
   TESTNET_CHAIN_NAME,
@@ -32,7 +37,10 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
   );
   const { mutateAsync: deletePost, isPending: isDeleting } =
     useMutableServerState(FEED_MUTATIONS.deletePost());
-  const { mutateAsync: tipPost, isPending: isTipping } = useMutableServerState(
+  const { mutateAsync: hidePost } = useMutableServerState(
+    FEED_MUTATIONS.hidePost()
+  );
+  const { mutateAsync: tipPost } = useMutableServerState(
     FEED_MUTATIONS.tipPost()
   );
   const chainContext = useChain(TESTNET_CHAIN_NAME);
@@ -64,6 +72,7 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
     post.boostedUntil && new Date(post.boostedUntil) > new Date()
   );
   const [remainingTime, setRemainingTime] = useState("");
+  const canHide = useFlag(FEATURE_FLAG.HIDE_POSTS);
 
   useEffect(() => {
     setIsLiked(userProfile?.likedPosts.includes(post.id) || false);
@@ -141,6 +150,12 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
 
   const handleDelete = async () => {
     await deletePost({ postId: post.id }).then(() => {
+      queryClient.invalidateQueries();
+    });
+  };
+
+  const handleHide = async () => {
+    await hidePost({ postId: post.id }).then(() => {
       queryClient.invalidateQueries();
     });
   };
@@ -225,9 +240,11 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
             showOptions={
               postDetail.parent.creatorWallet === chainContext.address
             }
+            canHide={canHide}
             key={postDetail.parent.id}
             isDeleting={isDeleting}
             handleDelete={handleDelete}
+            handleHide={handleHide}
             opened={opened}
             isLiked={isLiked}
             isLiking={isLiking}
@@ -245,8 +262,10 @@ export const Post: React.FC<PostProps> = ({ post, isParent, isReply }) => {
         <Content
           post={post}
           showOptions={post.creatorWallet === chainContext.address}
+          canHide={canHide}
           isDeleting={isDeleting}
           handleDelete={handleDelete}
+          handleHide={handleHide}
           opened={opened}
           isLiked={isLiked}
           isLiking={isLiking}
