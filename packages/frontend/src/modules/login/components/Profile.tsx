@@ -148,7 +148,7 @@ export const Profile = () => {
           <Navigate
             to={
               queryParams.get("redirect") ??
-              (userProfile.username === "no_username"
+              (userProfile.username === ""
                 ? ROUTES.SETTINGS.path
                 : ROUTES.HOME.path)
             }

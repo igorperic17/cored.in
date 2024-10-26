@@ -102,7 +102,7 @@ export class UserService {
       );
       return Effect.succeed({
         wallet: user.wallet,
-        username: user.username || "no_username",
+        username: user.username || "",
         did: { value: did!.did },
         likedPosts: user.likedPosts,
         skillTags: user.skillTags,
@@ -220,7 +220,7 @@ export class UserService {
           ?.wallet || "",
       issuerUsername:
         issuers.find((user) => user.issuerDid === vc.parsedDocument.issuer.id)
-          ?.username || "no_username",
+          ?.username || "",
       title: vc.parsedDocument.credentialSubject.title,
       establishment: vc.parsedDocument.credentialSubject.establishment,
       startDate: vc.parsedDocument.credentialSubject.startDate,
@@ -232,7 +232,7 @@ export class UserService {
   private adaptforPublicVisibililty(user: User): UserProfile {
     return {
       wallet: user.wallet,
-      username: user.username || "no_username",
+      username: user.username || "",
       did: undefined,
       likedPosts: [],
       skillTags: user.skillTags,
