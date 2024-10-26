@@ -28,11 +28,14 @@ import { CoredinContractService } from "@/coreum/services";
 import { UserService } from "@/user/user.service";
 import { Coin } from "@cosmjs/amino";
 import { Tip } from "./tips/tip.entity";
+import { Filter } from "content-checker";
 
 const PAGE_SIZE = 10;
 
 @Injectable()
 export class PostsService {
+  private readonly filter: Filter;
+
   constructor(
     @InjectRepository(Post)
     private readonly postRepository: Repository<Post>,
@@ -40,7 +43,9 @@ export class PostsService {
     private readonly userService: UserService,
     @Inject(CoredinContractService)
     private readonly coredinContractService: CoredinContractService
-  ) {}
+  ) {
+    this.filter = new Filter();
+  }
 
   async get(
     id: number,
@@ -281,7 +286,8 @@ export class PostsService {
     );
   }
 
-  async create(requesterWallet: string, data: CreatePostDTO) {
+  async create(requesterWallet: string, createDTO: CreatePostDTO) {
+    const data = { ...createDTO, text: this.filter.clean(createDTO.text) };
     let parentPost: Post | undefined;
     if (data.replyToPostId) {
       parentPost = await this.validateReplyAndGetParentPost(
