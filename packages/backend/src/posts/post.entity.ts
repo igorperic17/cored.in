@@ -119,5 +119,10 @@ export class Post {
     type: "timestamp",
     precision: 3
   })
+  @Index()
   boostedUntil: Date;
+
+  @Column({ type: "timestamp", precision: 3, nullable: true })
+  @Index()
+  hiddenAt: Date | null;
 }
