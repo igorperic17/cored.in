@@ -14,5 +14,9 @@ export const USER_QUERIES = {
   getTips: () => ({
     queryKey: [BaseServerStateKeys.USER_TIPS],
     queryFn: () => userService.getTips()
+  }),
+  search: (username: string) => ({
+    queryKey: [BaseServerStateKeys.USER_SEARCH, username],
+    queryFn: () => userService.search(username)
   })
 };

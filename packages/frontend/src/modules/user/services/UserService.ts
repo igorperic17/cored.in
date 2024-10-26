@@ -4,6 +4,10 @@ import { TipsDTO, UpdateProfileDTO, UserProfile } from "@coredin/shared";
 export class UserService {
   constructor(private readonly http: HttpService) {}
 
+  async search(username: string): Promise<UserProfile[]> {
+    return this.http.get("user/search?username=" + username);
+  }
+
   async getUser(wallet: string): Promise<UserProfile> {
     return this.http.get("user/profile/" + wallet);
   }
