@@ -72,7 +72,7 @@ resource "aws_ecs_service" "verifier_api" {
   name             = "${var.app_name}-verifier-api-service"
   cluster          = aws_ecs_cluster.verifier_api.id
   task_definition  = aws_ecs_task_definition.verifier_api.arn
-  desired_count    = 1
+  desired_count    = var.use_verifier_api ? 1 : 0
   platform_version = "1.3.0"
   propagate_tags   = "SERVICE"
 
@@ -91,7 +91,7 @@ resource "aws_ecs_service" "verifier_api" {
   }
 
   dynamic "load_balancer" {
-    for_each = var.use_elbs ? [1] : []
+    for_each = var.use_elbs && var.use_verifier_api ? [1] : []
     content {
       target_group_arn = aws_alb_target_group.verifier_api[0].arn
       container_name   = "${var.app_name}-verifier-api-container"

@@ -1,5 +1,5 @@
 resource "aws_alb" "verifier_api" {
-  count           = var.use_elbs ? 1 : 0
+  count           = var.use_elbs && var.use_verifier_api ? 1 : 0
   name            = "${var.app_name}-verifier-api-elb"
   internal        = true
   subnets         = var.use_private_subnets ? aws_subnet.private[*].id : aws_subnet.public[*].id
@@ -7,7 +7,7 @@ resource "aws_alb" "verifier_api" {
 }
 
 resource "aws_alb_target_group" "verifier_api" {
-  count                = var.use_elbs ? 1 : 0
+  count                = var.use_elbs && var.use_verifier_api ? 1 : 0
   name                 = "${var.app_name}-verifier-api-tg"
   port                 = var.verifier_api_port
   protocol             = "HTTP"
@@ -32,7 +32,7 @@ resource "aws_alb_target_group" "verifier_api" {
 }
 
 resource "aws_alb_listener" "verifier_api" {
-  count             = var.use_elbs ? 1 : 0
+  count             = var.use_elbs && var.use_verifier_api ? 1 : 0
   load_balancer_arn = aws_alb.verifier_api[0].id
   port              = var.verifier_api_port
   protocol          = "HTTP"

@@ -94,7 +94,7 @@ resource "aws_ecs_task_definition" "backend" {
             },
             verifier = {
               api = {
-                url = "http://${local.verifier_api_address}:${var.verifier_api_port}"
+                url = var.use_verifier_api ? "http://${local.verifier_api_address}:${var.verifier_api_port}" : ""
               }
             },
             unleash = {

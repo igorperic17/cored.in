@@ -3,6 +3,7 @@ is_app_https                       = true
 use_private_subnets                = false
 use_vpc_endpoints                  = false
 use_elbs                           = false
+use_verifier_api                   = false
 use_lambda_backend                 = false
 use_vault_efs                      = true
 backend_cloudfront_distribution_id = "E2QVW1DECAJA80"
