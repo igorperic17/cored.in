@@ -1,10 +1,13 @@
 // import { BackToTop } from "@/modules/landing/components/BackToTop";
 import { SocialMedia } from "@/components";
-import { Box, Flex, Heading, Text } from "@chakra-ui/react";
+import { Box, Button, Flex, Heading, Text } from "@chakra-ui/react";
 import { motion } from "framer-motion";
 import { fadeInAnimation } from "../constants";
+import { ROUTES } from "@/router/routes";
+import { useNavigate } from "react-router";
 
 export const Footer = () => {
+  const navigate = useNavigate();
   return (
     <Box
       as={motion.footer}
@@ -28,14 +31,14 @@ export const Footer = () => {
         px="1em"
         mt="7em"
       >
-        <Heading
-          as="h2"
-          fontSize={{ base: "3rem", md: "4rem" }}
+        <Button
+          variant={"primary"}
+          fontSize={{ base: "2rem", md: "3rem" }}
           textAlign="center"
-          maxW="600px"
+          onClick={() => navigate(ROUTES.LOGIN.path)}
         >
-          Get notified when coredin is ready
-        </Heading>
+          JOIN COREDIN
+        </Button>
         <SocialMedia size="3rem" gap="3.5em" />
       </Flex>
       <Text textAlign="center" p="1.5em">
