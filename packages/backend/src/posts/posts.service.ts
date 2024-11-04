@@ -53,7 +53,8 @@ export class PostsService {
     requesterWallet: string
   ): Promise<PostDetailDTO> {
     let postWithReplies = await this.getWithRelations([
-      { id, visibility: PostVisibility.PUBLIC, creatorWallet }
+      { id, visibility: PostVisibility.PUBLIC, creatorWallet },
+      { id, creatorWallet: requesterWallet }
     ]);
 
     // If public not found, look for recipient posts
