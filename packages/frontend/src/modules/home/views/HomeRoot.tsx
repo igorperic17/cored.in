@@ -10,18 +10,16 @@ import {
   LaunchCountdown,
   MobileMenu,
   NavigationDesktop,
+  SearchFakeButton,
   SearchModal,
   UserSignOut
 } from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
-import { formElementBorderStyles } from "@/themes";
 import {
   Box,
-  Button,
   Grid,
   Link,
-  Text,
   useDisclosure,
   useMediaQuery,
   useTheme,
@@ -29,7 +27,6 @@ import {
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
-import { FaMagnifyingGlass } from "react-icons/fa6";
 import {
   Navigate,
   Outlet,
@@ -97,24 +94,8 @@ export const HomeRoot = () => {
       >
         {!isLargerThanLg && (
           <>
-            <Button
-              {...formElementBorderStyles}
-              borderColor="#E6E6E6" // same as in layerStyle="cardBox"
-              w="100%"
-              bg="#FFFFFFBF" // same as in layerStyle="cardBox"
-              color="other.600"
-              fontSize={{ base: "0.875rem", lg: "1rem" }}
-              fontWeight="400"
-              textTransform="none"
-              leftIcon={<FaMagnifyingGlass />}
-              onClick={onSearchModalOpen}
-              h="42px"
-              mt="-1em"
-            >
-              <Text as="span" mr="auto">
-                Search
-              </Text>
-            </Button>
+            <SearchFakeButton onSearchModalOpen={onSearchModalOpen} />
+
             <VStack
               as="aside"
               h="max-content"
@@ -162,22 +143,7 @@ export const HomeRoot = () => {
 
         {isLargerThanLg && (
           <VStack spacing="1.25em">
-            <Button
-              {...formElementBorderStyles}
-              borderColor="#E6E6E6" // same as in layerStyle="cardBox"
-              w="100%"
-              bg="#FFFFFFBF" // same as in layerStyle="cardBox"
-              color="other.600"
-              fontSize={{ base: "0.875rem", lg: "1rem" }}
-              fontWeight="400"
-              textTransform="none"
-              leftIcon={<FaMagnifyingGlass />}
-              onClick={onSearchModalOpen}
-            >
-              <Text as="span" mr="auto">
-                Search
-              </Text>
-            </Button>
+            <SearchFakeButton onSearchModalOpen={onSearchModalOpen} />
 
             <VStack
               as="aside"
