@@ -103,7 +103,10 @@ export const SearchModal: FC<SearchModalType> = ({
                       color: "brand.500",
                       borderLeftColor: "brand.500"
                     }}
-                    onClick={() => navigate(ROUTES.USER.buildPath(user.wallet))}
+                    onClick={() => {
+                      navigate(ROUTES.USER.buildPath(user.wallet));
+                      onSearchModalClose();
+                    }}
                   >
                     <Avatar
                       name={user.username}
