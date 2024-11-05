@@ -20,6 +20,7 @@ export * from "./post";
 export * from "./ProfileSettings";
 export * from "./ProofUpdate";
 export * from "./RequestCredential";
+export * from "./SearchModal";
 export * from "./SubscribeToProfile";
 export * from "./SubscriptionModal";
 export * from "./SubscriptionSettings";

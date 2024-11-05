@@ -10,20 +10,26 @@ import {
   LaunchCountdown,
   MobileMenu,
   NavigationDesktop,
+  SearchModal,
   UserSignOut
 } from "@/modules/home/components";
 import { USER_QUERIES } from "@/queries";
 import { ROUTES } from "@/router/routes";
+import { formElementBorderStyles } from "@/themes";
 import {
   Box,
+  Button,
   Grid,
   Link,
-  VStack,
+  Text,
+  useDisclosure,
   useMediaQuery,
-  useTheme
+  useTheme,
+  VStack
 } from "@chakra-ui/react";
 import { TESTNET_CHAIN_NAME } from "@coredin/shared";
 import { useChain } from "@cosmos-kit/react";
+import { FaMagnifyingGlass } from "react-icons/fa6";
 import {
   Navigate,
   Outlet,
@@ -38,6 +44,11 @@ export const HomeRoot = () => {
   const [isLargerThanLg] = useMediaQuery(
     `(min-width: ${theme.breakpoints.lg})`
   );
+  const {
+    isOpen: isSearchModalOpen,
+    onOpen: onSearchModalOpen,
+    onClose: onSearchModalClose
+  } = useDisclosure();
   const location = useLocation();
   const chainContext = useChain(TESTNET_CHAIN_NAME);
   const { needsAuth } = useAuth();
@@ -132,16 +143,36 @@ export const HomeRoot = () => {
         </Box>
 
         {isLargerThanLg && (
-          <VStack
-            as="aside"
-            h="max-content"
-            layerStyle="cardBox"
-            py="1em"
-            spacing="0.75em"
-          >
-            <LaunchCountdown />
-            <DisclaimerText size="xs" textAlign="center" />
-            <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
+          <VStack spacing="1.25em">
+            <Button
+              {...formElementBorderStyles}
+              w="100%"
+              bg="brand.100"
+              color="other.600"
+              fontSize={{ base: "0.875rem", lg: "1rem" }}
+              textTransform="none"
+              leftIcon={<FaMagnifyingGlass />}
+              onClick={onSearchModalOpen}
+            >
+              <Text as="span" mr="auto">
+                Search
+              </Text>
+            </Button>
+            <SearchModal
+              isSearchModalOpen={isSearchModalOpen}
+              onSearchModalClose={onSearchModalClose}
+            />
+            <VStack
+              as="aside"
+              h="max-content"
+              layerStyle="cardBox"
+              py="1em"
+              spacing="0.75em"
+            >
+              <LaunchCountdown />
+              <DisclaimerText size="xs" textAlign="center" />
+              <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
+            </VStack>
           </VStack>
         )}
       </Grid>

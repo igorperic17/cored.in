@@ -18,7 +18,10 @@ const baseStyle = definePartsStyle({
   },
   addon: {
     borderRadius: "0.5em",
-    background: "#eaecec",
+    background: "#eaecec"
+  },
+  element: {
+    color: "other.600"
   }
 });
 
@@ -26,7 +29,7 @@ const richTextEditorStyle = definePartsStyle({
   field: {
     // borderBottomLeftRadius: "1.125em",
     // borderBottomRightRadius: "1.125em",
-    background: "#fefcfc",
+    background: "#fefcfc"
   },
   toolbar: {
     display: "block",
@@ -34,14 +37,14 @@ const richTextEditorStyle = definePartsStyle({
     borderTopLeftRadius: "1.125em",
     borderTopRightRadius: "1.125em",
     borderBottomLeftRadius: "0",
-    borderBottomRightRadius: "0",
+    borderBottomRightRadius: "0"
   },
   editor: {
-    minHeight: "18em",
+    minHeight: "18em"
   }
 });
 
-export const inputTheme = defineMultiStyleConfig({ 
+export const inputTheme = defineMultiStyleConfig({
   baseStyle,
   variants: {
     richTextEditor: richTextEditorStyle
