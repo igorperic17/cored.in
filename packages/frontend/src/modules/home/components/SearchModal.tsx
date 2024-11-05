@@ -42,7 +42,7 @@ export const SearchModal: FC<SearchModalType> = ({
     }
   );
 
-  console.log("users", users);
+  const limitedUsers = users?.slice(0, 20);
 
   return (
     <Modal onClose={onSearchModalClose} isOpen={isSearchModalOpen} size="xl">
@@ -73,7 +73,7 @@ export const SearchModal: FC<SearchModalType> = ({
               />
             </InputGroup>
           </FormControl>
-          {users && (
+          {limitedUsers && (
             <VStack
               as="ul"
               display="block"
@@ -82,7 +82,7 @@ export const SearchModal: FC<SearchModalType> = ({
               borderRadius="1em"
               mt="1.5em"
             >
-              {users.map((user, index) => {
+              {limitedUsers.map((user) => {
                 return (
                   <Flex
                     as="li"
