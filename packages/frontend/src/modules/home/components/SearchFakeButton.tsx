@@ -25,7 +25,7 @@ export const SearchFakeButton: FC<SearchFakeButtonProps> = ({
       onClick={onSearchModalOpen}
     >
       <Text as="span" mr="auto">
-        Search
+        Search users
       </Text>
     </Button>
   );
