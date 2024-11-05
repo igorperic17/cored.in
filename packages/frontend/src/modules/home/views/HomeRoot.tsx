@@ -146,10 +146,12 @@ export const HomeRoot = () => {
           <VStack spacing="1.25em">
             <Button
               {...formElementBorderStyles}
+              borderColor="#E6E6E6" // same as in layerStyle="cardBox"
               w="100%"
               bg="brand.100"
               color="other.600"
               fontSize={{ base: "0.875rem", lg: "1rem" }}
+              fontWeight="400"
               textTransform="none"
               leftIcon={<FaMagnifyingGlass />}
               onClick={onSearchModalOpen}
@@ -169,7 +171,7 @@ export const HomeRoot = () => {
               py="1em"
               spacing="0.75em"
             >
-              <LaunchCountdown />
+              {/* <LaunchCountdown /> */}
               <DisclaimerText size="xs" textAlign="center" />
               <SocialMedia showOnlyDiscord size="1.75rem" color="other.600" />
             </VStack>
