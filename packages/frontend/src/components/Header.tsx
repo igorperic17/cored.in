@@ -16,8 +16,8 @@ export const Header: FC<HeaderProps> = ({ username, children }) => {
       position="sticky"
       top={{ base: "1rem", md: "1.5rem", lg: "1.75rem" }}
       zIndex="10"
-      px={{ base: "0.5em", sm: "1em", md: "2.5em" }}
-      mb={{ base: "1em", md: "2em", lg: "0" }}
+      px={{ base: "0.5em", sm: "1em", lg: "2.5em" }}
+      mb={{ base: "1em", sm: "2em", lg: "0" }}
     >
       <Flex
         justify="space-between"
